@@ -31,7 +31,7 @@ class Fshl_Output_Html
 
 	public function template($word, $class)
 	{
-		$word = htmlEntities($word, ENT_COMPAT, 'UTF-8');
+		$word = htmlspecialchars($word, ENT_COMPAT, 'UTF-8');
 
 		if ($this->last_class == $class)
 		{
@@ -62,7 +62,7 @@ class Fshl_Output_Html
 
 	public function keyword($word, $class)
 	{
-		$word = htmlEntities($word, ENT_COMPAT, 'UTF-8');
+		$word = htmlspecialchars($word, ENT_COMPAT, 'UTF-8');
 
 		if ($this->last_class == $class)
 		{

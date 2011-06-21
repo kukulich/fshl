@@ -81,8 +81,6 @@ class Fshl_Generator
 {
 	const VERSION = '0.4.11';
 
-	const P_STATISTIC = 0x1000;	// inject statistic for fshlGenerator class
-
 	// state field indexes
 	const XL_DIAGR = 0;
 	const XL_FLAGS = 1;
@@ -102,27 +100,24 @@ class Fshl_Generator
 	const P_QUIT_STATE = '_QUIT';
 
 	// class variables
-	var $lang, $flang, $options, $version, $langname, $language;
+	var $lang, $flang, $version, $langname, $language;
 	var $out, $groups;
 
 	var $_trans, $_flags, $_data, $_delim, $_class, $_states, $_names;
 	var $_ret,$_quit;
 
 	var $error;
-	var $inject_statistic_code;
 
 	// USER LEVEL functions
 	//
 	// class constructor
-	function __construct($language, $options = 0)
+	function __construct($language)
 	{
 		$this->error = false;
 		$this->language = $language;
 		$langClass = 'Fshl_Lang_' . $this->language;
-		$this->inject_statistic_code = $options & self::P_STATISTIC;
 		if(class_exists($langClass)) {
 			$this->lang = new $langClass();
-			$this->options  = $options;
 			$this->groups = array(
 				// delimiter name	required size for compare
 				"SPACE"		=>		1,
@@ -216,10 +211,6 @@ class Fshl_Generator
 		$this->out.='var $pt,$pti,$generator_version;'."\n";
 		$this->out.='var $names;'."\n";
 
-		if($this->inject_statistic_code) {
-			$this->out.='var $statistic, $total_statistic;'."\n";
-		}
-
 		$this->out.="\n";
 
 		// make constructor
@@ -238,11 +229,6 @@ class Fshl_Generator
 		$this->out.="\t".Fshl_Helper::getVarSource("this->data",$this->_data);
 		$this->out.="\t".Fshl_Helper::getVarSource("this->class",$this->_class);
 		$this->out.="\t".Fshl_Helper::getVarSource("this->keywords",$this->lang->keywords);
-		if($this->inject_statistic_code) {
-			$this->out.="\t".Fshl_Helper::getVarSource("this->statistic",array());
-			$this->out.="\t".Fshl_Helper::getVarSource("this->total_statistic",array());
-		}
-
 		//end constructor
 		$this->out.="}\n\n";
 
@@ -258,15 +244,6 @@ class Fshl_Generator
 		$this->out.="?>";	//end source <? (hack for PSpad :))
 	}
 
-	function inject_statistic_code($state, $hit, $tab = true) {
-		if($this->inject_statistic_code) {
-			$tab = $tab ? "\t\t\t" : "\t\t";
-			$code_piece = '$this->statistic['.$state.']['.$hit.']';
-			$this->out .= $tab."if(isset($code_piece)) { $code_piece++; }else{ $code_piece=1; }\n";
-		} else {
-			return;
-		}
-	}
 /*
 // code template
 function getw4 (&$s, $i, $l) {
@@ -362,7 +339,6 @@ function getw4 (&$s, $i, $l) {
 		//
 		// generate conditions and transitions
 		//
-		$this->inject_statistic_code($state, -1, false);
 		$cond = null;
 		$i = 0;
 		foreach($this->_delim[$state] as $del)
@@ -380,8 +356,6 @@ function getw4 (&$s, $i, $l) {
 
 				$this->out.=			$tab2."if($cond){".$nl;
 
-				$this->inject_statistic_code($state, $i);
-
 				$this->out.=				$tab3."return array($i,\$c1,\$o,$size,\$i-\$start);".$nl;
 				$this->out.=			$tab2.'}'.$nl;
 			}
@@ -391,16 +365,12 @@ function getw4 (&$s, $i, $l) {
 				//$i_str = $size == 1 ? '$i' : '$i+'.($size-1);
 				$this->out.=			$tab2."if(\$c$size==$delstring){".$nl;
 
-				$this->inject_statistic_code($state, $i);
-
 				//$this->out.=				$tab3."return array($i,$delstring,\$o,$i_str);".$nl;
 				$this->out.=				$tab3."return array($i,$delstring,\$o,$size,\$i-\$start);".$nl;
 				$this->out.=			$tab2.'}'.$nl;
 			}
 			$i++;
 		} // END foreach()
-
-		$this->inject_statistic_code($state, $i, false);
 
 		if($cond == "1") {
 			$this->out.=				$tab2."return array($i,\$c1,false,\$i-\$start);".$nl;

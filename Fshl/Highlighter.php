@@ -197,7 +197,6 @@ class Fshl_Highlighter
 				$languageClass = 'Fshl_Lang_Cache_' . $language;
 			}
 			$this->lexers[$language] = new $languageClass();
-			$this->loadStatisticsIntoLexer($language);
 		}
 		$this->lang		= &$this->lexers[$language];
 		$this->_trans 	= &$this->lang->trans;
@@ -438,103 +437,6 @@ class Fshl_Highlighter
 
 	function stopTimer() {
 		$this->last_time = $this->getMicroTime() - $this->timestamp;
-	}
-
-	// --------------------------------------------------------------------------
-	// debug statistics
-	//
-	// WARNING: statistics are experimental feature, don't use lexers with this
-	//          feature on live webs !!
-	// --------------------------------------------------------------------------
-	function getInternalStatistics($html_safe_view = true) {
-
-		$out = null;
-		foreach($this->lexers as $lang => $lexer) {
-			if(isset($this->lexers[$lang]->statistic)) {
-				$substat = $this->getInternalStatisticsFromLexer($lang);
-				$out .= $substat;
-				$this->saveStatisticsFromLexer($lang);
-				$filename = FSHL_CACHE.'stats/'.$lang.'_lang.stat.txt';
-				@$filehandle = fopen ($filename, 'w');
-				if($filehandle) {
-					fwrite($filehandle, $substat);
-					fclose($filehandle);
-				}
-			}
-		}
-		if($out && $html_safe_view) {
-			$out .= "\n\n\n";
-			$out = htmlentities($out);
-		}
-		return $out;
-	}
-
-	function getInternalStatisticsFromLexer($lang) {
-
-		$out = null;
-		if(isset($this->lexers[$lang]->statistic)) {
-			$lexer = & $this->lexers[$lang];
-			$out .= "\n\n----------------------------------------------------\n";
-			$out .= "Statistics for language ".$lang."\n";
-			$out .= "----------------------------------------------------\n\n";
-
-			foreach($lexer->statistic as $state => $stat) {
-				$state_name = $lexer->names[$state];
-				$total = $stat[-1];
-
-				$out .= "\n  STATE '$state_name',\t\tTOTAL HITS: $total\n\n";
-
-				arsort($stat);
-
-				foreach($stat as $trans_id => $trans_count) {
-					if($trans_id < 0) continue;
-					if(isset($lexer->delim[$state][$trans_id])) {
-
-						$trans_string = '['.$lexer->delim[$state][$trans_id].'] -> ';
-						$new_state = $lexer->trans[$state][$trans_id][Fshl_Generator::XL_DSTATE];
-						$trans_string .= $lexer->names[$new_state];
-
-						$trans_string = str_replace("\n", "\\n", $trans_string);
-						$trans_string = str_replace("\t", "\\t", $trans_string);
-					} else {
-						$trans_string = 'return false';
-					}
-					$percent = sprintf("%0.3f",($trans_count / $total) * 100);
-					$out .= "            $trans_id: $percent%\t\t$trans_string\t\n";
-				}
-			}
-		}
-		return $out;
-	}
-
-	function loadStatisticsIntoLexer($lang) {
-
-		if(isset($this->lexers[$lang]->statistic)) {
-			$filename = FSHL_CACHE.'stats/'.$lang.'_lang.stat';
-			@$filehandle = fopen ($filename, 'r');
-			if($filehandle) {
-				$data = fread($filehandle, filesize($filename));
-				fclose($filehandle);
-				$this->lexers[$lang]->statistic = unserialize($data);
-				return true;
-			}
-		}
-		return false;
-	}
-
-	function saveStatisticsFromLexer($lang) {
-
-		if(isset($this->lexers[$lang]->statistic)) {
-			$filename = FSHL_CACHE.'stats/'.$lang.'_lang.stat';
-			@$filehandle = fopen ($filename, 'w');
-			if($filehandle) {
-				$data = serialize($this->lexers[$lang]->statistic);
-				fwrite($filehandle, $data);
-				fclose($filehandle);
-				return true;
-			}
-		}
-		return false;
 	}
 
 }

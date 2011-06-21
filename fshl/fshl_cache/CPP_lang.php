@@ -2,12 +2,10 @@
 /* --------------------------------------------------------------- *
  *        WARNING: ALL CHANGES IN THIS FILE WILL BE LOST
  *
- *   Source language file: C:\Dev\httpd\webroot\fshl\fshl-0.4.18\fshl/lang/CPP_lang.php
+ *   Source language file: lang/CPP_lang.php
  *       Language version: 1.2 (Sign:SHL)
  *
- *            Target file: C:\Dev\httpd\webroot\fshl\fshl-0.4.18\fshl/fshl_cache/CPP_lang.php
- *             Build date: Sun 29.10.2006 12:29:57
- *
+ *            Target file: fshl_cache/CPP_lang.php
  *      Generator version: 0.4.11
  * --------------------------------------------------------------- */
 class CPP_lang
@@ -24,11 +22,7 @@ function CPP_lang () {
 	$this->initial_state=0;
 	$this->trans=array(0=>array(0=>array(0=>0,1=>0),1=>array(0=>1,1=>-1),2=>array(0=>10,1=>0),3=>array(0=>6,1=>0),4=>array(0=>2,1=>0),5=>array(0=>4,1=>0),6=>array(0=>7,1=>0),7=>array(0=>8,1=>0),8=>array(0=>9,1=>0)),1=>array(0=>array(0=>11,1=>0)),2=>array(0=>array(0=>3,1=>0),1=>array(0=>5,1=>0),2=>array(0=>4,1=>0),3=>array(0=>11,1=>1)),3=>array(0=>array(0=>3,1=>0),1=>array(0=>3,1=>0),2=>array(0=>11,1=>1)),4=>array(0=>array(0=>4,1=>0),1=>array(0=>11,1=>1)),5=>array(0=>array(0=>5,1=>0),1=>array(0=>11,1=>1)),6=>array(0=>array(0=>6,1=>0),1=>array(0=>6,1=>0),2=>array(0=>6,1=>0),3=>array(0=>11,1=>0)),7=>array(0=>array(0=>7,1=>0),1=>array(0=>7,1=>0),2=>array(0=>7,1=>0),3=>array(0=>11,1=>0)),8=>array(0=>array(0=>8,1=>0),1=>array(0=>11,1=>0),2=>array(0=>8,1=>0)),9=>array(0=>array(0=>9,1=>0),1=>array(0=>11,1=>0)),10=>array(0=>array(0=>11,1=>0),1=>array(0=>10,1=>0)));
 	$this->flags=array(0=>0,1=>5,2=>4,3=>0,4=>4,5=>0,6=>4,7=>4,8=>4,9=>4,10=>4);
-	$this->delim=array(0=>array(0=>'_COUNTAB',1=>'ALPHA',2=>'//',3=>'#',4=>'NUMBER',5=>'DOT_NUMBER',6=>'"',7=>'\'',8=>'/*'),1=>array(0=>'!SAFECHAR'),2=>array(0=>'NUMBER',1=>'x',2=>'.',3=>'!NUMBER'),3=>array(0=>'.',1=>'f',2=>'!NUMBER'),4=>array(0=>'f',1=>'!NUMBER'),5=>array(0=>'L',1=>'!HEXNUM'),6=>array(0=>'\
-',1=>'	',2=>'\
-',3=>'
-'),7=>array(0=>'\\\\',1=>'\"',2=>'_COUNTAB',3=>'"'),8=>array(0=>'\\\'',1=>'\'',2=>'_COUNTAB'),9=>array(0=>'_COUNTAB',1=>'*/'),10=>array(0=>'
-',1=>'	'));
+	$this->delim=array(0=>array(0=>'_COUNTAB',1=>'ALPHA',2=>'//',3=>'#',4=>'NUMBER',5=>'DOT_NUMBER',6=>'"',7=>'\'',8=>'/*'),1=>array(0=>'!SAFECHAR'),2=>array(0=>'NUMBER',1=>'x',2=>'.',3=>'!NUMBER'),3=>array(0=>'.',1=>'f',2=>'!NUMBER'),4=>array(0=>'f',1=>'!NUMBER'),5=>array(0=>'L',1=>'!HEXNUM'),6=>array(0=>"\\\n",1=>"\t",2=>"\\\r\n",3=>"\n"),7=>array(0=>'\\\\',1=>'\"',2=>'_COUNTAB',3=>'"'),8=>array(0=>'\\\'',1=>'\'',2=>'_COUNTAB'),9=>array(0=>'_COUNTAB',1=>'*/'),10=>array(0=>"\n",1=>"\t"));
 	$this->ret=11;
 	$this->quit=12;
 	$this->names=array(0=>'OUT',1=>'KEYWORD',2=>'NUM',3=>'DEC_NUM',4=>'FLOAT_NUM',5=>'HEX_NUM',6=>'PREPROC',7=>'QUOTE1',8=>'QUOTE2',9=>'COMMENT1',10=>'COMMENT2',11=>'_RET',12=>'_QUIT');
@@ -183,23 +177,17 @@ function getw6 (&$s, $i, $l) {
 		$c1=$s[$p++];
 		$c2=$c1.$s[$p++];
 		$c3=$c2.$s[$p];
-		if($c2=='\
-'){
-			return array(0,'\
-',$o,2,$i-$start);
+		if($c2=="\\\n"){
+			return array(0,"\\\n",$o,2,$i-$start);
 		}
-		if($c1=='	'){
-			return array(1,'	',$o,1,$i-$start);
+		if($c1=="\t"){
+			return array(1,"\t",$o,1,$i-$start);
 		}
-		if($c3=='\
-'){
-			return array(2,'\
-',$o,3,$i-$start);
+		if($c3=="\\\r\n"){
+			return array(2,"\\\r\n",$o,3,$i-$start);
 		}
-		if($c1=='
-'){
-			return array(3,'
-',$o,1,$i-$start);
+		if($c1=="\n"){
+			return array(3,"\n",$o,1,$i-$start);
 		}
 		$o.=$c1;
 		$i++;
@@ -282,13 +270,11 @@ function getw10 (&$s, $i, $l) {
 	$start = $i;
 	while($i<$l) {
 		$c1=$s[$i];
-		if($c1=='
-'){
-			return array(0,'
-',$o,1,$i-$start);
+		if($c1=="\n"){
+			return array(0,"\n",$o,1,$i-$start);
 		}
-		if($c1=='	'){
-			return array(1,'	',$o,1,$i-$start);
+		if($c1=="\t"){
+			return array(1,"\t",$o,1,$i-$start);
 		}
 		$o.=$c1;
 		$i++;

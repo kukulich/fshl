@@ -2,12 +2,10 @@
 /* --------------------------------------------------------------- *
  *        WARNING: ALL CHANGES IN THIS FILE WILL BE LOST
  *
- *   Source language file: C:\Dev\httpd\webroot\fshl\fshl-0.4.18\fshl/lang/SQL_lang.php
+ *   Source language file: lang/SQL_lang.php
  *       Language version: 1.0 (Sign:SHL)
  *
- *            Target file: C:\Dev\httpd\webroot\fshl\fshl-0.4.18\fshl/fshl_cache/SQL_lang.php
- *             Build date: Sun 29.10.2006 12:29:57
- *
+ *            Target file: fshl_cache/SQL_lang.php
  *      Generator version: 0.4.11
  * --------------------------------------------------------------- */
 class SQL_lang
@@ -24,8 +22,7 @@ function SQL_lang () {
 	$this->initial_state=0;
 	$this->trans=array(0=>array(0=>array(0=>2,1=>0),1=>array(0=>3,1=>0),2=>array(0=>3,1=>0),3=>array(0=>3,1=>0),4=>array(0=>4,1=>0),5=>array(0=>5,1=>0),6=>array(0=>6,1=>0),7=>array(0=>1,1=>-1),8=>array(0=>7,1=>0),9=>array(0=>0,1=>0)),1=>array(0=>array(0=>11,1=>1)),2=>array(0=>array(0=>11,1=>0),1=>array(0=>2,1=>0)),3=>array(0=>array(0=>11,1=>0),1=>array(0=>3,1=>0)),4=>array(0=>array(0=>4,1=>0),1=>array(0=>11,1=>0),2=>array(0=>4,1=>0)),5=>array(0=>array(0=>5,1=>0),1=>array(0=>11,1=>0),2=>array(0=>5,1=>0)),6=>array(0=>array(0=>6,1=>0),1=>array(0=>11,1=>0),2=>array(0=>6,1=>0)),7=>array(0=>array(0=>9,1=>0),1=>array(0=>8,1=>0),2=>array(0=>11,1=>1)),8=>array(0=>array(0=>11,1=>1)),9=>array(0=>array(0=>11,1=>1)),10=>array(0=>array(0=>10,1=>0),1=>array(0=>10,1=>0),2=>array(0=>10,1=>0),3=>array(0=>10,1=>0),4=>array(0=>10,1=>0)));
 	$this->flags=array(0=>1,1=>5,2=>4,3=>4,4=>4,5=>4,6=>4,7=>4,8=>0,9=>0,10=>4);
-	$this->delim=array(0=>array(0=>'/*',1=>'//',2=>'#',3=>'--',4=>'"',5=>'\'',6=>'`',7=>'ALPHA',8=>'NUMBER',9=>'_COUNTAB'),1=>array(0=>'!SAFECHAR'),2=>array(0=>'*/',1=>'_COUNTAB'),3=>array(0=>'
-',1=>'_COUNTAB'),4=>array(0=>'\"',1=>'"',2=>'_COUNTAB'),5=>array(0=>'\\\'',1=>'\'',2=>'_COUNTAB'),6=>array(0=>'\`',1=>'`',2=>'_COUNTAB'),7=>array(0=>'x',1=>'NUMBER',2=>'!NUMBER'),8=>array(0=>'!NUMBER'),9=>array(0=>'!HEXNUM'),10=>array(0=>'BLOB',1=>'TEXT',2=>'INTEGER',3=>'CHAR',4=>'DATE'));
+	$this->delim=array(0=>array(0=>'/*',1=>'//',2=>'#',3=>'--',4=>'"',5=>'\'',6=>'`',7=>'ALPHA',8=>'NUMBER',9=>'_COUNTAB'),1=>array(0=>'!SAFECHAR'),2=>array(0=>'*/',1=>'_COUNTAB'),3=>array(0=>"\n",1=>'_COUNTAB'),4=>array(0=>'\"',1=>'"',2=>'_COUNTAB'),5=>array(0=>'\\\'',1=>'\'',2=>'_COUNTAB'),6=>array(0=>'\`',1=>'`',2=>'_COUNTAB'),7=>array(0=>'x',1=>'NUMBER',2=>'!NUMBER'),8=>array(0=>'!NUMBER'),9=>array(0=>'!HEXNUM'),10=>array(0=>'BLOB',1=>'TEXT',2=>'INTEGER',3=>'CHAR',4=>'DATE'));
 	$this->ret=11;
 	$this->quit=12;
 	$this->names=array(0=>'OUT',1=>'FUNCTION',2=>'COMMENT',3=>'COMMENT1',4=>'QUOTE',5=>'QUOTE1',6=>'QUOTE3',7=>'NUM',8=>'DEC_NUM',9=>'HEX_NUM',10=>'OPTION',11=>'_RET',12=>'_QUIT');
@@ -119,10 +116,8 @@ function getw3 (&$s, $i, $l) {
 	$start = $i;
 	while($i<$l) {
 		$c1=$s[$i];
-		if($c1=='
-'){
-			return array(0,'
-',$o,1,$i-$start);
+		if($c1=="\n"){
+			return array(0,"\n",$o,1,$i-$start);
 		}
 		if(($c1=="\t"||$c1=="\n")){
 			return array(1,$c1,$o,1,$i-$start);

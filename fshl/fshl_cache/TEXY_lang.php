@@ -2,12 +2,10 @@
 /* --------------------------------------------------------------- *
  *        WARNING: ALL CHANGES IN THIS FILE WILL BE LOST
  *
- *   Source language file: C:\Dev\httpd\webroot\fshl\fshl-0.4.18\fshl/lang/TEXY_lang.php
+ *   Source language file: lang/TEXY_lang.php
  *       Language version: 0.1 (Sign:SHL)
  *
- *            Target file: C:\Dev\httpd\webroot\fshl\fshl-0.4.18\fshl/fshl_cache/TEXY_lang.php
- *             Build date: Sun 29.10.2006 12:29:57
- *
+ *            Target file: fshl_cache/TEXY_lang.php
  *      Generator version: 0.4.11
  * --------------------------------------------------------------- */
 class TEXY_lang
@@ -24,21 +22,7 @@ function TEXY_lang () {
 	$this->initial_state=2;
 	$this->trans=array(0=>array(0=>array(0=>8,1=>0),1=>array(0=>9,1=>0),2=>array(0=>1,1=>0)),1=>array(0=>array(0=>3,1=>0),1=>array(0=>2,1=>-1)),2=>array(0=>array(0=>4,1=>0),1=>array(0=>4,1=>0),2=>array(0=>4,1=>0),3=>array(0=>4,1=>0),4=>array(0=>0,1=>-1)),3=>array(0=>array(0=>3,1=>0),1=>array(0=>4,1=>0),2=>array(0=>4,1=>0),3=>array(0=>7,1=>0),4=>array(0=>7,1=>0),5=>array(0=>7,1=>0),6=>array(0=>7,1=>0),7=>array(0=>0,1=>-1)),4=>array(0=>array(0=>4,1=>0),1=>array(0=>4,1=>0),2=>array(0=>4,1=>0),3=>array(0=>4,1=>0),4=>array(0=>4,1=>0),5=>array(0=>3,1=>0),6=>array(0=>5,1=>-1)),5=>array(0=>array(0=>6,1=>0),1=>array(0=>6,1=>0),2=>array(0=>6,1=>0),3=>array(0=>6,1=>0),4=>array(0=>3,1=>0)),6=>array(0=>array(0=>3,1=>0)),7=>array(0=>array(0=>0,1=>-1)),8=>array(0=>array(0=>15,1=>0),1=>array(0=>19,1=>0),2=>array(0=>10,1=>0),3=>array(0=>11,1=>0),4=>array(0=>0,1=>-1)),9=>array(0=>array(0=>0,1=>-1)),10=>array(0=>array(0=>0,1=>-1)),11=>array(0=>array(0=>12,1=>-1)),12=>array(0=>array(0=>13,1=>0)),13=>array(0=>array(0=>14,1=>0),1=>array(0=>12,1=>-1)),14=>array(0=>array(0=>0,1=>-1)),15=>array(0=>array(0=>16,1=>-1)),16=>array(0=>array(0=>17,1=>0)),17=>array(0=>array(0=>18,1=>0),1=>array(0=>16,1=>-1)),18=>array(0=>array(0=>0,1=>-1)),19=>array(0=>array(0=>20,1=>-1)),20=>array(0=>array(0=>21,1=>0)),21=>array(0=>array(0=>22,1=>0),1=>array(0=>20,1=>-1)),22=>array(0=>array(0=>0,1=>-1)));
 	$this->flags=array(0=>0,1=>0,2=>0,3=>'texy-err',4=>0,5=>0,6=>0,7=>0,8=>0,9=>0,10=>0,11=>0,12=>0,13=>0,14=>0,15=>0,16=>0,17=>0,18=>0,19=>0,20=>0,21=>0,22=>0);
-	$this->delim=array(0=>array(0=>'/---',1=>'\---',2=>'
-'),1=>array(0=>'
-',1=>'!SPACE'),2=>array(0=>'##',1=>'**',2=>'==',3=>'--',4=>'_ALL'),3=>array(0=>'
-',1=>'##',2=>'==',3=>'--',4=>'- -',5=>'**',6=>'* *',7=>'_ALL'),4=>array(0=>'=',1=>'#',2=>'-',3=>'*',4=>'
-',5=>'
-',6=>'_ALL'),5=>array(0=>'=',1=>'#',2=>'-',3=>'*',4=>'
-'),6=>array(0=>'
-'),7=>array(0=>'
-'),8=>array(0=>'html',1=>'code',2=>'div',3=>'text',4=>'_ALL'),9=>array(0=>'_ALL'),10=>array(0=>'_ALL'),11=>array(0=>'
-'),12=>array(0=>'
-'),13=>array(0=>'\---',1=>'_ALL'),14=>array(0=>'_ALL'),15=>array(0=>'
-'),16=>array(0=>'
-'),17=>array(0=>'\---',1=>'_ALL'),18=>array(0=>'_ALL'),19=>array(0=>'
-'),20=>array(0=>'
-'),21=>array(0=>'\---',1=>'_ALL'),22=>array(0=>'_ALL'));
+	$this->delim=array(0=>array(0=>'/---',1=>'\---',2=>"\n"),1=>array(0=>"\n",1=>'!SPACE'),2=>array(0=>'##',1=>'**',2=>'==',3=>'--',4=>'_ALL'),3=>array(0=>"\n",1=>'##',2=>'==',3=>'--',4=>'- -',5=>'**',6=>'* *',7=>'_ALL'),4=>array(0=>'=',1=>'#',2=>'-',3=>'*',4=>"\r",5=>"\n",6=>'_ALL'),5=>array(0=>'=',1=>'#',2=>'-',3=>'*',4=>"\n"),6=>array(0=>"\n"),7=>array(0=>"\n"),8=>array(0=>'html',1=>'code',2=>'div',3=>'text',4=>'_ALL'),9=>array(0=>'_ALL'),10=>array(0=>'_ALL'),11=>array(0=>"\n"),12=>array(0=>"\n"),13=>array(0=>'\---',1=>'_ALL'),14=>array(0=>'_ALL'),15=>array(0=>"\n"),16=>array(0=>"\n"),17=>array(0=>'\---',1=>'_ALL'),18=>array(0=>'_ALL'),19=>array(0=>"\n"),20=>array(0=>"\n"),21=>array(0=>'\---',1=>'_ALL'),22=>array(0=>'_ALL'));
 	$this->ret=23;
 	$this->quit=24;
 	$this->names=array(0=>'LineBODY',1=>'NewLineTypeSelector',2=>'SingleNewLine',3=>'DoubleNewLine',4=>'HeaderIN',5=>'HeaderBody',6=>'HeaderOUT',7=>'HorizontalLine',8=>'BlockIN',9=>'BlockOUT',10=>'BlockDUMMY',11=>'BlockTEXT',12=>'BlockTEXTBody',13=>'BlockTEXTBodyNL',14=>'BlockTEXTBodyOUT',15=>'BlockHTML',16=>'BlockHTMLBody',17=>'BlockHTMLBodyNL',18=>'BlockHTMLBodyOUT',19=>'BlockCODE',20=>'BlockCODEBody',21=>'BlockCODEBodyNL',22=>'BlockCODEBodyOUT',23=>'_RET',24=>'_QUIT');
@@ -63,10 +47,8 @@ function getw0 (&$s, $i, $l) {
 		if($c4=='\---'){
 			return array(1,'\---',$o,4,$i-$start);
 		}
-		if($c1=='
-'){
-			return array(2,'
-',$o,1,$i-$start);
+		if($c1=="\n"){
+			return array(2,"\n",$o,1,$i-$start);
 		}
 		$o.=$c1;
 		$i++;
@@ -80,10 +62,8 @@ function getw1 (&$s, $i, $l) {
 	$start = $i;
 	while($i<$l) {
 		$c1=$s[$i];
-		if($c1=='
-'){
-			return array(0,'
-',$o,1,$i-$start);
+		if($c1=="\n"){
+			return array(0,"\n",$o,1,$i-$start);
 		}
 		if(!ctype_space($c1)){
 			return array(1,$c1,$o,1,$i-$start);
@@ -124,10 +104,8 @@ function getw3 (&$s, $i, $l) {
 	$c1=$s[$p++];
 	$c2=$c1.$s[$p++];
 	$c3=$c2.$s[$p];
-	if($c1=='
-'){
-		return array(0,'
-',$o,1,$i-$start);
+	if($c1=="\n"){
+		return array(0,"\n",$o,1,$i-$start);
 	}
 	if($c2=='##'){
 		return array(1,'##',$o,2,$i-$start);
@@ -167,15 +145,11 @@ function getw4 (&$s, $i, $l) {
 	if($c1=='*'){
 		return array(3,'*',$o,1,$i-$start);
 	}
-	if($c1=='
-'){
-		return array(4,'
-',$o,1,$i-$start);
+	if($c1=="\r"){
+		return array(4,"\r",$o,1,$i-$start);
 	}
-	if($c1=='
-'){
-		return array(5,'
-',$o,1,$i-$start);
+	if($c1=="\n"){
+		return array(5,"\n",$o,1,$i-$start);
 	}
 	return array(6,$c1,false,$i-$start);
 }
@@ -198,10 +172,8 @@ function getw5 (&$s, $i, $l) {
 		if($c1=='*'){
 			return array(3,'*',$o,1,$i-$start);
 		}
-		if($c1=='
-'){
-			return array(4,'
-',$o,1,$i-$start);
+		if($c1=="\n"){
+			return array(4,"\n",$o,1,$i-$start);
 		}
 		$o.=$c1;
 		$i++;
@@ -215,10 +187,8 @@ function getw6 (&$s, $i, $l) {
 	$start = $i;
 	while($i<$l) {
 		$c1=$s[$i];
-		if($c1=='
-'){
-			return array(0,'
-',$o,1,$i-$start);
+		if($c1=="\n"){
+			return array(0,"\n",$o,1,$i-$start);
 		}
 		$o.=$c1;
 		$i++;
@@ -232,10 +202,8 @@ function getw7 (&$s, $i, $l) {
 	$start = $i;
 	while($i<$l) {
 		$c1=$s[$i];
-		if($c1=='
-'){
-			return array(0,'
-',$o,1,$i-$start);
+		if($c1=="\n"){
+			return array(0,"\n",$o,1,$i-$start);
 		}
 		$o.=$c1;
 		$i++;
@@ -289,10 +257,8 @@ function getw11 (&$s, $i, $l) {
 	$start = $i;
 	while($i<$l) {
 		$c1=$s[$i];
-		if($c1=='
-'){
-			return array(0,'
-',$o,1,$i-$start);
+		if($c1=="\n"){
+			return array(0,"\n",$o,1,$i-$start);
 		}
 		$o.=$c1;
 		$i++;
@@ -306,10 +272,8 @@ function getw12 (&$s, $i, $l) {
 	$start = $i;
 	while($i<$l) {
 		$c1=$s[$i];
-		if($c1=='
-'){
-			return array(0,'
-',$o,1,$i-$start);
+		if($c1=="\n"){
+			return array(0,"\n",$o,1,$i-$start);
 		}
 		$o.=$c1;
 		$i++;
@@ -346,10 +310,8 @@ function getw15 (&$s, $i, $l) {
 	$start = $i;
 	while($i<$l) {
 		$c1=$s[$i];
-		if($c1=='
-'){
-			return array(0,'
-',$o,1,$i-$start);
+		if($c1=="\n"){
+			return array(0,"\n",$o,1,$i-$start);
 		}
 		$o.=$c1;
 		$i++;
@@ -363,10 +325,8 @@ function getw16 (&$s, $i, $l) {
 	$start = $i;
 	while($i<$l) {
 		$c1=$s[$i];
-		if($c1=='
-'){
-			return array(0,'
-',$o,1,$i-$start);
+		if($c1=="\n"){
+			return array(0,"\n",$o,1,$i-$start);
 		}
 		$o.=$c1;
 		$i++;
@@ -403,10 +363,8 @@ function getw19 (&$s, $i, $l) {
 	$start = $i;
 	while($i<$l) {
 		$c1=$s[$i];
-		if($c1=='
-'){
-			return array(0,'
-',$o,1,$i-$start);
+		if($c1=="\n"){
+			return array(0,"\n",$o,1,$i-$start);
 		}
 		$o.=$c1;
 		$i++;
@@ -420,10 +378,8 @@ function getw20 (&$s, $i, $l) {
 	$start = $i;
 	while($i<$l) {
 		$c1=$s[$i];
-		if($c1=='
-'){
-			return array(0,'
-',$o,1,$i-$start);
+		if($c1=="\n"){
+			return array(0,"\n",$o,1,$i-$start);
 		}
 		$o.=$c1;
 		$i++;

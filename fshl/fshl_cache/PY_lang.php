@@ -2,12 +2,10 @@
 /* --------------------------------------------------------------- *
  *        WARNING: ALL CHANGES IN THIS FILE WILL BE LOST
  *
- *   Source language file: C:\Dev\httpd\webroot\fshl\fshl-0.4.18\fshl/lang/PY_lang.php
+ *   Source language file: lang/PY_lang.php
  *       Language version: 1.1 (Sign:SHL)
  *
- *            Target file: C:\Dev\httpd\webroot\fshl\fshl-0.4.18\fshl/fshl_cache/PY_lang.php
- *             Build date: Wed 1.11.2006 23:02:48
- *
+ *            Target file: fshl_cache/PY_lang.php
  *      Generator version: 0.4.11
  * --------------------------------------------------------------- */
 class PY_lang
@@ -24,8 +22,7 @@ function PY_lang () {
 	$this->initial_state=0;
 	$this->trans=array(0=>array(0=>array(0=>0,1=>0),1=>array(0=>1,1=>-1),2=>array(0=>1,1=>-1),3=>array(0=>2,1=>0),4=>array(0=>3,1=>0),5=>array(0=>4,1=>0),6=>array(0=>5,1=>0),7=>array(0=>6,1=>0),8=>array(0=>7,1=>0),9=>array(0=>7,1=>0),10=>array(0=>8,1=>0),11=>array(0=>8,1=>0)),1=>array(0=>array(0=>11,1=>0)),2=>array(0=>array(0=>11,1=>0),1=>array(0=>2,1=>0),2=>array(0=>2,1=>0),3=>array(0=>2,1=>0)),3=>array(0=>array(0=>11,1=>0),1=>array(0=>3,1=>0),2=>array(0=>3,1=>0),3=>array(0=>3,1=>0)),4=>array(0=>array(0=>11,1=>0),1=>array(0=>4,1=>0),2=>array(0=>4,1=>0),3=>array(0=>4,1=>0)),5=>array(0=>array(0=>11,1=>0),1=>array(0=>5,1=>0),2=>array(0=>5,1=>0),3=>array(0=>5,1=>0)),6=>array(0=>array(0=>11,1=>1),1=>array(0=>6,1=>0)),7=>array(0=>array(0=>11,1=>0),1=>array(0=>11,1=>0),2=>array(0=>11,1=>1)),8=>array(0=>array(0=>9,1=>0),1=>array(0=>11,1=>0),2=>array(0=>11,1=>0),3=>array(0=>11,1=>0),4=>array(0=>11,1=>0),5=>array(0=>10,1=>0),6=>array(0=>10,1=>0),7=>array(0=>10,1=>0),8=>array(0=>11,1=>1)),9=>array(0=>array(0=>11,1=>0),1=>array(0=>11,1=>0),2=>array(0=>10,1=>0),3=>array(0=>10,1=>0),4=>array(0=>10,1=>0),5=>array(0=>11,1=>1)),10=>array(0=>array(0=>11,1=>0),1=>array(0=>11,1=>0),2=>array(0=>11,1=>1)));
 	$this->flags=array(0=>0,1=>5,2=>4,3=>4,4=>4,5=>4,6=>4,7=>4,8=>4,9=>0,10=>0);
-	$this->delim=array(0=>array(0=>'_COUNTAB',1=>'ALPHA',2=>'_',3=>'\'\'\'',4=>'"""',5=>'\'',6=>'"',7=>'#',8=>'0x',9=>'0X',10=>'DOT_NUMBER',11=>'NUMBER'),1=>array(0=>'!SAFECHAR'),2=>array(0=>'\'\'\'',1=>'\\\\',2=>'\\\'\'\'',3=>'_COUNTAB'),3=>array(0=>'"""',1=>'\\\\',2=>'\"""',3=>'_COUNTAB'),4=>array(0=>'\'',1=>'\\\\',2=>'\\\'',3=>'_COUNTAB'),5=>array(0=>'"',1=>'\\\\',2=>'\"',3=>'_COUNTAB'),6=>array(0=>'
-',1=>'	'),7=>array(0=>'L',1=>'l',2=>'!HEXNUM'),8=>array(0=>'.',1=>'L',2=>'l',3=>'j',4=>'J',5=>'e-',6=>'e+',7=>'e',8=>'!NUMBER'),9=>array(0=>'j',1=>'J',2=>'e-',3=>'e+',4=>'e',5=>'!NUMBER'),10=>array(0=>'j',1=>'J',2=>'!NUMBER'));
+	$this->delim=array(0=>array(0=>'_COUNTAB',1=>'ALPHA',2=>'_',3=>'\'\'\'',4=>'"""',5=>'\'',6=>'"',7=>'#',8=>'0x',9=>'0X',10=>'DOT_NUMBER',11=>'NUMBER'),1=>array(0=>'!SAFECHAR'),2=>array(0=>'\'\'\'',1=>'\\\\',2=>'\\\'\'\'',3=>'_COUNTAB'),3=>array(0=>'"""',1=>'\\\\',2=>'\"""',3=>'_COUNTAB'),4=>array(0=>'\'',1=>'\\\\',2=>'\\\'',3=>'_COUNTAB'),5=>array(0=>'"',1=>'\\\\',2=>'\"',3=>'_COUNTAB'),6=>array(0=>"\n",1=>"\t"),7=>array(0=>'L',1=>'l',2=>'!HEXNUM'),8=>array(0=>'.',1=>'L',2=>'l',3=>'j',4=>'J',5=>'e-',6=>'e+',7=>'e',8=>'!NUMBER'),9=>array(0=>'j',1=>'J',2=>'e-',3=>'e+',4=>'e',5=>'!NUMBER'),10=>array(0=>'j',1=>'J',2=>'!NUMBER'));
 	$this->ret=11;
 	$this->quit=12;
 	$this->names=array(0=>'OUT',1=>'KEYWORD',2=>'DOCSTRING1',3=>'DOCSTRING2',4=>'QUOTE1',5=>'QUOTE2',6=>'COMMENT',7=>'NUM_HEXADECIMAL',8=>'NUM_DECIMAL',9=>'NUM_FRACTION',10=>'NUM_EXPONENT',11=>'_RET',12=>'_QUIT');
@@ -214,13 +211,11 @@ function getw6 (&$s, $i, $l) {
 	$start = $i;
 	while($i<$l) {
 		$c1=$s[$i];
-		if($c1=='
-'){
-			return array(0,'
-',$o,1,$i-$start);
+		if($c1=="\n"){
+			return array(0,"\n",$o,1,$i-$start);
 		}
-		if($c1=='	'){
-			return array(1,'	',$o,1,$i-$start);
+		if($c1=="\t"){
+			return array(1,"\t",$o,1,$i-$start);
 		}
 		$o.=$c1;
 		$i++;

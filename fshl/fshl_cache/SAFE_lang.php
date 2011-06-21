@@ -2,12 +2,10 @@
 /* --------------------------------------------------------------- *
  *        WARNING: ALL CHANGES IN THIS FILE WILL BE LOST
  *
- *   Source language file: C:\Dev\httpd\webroot\fshl\fshl-0.4.18\fshl/lang/SAFE_lang.php
+ *   Source language file: lang/SAFE_lang.php
  *       Language version: 1.0 (Sign:SHL)
  *
- *            Target file: C:\Dev\httpd\webroot\fshl\fshl-0.4.18\fshl/fshl_cache/SAFE_lang.php
- *             Build date: Sun 29.10.2006 12:29:57
- *
+ *            Target file: fshl_cache/SAFE_lang.php
  *      Generator version: 0.4.11
  * --------------------------------------------------------------- */
 class SAFE_lang

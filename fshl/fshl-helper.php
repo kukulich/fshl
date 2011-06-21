@@ -26,15 +26,15 @@
 // new experimental code grabbed from FSHL 0.V.x (0.5.0)
 // ---------------------------------------------------------------------
 class fshlHelper {
-	static function getStringSource($var, $human_readable = false) {
+	static function getStringSource($var) {
 		if(!is_string($var)) {
-			return fshlHelper::getVarContentSource($var, $human_readable);
+			return fshlHelper::getVarContentSource($var);
 		}
 		$out = null;
 		for($i=0; $i<strlen($var); $i++) {
 			$ch = $var[$i];
 			$ich = (int)ord($ch);
-			if($human_readable && ($ich < 32 || $ich > 127)) {
+			if($ich < 32 || $ich > 127) {
 				// we need use escapes
 				$out = null;
 				for($j=0; $j<strlen($var); $j++) {
@@ -78,7 +78,7 @@ class fshlHelper {
 		return '\''.$out.'\'';
 	}
 
-	static function getVarContentSource($var, $human_readable = false)
+	static function getVarContentSource($var)
 	{
 		if(is_numeric($var)) {
 			return $var;
@@ -90,13 +90,13 @@ class fshlHelper {
 			return $var ? 'true' : 'false';
 		}
 		if(is_string($var)) {
-			return fshlHelper::getStringSource($var, $human_readable);
+			return fshlHelper::getStringSource($var);
 		}
 		if(is_array($var)) {
 			$array = 'array(';
 			$tmp = ""; $cnt = 0;
 			foreach($var as $key => $value) {
-				$tmp .= fshlHelper::getVarContentSource($key,$human_readable).'=>'.fshlHelper::getVarContentSource($value, $human_readable);
+				$tmp .= fshlHelper::getVarContentSource($key).'=>'.fshlHelper::getVarContentSource($value);
 				$tmp .= ++$cnt < count($var) ? ',' : '';
 			}
 			$tmp.=')';
@@ -106,8 +106,8 @@ class fshlHelper {
 		return 'fshlHelper::getVarContentSource error';
 	}
 
-	static function getVarSource($varname, $mixed_var, $human_readable = false) {
-		return '$'.$varname."=".fshlHelper::getVarContentSource($mixed_var, $human_readable).";\n";
+	static function getVarSource($varname, $mixed_var) {
+		return '$'.$varname."=".fshlHelper::getVarContentSource($mixed_var).";\n";
 	}
 
 	static function getFncSource($fncname,$param=null) {
@@ -130,9 +130,9 @@ class fshlHelper {
 // ---------------------------------------------------------------------
 // old style wrappers for generator version < 0.5.0 compatibility
 // ---------------------------------------------------------------------
-function get_string_source($var, $human_readable = false)
+function get_string_source($var)
 {
-	return fshlHelper::getStringSource($var, $human_readable);
+	return fshlHelper::getStringSource($var);
 }
 
 function get_array_source($var)

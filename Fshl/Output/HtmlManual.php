@@ -22,7 +22,7 @@
  */
 
 /**
- * HTML output.
+ * HTML output with links to manual.
  *
  * @category Fshl
  * @package Fshl
@@ -31,7 +31,7 @@
  * @copyright Copyright (c) 2011 Jaroslav Hanslík
  * @license https://github.com/kukulich/fshl/blob/master/!LICENSE.txt
  */
-class Fshl_Output_Html
+class Fshl_Output_HtmlManual
 {
 	/**
 	 * Last used class.
@@ -39,6 +39,27 @@ class Fshl_Output_Html
 	 * @var string
 	 */
 	private $lastClass = null;
+
+	/**
+	 * Closing tag for link.
+	 *
+	 * @var string
+	 */
+	private $closeTag = null;
+
+	/**
+	 * Urls list to manual.
+	 *
+	 * @var array
+	 */
+	private $manualUrl = array(
+		'php-keyword1' => 'http://php.net/manual/en/langref.php',
+		'php-keyword2' => 'http://php.net/%s',
+
+		'sql-keyword1' => 'http://search.oracle.com/search/search?group=Documentation&q=%s',
+		'sql-keyword2' => 'http://search.oracle.com/search/search?group=Documentation&q=%s',
+		'sql-keyword3' => 'http://search.oracle.com/search/search?group=Documentation&q=%s',
+	);
 
 	/**
 	 * Writes template.
@@ -55,6 +76,10 @@ class Fshl_Output_Html
 			if (null !== $this->lastClass) {
 				$output .= '</span>';
 			}
+
+			$output .= $this->closeTag;
+			$this->closeTag = '';
+
 			if (null !== $class) {
 				$output .= sprintf('<span class="%s">', $class);
 			}
@@ -80,7 +105,16 @@ class Fshl_Output_Html
 			if (null !== $this->lastClass) {
 				$output .= '</span>';
 			}
+
+			$output .= $this->closeTag;
+			$this->closeTag = '';
+
 			if (null !== $class) {
+				if (isset($this->manualUrl[$class])) {
+					$output .= sprintf('<a href="%s">', sprintf($this->manualUrl[$class], $word));
+					$this->closeTag = '</a>';
+				}
+
 				$output .= sprintf('<span class="%s">', $class);
 			}
 

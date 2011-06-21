@@ -51,7 +51,7 @@ class Fshl_Highlighter
 	const LANG_TEXY = 'Texy';
 
 	const OUTPUT_HTML = 'Html';
-	const OUTPUT_HTML_HELP = 'HtmlHelp';
+	const OUTPUT_HTML_MANUAL = 'HtmlManual';
 
 	CONST OPTION_DEFAULT = 0x0000;
 	CONST OPTION_TAB_INDENT = 0x0010;
@@ -367,7 +367,7 @@ class Fshl_Highlighter
 
 		// PUSH CURRENT STATE
 		$this->pushState($language, $state);
-		$this->outf .= $this->output->template_end();
+		$this->outf .= $this->output->template('', null);
 		$this->appendFragment();
 	}
 

@@ -196,9 +196,9 @@ class fshlGenerator
 		$this->out.="<?php\n";
 		$this->out.="/* --------------------------------------------------------------- *\n";
 		$this->out.=" *        WARNING: ALL CHANGES IN THIS FILE WILL BE LOST\n *\n";
-		$this->out.=" *   Source language file: ".FSHL_LANG.$this->langname.".php\n";
+		$this->out.=" *   Source language file: ".str_replace(FSHL_PATH, '', FSHL_LANG.$this->langname).".php\n";
 		$this->out.=" *       Language version: $this->version (Sign:$this->signature)\n *\n";
-		$this->out.=" *            Target file: ".FSHL_CACHE.$this->langname.".php\n";
+		$this->out.=" *            Target file: ".str_replace(FSHL_PATH, '', FSHL_CACHE.$this->langname).".php\n";
 		$this->out.=" *             Build date: ".date("D j.n.Y H:i:s")."\n *\n";
 		$this->out.=" *      Generator version: ".FSHL_GENERATOR_VERSION."\n";
 		$this->out.=" * --------------------------------------------------------------- */\n";

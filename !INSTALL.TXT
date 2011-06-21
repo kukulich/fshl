@@ -12,7 +12,7 @@ About FSHL
 	FSHL does not support any form of results caching. I think that
 	this is job for your CMS, which can do this better than FSHL.
 
-	FSHL core is very flexible *1) and when you want add any new
+	FSHL core is very flexible and when you want add any new
 	languages, send any suggestions to me.
 
 
@@ -21,16 +21,7 @@ Installation and usage notes
 
 	Basic installation is very easy:
 
-	1. copy entire sub-directory 'fshl' into your project
-
-		WARNING: Copying full FSHL distribution with code examples
-				 is STRONGLY NOT RECOMMENDED, because some scripts,
-				 such as 'update_fshl_cache.php', requires write
-				 access to internal directories ('fshl/fshl_cache').
-				 Write access is required in DEVELOPPING AND TESTING
-				 CYCLE ONLY, when a new lexers are builded or
-				 tested by the FSHL developers.
-
+	1. Copy entire sub-directory 'fshl' into your project
 
 	2. Choose the best output module for your project, or make your own
 
@@ -54,41 +45,9 @@ Installation and usage notes
 	   builds any stylesheets.
 
 
-	5. Check updates at http://hvge.sk/scripts/fshl
-
-
-Code examples
---------------------------------
-
-	examples/simple.php - there are some basic usage examples
-	examples/stream.php - example shows how to highlight very large files on the fly
-
-	Look at 'index.php' file located in the root of distribution.
-	This demo code is also good way to understand how to FSHL works.
-
-
 Stylesheet example
 --------------------------------
 
 	Nice default stylesheet is located in the 'fshl/styles/COHEN_style.css' file.
 	NOTE: You may copy this file into better location in your project.
 
-
-Contact & support
---------------------------------
-
-	Juraj DURECH, public@hvge.sk
-
-	Thank you for using FSHL,
-	the fastest *2) highlighter
-	in the world :)
-
-
-Footnotes
---------------------------------
-
-	*1)	FSHL is flexible, but there is serious problem to handle postfix notations.
-		This capability will be added in future releases.
-
-	*2) FSHL is really fast. Sometime about ten time faster than other highlighters
-		written in pure PHP.

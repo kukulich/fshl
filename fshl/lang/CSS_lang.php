@@ -17,14 +17,14 @@
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
-   
+   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
  * ---------------------------------------------------------------------
  * CSS - SHL Language File
  *
  * V1.11 - fixed escaping to HTML via </ in OUT state (this solution is <!-- comment insensitive)
  * V1.12 - fixed comment in VALUE and DEF state
- */ 
+ */
 class CSS_lang
 {
 	var $states;
@@ -32,14 +32,14 @@ class CSS_lang
 	var $keywords;
 	var $version;
 	var $signature;
-	
+
 	function CSS_lang()
 	{
 		$this->signature = "SHL";
 		$this->version = "1.12";
-		$this->initial_state = "OUT";		
+		$this->initial_state = "OUT";
 		$this->states = array(
-		
+
 			"OUT" => array (
 				array(
 						"_COUNTAB" =>	 	array("OUT",0),
@@ -53,7 +53,7 @@ class CSS_lang
 				0,
 				null,
 				null),
-			
+
 			"CLASS" => array (
 				array(
 						"SPACE" => 			array("_RET",1),
@@ -63,7 +63,7 @@ class CSS_lang
 				PF_RECURSION,
 				"css-class",
 				null),
-			
+
 			"DEF" => array (
 				array(
 						":" => 				array("VALUE",1),
@@ -76,7 +76,7 @@ class CSS_lang
 				PF_RECURSION,
 				"",
 				null),
-				
+
 					"PROPERTY" => array (
 						array(
 								"_COUNTAB" => 	array("PROPERTY",0),
@@ -87,7 +87,7 @@ class CSS_lang
 						PF_RECURSION,
 						"css-property",
 						null),
-				
+
 					"VALUE" => array (
 						array(
 								";" => 			array("_RET",1),
@@ -107,8 +107,8 @@ class CSS_lang
 						PF_RECURSION,
 						"css-color",
 						null),
-					
-						
+
+
 			"COMMENT" => array (
 					array(
 							"_COUNTAB" =>		array("COMMENT",0),
@@ -117,14 +117,14 @@ class CSS_lang
 					PF_RECURSION,
 					"css-comment",
 					null),
-					
+
 
 			"TO_PHP" => array (null, PF_NEWLANG, "xlang", /* =style*/ "PHP" /*  =new language*/),
 			"_QUIT" => array (null, PF_NEWLANG, "html-tag", /* =style*/ null, /* =new language*/)	//return to previous language
 		);
 
-// keywords		
-		$this->keywords = null; 
+// keywords
+		$this->keywords = null;
 	}
 }
 ?>

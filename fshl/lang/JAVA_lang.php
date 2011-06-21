@@ -17,15 +17,15 @@
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
-   
+   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
  * ---------------------------------------------------------------------
  * JAVA - SHL Language File
  *
  * V1.1  - fixed QUOTE1 & QUOTE2 backslashes
  *       - added missing countabs
  * V1.2  - added case non sensitive flag for keywords
- */ 
+ */
 class JAVA_lang
 {
 	var $states;
@@ -40,9 +40,9 @@ class JAVA_lang
 		$this->version = "1.2";
 		$this->initial_state="OUT";
 		$this->states = array(
-	
+
 	// initial state
-	
+
 			"OUT" => array (
 				array(
 						//"#" => array("PREPROC", 0),
@@ -59,7 +59,7 @@ class JAVA_lang
 				null,
 				null
 				),
-	
+
 	// keyword
 
 			"KEYWORD" => array (
@@ -70,10 +70,10 @@ class JAVA_lang
 				null,
 				null
 				),
-				
+
 
 	// NUMBERS
-			
+
 			"NUM" => array(
 				array(
 						"x" => array("HEX_NUM",0),
@@ -103,10 +103,10 @@ class JAVA_lang
 				0,
 				"java-num",
 				null),
-			
+
 
 	// quotes BF definition, TODO...
-			
+
 			"QUOTE1" => array(
 				array(
 						"\\\\" => array("QUOTE1",0),
@@ -130,7 +130,7 @@ class JAVA_lang
 				null),
 
 	// comments
-	
+
 			"COMMENT1" => array(
 				array(
 						"*/" => array("_RET",0),
@@ -147,11 +147,11 @@ class JAVA_lang
 						),
 				PF_RECURSION,
 				"java-comment",
-				null),	
-			
+				null),
+
 
 		);
-		
+
 		$this->keywords=array(
 			"java-keywords",
 			array(

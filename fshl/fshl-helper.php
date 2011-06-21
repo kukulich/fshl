@@ -17,8 +17,8 @@
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
-   
+   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
  * ---------------------------------------------------------------------
  */
 
@@ -77,7 +77,7 @@ class fshlHelper {
 		}
 		return '\''.$out.'\'';
 	}
-	
+
 	function getVarContentSource($var, $human_readable = false)
 	{
 		if(is_numeric($var)) {
@@ -105,15 +105,15 @@ class fshlHelper {
 		assert(0);
 		return 'fshlHelper::getVarContentSource error';
 	}
-	
+
 	function getVarSource($varname, $mixed_var, $human_readable = false) {
-		return '$'.$varname."=".fshlHelper::getVarContentSource($mixed_var, $human_readable).";\n"; 
+		return '$'.$varname."=".fshlHelper::getVarContentSource($mixed_var, $human_readable).";\n";
 	}
-	
+
 	function getFncSource($fncname,$param=null) {
 		return "function $fncname ($param) {\n";
 	}
-	
+
 	function blockIndent($string, $level) {
 		$tab = str_repeat("  ", $level);
 		$lines = explode("\n", $string);
@@ -123,7 +123,7 @@ class fshlHelper {
 		}
 		return $out;
 	}
-	
+
 } //class fshlHelper
 
 
@@ -140,9 +140,9 @@ function get_array_source($var)
 	return fshlHelper::getVarContentSource($var);
 }
 
-function get_var_source($varname,$var) 
-{ 
-	return fshlHelper::getVarSource($varname, $var); 
+function get_var_source($varname,$var)
+{
+	return fshlHelper::getVarSource($varname, $var);
 }
 
 function get_fnc_source($fncname,$param=null)

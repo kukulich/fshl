@@ -17,8 +17,8 @@
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
-   
+   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
  * ---------------------------------------------------------------------
  * HTML_UTF8_output.php		STANDARD HTML output module with UTF-8 encoding
  */
@@ -26,19 +26,19 @@
 class HTML_UTF8_output
 {
 	var $last_class;
-	
-	function HTML_UTF8_output() 
+
+	function HTML_UTF8_output()
 	{
 		$this->last_class = null;
 	}
-	
+
 	function template ($word, $class)
 	{
 		$word = htmlEntities($word, ENT_COMPAT, 'UTF-8');
 
 		if ($this->last_class == $class)
 		{
-			return $word;			
+			return $word;
 		}
 		else
 		{
@@ -50,7 +50,7 @@ class HTML_UTF8_output
 			$this->last_class = $class;
 			if($class == null) return '</span>'.$word;
 			return '</span><span class="'.$class.'">'.$word;
-		}	
+		}
 	}
 
 	function template_end()
@@ -69,7 +69,7 @@ class HTML_UTF8_output
 
 		if ($this->last_class == $class)
 		{
-			return $word;			
+			return $word;
 		}
 		else
 		{
@@ -81,7 +81,7 @@ class HTML_UTF8_output
 			$this->last_class = $class;
 			if($class == null) return '</span>'.$word;
 			return '</span><span class="'.$class.'">'.$word;
-		}	
+		}
 	}
 
 } //END class HTML_output

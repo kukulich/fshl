@@ -17,12 +17,12 @@
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
-   
+   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
  * ---------------------------------------------------------------------
  * SAFE - SHL Language File
  *
- */ 
+ */
 class SAFE_lang
 {
 	var $states;
@@ -37,7 +37,7 @@ class SAFE_lang
 		$this->version = "1.0";
 		$this->initial_state="OUT";
 		$this->states = array(
-	
+
 			"OUT" => array (
 				array(
 						"_COUNTAB" => array("OUT",0),
@@ -45,9 +45,9 @@ class SAFE_lang
 				0,
 				null,
 				null
-				),	
+				),
 		);
-		
+
 		$this->keywords=null;
 	}
 }

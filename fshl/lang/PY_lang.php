@@ -18,14 +18,14 @@
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
-   
+   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
  * ---------------------------------------------------------------------
  * Python - SHL Language File
  *
  * 1.1	- fixed hexadecimal numbers 0X1234
  *
- */ 
+ */
 class PY_lang
 {
 	var $states;
@@ -40,7 +40,7 @@ class PY_lang
 		$this->version = "1.1";
 		$this->initial_state="OUT";
 		$this->states = array(
-		
+
 			"OUT" => array (
 				array(
 						"_COUNTAB" => array("OUT", 0),
@@ -59,7 +59,7 @@ class PY_lang
 				0,
 				null,
 				null),
-			
+
 			"KEYWORD" => array(
 				array(
 						"!SAFECHAR" => array("_RET", 0)
@@ -67,7 +67,7 @@ class PY_lang
 				PF_KEYWORD | PF_RECURSION,
 				null,
 				null),
-			
+
 			"DOCSTRING1" => array(
 				array(
 						"'''" => array("_RET", 0),
@@ -78,7 +78,7 @@ class PY_lang
 				PF_RECURSION,
 				"py-docstring",
 				null),
-			
+
 			"DOCSTRING2" => array(
 				array(
 						'"""' => array("_RET", 0),
@@ -89,7 +89,7 @@ class PY_lang
 				PF_RECURSION,
 				"py-docstring",
 				null),
-			
+
 			"QUOTE1" => array(
 				array(
 						"'" => array("_RET", 0),
@@ -100,7 +100,7 @@ class PY_lang
 				PF_RECURSION,
 				"py-quote",
 				null),
-			
+
 			"QUOTE2" => array(
 				array(
 						'"' => array("_RET", 0),
@@ -111,7 +111,7 @@ class PY_lang
 				PF_RECURSION,
 				"py-quote",
 				null),
-			
+
 			"COMMENT" => array(
 				array(
 						"\n" => array("_RET", 1),
@@ -120,7 +120,7 @@ class PY_lang
 				PF_RECURSION,
 				"py-comment",
 				null),
-			
+
 			"NUM_HEXADECIMAL" => array(
 				array(
 						"L" => array("_RET", 0),
@@ -130,7 +130,7 @@ class PY_lang
 				PF_RECURSION,
 				"py-number",
 				null),
-			
+
 			"NUM_DECIMAL" => array(
 				array(
 						"." => array("NUM_FRACTION", 0),
@@ -146,7 +146,7 @@ class PY_lang
 				PF_RECURSION,
 				"py-number",
 				null),
-			
+
 			"NUM_FRACTION" => array(
 				array(
 						"j" => array("_RET", 0),
@@ -159,7 +159,7 @@ class PY_lang
 				0,
 				"py-number",
 				null),
-			
+
 			"NUM_EXPONENT" => array(
 				array(
 						"j" => array("_RET", 0),
@@ -170,7 +170,7 @@ class PY_lang
 				"py-number",
 				null)
 		);
-		
+
 		$this->keywords = array(
 			"py-keyword",
 			array(
@@ -205,7 +205,7 @@ class PY_lang
 				"while" => 1,
 				"with" => 1,
 				"yield" => 1,
-				
+
 				"abs" => 2,
 				"all" => 2,
 				"any" => 2,
@@ -278,7 +278,7 @@ class PY_lang
 				"vars" => 2,
 				"xrange" => 2,
 				"zip" => 2,
-				
+
 				"ArithmeticError" => 3,
 				"AssertionError" => 3,
 				"AttributeError" => 3,
@@ -329,7 +329,7 @@ class PY_lang
 				"Warning" => 3,
 				"WindowsError" => 3,
 				"ZeroDivisionError" => 3,
-				
+
 				"BufferType" => 3,
 				"BuiltinFunctionType" => 3,
 				"BuiltinMethodType" => 3,
@@ -363,11 +363,11 @@ class PY_lang
 				"UnboundMethodType" => 3,
 				"UnicodeType" => 3,
 				"XRangeType" => 3,
-				
+
 				"False" => 3,
 				"None" => 3,
 				"True" => 3,
-				
+
 				"__abs__" => 3,
 				"__add__" => 3,
 				"__all__" => 3,

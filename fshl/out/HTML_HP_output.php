@@ -17,14 +17,14 @@
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
-   
+   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
  * ---------------------------------------------------------------------
  * HTML_HP_output.php		SPECIAL HTML output module
- * 
- * This piece of code shows what a trick are output modules. 
- * Little modiffication of basic code produces links to PHP help pages. 
- * 
+ *
+ * This piece of code shows what a trick are output modules.
+ * Little modiffication of basic code produces links to PHP help pages.
+ *
  */
 
 class HTML_HP_output
@@ -32,28 +32,28 @@ class HTML_HP_output
 	var $last_class;
 	var $close_url;
 	var $help_pages;
-	
-	function HTML_HP_output() 
+
+	function HTML_HP_output()
 	{
 		$this->last_class = null;
 		$this->close_url = null;
 		$this->help_pages = array(
 			"php-keyword1" 		=> '<a href="http://php.net/manual/en/langref.php">',
 			"php-keyword2" 		=> '<a href="http://php.net/%s">',
-			
+
 			"sql-keyword1"		=> '<a href="http://dev.mysql.com/doc/mysql/search.php?q=%s">',
 			"sql-keyword2"		=> '<a href="http://dev.mysql.com/doc/mysql/search.php?q=%s">',
 			"sql-keyword3"		=> '<a href="http://dev.mysql.com/doc/mysql/search.php?q=%s">',
 		);
 	}
-	
+
 	function template ($word, $class)
 	{
 		$word = htmlEntities($word);
 
 		if ($this->last_class == $class)
 		{
-			return $word;	
+			return $word;
 		}
 		else
 		{
@@ -69,7 +69,7 @@ class HTML_HP_output
 				return '</span>'.$close.$word;
 			}
 			return '</span>'.$close.'<span class="'.$class.'">'.$word;
-		}	
+		}
 	}
 
 	function template_end()
@@ -90,7 +90,7 @@ class HTML_HP_output
 
 		if ($this->last_class == $class)
 		{
-			return $word;			
+			return $word;
 		}
 		else
 		{
@@ -112,7 +112,7 @@ class HTML_HP_output
 				return '</span>'.$close.$word;
 			}
 			return '</span>'.$close.$prefix.'<span class="'.$class.'">'.$word;
-		}	
+		}
 	}
 
 } //END class HTML_HP_output

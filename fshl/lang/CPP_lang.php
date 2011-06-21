@@ -17,15 +17,15 @@
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
-   
+   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
  * ---------------------------------------------------------------------
  * CPP - SHL Language File
  *
  * V1.1 - Fixed backslashes in PREPROC, QUOTE1 & QUOTE2 states
  *      - added missing countabs
  * V1.2 - ".666f" is detected as number, 0xFFFFFFFFFFL hexa numbers
- */ 
+ */
 class CPP_lang
 {
 	var $states;
@@ -40,9 +40,9 @@ class CPP_lang
 		$this->version = "1.2";
 		$this->initial_state="OUT";
 		$this->states = array(
-	
+
 	// initial state
-	
+
 			"OUT" => array (
 				array(
 						"_COUNTAB" => array("OUT",0),
@@ -59,7 +59,7 @@ class CPP_lang
 				null,
 				null
 				),
-	
+
 	// keyword
 
 			"KEYWORD" => array (
@@ -70,10 +70,10 @@ class CPP_lang
 				null,
 				null
 				),
-				
+
 
 	// NUMBERS
-			
+
 			"NUM" => array(
 				array(
 						"NUMBER" => array("DEC_NUM",0),
@@ -112,9 +112,9 @@ class CPP_lang
 				0,
 				"cpp-num",
 				null),
-			
+
 	// preprocessor (TODO: highlight strings keywords etc...)
-			
+
 			"PREPROC" => array(
 				array(
 						"\\\n"    => array("PREPROC", 0),		// backslash in preprocessor
@@ -127,7 +127,7 @@ class CPP_lang
 				null),
 
 	// CPP quotes BF definition, TODO...
-			
+
 			"QUOTE1" => array(
 				array(
 						"\\\\" => array("QUOTE1",0),
@@ -150,7 +150,7 @@ class CPP_lang
 				null),
 
 	// comments
-	
+
 			"COMMENT1" => array(
 				array(
 						"_COUNTAB" => array("COMMENT1",0),
@@ -167,11 +167,11 @@ class CPP_lang
 						),
 				PF_RECURSION,
 				"cpp-comment",
-				null),	
-			
+				null),
+
 
 		);
-		
+
 		$this->keywords=array(
 			"cpp-keywords",
 			array(
@@ -247,7 +247,7 @@ class CPP_lang
 				'volatile' => 1,
 				'__wchar_t' => 1,
 				'wchar_t' => 1,
-				'while' => 1,	
+				'while' => 1,
 				'__abstract' => 1,
 				'__alignof' => 1,
 				'__asm' => 1,

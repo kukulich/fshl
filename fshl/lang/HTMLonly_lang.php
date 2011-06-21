@@ -17,14 +17,14 @@
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
-   
+   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
  * ---------------------------------------------------------------------
  * HTMLonly - SHL Language File
  *
- * 
  *
- */ 
+ *
+ */
 class HTMLonly_lang
 {
 	var $states;
@@ -39,7 +39,7 @@ class HTMLonly_lang
 		$this->version = "1.10";
 		$this->initial_state="OUT";
 		$this->states = array(
-		
+
 			"OUT" => array (
 				array(
 						"<!--" => 		array("COMMENT",0),
@@ -81,7 +81,7 @@ class HTMLonly_lang
 				0,
 				"html-tagin",
 				null),
-	
+
 			"QUOTE1" => array(
 				array(
 						"\"" => array("inTAG",0),
@@ -107,7 +107,7 @@ class HTMLonly_lang
 				"html-comment",
 				null),
 		);
-		
+
 		$this->keywords=null;
 	}
 }

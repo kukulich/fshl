@@ -17,8 +17,8 @@
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
-   
+   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
  * ---------------------------------------------------------------------
  * fshl_config.php
  *
@@ -27,12 +27,12 @@
 if(!defined('FSHL_WITH_TW_DEFINED'))
 {
 	define ('FSHL_WITH_TW_DEFINED', 1);
-	
+
 	define ('FSHL_CACHE',		FSHL_PATH.'fshl_cache/');
 	define ('FSHL_LANG',		FSHL_PATH.'lang/');
 	define ('FSHL_OUTMODULE',	FSHL_PATH.'out/');
 	define ('FSHL_STYLE',		FSHL_PATH.'styles/');
-	 
+
 	// fshlParser() 'option' flags (not used at this time)
 	define ('P_TAB_INDENT',			0x0010);
 	define ('P_LINE_COUNTER',		0x0020);
@@ -40,7 +40,7 @@ if(!defined('FSHL_WITH_TW_DEFINED'))
 	define ('P_STATISTIC',			0x1000);	// inject statistic for fshlGenerator class
 	define ('P_DEFAULT',			0x0000);
 	define ('P_DEFAULT_TAB_VALUE',	4);
-	
+
 	// state flags
 	define ('PF_VOID',			0x0000);
 	define ('PF_KEYWORD',		0x0001);
@@ -53,16 +53,16 @@ if(!defined('FSHL_WITH_TW_DEFINED'))
 	define ('PF_XIO',			0x0200);
 	define ('PF_XDONE',			0x0400);
 	define ('PF_XNEW',			0x0800);
-	
+
 	// state field indexes
 	define ('XL_DIAGR',		0);
 	define ('XL_FLAGS',		1);
 	define ('XL_CLASS',		2);
 	define ('XL_DATA',		3);
-	
+
 	define ('XL_DSTATE',	0);
 	define ('XL_DTYPE',		1);
-	
+
 	// internal and special states
 	define ('P_RET_STATE',	'_RET');
 	define ('P_QUIT_STATE',	'_QUIT');

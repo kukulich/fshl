@@ -17,8 +17,8 @@
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
-   
+   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
  * ---------------------------------------------------------------------
  * SQL - SHL Language File
  * Copyright (C) 2005  Matěj 'Finwë' Humpál
@@ -45,7 +45,7 @@ class SQL_lang
 		$this->version = "1.0";
 		$this->initial_state = "OUT";
 		$this->states = array(
-		
+
 			"OUT" => array (
 				array(
 						"/*" => array("COMMENT",0) ,
@@ -56,12 +56,12 @@ class SQL_lang
 						"'" => array("QUOTE1",0),
 						'`' => array("QUOTE3",0),
 //						"%" => array("QUOTE1",0),
-						"ALPHA" => array("FUNCTION",-1),		
+						"ALPHA" => array("FUNCTION",-1),
 						"NUMBER" => array("NUM",0),
 						"_COUNTAB" => array("OUT",0),
 						),
 				PF_KEYWORD,
-				null,											
+				null,
 				null),
 
 			"FUNCTION" => array(
@@ -71,7 +71,7 @@ class SQL_lang
 				PF_KEYWORD | PF_RECURSION,
 				null,
 				null),
-			
+
 			"COMMENT" => array(
 				array(
 						"*/" => array("_RET",0),
@@ -90,8 +90,8 @@ class SQL_lang
 						),
 				PF_RECURSION,
 				"sql-comment",
-				null),	
-			
+				null),
+
 			"QUOTE" => array(
 				array(
 						'\"' => array("QUOTE",0),
@@ -112,7 +112,7 @@ class SQL_lang
 				PF_RECURSION,
 				"sql-value",
 				null),
-			
+
 
 			"QUOTE3" => array(
 				array(
@@ -129,7 +129,7 @@ class SQL_lang
 				array(
 						"x" => array("HEX_NUM",0),
 						"NUMBER" => array("DEC_NUM",0),
-						"!NUMBER" => array("_RET",1)	
+						"!NUMBER" => array("_RET",1)
 						),
 				PF_RECURSION,
 				"sql-num",
@@ -151,7 +151,7 @@ class SQL_lang
 				0,
 				"sql-num",
 				null),
-				
+
 			"OPTION" => array(
 				array(
 						"BLOB" =>	array("OPTION",0),
@@ -163,7 +163,7 @@ class SQL_lang
 						),
 				PF_RECURSION,
 				"sql-option",
-				null),	
+				null),
 
 		);
 
@@ -195,15 +195,15 @@ class SQL_lang
 				"values" => 1,"varbinary" => 1,"varchar" => 3,"variables" => 1,"varying" => 1,"version" => 1,"view" => 1,
 				"week" => 2,"when" => 1,"whenever" => 1,"where" => 1,"with" => 1,"work" => 1,
 				"year" => 1,
-				
+
 				//other
-				
+
 				"blob" => 3,"text" => 3,"string" => 3,"boolean" => 3,"longvarchar" => 3, "java_object" => 3, "longvarbinary" => 3, "rollback" =>"1"	, "tran" =>"1","top" =>"1",
 				// hvge adds
 				"mediumint" => 3,
 				),
 				false	// case non sensitive keywords
-				
+
 		);
 	}
 }

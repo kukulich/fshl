@@ -17,8 +17,8 @@
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
-   
+   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
  * ---------------------------------------------------------------------
  * HTML_output.php		STANDARD HTML output module
  */
@@ -26,19 +26,19 @@
 class HTML_output
 {
 	var $last_class;
-	
-	function HTML_output() 
+
+	function HTML_output()
 	{
 		$this->last_class = null;
 	}
-		
+
 	function template ($word, $class)
 	{
 		$word = htmlentities($word);
 
 		if ($this->last_class == $class)
 		{
-			return $word;			
+			return $word;
 		}
 		else
 		{
@@ -50,7 +50,7 @@ class HTML_output
 			$this->last_class = $class;
 			if($class == null) return '</span>'.$word;
 			return '</span><span class="'.$class.'">'.$word;
-		}	
+		}
 	}
 
 	function template_end()
@@ -64,14 +64,14 @@ class HTML_output
 	}
 
 	// default keyword is the same as template(), but you can add your own
-	// postprocess. 
+	// postprocess.
 	function keyword ($word, $class)
 	{
 		$word = htmlentities($word);
 
 		if ($this->last_class == $class)
 		{
-			return $word;			
+			return $word;
 		}
 		else
 		{
@@ -83,7 +83,7 @@ class HTML_output
 			$this->last_class = $class;
 			if($class == null) return '</span>'.$word;
 			return '</span><span class="'.$class.'">'.$word;
-		}		
+		}
 	}
 
 

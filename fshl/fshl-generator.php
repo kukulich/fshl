@@ -17,8 +17,8 @@
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
-   
+   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
  * ---------------------------------------------------------------------
  * fshl-generator.php   - language code generator
  *
@@ -54,7 +54,7 @@
  *  0.4.7     - statistic mode was added
  *
  *  0.4.8     - NEW optimization, without backward compatibility
- *              This generator produces lexers for FSHL parser 
+ *              This generator produces lexers for FSHL parser
  *              latest than V0.4.14 and newer.
  *              isdXX functions was replaced with getwXX()
  *
@@ -114,7 +114,7 @@ class fshlGenerator
 
 	var $_trans, $_flags, $_data, $_delim, $_class, $_states, $_names;
 	var $_ret,$_quit;
-	
+
 	var $error;
 	var $inject_statistic_code;
 
@@ -141,30 +141,30 @@ class fshlGenerator
 			if(!in_array($this->signature,$fshl_signatures))
 			{
 				$this->print_error("Unknown signature '<b>$this->signature</b>'.");
-				return;			
+				return;
 			}
 			if($this->language_array_optimise()) {
 				return;
 			}
-			$this->make();	
+			$this->make();
 		} else {
 			$this->print_error("Language file '<b>$lang_filename</b>' not found.");
 		}
 	}
-	
-	function get_source() 
+
+	function get_source()
 	{
 		if($this->is_error())
 			return null;
 		else
-			return $this->out;	
+			return $this->out;
 	}
-	
+
 	function is_error()
 	{
-		return $this->error;	
+		return $this->error;
 	}
-	
+
 	function write($filename=null)
 	{
 		if($filename==null)
@@ -187,7 +187,7 @@ class fshlGenerator
 		print ("fshl-generator: <b>".FSHL_LANG."$this->langname.php:</b> $text\n");
 		$this->error = true;
 	}
-	
+
 	function make()
 	{
 		$this->out = null;
@@ -202,33 +202,33 @@ class fshlGenerator
 		$this->out.=" *             Build date: ".date("D j.n.Y H:i:s")."\n *\n";
 		$this->out.=" *      Generator version: ".FSHL_GENERATOR_VERSION."\n";
 		$this->out.=" * --------------------------------------------------------------- */\n";
-		
+
 		// make class
 		$this->out.="class $this->langname";
-		
+
 		if($this->signature=="TW")
 			$this->out.=" extends ".$this->language."_base";
-			
+
 		$this->out.="\n{\n";
 		$this->out.='var $trans,$flags,$data,$delim,$class,$keywords;'."\n";
 		$this->out.='var $version,$signature,$initial_state,$ret,$quit;'."\n";
 		$this->out.='var $pt,$pti,$generator_version;'."\n";
 		$this->out.='var $names;'."\n";
-		
+
 		if($this->inject_statistic_code) {
 			$this->out.='var $statistic, $total_statistic;'."\n";
 		}
-			
+
 		$this->out.="\n";
-		
+
 		// make constructor
 		$this->out.=get_fnc_source($this->langname);
-		
+
 		// make class variables
 		$this->out.="\t".get_var_source("this->version",$this->version);
 		$this->out.="\t".get_var_source("this->signature",$this->signature);
 		$this->out.="\t".get_var_source("this->generator_version",FSHL_GENERATOR_VERSION);
-		$this->out.="\t".get_var_source("this->initial_state",$this->lang->initial_state);		
+		$this->out.="\t".get_var_source("this->initial_state",$this->lang->initial_state);
 		$this->out.="\t".get_var_source("this->trans",$this->_trans);
 		$this->out.="\t".get_var_source("this->flags",$this->_flags);
 		$this->out.="\t".get_var_source("this->delim",$this->_delim);
@@ -237,21 +237,21 @@ class fshlGenerator
 		$this->out.="\t".get_var_source("this->names",$this->_names);
 		if($this->signature!="TW") {
 			$this->out.="\t".get_var_source("this->data",$this->_data);
-			$this->out.="\t".get_var_source("this->class",$this->_class);	
+			$this->out.="\t".get_var_source("this->class",$this->_class);
 			$this->out.="\t".get_var_source("this->keywords",$this->lang->keywords);
 		}
 		if($this->inject_statistic_code) {
 			$this->out.="\t".get_var_source("this->statistic",array());
 			$this->out.="\t".get_var_source("this->total_statistic",array());
 		}
-		
+
 		//end constructor
 		$this->out.="}\n\n";
-		
+
 		// make ISDx() functions
-				
+
 		foreach($this->_delim as $state=>$delim)
-			if($delim==null) 
+			if($delim==null)
 				continue;
 			else
 				$this->make_state_code($state);
@@ -259,7 +259,7 @@ class fshlGenerator
 		$this->out.="}\n";	//end class
 		$this->out.="?>";	//end source <? (hack for PSpad :))
 	}
-	
+
 	function inject_statistic_code($state, $hit, $tab = true) {
 		if($this->inject_statistic_code) {
 			$tab = $tab ? "\t\t\t" : "\t\t";
@@ -291,7 +291,7 @@ function getw4 (&$s, $i, $l) {
 		$nl = "\n";
 		$this->out.="// $statename[0]\n";
 		$this->out.=fshlHelper::getFncSource("getw$state", '&$s, $i, $l');
-		
+
 		//
 		// generate local variables initialization
 		//
@@ -353,14 +353,14 @@ function getw4 (&$s, $i, $l) {
 		{
 			$var_init.=					$tab2.'$c1=$s[$i];'.$nl;
 		}
-		
+
 		$this->out.= 				$tab.'$o = false;'.		$nl;
 		$this->out.= 				$tab.'$start = $i;'.		$nl;
 		if(!$all_break) {
 			$this->out.= 			$tab.'while($i<$l) {'.	$nl;
 		}
 		$this->out.=				$var_init;
-		
+
 		//
 		// generate conditions and transitions
 		//
@@ -379,11 +379,11 @@ function getw4 (&$s, $i, $l) {
 				if( FSHL_USE_CTYPE )	$cond = $this->get_ctype_condition($del);
 				else					$cond = $this->get_older_condition($del);
 				if($cond == "1") break;
-				
+
 				$this->out.=			$tab2."if($cond){".$nl;
-				
+
 				$this->inject_statistic_code($state, $i);
-											
+
 				$this->out.=				$tab3."return array($i,\$c1,\$o,$size,\$i-\$start);".$nl;
 				$this->out.=			$tab2.'}'.$nl;
 			}
@@ -392,36 +392,36 @@ function getw4 (&$s, $i, $l) {
 				// delimiter is not group delimiter
 				//$i_str = $size == 1 ? '$i' : '$i+'.($size-1);
 				$this->out.=			$tab2."if(\$c$size==$delstring){".$nl;
-				
+
 				$this->inject_statistic_code($state, $i);
-				
+
 				//$this->out.=				$tab3."return array($i,$delstring,\$o,$i_str);".$nl;
 				$this->out.=				$tab3."return array($i,$delstring,\$o,$size,\$i-\$start);".$nl;
 				$this->out.=			$tab2.'}'.$nl;
 			}
 			$i++;
 		} // END foreach()
-		
+
 		$this->inject_statistic_code($state, $i, false);
-		
+
 		if($cond == "1") {
 			$this->out.=				$tab2."return array($i,\$c1,false,\$i-\$start);".$nl;
 		} else {
 			$this->out.=				$tab2.'$o.=$c1;'.$nl;
 			$this->out.=				$tab2.'$i++;'.$nl;
 		}
-		
+
 		if(!$all_break) {
 			$this->out.=			$tab."}".$nl;	//end while()
 			$this->out.=			$tab.'return array(-1,-1,$o,-1,-1);'.$nl;
 		}
-		
+
 		$this->out.=			"}".$nl.$nl;	//end getw() function
-		
+
 	} // END make_state_code()
 
-	
-	// condition generator for older PHP's 
+
+	// condition generator for older PHP's
 	//
 	function get_older_condition($del)
 	{
@@ -444,10 +444,10 @@ function getw4 (&$s, $i, $l) {
 			case "DOT_NUMBER":	$cond=	"\$c1=='.' && strchr('0123456789',\$c2[1])";	break;
 			case "!DOT_NUMBER":	$cond=	"!(\$c1=='.' && strchr('0123456789',\$c2[1]))";	break;
 			// Special group delimiters
-			
+
 			case "PHP_DELIM":	$cond=	"strchr(\" \\t\\n\\r;,:(){}[]!=%&|+-*/\",\$c1)"; break;
-			
-			default:			$cond = "BAD_FSHL_GENERATOR_VERSION__check_older"; 
+
+			default:			$cond = "BAD_FSHL_GENERATOR_VERSION__check_older";
 								$this->print_error("Group delimiter '<b>$del</b>' is not implemented.");
 								break;
 		} // END switch($del)
@@ -478,17 +478,17 @@ function getw4 (&$s, $i, $l) {
 			case "!DOT_NUMBER":	$cond=	"!(\$c1=='.'&&ctype_digit(\$c2[1]))";	break;
 
 			// Special group delimiters
-			
+
 			case "PHP_DELIM":	$cond=	"strchr(\" \\t\\n\\r;,:(){}[]!=%&|+-*/\",\$c1)"; break;
-			
-			default:			$cond = "BAD_FSHL_GENERATOR_VERSION"; 
+
+			default:			$cond = "BAD_FSHL_GENERATOR_VERSION";
 								$this->print_error("Group delimiter '<b>$del</b>' is not implemented.");
 								break;
 		} // END switch($del)
 		return $cond;
 	}
 
-	
+
 	function language_array_optimise()
 	{
 		// internal language structures initialization
@@ -504,7 +504,7 @@ function getw4 (&$s, $i, $l) {
 		$this->_states[P_QUIT_STATE] = $this->_quit = $j++;
 		$this->_names[$this->_ret] = P_RET_STATE;
 		$this->_names[$this->_quit] = P_QUIT_STATE;
-		
+
 		foreach ($this->lang->states as $statename => $state_array)
 		{
 			$state = $this->_states[$statename];
@@ -545,7 +545,7 @@ function getw4 (&$s, $i, $l) {
 		$this->lang->initial_state=$this->_states[$initial];
 		return false;
 	}
-	
+
 
 } // END class fshlGenerator
 ?>

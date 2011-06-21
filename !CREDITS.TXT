@@ -1,33 +1,32 @@
-﻿
-     Fast Syntax HighLighter
+
+	 Fast Syntax HighLighter
   --------------------------------------------
-     
-     <Core,FastCore,Brain>
 
-            Juraj 'HVGE' Durech
+	 <Core,FastCore,Brain>
 
-            public@hvge.sk
-            www.hvge.sk/scripts/fshl
+			Juraj 'HVGE' Durech
 
-
-     <BasicIdea,Stylesheets,Tester>
-
-            Martin 'SVICIDER' Cohen
-
-            mail@martincohen.info
-            www.martincohen.info
+			public@hvge.sk
+			www.hvge.sk/scripts/fshl
 
 
-     <ThanxTo,Support,Respect>
+	 <BasicIdea,Stylesheets,Tester>
 
-            johno.jsmf.net
-            www.fczbkk.com
-            www.scintilla.org
-			
+			Martin 'SVICIDER' Cohen
+
+			mail@martincohen.info
+			www.martincohen.info
+
+
+	 <ThanxTo,Support,Respect>
+
+			johno.jsmf.net
+			www.fczbkk.com
+			www.scintilla.org
+
 	 <Contributors>
-	 
-            Matěj 'Finwë' Humpál (SQL)
-            drekin@gmail.com     (PYTHON)
+
+			Matěj 'Finwë' Humpál (SQL)
+			drekin@gmail.com     (PYTHON)
 
   --------------------------------------------
-  

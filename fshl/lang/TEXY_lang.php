@@ -17,8 +17,8 @@
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
-   
+   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
  * ---------------------------------------------------------------------
  * TEXY - SHL Language File
  *
@@ -26,8 +26,8 @@
  * Homepage: http://www.texy.info
  *
  * V0.1 - initial version
- * 
- */ 
+ *
+ */
 class TEXY_lang
 {
 	var $states;
@@ -42,7 +42,7 @@ class TEXY_lang
 		$this->version = "0.1";
 		$this->initial_state="SingleNewLine";
 		$this->states = array(
-		
+
 		"LineBODY" => array (
 			array(
 					"/---"				=> array("BlockIN", 0),
@@ -54,7 +54,7 @@ class TEXY_lang
 			null,
 			null
 			),
-		
+
 		"NewLineTypeSelector" => array(
 			array(
 					"\n"			=> array("DoubleNewLine", 0),
@@ -66,16 +66,16 @@ class TEXY_lang
 			null
 			),
 
-		
+
 		// nie je zrovna najlepsi sposob inicializacneho stavu
-		
+
 		"SingleNewLine" => array (
 			array(
 					"##" 		=> array("HeaderIN", 0),
 					"**" 		=> array("HeaderIN", 0),
 					"==" 		=> array("HeaderIN", 0),
 					"--" 		=> array("HeaderIN", 0),
-										
+
 					"_ALL" 		=> array("LineBODY", -1),
 					),
 			0,
@@ -87,15 +87,15 @@ class TEXY_lang
 		"DoubleNewLine" => array (
 			array(
 					"\n"		=> array("DoubleNewLine", 0),
-					
+
 					"##" 		=> array("HeaderIN", 0),
 					"==" 		=> array("HeaderIN", 0),
-					
+
 					"--" 		=> array("HorizontalLine", 0),
 					"- -" 		=> array("HorizontalLine", 0),
 					"**" 		=> array("HorizontalLine", 0),
 					"* *" 		=> array("HorizontalLine", 0),
-					
+
 					"_ALL"		=> array("LineBODY",-1),
 					),
 			'texy-err',
@@ -103,9 +103,9 @@ class TEXY_lang
 			null
 			),
 
-				
+
 		// == header ==
-		
+
 					"HeaderIN" => array (
 						array(
 								"=" 		=> array("HeaderIN", 0),
@@ -113,30 +113,30 @@ class TEXY_lang
 								"-" 		=> array("HeaderIN", 0),
 								"*" 		=> array("HeaderIN", 0),
 								"\r" 		=> array("HeaderIN", 0),
-								
+
 								"\n"		=> array("DoubleNewLine", 0),			// back to newline switcher
-								
+
 								"_ALL" 		=> array("HeaderBody", -1),
 								),
 						0,
 						"texy-hlead",
 						null
 						),
-					
+
 					"HeaderBody" => array (
 						array(
 								"=" 		=> array("HeaderOUT", 0),
 								"#" 		=> array("HeaderOUT", 0),
 								"-" 		=> array("HeaderOUT", 0),
 								"*" 		=> array("HeaderOUT", 0),
-								
+
 								"\n"		=> array("DoubleNewLine", 0),			// back to newline switcher
 								),
 						0,
 						"texy-hbody",
 						null
 						),
-		
+
 					"HeaderOUT" => array (
 						array(
 								"\n"		=> array("DoubleNewLine", 0),			// back to newline switcher
@@ -147,7 +147,7 @@ class TEXY_lang
 						),
 
 		// '**' '--' '* ' '- '    horizontal line (BF implementation)
-		
+
 					"HorizontalLine" => array (
 						array(
 								"\n"		=> array("LineBODY", -1),
@@ -156,17 +156,17 @@ class TEXY_lang
 						"texy-hr",
 						null,
 						),
-						
-		
+
+
 		// blocks
-		
+
 					"BlockIN" => array (
 						array(
 								"html"		=> array("BlockHTML", 0),
 								"code"		=> array("BlockCODE", 0),
 								"div"		=> array("BlockDUMMY", 0),
 								"text"		=> array("BlockTEXT", 0),
-								
+
 								"_ALL"		=> array("LineBODY", -1),
 								),
 						0,
@@ -182,7 +182,7 @@ class TEXY_lang
 						"texy-hr",
 						null,
 						),
-						
+
 					"BlockDUMMY" => array (
 						array(
 								"_ALL"		=> array("LineBODY", -1),
@@ -192,7 +192,7 @@ class TEXY_lang
 						null,
 						),
 		// TEXT blocks
-		
+
 					"BlockTEXT" => array (
 						array(
 								"\n"		=> array("BlockTEXTBody", -1),
@@ -201,7 +201,7 @@ class TEXY_lang
 						"texy-hr",
 						null,
 						),
-						
+
 							"BlockTEXTBody" => array (
 								array(
 										"\n"		=> array("BlockTEXTBodyNL", 0),
@@ -230,7 +230,7 @@ class TEXY_lang
 
 
 		// HTML blocks
-		
+
 					"BlockHTML" => array (
 						array(
 								"\n"		=> array("BlockHTMLBody", -1),
@@ -239,7 +239,7 @@ class TEXY_lang
 						"texy-hr",
 						null,
 						),
-						
+
 							"BlockHTMLBody" => array (
 								array(
 										"\n"		=> array("BlockHTMLBodyNL", 0),
@@ -266,9 +266,9 @@ class TEXY_lang
 								null,
 								),
 
-		
+
 		// CODE blocks
-		
+
 					"BlockCODE" => array (
 						array(
 								"\n"		=> array("BlockCODEBody", -1),
@@ -277,7 +277,7 @@ class TEXY_lang
 						"texy-hr",
 						null,
 						),
-						
+
 							"BlockCODEBody" => array (
 								array(
 										"\n"		=> array("BlockCODEBodyNL", 0),

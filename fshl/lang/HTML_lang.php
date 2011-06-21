@@ -17,12 +17,12 @@
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
-   
+   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
  * ---------------------------------------------------------------------
  * HTML - SHL Language File
  *
- */ 
+ */
 class HTML_lang
 {
 	var $states;
@@ -37,7 +37,7 @@ class HTML_lang
 		$this->version = "1.11";
 		$this->initial_state="OUT";
 		$this->states = array(
-		
+
 			"OUT" => array (
 				array(
 						"<!--" =>		array("COMMENT",0),
@@ -61,7 +61,7 @@ class HTML_lang
 				0,
 				"html-entity",
 				null),
-				
+
 			"TAG" => array (
 				array(
 					">" =>			array("OUT",1),
@@ -89,7 +89,7 @@ class HTML_lang
 				PF_RECURSION,
 				"html-tagin",
 				null),
-			
+
 			//CSS je to iste ako inTAG az na male zmeny
 			"CSS" => array(
 				array(
@@ -103,18 +103,18 @@ class HTML_lang
 				PF_RECURSION,
 				"html-tagin",
 				null),
-			
-			//TO_CSS - port to CSS language. 
+
+			//TO_CSS - port to CSS language.
 			//Stav nie je virtualny, po navrate z jazyka CSS sa pouziju prechody...
 			"TO_CSS" => array (
 					array(
 							">" => 			array("_RET",1),
 							// RET preto, lebo stav CSS bol z TAG volany rekurzivne a treba tuto rekurziu niekde ukoncit (podobne ako TAGin)
-							), 
-					PF_NEWLANG, 
-					"html-tag", /* =style*/ 
+							),
+					PF_NEWLANG,
+					"html-tag", /* =style*/
 					"CSS", /* =new language*/
-					),			
+					),
 
 			//JAVASCRIPT je to iste ako inTAG az na male zmeny
 			"JAVASCRIPT" => array(
@@ -129,17 +129,17 @@ class HTML_lang
 				PF_RECURSION,
 				"html-tagin",
 				null),
-			
-			//TO_JAVACSRIPT - port to JS language. 
+
+			//TO_JAVACSRIPT - port to JS language.
 			//Stav nie je virtualny, po navrate z jazyka JS sa pouziju prechody...
 			"TO_JAVASCRIPT" => array (
 					array(
 							">" => 			array("_RET",1),
-							), 
-					PF_NEWLANG, 
-					"html-tag", /* =style*/ 
+							),
+					PF_NEWLANG,
+					"html-tag", /* =style*/
 					"JS", /* =new language*/
-					),			
+					),
 
 
 
@@ -180,14 +180,14 @@ class HTML_lang
 			"TO_PHP" => array (
 					//stav je virtualny - nie su definovane ziadne prechody (null), cize po navrate z PHP je nadalej
 					//pouzivany stav, odkial bol TO_PHP volany
-					null, 		
-					PF_NEWLANG, 
-					"xlang", /* =style*/ 
+					null,
+					PF_NEWLANG,
+					"xlang", /* =style*/
 					"PHP", /* =new language*/
 					),
 
 		);
-		
+
 		$this->keywords=null;
 	}
 }

@@ -17,15 +17,15 @@
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
-   
+   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
  * ---------------------------------------------------------------------
  * JS - JavaScript SHL Language File
  *
  * V1.0 - This is introduction version of JavaScript LEXER
  * V1.1 - fixed point separated keywords, added few DOM keywords as .js-keywords2
  * V1.2 - added case non sensitive flag for keywords
- */ 
+ */
 class JS_lang
 {
 	var $states;
@@ -40,9 +40,9 @@ class JS_lang
 		$this->version = "1.2";
 		$this->initial_state="OUT";
 		$this->states = array(
-	
+
 	// initial state
-	
+
 			"OUT" => array (
 				array(
 						"_COUNTAB" => array("OUT",0),
@@ -61,7 +61,7 @@ class JS_lang
 				"js-out",
 				null
 				),
-	
+
 	// keyword
 
 			"KEYWORD" => array (
@@ -72,10 +72,10 @@ class JS_lang
 				"js-out",
 				null
 				),
-				
+
 
 	// NUMBERS
-			
+
 			"NUM" => array(
 				array(
 						"x" => array("HEX_NUM",0),
@@ -105,10 +105,10 @@ class JS_lang
 				0,
 				"js-num",
 				null),
-			
+
 
 	// quotes BF definition, TODO...
-			
+
 			"QUOTE1" => array(
 				array(
 						"\"" => array("_RET",0),
@@ -130,7 +130,7 @@ class JS_lang
 				null),
 
 	// comments
-	
+
 			"COMMENT1" => array(
 				array(
 						"_COUNTAB" => array("COMMENT1",0),
@@ -151,13 +151,13 @@ class JS_lang
 						),
 				PF_RECURSION,
 				"js-comment",
-				null),	
+				null),
 
 			"TO_PHP" => array (null, PF_NEWLANG, "xlang", /* =style*/ "PHP" /*  =new language*/),
 			"_QUIT" => array (null, PF_NEWLANG, "html-tag", /* =style*/ null, /* =new language*/)	//return to previous language
 
 		);
-		
+
 		$this->keywords=array(
 			'js-keywords',
 			array(
@@ -220,7 +220,7 @@ class JS_lang
 				'volatile' => 1,
 				'while' => 1,
 				'with' => 1,
-				
+
 				'document' => 2,
 				'getAttribute' => 2,
 				'getElementsByTagName' => 2,

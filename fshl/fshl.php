@@ -18,8 +18,8 @@
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
-   
+   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
  * ---------------------------------------------------------------------
  * fshl.php
  *
@@ -46,13 +46,13 @@ class fshlParser
 	var $line_counter, $max_line_width;
 
 	var $out, $outf;			// final output and output fragment
-	
+
 	var $_trans, $_flags, $_data, $_delim, $_class, $_keywords;
 	var $_ret,$_quit;
-	
+
 	var $lexers, $lang;			// loaded lexers and current language
 	var $stack;					// parser context stack
-	
+
 	var $timestamp, $last_time;	// timer
 
 
@@ -97,7 +97,7 @@ class fshlParser
 		$this->textlen = 0;
 		$this->last_time = -1;
 	}
-	
+
 	// highlight string
 	//
 	function & highlightString($language, $text, $offset = 0, $total_line_count = 0) {
@@ -110,7 +110,7 @@ class fshlParser
 		if($this->line_counter) {
 			$this->text_position[2] = $total_line_count ? $total_line_count : $this->calcCounterPadding($text);
 			$this->outf .= $this->output->template(str_pad('1', $this->text_position[2], ' ', STR_PAD_LEFT).': ', 'count');
-		}			
+		}
 		// start parser
 		$this->resetStack();
 		$this->setLanguage($language);
@@ -118,9 +118,9 @@ class fshlParser
 		$this->stopTimer();
 		return $this->getOut();
 	}
-	
+
 	// highlight next string
-	//	
+	//
 	function & highlightNextString($text, $offset = 0) {
 		assert(is_string($text));
 		$language = null;
@@ -136,30 +136,30 @@ class fshlParser
 		}
 		return null;
 	}
-	
+
 	function calcCounterPadding(&$text) {
 		assert(is_string($text));
 		$data = count_chars($text, 0);
-		return isset($data[ord("\n")]) ? strlen($data[ord("\n")]+1) : 2;		
+		return isset($data[ord("\n")]) ? strlen($data[ord("\n")]+1) : 2;
 	}
-	
+
 	function getPosition()	{ return $this->textpos; }
-	
+
 	function getParseTime() { return $this->last_time; }
-	
+
 	function isError() { return false;	}	//for shlParser class compatibility
 
 	function getMaxLineWidth() { return $this->max_line_width; }
-	
+
 	function getLineCount() { return $this->text_position[0]; }
-	
+
 	function & getOut() {
 		if(is_array($this->out)) {
 			$this->out = implode('', $this->out);
 		}
 		return $this->out;
 	}
-	
+
 	function isLanguage($language) {
 		return file_exists(FSHL_CACHE.$language.'_lang.php');
 	}
@@ -167,7 +167,7 @@ class fshlParser
 	// ---------------------------------------------------------------------------------
 	// LOW LEVEL functions
 	//
-	
+
 	// set current language
 	function setLanguage($language) {
 		if(!isset($this->lexers[$language])) {
@@ -196,7 +196,7 @@ class fshlParser
 		//$this->lang->pt		= &$this->text;
 		//$this->lang->pti	= &$this->textpos;
 	}
-		
+
 	function initText(&$text, $offset) {
 		$text = str_replace("\r",'',$text);	// remove MS-DOS mass!
 		$this->text = &$text;
@@ -205,8 +205,8 @@ class fshlParser
 		$this->textpos = $offset;
 		$this->outf = null;
 		$this->out = array();
-	}	
-	
+	}
+
 	//
 	// main parser function
 	//
@@ -220,12 +220,12 @@ class fshlParser
 			//!debug states
 			//echo "state $state:{$this->lang->names[$state]}\n";
 			//echo "  ".fshlHelper::getVarContentSource($word, true)."\n\n";
-			
+
 			// getWord returns: array($transition_id, $delimiter_string, $collected_string);
 			//  - transition_id - may be -1 when we are at the end of stream
 			//  - delimiter_string - may be -1 when we are at the end of stream
 			if($word[2] !== false) {
-				// some data was collected before getw reaches the delimiter, 
+				// some data was collected before getw reaches the delimiter,
 				// we must output this fragment before other processing
 				$length = $word[4];
 				$this->textpos += $length;
@@ -260,7 +260,7 @@ class fshlParser
 			}
 			//get new state from transitions table
 			$newstate = $this->_trans[$state][$word[0]][XL_DSTATE];
-			if($newstate == $this->_ret) 
+			if($newstate == $this->_ret)
 			{
 				// Return to previous context (wrong named as recursion?:)
 				// Now we must choose delimiter processing (second value in destination array)
@@ -304,7 +304,7 @@ class fshlParser
 					// back to stream
 					$this->text_position = $prev_position;
 					$this->textpos = $prev_text_pos;
-					$show_number = false;					
+					$show_number = false;
 				} else {
 					$this->template($word[1], $newstate);
 					if($show_number !== FALSE) {
@@ -340,7 +340,7 @@ class fshlParser
 			// Call to current state is not allowed.
 			if($this->_flags[$newstate] & PF_RECURSION)
 			{
-				// 
+				//
 				if($state != $newstate) {
 					$this->pushState($language, $state);
 				}
@@ -348,23 +348,23 @@ class fshlParser
 			// change the state
 			$state = $newstate;
 		} //END while()
-		
+
 		// PUSH CURRENT STATE
 		$this->pushState($language, $state);
 		$this->outf .= $this->output->template_end();
 		$this->appendFragment();
 	}
-	
+
 	// Reset the context stack
 	function resetStack() {
 		$this->stack = array();
 	}
-	
+
 	// Push state to context stack
 	function pushState($lang, $state) {
 		array_unshift($this->stack, array($lang, $state));
 	}
-	
+
 	// Pop state from context stack
 	function popState(&$lang, &$state) {
 		$item = array_shift($this->stack);
@@ -375,17 +375,17 @@ class fshlParser
 		}
 		return false;
 	}
-	
+
 	//
 	// Text fragmentation reduces frequency of big reallocations inside PHP
 	// This function collects 8KB output chunks into array, which will be imploded in getOut() method..
-	// When very very long input is processed, this may improve performance. 
+	// When very very long input is processed, this may improve performance.
 	//
 	function appendFragment() {
 		$this->out[] = $this->outf;
 		$this->outf = null;
 	}
-	
+
 	//
 	// template with keywords
 	//
@@ -410,20 +410,20 @@ class fshlParser
 	}
 
 	// SelfTimer functions
-	
+
 	function getMicroTime()	{
 		list($usec, $sec) = explode(" ", microtime());
 		return ((float)$usec + (float)$sec);
 	}
-	
+
 	function startTimer() {
 		$this->timestamp = $this->getMicroTime();
 	}
-	
+
 	function stopTimer() {
 		$this->last_time = $this->getMicroTime() - $this->timestamp;
 	}
-	
+
 	// --------------------------------------------------------------------------
 	// debug statistics
 	//
@@ -431,7 +431,7 @@ class fshlParser
 	//          feature on live webs !!
 	// --------------------------------------------------------------------------
 	function getInternalStatistics($html_safe_view = true) {
-	
+
 		$out = null;
 		foreach($this->lexers as $lang => $lexer) {
 			if(isset($this->lexers[$lang]->statistic)) {
@@ -454,30 +454,30 @@ class fshlParser
 	}
 
 	function getInternalStatisticsFromLexer($lang) {
-	
+
 		$out = null;
 		if(isset($this->lexers[$lang]->statistic)) {
 			$lexer = & $this->lexers[$lang];
 			$out .= "\n\n----------------------------------------------------\n";
 			$out .= "Statistics for language ".$lang."\n";
 			$out .= "----------------------------------------------------\n\n";
-			
+
 			foreach($lexer->statistic as $state => $stat) {
 				$state_name = $lexer->names[$state];
 				$total = $stat[-1];
-				
+
 				$out .= "\n  STATE '$state_name',\t\tTOTAL HITS: $total\n\n";
-				
+
 				arsort($stat);
-				
+
 				foreach($stat as $trans_id => $trans_count) {
 					if($trans_id < 0) continue;
 					if(isset($lexer->delim[$state][$trans_id])) {
-					
+
 						$trans_string = '['.$lexer->delim[$state][$trans_id].'] -> ';
 						$new_state = $lexer->trans[$state][$trans_id][XL_DSTATE];
 						$trans_string .= $lexer->names[$new_state];
-						
+
 						$trans_string = str_replace("\n", "\\n", $trans_string);
 						$trans_string = str_replace("\t", "\\t", $trans_string);
 					} else {
@@ -492,7 +492,7 @@ class fshlParser
 	}
 
 	function loadStatisticsIntoLexer($lang) {
-	
+
 		if(isset($this->lexers[$lang]->statistic)) {
 			$filename = FSHL_CACHE.'stats/'.$lang.'_lang.stat';
 			@$filehandle = fopen ($filename, 'r');
@@ -505,9 +505,9 @@ class fshlParser
 		}
 		return false;
 	}
-	
+
 	function saveStatisticsFromLexer($lang) {
-	
+
 		if(isset($this->lexers[$lang]->statistic)) {
 			$filename = FSHL_CACHE.'stats/'.$lang.'_lang.stat';
 			@$filehandle = fopen ($filename, 'w');
@@ -518,8 +518,8 @@ class fshlParser
 				return true;
 			}
 		}
-		return false;		
-	}	
-	
+		return false;
+	}
+
 } // END class fshlParser
 ?>

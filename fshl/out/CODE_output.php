@@ -17,22 +17,22 @@
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
-   
+   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
  * ---------------------------------------------------------------------
- * CODE_output.php		same as HTML output module, but producing output, 
+ * CODE_output.php		same as HTML output module, but producing output,
  *						which can be used together with <code> tag
  */
 
 class CODE_output
 {
 	var $last_class;
-	
-	function CODE_output() 
+
+	function CODE_output()
 	{
 		$this->last_class = null;
 	}
-	
+
 	function template ($word, $class)
 	{
 		$word=htmlentities($word);
@@ -41,7 +41,7 @@ class CODE_output
 
 		if ($this->last_class == $class)
 		{
-			return $word;			
+			return $word;
 		}
 		else
 		{
@@ -53,7 +53,7 @@ class CODE_output
 			$this->last_class = $class;
 			if($class == null) return '</span>'.$word;
 			return '</span><span class="'.$class.'">'.$word;
-		}	
+		}
 	}
 
 	function template_end()
@@ -75,7 +75,7 @@ class CODE_output
 
 		if ($this->last_class == $class)
 		{
-			return $word;			
+			return $word;
 		}
 		else
 		{
@@ -87,7 +87,7 @@ class CODE_output
 			$this->last_class = $class;
 			if($class == null) return '</span>'.$word;
 			return '</span><span class="'.$class.'">'.$word;
-		}	
+		}
 	}
 
 } //END class HTML_output

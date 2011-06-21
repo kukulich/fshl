@@ -64,7 +64,7 @@ class Fshl_Lang_Javascript
 				array(
 						"!SAFECHAR" => array("_RET", 0),
 					),
-				PF_KEYWORD | PF_RECURSION,
+				Fshl_Generator::PF_KEYWORD | Fshl_Generator::PF_RECURSION,
 				"js-out",
 				null
 				),
@@ -79,7 +79,7 @@ class Fshl_Lang_Javascript
 						"!NUMBER" => array("_RET",1),	//char back to stream
 						"NUMBER" => array("DEC_NUM",0),
 						),
-				PF_RECURSION,
+				Fshl_Generator::PF_RECURSION,
 				"js-num",
 				null),
 
@@ -111,7 +111,7 @@ class Fshl_Lang_Javascript
 						"<?php" => 			array("TO_PHP",0),
 						"<?" =>				array("TO_PHP",0),
 						),
-				PF_RECURSION,
+				Fshl_Generator::PF_RECURSION,
 				"js-quote",
 				null),
 
@@ -121,7 +121,7 @@ class Fshl_Lang_Javascript
 						"<?php" => 			array("TO_PHP",0),
 						"<?" =>				array("TO_PHP",0),
 						),
-				PF_RECURSION,
+				Fshl_Generator::PF_RECURSION,
 				"js-quote",
 				null),
 
@@ -134,7 +134,7 @@ class Fshl_Lang_Javascript
 						"<?php" => 			array("TO_PHP",0),
 						"<?" =>				array("TO_PHP",0),
 						),
-				PF_RECURSION,
+				Fshl_Generator::PF_RECURSION,
 				"js-comment",
 				null),
 
@@ -145,12 +145,12 @@ class Fshl_Lang_Javascript
 						"<?php" => 			array("TO_PHP",0),
 						"<?" =>				array("TO_PHP",0),
 						),
-				PF_RECURSION,
+				Fshl_Generator::PF_RECURSION,
 				"js-comment",
 				null),
 
-			"TO_PHP" => array (null, PF_NEWLANG, "xlang", /* =style*/ "PHP" /*  =new language*/),
-			"_QUIT" => array (null, PF_NEWLANG, "html-tag", /* =style*/ null, /* =new language*/)	//return to previous language
+			"TO_PHP" => array (null, Fshl_Generator::PF_NEWLANG, "xlang", /* =style*/ "PHP" /*  =new language*/),
+			"_QUIT" => array (null, Fshl_Generator::PF_NEWLANG, "html-tag", /* =style*/ null, /* =new language*/)	//return to previous language
 
 		);
 

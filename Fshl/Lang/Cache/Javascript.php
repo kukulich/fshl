@@ -2,10 +2,10 @@
 /* --------------------------------------------------------------- *
  *        WARNING: ALL CHANGES IN THIS FILE WILL BE LOST
  *
- *   Source language file: Lang/Js.php
+ *   Source language file: Lang/Javascript.php
  *       Language version: 1.2 (Sign:SHL)
  *
- *            Target file: Lang/Cache/Js.php
+ *            Target file: Lang/Cache/Javascript.php
  *      Generator version: 0.4.11
  * --------------------------------------------------------------- */
 class Fshl_Lang_Cache_Javascript

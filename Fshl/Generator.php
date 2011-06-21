@@ -68,11 +68,13 @@
  *			    incorrect text size.
  */
 
-define('FSHL_GENERATOR_VERSION',	'0.4.11' );
 define('FSHL_USE_CTYPE',			true  );
 
 if(!defined('FSHL_PATH')) {
 	define('FSHL_PATH', dirname(__FILE__).'/');		// thanx to martin*cohen for this great hack:)
+}
+if(!defined('FSHL_CACHE')) {
+	define ('FSHL_CACHE', FSHL_PATH.'Lang/Cache/');
 }
 
 // Group delimiters
@@ -103,11 +105,32 @@ $group_delimiters=array(
 
 $fshl_signatures = array("SHL","TW");
 
-require_once(FSHL_PATH.'fshl-config.php');
 require_once(FSHL_PATH.'Helper.php');
 
 class Fshl_Generator
 {
+	const VERSION = '0.4.11';
+
+	const P_STATISTIC = 0x1000;	// inject statistic for fshlGenerator class
+
+	// state field indexes
+	const XL_DIAGR = 0;
+	const XL_FLAGS = 1;
+	const XL_CLASS = 2;
+	const XL_DATA = 3;
+
+	const XL_DSTATE = 0;
+	const XL_DTYPE = 1;
+
+	// state flags
+	const PF_KEYWORD = 0x0001;
+	const PF_RECURSION = 0x0004;
+	const PF_NEWLANG = 0x0008;
+
+	// internal and special states
+	const P_RET_STATE = '_RET';
+	const P_QUIT_STATE = '_QUIT';
+
 	// class variables
 	var $lang, $flang, $options, $signature, $version, $langname, $language;
 	var $out, $groups;
@@ -121,7 +144,7 @@ class Fshl_Generator
 	// USER LEVEL functions
 	//
 	// class constructor
-	function __construct($language,$options=P_DEFAULT)
+	function __construct($language, $options = 0)
 	{
 		global $group_delimiters;
 		global $fshl_signatures;
@@ -130,7 +153,7 @@ class Fshl_Generator
 		$this->language = $language;
 		$langClass = 'Fshl_Lang_' . $this->language;
 		$lang_filename = FSHL_PATH . 'Lang/' . $this->language . '.php';
-		$this->inject_statistic_code = $options & P_STATISTIC;
+		$this->inject_statistic_code = $options & self::P_STATISTIC;
 		if(file_exists($lang_filename)) {
 			require_once ($lang_filename);
 			$this->lang = new $langClass();
@@ -199,7 +222,7 @@ class Fshl_Generator
 		$this->out.=" *   Source language file: ".str_replace(FSHL_PATH, '', FSHL_PATH . 'Lang/'.$this->language).".php\n";
 		$this->out.=" *       Language version: $this->version (Sign:$this->signature)\n *\n";
 		$this->out.=" *            Target file: ".str_replace(FSHL_PATH, '', FSHL_CACHE.$this->language).".php\n";
-		$this->out.=" *      Generator version: ".FSHL_GENERATOR_VERSION."\n";
+		$this->out.=" *      Generator version: ".self::VERSION."\n";
 		$this->out.=" * --------------------------------------------------------------- */\n";
 
 		// make class
@@ -226,7 +249,7 @@ class Fshl_Generator
 		// make class variables
 		$this->out.="\t".Fshl_Helper::getVarSource("this->version",$this->version);
 		$this->out.="\t".Fshl_Helper::getVarSource("this->signature",$this->signature);
-		$this->out.="\t".Fshl_Helper::getVarSource("this->generator_version",FSHL_GENERATOR_VERSION);
+		$this->out.="\t".Fshl_Helper::getVarSource("this->generator_version",self::VERSION);
 		$this->out.="\t".Fshl_Helper::getVarSource("this->initial_state",$this->lang->initial_state);
 		$this->out.="\t".Fshl_Helper::getVarSource("this->trans",$this->_trans);
 		$this->out.="\t".Fshl_Helper::getVarSource("this->flags",$this->_flags);
@@ -494,28 +517,28 @@ function getw4 (&$s, $i, $l) {
 		$j=0;
 		foreach ($this->lang->states as $state => $state_array)
 		{
-			if($state==P_QUIT_STATE)
+			if($state==self::P_QUIT_STATE)
 				continue;
 			$this->_states[$state]=$j;
 			$this->_names[$j++]=$state;
 		}
-		$this->_states[P_RET_STATE] = $this->_ret = $j++;
-		$this->_states[P_QUIT_STATE] = $this->_quit = $j++;
-		$this->_names[$this->_ret] = P_RET_STATE;
-		$this->_names[$this->_quit] = P_QUIT_STATE;
+		$this->_states[self::P_RET_STATE] = $this->_ret = $j++;
+		$this->_states[self::P_QUIT_STATE] = $this->_quit = $j++;
+		$this->_names[$this->_ret] = self::P_RET_STATE;
+		$this->_names[$this->_quit] = self::P_QUIT_STATE;
 
 		foreach ($this->lang->states as $statename => $state_array)
 		{
 			$state = $this->_states[$statename];
-			$this->_flags[$state] = $state_array[XL_FLAGS];
-			$this->_data[$state] = $state_array[XL_DATA];
-			$this->_class[$state] = $state_array[XL_CLASS];
-			if(is_array($state_array[XL_DIAGR]))
+			$this->_flags[$state] = $state_array[self::XL_FLAGS];
+			$this->_data[$state] = $state_array[self::XL_DATA];
+			$this->_class[$state] = $state_array[self::XL_CLASS];
+			if(is_array($state_array[self::XL_DIAGR]))
 			{
 				$i=0;
-				foreach ($state_array[XL_DIAGR] as $delimiter => $trans_array )
+				foreach ($state_array[self::XL_DIAGR] as $delimiter => $trans_array )
 				{
-					$transname=$trans_array[XL_DSTATE];
+					$transname=$trans_array[self::XL_DSTATE];
 					if(!isset($this->_states[$transname]))
 					{
 						$delimiter=str_replace("<","&lt;",$delimiter);
@@ -524,7 +547,7 @@ function getw4 (&$s, $i, $l) {
 					}
 					// V 0.4.5
 					$this->_delim[$state][$i]=$delimiter;
-					$trans_array[XL_DSTATE]=$this->_states[$transname];
+					$trans_array[self::XL_DSTATE]=$this->_states[$transname];
 					$this->_trans[$state][$i]=$trans_array;
 					$i++;
 				}

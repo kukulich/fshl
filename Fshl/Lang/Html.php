@@ -85,7 +85,7 @@ class Fshl_Lang_Html
 						"<?" => 		array("TO_PHP",0),
 						"_COUNTAB" =>	array("inTAG",0),
 						),
-				PF_RECURSION,
+				Fshl_Generator::PF_RECURSION,
 				"html-tagin",
 				null),
 
@@ -99,7 +99,7 @@ class Fshl_Lang_Html
 						"<?" => 		array("TO_PHP",0),
 						"_COUNTAB" =>	array("inTAG",0),
 						),
-				PF_RECURSION,
+				Fshl_Generator::PF_RECURSION,
 				"html-tagin",
 				null),
 
@@ -110,7 +110,7 @@ class Fshl_Lang_Html
 							">" => 			array("_RET",1),
 							// RET preto, lebo stav CSS bol z TAG volany rekurzivne a treba tuto rekurziu niekde ukoncit (podobne ako TAGin)
 							),
-					PF_NEWLANG,
+					Fshl_Generator::PF_NEWLANG,
 					"html-tag", /* =style*/
 					"CSS", /* =new language*/
 					),
@@ -125,7 +125,7 @@ class Fshl_Lang_Html
 						"<?" => 		array("TO_PHP",0),
 						"_COUNTAB" =>	array("inTAG",0),
 						),
-				PF_RECURSION,
+				Fshl_Generator::PF_RECURSION,
 				"html-tagin",
 				null),
 
@@ -135,7 +135,7 @@ class Fshl_Lang_Html
 					array(
 							">" => 			array("_RET",1),
 							),
-					PF_NEWLANG,
+					Fshl_Generator::PF_NEWLANG,
 					"html-tag", /* =style*/
 					"JS", /* =new language*/
 					),
@@ -149,7 +149,7 @@ class Fshl_Lang_Html
 						"<?" =>			array("TO_PHP",0),
 						"_COUNTAB" =>	array("QUOTE1",0),
 						),
-				PF_RECURSION,
+				Fshl_Generator::PF_RECURSION,
 				"html-quote",
 				null),
 
@@ -160,7 +160,7 @@ class Fshl_Lang_Html
 						"<?" => 		array("TO_PHP",0),
 						"_COUNTAB" =>	array("QUOTE2",0),
 						),
-				PF_RECURSION,
+				Fshl_Generator::PF_RECURSION,
 				"html-quote",
 				null),
 
@@ -180,7 +180,7 @@ class Fshl_Lang_Html
 					//stav je virtualny - nie su definovane ziadne prechody (null), cize po navrate z PHP je nadalej
 					//pouzivany stav, odkial bol TO_PHP volany
 					null,
-					PF_NEWLANG,
+					Fshl_Generator::PF_NEWLANG,
 					"xlang", /* =style*/
 					"PHP", /* =new language*/
 					),

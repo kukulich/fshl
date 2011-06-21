@@ -61,7 +61,7 @@ class Fshl_Lang_Python
 				array(
 						"!SAFECHAR" => array("_RET", 0)
 						),
-				PF_KEYWORD | PF_RECURSION,
+				Fshl_Generator::PF_KEYWORD | Fshl_Generator::PF_RECURSION,
 				null,
 				null),
 
@@ -72,7 +72,7 @@ class Fshl_Lang_Python
 						"\'''" => array("DOCSTRING1", 0),
 						"_COUNTAB" => array("DOCSTRING1", 0)
 						),
-				PF_RECURSION,
+				Fshl_Generator::PF_RECURSION,
 				"py-docstring",
 				null),
 
@@ -83,7 +83,7 @@ class Fshl_Lang_Python
 						'\"""' => array("DOCSTRING2", 0),
 						"_COUNTAB" => array("DOCSTRING2", 0)
 						),
-				PF_RECURSION,
+				Fshl_Generator::PF_RECURSION,
 				"py-docstring",
 				null),
 
@@ -94,7 +94,7 @@ class Fshl_Lang_Python
 						"\'" => array("QUOTE1", 0),
 						"_COUNTAB" => array("QUOTE1", 0)
 						),
-				PF_RECURSION,
+				Fshl_Generator::PF_RECURSION,
 				"py-quote",
 				null),
 
@@ -105,7 +105,7 @@ class Fshl_Lang_Python
 						'\"' => array("QUOTE2", 0),
 						"_COUNTAB" => array("QUOTE2", 0)
 						),
-				PF_RECURSION,
+				Fshl_Generator::PF_RECURSION,
 				"py-quote",
 				null),
 
@@ -114,7 +114,7 @@ class Fshl_Lang_Python
 						"\n" => array("_RET", 1),
 						"\t" => array("COMMENT", 0)
 						),
-				PF_RECURSION,
+				Fshl_Generator::PF_RECURSION,
 				"py-comment",
 				null),
 
@@ -124,7 +124,7 @@ class Fshl_Lang_Python
 						"l" => array("_RET", 0),
 						"!HEXNUM" => array("_RET", 1)
 						),
-				PF_RECURSION,
+				Fshl_Generator::PF_RECURSION,
 				"py-number",
 				null),
 
@@ -140,7 +140,7 @@ class Fshl_Lang_Python
 						"e" => array("NUM_EXPONENT", 0),
 						"!NUMBER" => array("_RET", 1)
 						),
-				PF_RECURSION,
+				Fshl_Generator::PF_RECURSION,
 				"py-number",
 				null),
 

@@ -61,7 +61,7 @@ class Fshl_Lang_Php
 						"<?php" => array("_RET",0),
 						"<?" => array("_RET",0),
 						),
-				PF_RECURSION,
+				Fshl_Generator::PF_RECURSION,
 				"xlang",
 				null),
 
@@ -70,7 +70,7 @@ class Fshl_Lang_Php
 				array(
 						"!SAFECHAR" => array("_RET",1),
 						),
-				PF_KEYWORD | PF_RECURSION,
+				Fshl_Generator::PF_KEYWORD | Fshl_Generator::PF_RECURSION,
 				null,									// temporary php comment
 				null),
 
@@ -80,7 +80,7 @@ class Fshl_Lang_Php
 						"_COUNTAB" => array("COMMENT",0),
 						"*/" => array("_RET",0),
 						),
-				PF_RECURSION,
+				Fshl_Generator::PF_RECURSION,
 				"php-comment",
 				null),
 
@@ -90,7 +90,7 @@ class Fshl_Lang_Php
 						"_COUNTAB" => array("COMMENT1",0),
 						"?>" => array("_RET",-1),
 						),
-				PF_RECURSION,
+				Fshl_Generator::PF_RECURSION,
 				"php-comment",
 				null),
 
@@ -103,7 +103,7 @@ class Fshl_Lang_Php
 						'}' => array("VAR",0),
 						"!SAFECHAR" => array("_RET",1),	//char back to stream
 						),
-				PF_RECURSION,
+				Fshl_Generator::PF_RECURSION,
 				"php-var",
 				null),
 
@@ -113,7 +113,7 @@ class Fshl_Lang_Php
 						"}" 	=> array("_RET",0),
 						"SPACE" => array("_RET",0),
 						),
-				PF_RECURSION,
+				Fshl_Generator::PF_RECURSION,
 				"php-var",
 				null),
 
@@ -128,7 +128,7 @@ class Fshl_Lang_Php
 						'{$' => array("VAR_STR",0),
 						"_COUNTAB" => array("QUOTE",0),
 						),
-				PF_RECURSION,
+				Fshl_Generator::PF_RECURSION,
 				"php-quote",
 				null),
 
@@ -139,7 +139,7 @@ class Fshl_Lang_Php
 						"\'" => array("QUOTE1",0),
 						"_COUNTAB" => array("QUOTE1",0),
 						),
-				PF_RECURSION,
+				Fshl_Generator::PF_RECURSION,
 				"php-quote",
 				null),
 
@@ -150,7 +150,7 @@ class Fshl_Lang_Php
 						"!NUMBER" => array("_RET",1),	//char back to stream
 						"NUMBER" => array("DEC_NUM",0),
 						),
-				PF_RECURSION,
+				Fshl_Generator::PF_RECURSION,
 				"php-num",
 				null),
 
@@ -171,7 +171,7 @@ class Fshl_Lang_Php
 				"php-num",
 				null),
 
-			"_QUIT" => array (null, PF_NEWLANG, "xlang", /* =style*/ "", /* =new language*/)
+			"_QUIT" => array (null, Fshl_Generator::PF_NEWLANG, "xlang", /* =style*/ "", /* =new language*/)
 
 		);
 // keywords

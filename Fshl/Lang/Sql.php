@@ -53,7 +53,7 @@ class Fshl_Lang_Sql
 						"NUMBER" => array("NUM",0),
 						"_COUNTAB" => array("OUT",0),
 						),
-				PF_KEYWORD,
+				Fshl_Generator::PF_KEYWORD,
 				null,
 				null),
 
@@ -61,7 +61,7 @@ class Fshl_Lang_Sql
 				array(
 						"!SAFECHAR" => array("_RET",1),
 						),
-				PF_KEYWORD | PF_RECURSION,
+				Fshl_Generator::PF_KEYWORD | Fshl_Generator::PF_RECURSION,
 				null,
 				null),
 
@@ -70,7 +70,7 @@ class Fshl_Lang_Sql
 						"*/" => array("_RET",0),
 						"_COUNTAB" => array("COMMENT",0),
 						),
-				PF_RECURSION,
+				Fshl_Generator::PF_RECURSION,
 				"sql-comment",
 				null),
 
@@ -81,7 +81,7 @@ class Fshl_Lang_Sql
 						//"\n" => array("_RET",0),
 						"_COUNTAB" => array("COMMENT1",0),
 						),
-				PF_RECURSION,
+				Fshl_Generator::PF_RECURSION,
 				"sql-comment",
 				null),
 
@@ -91,7 +91,7 @@ class Fshl_Lang_Sql
 						'"' => array("_RET",0),
 						"_COUNTAB" => array("QUOTE",0),
 						),
-				PF_RECURSION,
+				Fshl_Generator::PF_RECURSION,
 				"sql-value",
 				null),
 
@@ -102,7 +102,7 @@ class Fshl_Lang_Sql
 						"_COUNTAB" => array("QUOTE1",0),
 //						"%" => array("_RET",0),
 						),
-				PF_RECURSION,
+				Fshl_Generator::PF_RECURSION,
 				"sql-value",
 				null),
 
@@ -113,7 +113,7 @@ class Fshl_Lang_Sql
 						'`' => array("_RET",0),
 						"_COUNTAB" => array("QUOTE3",0),
 						),
-				PF_RECURSION,
+				Fshl_Generator::PF_RECURSION,
 				"sql-value",
 				null),
 
@@ -124,7 +124,7 @@ class Fshl_Lang_Sql
 						"NUMBER" => array("DEC_NUM",0),
 						"!NUMBER" => array("_RET",1)
 						),
-				PF_RECURSION,
+				Fshl_Generator::PF_RECURSION,
 				"sql-num",
 				null),
 
@@ -154,7 +154,7 @@ class Fshl_Lang_Sql
 						"TEXT" => 	array("OPTION",0),
 						"DATE" =>	array("OPTION",0),
 						),
-				PF_RECURSION,
+				Fshl_Generator::PF_RECURSION,
 				"sql-option",
 				null),
 

@@ -27,18 +27,39 @@
  * ---------------------------------------------------------------------
  */
 
-define ('FSHL_PARSER_VERSION', '0.4.20');
-
 if(!defined('FSHL_PATH')) {
 	define('FSHL_PATH', dirname(__FILE__).'/');		// thanx to martin*cohen & johno for this great hack:)
 }
-require_once(FSHL_PATH.'fshl-config.php');
+if(!defined('FSHL_CACHE')) {
+	define ('FSHL_CACHE', FSHL_PATH.'Lang/Cache/');
+}
 
-//!debug states
-//require_once(FSHL_PATH.'Helper.php');
+require_once FSHL_PATH . 'Generator.php';
 
 class Fshl_Highlighter
 {
+	const VERSION = '0.4.20';
+
+	const LANG_CPP = 'Cpp';
+	const LANG_CSS = 'Css';
+	const LANG_HTML = 'Html';
+	const LANG_HTML_ONLY = 'HtmlOnly';
+	const LANG_JAVA = 'Java';
+	const LANG_JAVASCRIPT = 'Javascript';
+	const LANG_PHP = 'Php';
+	const LANG_PYTHON = 'Python';
+	const LANG_SAFE = 'Safe';
+	const LANG_SQL = 'Sql';
+	const LANG_TEXY = 'Texy';
+
+	const OUTPUT_HTML = 'Html';
+	const OUTPUT_HTML_HELP = 'HtmlHelp';
+
+	CONST OPTION_DEFAULT = 0x0000;
+	CONST OPTION_TAB_INDENT = 0x0010;
+	CONST OPTION_LINE_COUNTER = 0x0020;
+
+
 	// class variables
 	var $text, $textlen, $textpos;
 	var $options, $output;
@@ -61,7 +82,7 @@ class Fshl_Highlighter
 	//
 
 	// class constructor
-	function __construct($output_mode, $options = 0, $tab_indent_value = 4)
+	function __construct($output_mode, $options = self::OPTION_DEFAULT, $tab_indent_value = 4)
 	{
 		$this->options  = $options;
 		// initialize output module
@@ -69,7 +90,7 @@ class Fshl_Highlighter
 		require_once FSHL_PATH . 'Output/' . $output_mode .'.php';
 		$this->output = new $outClass;
 		// initialize tab emulation and line counter
-		if($options & P_TAB_INDENT) {
+		if($options & self::OPTION_TAB_INDENT) {
 			if($tab_indent_value > 0) {
 				// precalculate table for tab indent emulation
 				$tab = ' ';
@@ -81,12 +102,12 @@ class Fshl_Highlighter
 				$this->tab_indent = $tab_indent_value;
 			} else {
 				$this->tabs = null;		// disable tab indent
-				$this->options &= ~P_TAB_INDENT;
+				$this->options &= ~self::OPTION_TAB_INDENT;
 			}
 		} else {
 			$this->tabs = null;
 		}
-		$this->line_counter = $options & P_LINE_COUNTER;
+		$this->line_counter = $options & self::OPTION_LINE_COUNTER;
 		// init defaults
 		$this->text_position = array(1,0,0);		// 1 = line, 0 = char in line
 		$this->max_line_width = -1;					// max line width
@@ -175,7 +196,7 @@ class Fshl_Highlighter
 			$file = FSHL_CACHE.$language.'.php';
 			if(!file_exists($file)) {
 				// if lexer doesn't exists use minimal line counter
-				$language = 'Safe';
+				$language = self::LANG_SAFE;
 				$file = FSHL_CACHE.$language.'.php';
 			}
 			require_once ($file);
@@ -259,14 +280,14 @@ class Fshl_Highlighter
 				}
 			}
 			//get new state from transitions table
-			$newstate = $this->_trans[$state][$word[0]][XL_DSTATE];
+			$newstate = $this->_trans[$state][$word[0]][Fshl_Generator::XL_DSTATE];
 			if($newstate == $this->_ret)
 			{
 				// Return to previous context (wrong named as recursion?:)
 				// Now we must choose delimiter processing (second value in destination array)
 				// type == 0 - style from current state will be applied at received delimiter
 				//         1 - delimiter will be returned to input stream
-				if($this->_trans[$state][$word[0]][XL_DTYPE]) {
+				if($this->_trans[$state][$word[0]][Fshl_Generator::XL_DTYPE]) {
 					$this->text_position = $prev_position;
 					$this->textpos = $prev_text_pos;
 					//$show_number = false;
@@ -293,8 +314,8 @@ class Fshl_Highlighter
 			// type == 0 - style from new state will be applied at received delimiter
 			//         1 - style from current state will be applied
 			//        -1 - delimiter must be returned to stream (back to previous position)
-			$type = $this->_trans[$state][$word[0]][XL_DTYPE];
-			if($type > 0) {			//if XL_DTYPE == 1
+			$type = $this->_trans[$state][$word[0]][Fshl_Generator::XL_DTYPE];
+			if($type > 0) {			//if Fshl_Generator::XL_DTYPE == 1
 				$this->template($word[1], $state);
 				if($show_number !== FALSE) {
 					$this->outf .= $this->output->template($show_number, 'count');
@@ -315,7 +336,7 @@ class Fshl_Highlighter
 			//
 			// switching between lexers (transition to embedded lexer)
 			//
-			if($this->_flags[$newstate] & PF_NEWLANG)
+			if($this->_flags[$newstate] & Fshl_Generator::PF_NEWLANG)
 			{
 				if($newstate == $this->_quit) {
 					if($this->popState($new_language, $state)) {
@@ -338,7 +359,7 @@ class Fshl_Highlighter
 			//
 			// if newstate is marked with recursion flag (alias call), push current state to context stack
 			// Call to current state is not allowed.
-			if($this->_flags[$newstate] & PF_RECURSION)
+			if($this->_flags[$newstate] & Fshl_Generator::PF_RECURSION)
 			{
 				//
 				if($state != $newstate) {
@@ -390,7 +411,7 @@ class Fshl_Highlighter
 	// template with keywords
 	//
 	function template($word, $state) {
-		if($this->_flags[$state] & PF_KEYWORD) {
+		if($this->_flags[$state] & Fshl_Generator::PF_KEYWORD) {
 			if($this->_keywords[2]) {
 				$word_key = $word;
 			} else {
@@ -475,7 +496,7 @@ class Fshl_Highlighter
 					if(isset($lexer->delim[$state][$trans_id])) {
 
 						$trans_string = '['.$lexer->delim[$state][$trans_id].'] -> ';
-						$new_state = $lexer->trans[$state][$trans_id][XL_DSTATE];
+						$new_state = $lexer->trans[$state][$trans_id][Fshl_Generator::XL_DSTATE];
 						$trans_string .= $lexer->names[$new_state];
 
 						$trans_string = str_replace("\n", "\\n", $trans_string);

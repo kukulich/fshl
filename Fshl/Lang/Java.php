@@ -62,7 +62,7 @@ class Fshl_Lang_Java
 				array(
 						"!SAFECHAR" => array("_RET", 0),
 					),
-				PF_KEYWORD | PF_RECURSION,
+				Fshl_Generator::PF_KEYWORD | Fshl_Generator::PF_RECURSION,
 				null,
 				null
 				),
@@ -77,7 +77,7 @@ class Fshl_Lang_Java
 						"NUMBER" => array("DEC_NUM",0),
 						"!NUMBER" => array("_RET",1)	//char back to stream
 						),
-				PF_RECURSION,
+				Fshl_Generator::PF_RECURSION,
 				"java-num",
 				null),
 
@@ -110,7 +110,7 @@ class Fshl_Lang_Java
 						"_COUNTAB" => array("QUOTE1",0),
 						"\"" => array("_RET",0),
 						),
-				PF_RECURSION,
+				Fshl_Generator::PF_RECURSION,
 				"java-quote",
 				null),
 
@@ -121,7 +121,7 @@ class Fshl_Lang_Java
 						"_COUNTAB" => array("QUOTE2",0),
 						"'" => array("_RET",0),
 						),
-				PF_RECURSION,
+				Fshl_Generator::PF_RECURSION,
 				"java-quote",
 				null),
 
@@ -132,7 +132,7 @@ class Fshl_Lang_Java
 						"*/" => array("_RET",0),
 						"_COUNTAB" => array("COMMENT1",0),
 						),
-				PF_RECURSION,
+				Fshl_Generator::PF_RECURSION,
 				"java-comment",
 				null),
 
@@ -141,7 +141,7 @@ class Fshl_Lang_Java
 						"\n" => array("_RET",0),
 						"\t" => array("COMMENT2",0),
 						),
-				PF_RECURSION,
+				Fshl_Generator::PF_RECURSION,
 				"java-comment",
 				null),
 

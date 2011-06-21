@@ -57,7 +57,7 @@ class Fshl_Lang_Css
 						"/*" =>				array("COMMENT",0),
 						"{" => 				array("_RET",1),
 					),
-				PF_RECURSION,
+				Fshl_Generator::PF_RECURSION,
 				"css-class",
 				null),
 
@@ -70,7 +70,7 @@ class Fshl_Lang_Css
 						"/*" =>				array("COMMENT",0),
 						"!SPACE" =>			array("PROPERTY",0),
 					),
-				PF_RECURSION,
+				Fshl_Generator::PF_RECURSION,
 				"",
 				null),
 
@@ -81,7 +81,7 @@ class Fshl_Lang_Css
 								"}" => 			array("_RET",1),
 								"/*" =>			array("COMMENT",0),
 							),
-						PF_RECURSION,
+						Fshl_Generator::PF_RECURSION,
 						"css-property",
 						null),
 
@@ -93,7 +93,7 @@ class Fshl_Lang_Css
 								"_COUNTAB" => 	array("VALUE",0),
 								"/*" =>			array("COMMENT",0),
 							),
-						PF_RECURSION,
+						Fshl_Generator::PF_RECURSION,
 						"css-value",
 						null),
 
@@ -101,7 +101,7 @@ class Fshl_Lang_Css
 						array(
 								"!HEXNUM" => 	array("_RET",1),
 							),
-						PF_RECURSION,
+						Fshl_Generator::PF_RECURSION,
 						"css-color",
 						null),
 
@@ -111,13 +111,13 @@ class Fshl_Lang_Css
 							"_COUNTAB" =>		array("COMMENT",0),
 							"*/" => 			array("_RET",0),
 						),
-					PF_RECURSION,
+					Fshl_Generator::PF_RECURSION,
 					"css-comment",
 					null),
 
 
-			"TO_PHP" => array (null, PF_NEWLANG, "xlang", /* =style*/ "PHP" /*  =new language*/),
-			"_QUIT" => array (null, PF_NEWLANG, "html-tag", /* =style*/ null, /* =new language*/)	//return to previous language
+			"TO_PHP" => array (null, Fshl_Generator::PF_NEWLANG, "xlang", /* =style*/ "PHP" /*  =new language*/),
+			"_QUIT" => array (null, Fshl_Generator::PF_NEWLANG, "html-tag", /* =style*/ null, /* =new language*/)	//return to previous language
 		);
 
 // keywords

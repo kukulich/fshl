@@ -142,7 +142,7 @@ class Fshl_Generator
 				//       or fshlGenerator::get_ctype_condition() or get_older_condition()
 				"PHP_DELIM"	=>		1,
 			);
-			$this->version = $this->lang->version;
+			$this->version = $langClass::VERSION;
 			if($this->language_array_optimise()) {
 				return;
 			}
@@ -219,7 +219,7 @@ class Fshl_Generator
 		// make class variables
 		$this->out.="\t".Fshl_Helper::getVarSource("this->version",$this->version);
 		$this->out.="\t".Fshl_Helper::getVarSource("this->generator_version",self::VERSION);
-		$this->out.="\t".Fshl_Helper::getVarSource("this->initial_state",$this->lang->initial_state);
+		$this->out.="\t".Fshl_Helper::getVarSource("this->initial_state",$this->_states[$this->lang->getInitialState()]);
 		$this->out.="\t".Fshl_Helper::getVarSource("this->trans",$this->_trans);
 		$this->out.="\t".Fshl_Helper::getVarSource("this->flags",$this->_flags);
 		$this->out.="\t".Fshl_Helper::getVarSource("this->delim",$this->_delim);
@@ -228,7 +228,7 @@ class Fshl_Generator
 		$this->out.="\t".Fshl_Helper::getVarSource("this->names",$this->_names);
 		$this->out.="\t".Fshl_Helper::getVarSource("this->data",$this->_data);
 		$this->out.="\t".Fshl_Helper::getVarSource("this->class",$this->_class);
-		$this->out.="\t".Fshl_Helper::getVarSource("this->keywords",$this->lang->keywords);
+		$this->out.="\t".Fshl_Helper::getVarSource("this->keywords",$this->lang->getKeywords());
 		//end constructor
 		$this->out.="}\n\n";
 
@@ -461,7 +461,7 @@ function getw4 (&$s, $i, $l) {
 	{
 		// internal language structures initialization
 		$j=0;
-		foreach ($this->lang->states as $state => $state_array)
+		foreach ($this->lang->getStates() as $state => $state_array)
 		{
 			if($state==self::P_QUIT_STATE)
 				continue;
@@ -473,7 +473,7 @@ function getw4 (&$s, $i, $l) {
 		$this->_names[$this->_ret] = self::P_RET_STATE;
 		$this->_names[$this->_quit] = self::P_QUIT_STATE;
 
-		foreach ($this->lang->states as $statename => $state_array)
+		foreach ($this->lang->getStates() as $statename => $state_array)
 		{
 			$state = $this->_states[$statename];
 			$this->_flags[$state] = $state_array[self::XL_FLAGS];
@@ -504,13 +504,12 @@ function getw4 (&$s, $i, $l) {
 				$this->_trans[$state]=null;
 			}
 		}
-		$initial = $this->lang->initial_state;
+		$initial = $this->lang->getInitialState();
 		if(!isset($this->_states[$initial]))
 		{
 			$this->print_error("Unknown initial state '<b>$initial</b>'.");
 			return $this->error = true;
 		}
-		$this->lang->initial_state=$this->_states[$initial];
 		return false;
 	}
 

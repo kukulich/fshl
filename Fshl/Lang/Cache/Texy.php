@@ -27,7 +27,7 @@ function __construct () {
 	$this->names=array(0=>'LineBODY',1=>'NewLineTypeSelector',2=>'SingleNewLine',3=>'DoubleNewLine',4=>'HeaderIN',5=>'HeaderBody',6=>'HeaderOUT',7=>'HorizontalLine',8=>'BlockIN',9=>'BlockOUT',10=>'BlockDUMMY',11=>'BlockTEXT',12=>'BlockTEXTBody',13=>'BlockTEXTBodyNL',14=>'BlockTEXTBodyOUT',15=>'BlockHTML',16=>'BlockHTMLBody',17=>'BlockHTMLBodyNL',18=>'BlockHTMLBodyOUT',19=>'BlockCODE',20=>'BlockCODEBody',21=>'BlockCODEBodyNL',22=>'BlockCODEBodyOUT',23=>'_RET',24=>'_QUIT');
 	$this->data=array(0=>null,1=>null,2=>null,3=>null,4=>null,5=>null,6=>null,7=>null,8=>null,9=>null,10=>null,11=>null,12=>null,13=>null,14=>null,15=>null,16=>null,17=>null,18=>null,19=>null,20=>null,21=>null,22=>null);
 	$this->class=array(0=>null,1=>null,2=>null,3=>null,4=>'texy-hlead',5=>'texy-hbody',6=>'texy-hlead',7=>'texy-hr',8=>'texy-hr',9=>'texy-hr',10=>'texy-hr',11=>'texy-hr',12=>'texy-text',13=>'texy-text',14=>'texy-hr',15=>'texy-hr',16=>'texy-html',17=>'texy-html',18=>'texy-hr',19=>'texy-hr',20=>'texy-code',21=>'texy-code',22=>'texy-hr');
-	$this->keywords=null;
+	$this->keywords=array();
 }
 
 // LineBODY

@@ -1,259 +1,283 @@
 <?php
-/*
+
+/**
  * FastSHL                              | Universal Syntax HighLighter |
  * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 
-   Copyright (C) 2002-2004  Juraj 'hvge' Durech
-
-   This program is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
- * ---------------------------------------------------------------------
- * PHP - SHL Language File
+/**
+ * PHP language file.
+ *
+ * @category Fshl
+ * @package Fshl
+ * @subpackage Lang
+ * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
+ * @copyright Copyright (c) 2011 Jaroslav Hanslík
+ * @license https://github.com/kukulich/fshl/blob/master/!LICENSE.txt
  */
 class Fshl_Lang_Php
 {
-	public $states;
-	public $initial_state;
-	public $keywords;
-	public $version;
+	/**
+	 * Version.
+	 *
+	 * @var string
+	 */
+	const VERSION = '1.29';
 
-	public function __construct()
+	/**
+	 * Returns initial state.
+	 *
+	 * @return string
+	 */
+	public function getInitialState()
 	{
-		$this->version = "1.29";
-		$this->initial_state = "OUT";
-		$this->states = array(
+		return 'OUT';
+	}
 
-			"OUT" => array (
+	/**
+	 * Returns states.
+	 *
+	 * @return array
+	 */
+	public function getStates()
+	{
+		return array(
+			'OUT' => array(
 				array(
-						"_COUNTAB" => array("OUT",0),
-						//"PHP_DELIM" => array("OUT",0),
-						"$" => array("VAR",0),
-						"ALPHA" => array("FUNCTION",-1),		// -1 - char back to stream
-						"'" => array("QUOTE1",0),
-						'"' => array("QUOTE",0),
-						"//" => array("COMMENT1",0),
-						"NUMBER" => array("NUM",0),
-						"?>" => array("_QUIT",0),
-						"/*" => array("COMMENT",0) ,
-						"<?" => array("DUMMY_PHP",-1),
-						"#" => array("COMMENT1",0),
-						),
+					'_COUNTAB' => array('OUT', 0),
+					'$' => array('VAR', 0),
+					'ALPHA' => array('FUNCTION', -1),
+					'\'' => array('QUOTE1', 0),
+					'"' => array('QUOTE', 0),
+					'//' => array('COMMENT1', 0),
+					'NUMBER' => array('NUM', 0),
+					'?>' => array(Fshl_Generator::P_QUIT_STATE, 0),
+					'/*' => array('COMMENT', 0) ,
+					'<?' => array('DUMMY_PHP',-1),
+					'#' => array('COMMENT1', 0)
+				),
 				0,
-				null,											// null = "normal"
-				null),
-
-			"DUMMY_PHP" => array(
+				null,
+				null
+			),
+			'DUMMY_PHP' => array(
 				array(
-						"<?php" => array("_RET",0),
-						"<?" => array("_RET",0),
-						),
+					'<?php' => array(Fshl_Generator::P_RET_STATE, 0),
+					'<?' => array(Fshl_Generator::P_RET_STATE, 0)
+				),
 				Fshl_Generator::PF_RECURSION,
-				"xlang",
-				null),
-
-
-			"FUNCTION" => array(
+				'xlang',
+				null
+			),
+			'FUNCTION' => array(
 				array(
-						"!SAFECHAR" => array("_RET",1),
-						),
+					'!SAFECHAR' => array(Fshl_Generator::P_RET_STATE, 1)
+				),
 				Fshl_Generator::PF_KEYWORD | Fshl_Generator::PF_RECURSION,
-				null,									// temporary php comment
-				null),
-
-			//rekurzivna implementacia komentarov
-			"COMMENT" => array(
+				null,
+				null
+			),
+			'COMMENT' => array(
 				array(
-						"_COUNTAB" => array("COMMENT",0),
-						"*/" => array("_RET",0),
-						),
+					'_COUNTAB' => array('COMMENT', 0),
+					'*/' => array(Fshl_Generator::P_RET_STATE, 0)
+				),
 				Fshl_Generator::PF_RECURSION,
-				"php-comment",
-				null),
-
-			"COMMENT1" => array(
+				'php-comment',
+				null
+			),
+			'COMMENT1' => array(
 				array(
-						"\n" => array("_RET",0),
-						"_COUNTAB" => array("COMMENT1",0),
-						"?>" => array("_RET",-1),
-						),
+					"\n" => array(Fshl_Generator::P_RET_STATE, 0),
+					'_COUNTAB' => array('COMMENT1', 0),
+					'?>' => array(Fshl_Generator::P_RET_STATE, -1)
+				),
 				Fshl_Generator::PF_RECURSION,
-				"php-comment",
-				null),
-
-			//rekurzivna implementacia var
-			"VAR" => array(
+				'php-comment',
+				null
+			),
+			'VAR' => array(
 				array(
-						//"->" => array("VAR",0),	// "method as variable bug"
-						'$' => array("VAR",0),
-						'{' => array("VAR",0),
-						'}' => array("VAR",0),
-						"!SAFECHAR" => array("_RET",1),	//char back to stream
-						),
+					'$' => array('VAR', 0),
+					'{' => array('VAR', 0),
+					'}' => array('VAR', 0),
+					'!SAFECHAR' => array(Fshl_Generator::P_RET_STATE, 1)
+				),
 				Fshl_Generator::PF_RECURSION,
-				"php-var",
-				null),
-
-			//rekurzivna implementacia var
-			"VAR_STR" => array(
+				'php-var',
+				null
+			),
+			'VAR_STR' => array(
 				array(
-						"}" 	=> array("_RET",0),
-						"SPACE" => array("_RET",0),
-						),
+					'}' => array(Fshl_Generator::P_RET_STATE, 0),
+					'SPACE' => array(Fshl_Generator::P_RET_STATE, 0)
+				),
 				Fshl_Generator::PF_RECURSION,
-				"php-var",
-				null),
-
-
-			//rekurzivna implementacia stringu
-			"QUOTE" => array(
+				'php-var',
+				null
+			),
+			'QUOTE' => array(
 				array(
-						'"' => array("_RET",0),
-						'\\\\' => array("QUOTE",0),
-						'\"' => array("QUOTE",0),
-						'$' => array("VAR",0),
-						'{$' => array("VAR_STR",0),
-						"_COUNTAB" => array("QUOTE",0),
-						),
+					'"' => array(Fshl_Generator::P_RET_STATE, 0),
+					'\\\\' => array('QUOTE', 0),
+					'\\"' => array('QUOTE', 0),
+					'$' => array('VAR', 0),
+					'{$' => array('VAR_STR', 0),
+					'_COUNTAB' => array('QUOTE', 0)
+				),
 				Fshl_Generator::PF_RECURSION,
-				"php-quote",
+				'php-quote',
 				null),
-
-			"QUOTE1" => array(
+			'QUOTE1' => array(
 				array(
-						"'" => array("_RET",0),
-						"\\\\" => array("QUOTE1",0),
-						"\'" => array("QUOTE1",0),
-						"_COUNTAB" => array("QUOTE1",0),
-						),
+					'\'' => array(Fshl_Generator::P_RET_STATE, 0),
+					'\\\\' => array('QUOTE1', 0),
+					'\\\'' => array('QUOTE1', 0),
+					'_COUNTAB' => array('QUOTE1', 0)
+				),
 				Fshl_Generator::PF_RECURSION,
-				"php-quote",
-				null),
-
-			//rekurzivna implementacia cisla
-			"NUM" => array(
+				'php-quote',
+				null
+			),
+			'NUM' => array(
 				array(
-						"x" => array("HEX_NUM",0),
-						"!NUMBER" => array("_RET",1),	//char back to stream
-						"NUMBER" => array("DEC_NUM",0),
-						),
+					'x' => array('HEX_NUM', 0),
+					'!NUMBER' => array(Fshl_Generator::P_RET_STATE, 1),
+					'NUMBER' => array('DEC_NUM', 0)
+				),
 				Fshl_Generator::PF_RECURSION,
-				"php-num",
-				null),
-
-			"DEC_NUM" => array(
+				'php-num',
+				null
+			),
+			'DEC_NUM' => array(
 				array(
-						"!NUMBER" => array("_RET",1)	//char back to stream
-						),
+					'!NUMBER' => array(Fshl_Generator::P_RET_STATE, 1)
+				),
 				0,
-				"php-num",
-				null),
-
-
-			"HEX_NUM" => array(
+				'php-num',
+				null
+			),
+			'HEX_NUM' => array(
 				array(
-						"!HEXNUM" => array("_RET",1)	//char back to stream
-						),
+					'!HEXNUM' => array(Fshl_Generator::P_RET_STATE, 1)
+				),
 				0,
-				"php-num",
-				null),
-
-			"_QUIT" => array (null, Fshl_Generator::PF_NEWLANG, "xlang", /* =style*/ "", /* =new language*/)
-
+				'php-num',
+				null
+			),
+			Fshl_Generator::P_QUIT_STATE => array(
+				null,
+				Fshl_Generator::PF_NEWLANG,
+				'xlang',
+				''
+			)
 		);
-// keywords
-		$this->keywords = array(
-			"php-keyword",
+	}
+
+	/**
+	 * Returns keywords.
+	 *
+	 * @return array
+	 */
+	public function getKeywords()
+	{
+		return array(
+			'php-keyword',
 			array(
 				// Keywords
-				"abstract" => 1,
-				"and" => 1,
-				"array" => 1,
-				"as" => 1,
-				"break" => 1,
-				"case" => 1,
-				"catch" => 1,
-				"class" => 1,
-				"clone" => 1,
-				"const" => 1,
-				"continue" => 1,
-				"declare" => 1,
-				"default" => 1,
-				"do" => 1,
-				"else" => 1,
-				"elseif" => 1,
-				"enddeclare" => 1,
-				"endfor" => 1,
-				"endforeach" => 1,
-				"endif" => 1,
-				"endswitch" => 1,
-				"endwhile" => 1,
-				"extends" => 1,
-				"final" => 1,
-				"for" => 1,
-				"foreach" => 1,
-				"function" => 1,
-				"global" => 1,
-				"goto" => 1,
-				"if" => 1,
-				"implements" => 1,
-				"interface" => 1,
-				"instanceof" => 1,
-				"namespace" => 1,
-				"new" => 1,
-				"or" => 1,
-				"private" => 1,
-				"protected" => 1,
-				"public" => 1,
-				"static" => 1,
-				"switch" => 1,
-				"throw" => 1,
-				"try" => 1,
-				"use" => 1,
-				"var" => 1,
-				"while" => 1,
-				"xor" => 1,
+				'abstract' => 1,
+				'and' => 1,
+				'array' => 1,
+				'as' => 1,
+				'break' => 1,
+				'case' => 1,
+				'catch' => 1,
+				'class' => 1,
+				'clone' => 1,
+				'const' => 1,
+				'continue' => 1,
+				'declare' => 1,
+				'default' => 1,
+				'do' => 1,
+				'else' => 1,
+				'elseif' => 1,
+				'enddeclare' => 1,
+				'endfor' => 1,
+				'endforeach' => 1,
+				'endif' => 1,
+				'endswitch' => 1,
+				'endwhile' => 1,
+				'extends' => 1,
+				'final' => 1,
+				'for' => 1,
+				'foreach' => 1,
+				'function' => 1,
+				'global' => 1,
+				'goto' => 1,
+				'if' => 1,
+				'implements' => 1,
+				'interface' => 1,
+				'instanceof' => 1,
+				'namespace' => 1,
+				'new' => 1,
+				'or' => 1,
+				'private' => 1,
+				'protected' => 1,
+				'public' => 1,
+				'static' => 1,
+				'switch' => 1,
+				'throw' => 1,
+				'try' => 1,
+				'use' => 1,
+				'var' => 1,
+				'while' => 1,
+				'xor' => 1,
 
 				// Compile-time constants
-				"__CLASS__" => 1,
-				"__DIR__" => 1,
-				"__FILE__" => 1,
-				"__LINE__" => 1,
-				"__FUNCTION__" => 1,
-				"__METHOD__" => 1,
-				"__NAMESPACE__" => 1,
+				'__CLASS__' => 1,
+				'__DIR__' => 1,
+				'__FILE__' => 1,
+				'__LINE__' => 1,
+				'__FUNCTION__' => 1,
+				'__METHOD__' => 1,
+				'__NAMESPACE__' => 1,
 
 				// Language constructs
-				"die" => 1,
-				"echo" => 1,
-				"empty" => 1,
-				"exit" => 1,
-				"eval" => 1,
-				"include" => 1,
-				"include_once" => 1,
-				"isset" => 1,
-				"list" => 1,
-				"require" => 1,
-				"require_once" => 1,
-				"return" => 1,
-				"print" => 1,
-				"unset" => 1,
+				'die' => 1,
+				'echo' => 1,
+				'empty' => 1,
+				'exit' => 1,
+				'eval' => 1,
+				'include' => 1,
+				'include_once' => 1,
+				'isset' => 1,
+				'list' => 1,
+				'require' => 1,
+				'require_once' => 1,
+				'return' => 1,
+				'print' => 1,
+				'unset' => 1,
 
 				// Types
-				"true" => 1,
-				"false" => 1,
-				"null" => 1,
+				'true' => 1,
+				'false' => 1,
+				'null' => 1,
 
 				// Function list
 				'abs' => 2,
@@ -3550,7 +3574,7 @@ class Fshl_Lang_Php
 				'zip_read' => 2,
 				'zlib_get_coding_type' => 2
 			),
-			false	// case non sensitive
+			false
 		);
 	}
 }

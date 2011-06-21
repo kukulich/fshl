@@ -27,7 +27,7 @@ function __construct () {
 	$this->names=array(0=>'OUT',1=>'ENTITY',2=>'TAG',3=>'inTAG',4=>'QUOTE1',5=>'QUOTE2',6=>'COMMENT',7=>'_RET',8=>'_QUIT');
 	$this->data=array(0=>null,1=>null,2=>null,3=>null,4=>null,5=>null,6=>null);
 	$this->class=array(0=>null,1=>'html-entity',2=>'html-tag',3=>'html-tagin',4=>'html-quote',5=>'html-quote',6=>'html-comment');
-	$this->keywords=null;
+	$this->keywords=array();
 }
 
 // OUT

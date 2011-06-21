@@ -27,7 +27,7 @@ function __construct () {
 	$this->names=array(0=>'OUT',1=>'CLASS',2=>'DEF',3=>'PROPERTY',4=>'VALUE',5=>'COLOR',6=>'COMMENT',7=>'TO_PHP',8=>'_RET',9=>'_QUIT');
 	$this->data=array(0=>null,1=>null,2=>null,3=>null,4=>null,5=>null,6=>null,7=>'PHP',9=>null);
 	$this->class=array(0=>null,1=>'css-class',2=>'',3=>'css-property',4=>'css-value',5=>'css-color',6=>'css-comment',7=>'xlang',9=>'html-tag');
-	$this->keywords=null;
+	$this->keywords=array();
 }
 
 // OUT

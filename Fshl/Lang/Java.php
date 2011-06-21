@@ -1,153 +1,169 @@
 <?php
-/*
+
+/**
  * FastSHL                              | Universal Syntax HighLighter |
  * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 
-   Copyright (C) 2002-2003  Juraj 'hvge' Durech
-
-   This program is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
- * ---------------------------------------------------------------------
- * JAVA - SHL Language File
+/**
+ * Java language file.
+ *
+ * @category Fshl
+ * @package Fshl
+ * @subpackage Lang
+ * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
+ * @copyright Copyright (c) 2011 Jaroslav Hanslík
+ * @license https://github.com/kukulich/fshl/blob/master/!LICENSE.txt
  */
 class Fshl_Lang_Java
 {
-	public $states;
-	public $initial_state;
-	public $keywords;
-	public $version;
+	/**
+	 * Version.
+	 *
+	 * @var string
+	 */
+	const VERSION = '1.2';
 
-	public function __construct()
+	/**
+	 * Returns initial state.
+	 *
+	 * @return string
+	 */
+	public function getInitialState()
 	{
-		$this->version = "1.2";
-		$this->initial_state="OUT";
-		$this->states = array(
+		return 'OUT';
+	}
 
-	// initial state
-
-			"OUT" => array (
+	/**
+	 * Returns states.
+	 *
+	 * @return array
+	 */
+	public function getStates()
+	{
+		return array(
+			'OUT' => array(
 				array(
-						//"#" => array("PREPROC", 0),
-						"ALPHA" => array("KEYWORD", -1),
-						"NUMBER" => array("NUM",0),
-						"\"" => array("QUOTE1", 0),
-						"'" => array("QUOTE2", 0),
-						"/*" => array("COMMENT1",0),
-						"//" => array("COMMENT2",0),
-						//"PHP_DELIM" => array("OUT",0),
-						"_COUNTAB" => array("OUT",0),
-						),
+					'ALPHA' => array('KEYWORD', -1),
+					'NUMBER' => array('NUM', 0),
+					'"' => array('QUOTE1', 0),
+					'\'' => array('QUOTE2', 0),
+					'/*' => array('COMMENT1', 0),
+					'//' => array('COMMENT2', 0),
+					'_COUNTAB' => array('OUT', 0)
+				),
 				0,
 				null,
 				null
-				),
-
-	// keyword
-
-			"KEYWORD" => array (
+			),
+			// Keyword
+			'KEYWORD' => array(
 				array(
-						"!SAFECHAR" => array("_RET", 0),
-					),
+					'!SAFECHAR' => array(Fshl_Generator::P_RET_STATE, 0)
+				),
 				Fshl_Generator::PF_KEYWORD | Fshl_Generator::PF_RECURSION,
 				null,
 				null
+			),
+			// Numbers
+			'NUM' => array(
+				array(
+					'x' => array('HEX_NUM', 0),
+					'.' => array('DEC_NUM', 0),
+					'NUMBER' => array('DEC_NUM', 0),
+					'!NUMBER' => array(Fshl_Generator::P_RET_STATE, 1)
 				),
-
-
-	// NUMBERS
-
-			"NUM" => array(
-				array(
-						"x" => array("HEX_NUM",0),
-						"." => array("DEC_NUM", 0),		//float
-						"NUMBER" => array("DEC_NUM",0),
-						"!NUMBER" => array("_RET",1)	//char back to stream
-						),
 				Fshl_Generator::PF_RECURSION,
-				"java-num",
-				null),
-
-			"DEC_NUM" => array(
+				'java-num',
+				null
+			),
+			'DEC_NUM' => array(
 				array(
-						"." => array("DEC_NUM", 0),
-						//"f" => array("DEC_NUM", 0),
-						"!NUMBER" => array("_RET",1)	//char back to stream
-						),
+					'.' => array('DEC_NUM', 0),
+					'!NUMBER' => array(Fshl_Generator::P_RET_STATE, 1)
+				),
 				0,
-				"java-num",
-				null),
-
-
-			"HEX_NUM" => array(
+				'java-num',
+				null
+			),
+			'HEX_NUM' => array(
 				array(
-						"!HEXNUM" => array("_RET",1)	//char back to stream
-						),
+					'!HEXNUM' => array(Fshl_Generator::P_RET_STATE, 1)
+				),
 				0,
-				"java-num",
-				null),
-
-
-	// quotes BF definition, TODO...
-
-			"QUOTE1" => array(
+				'java-num',
+				null
+			),
+			// Quotes BF definition
+			'QUOTE1' => array(
 				array(
-						"\\\\" => array("QUOTE1",0),
-						"\\\"" => array("QUOTE1",0),
-						"_COUNTAB" => array("QUOTE1",0),
-						"\"" => array("_RET",0),
-						),
+					'\\\\' => array('QUOTE1', 0),
+					'\\"' => array('QUOTE1', 0),
+					'_COUNTAB' => array('QUOTE1', 0),
+					'"' => array(Fshl_Generator::P_RET_STATE, 0)
+				),
 				Fshl_Generator::PF_RECURSION,
-				"java-quote",
-				null),
-
-			"QUOTE2" => array(
+				'java-quote',
+				null
+			),
+			'QUOTE2' => array(
 				array(
-						"\\\\" => array("QUOTE2",0),
-						"\\'"  => array("QUOTE2",0),
-						"_COUNTAB" => array("QUOTE2",0),
-						"'" => array("_RET",0),
-						),
+					'\\\\' => array('QUOTE2', 0),
+					'\\\''  => array('QUOTE2', 0),
+					'_COUNTAB' => array('QUOTE2', 0),
+					'\'' => array(Fshl_Generator::P_RET_STATE, 0)
+				),
 				Fshl_Generator::PF_RECURSION,
-				"java-quote",
-				null),
-
-	// comments
-
-			"COMMENT1" => array(
+				'java-quote',
+				null
+			),
+			// Comments
+			'COMMENT1' => array(
 				array(
-						"*/" => array("_RET",0),
-						"_COUNTAB" => array("COMMENT1",0),
-						),
+					'*/' => array(Fshl_Generator::P_RET_STATE, 0),
+					'_COUNTAB' => array('COMMENT1', 0)
+				),
 				Fshl_Generator::PF_RECURSION,
-				"java-comment",
-				null),
-
-			"COMMENT2" => array(
+				'java-comment',
+				null
+			),
+			'COMMENT2' => array(
 				array(
-						"\n" => array("_RET",0),
-						"\t" => array("COMMENT2",0),
-						),
+					"\n" => array(Fshl_Generator::P_RET_STATE, 0),
+					"\t" => array('COMMENT2', 0)
+				),
 				Fshl_Generator::PF_RECURSION,
-				"java-comment",
-				null),
-
-
+				'java-comment',
+				null
+			)
 		);
+	}
 
-		$this->keywords=array(
-			"java-keywords",
+	/**
+	 * Returns keywords.
+	 *
+	 * @return array
+	 */
+	public function getKeywords()
+	{
+		return array(
+			'java-keywords',
 			array(
 				'abstract' => 1,
 				'double' => 1,
@@ -196,10 +212,9 @@ class Fshl_Lang_Java
 				'do' => 1,
 				'instanceof' => 1,
 				'static' => 1,
-				'while' => 1,
+				'while' => 1
 			),
 			true
 		);
 	}
 }
-?>

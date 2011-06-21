@@ -1,191 +1,205 @@
 <?php
-/*
+
+/**
  * FastSHL                              | Universal Syntax HighLighter |
  * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 
-   Copyright (C) 2002-2004  Juraj 'hvge' Durech
-
-   This program is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
- * ---------------------------------------------------------------------
- * HTML - SHL Language File
+/**
+ * HTML language file.
+ *
+ * @category Fshl
+ * @package Fshl
+ * @subpackage Lang
+ * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
+ * @copyright Copyright (c) 2011 Jaroslav Hanslík
+ * @license https://github.com/kukulich/fshl/blob/master/!LICENSE.txt
  */
 class Fshl_Lang_Html
 {
-	public $states;
-	public $initial_state;
-	public $keywords;
-	public $version;
+	/**
+	 * Version.
+	 *
+	 * @var string
+	 */
+	const VERSION = '1.11';
 
-	public function __construct()
+	/**
+	 * Returns initial state.
+	 *
+	 * @return string
+	 */
+	public function getInitialState()
 	{
-		$this->version = "1.11";
-		$this->initial_state="OUT";
-		$this->states = array(
+		return 'OUT';
+	}
 
-			"OUT" => array (
+	/**
+	 * Returns states.
+	 *
+	 * @return array
+	 */
+	public function getStates()
+	{
+		return array(
+			'OUT' => array(
 				array(
-						"<!--" =>		array("COMMENT",0),
-						"<?php" =>		array("TO_PHP",0),
-						"<?" =>			array("TO_PHP",0),
-						"<" =>			array("TAG",0),
-						"&" =>			array("ENTITY",0),
-						"_COUNTAB" =>	array("OUT",0),
-						),
+					'<!--' => array('COMMENT', 0),
+					'<?php' => array('TO_PHP', 0),
+					'<?' => array('TO_PHP', 0),
+					'<' => array('TAG', 0),
+					'&' => array('ENTITY', 0),
+					'_COUNTAB' => array('OUT', 0)
+				),
 				0,
 				null,
 				null
+			),
+			'ENTITY' => array(
+				array(
+					';' => array('OUT', 1),
+					'&' => array('OUT', 1),
+					'SPACE' => array('OUT', 1)
 				),
-
-			"ENTITY" => array(
-				array(
-					";" =>			array("OUT",1),
-					"&" =>			array("OUT",1),
-					"SPACE" =>		array("OUT",1),
-					),
 				0,
-				"html-entity",
-				null),
-
-			"TAG" => array (
+				'html-entity',
+				null
+			),
+			'TAG' => array(
 				array(
-					">" =>			array("OUT",1),
-					"SPACE" =>		array("inTAG",0),
-					"style" =>		array("CSS",1),				//zachovame farbu tagu
-					"STYLE" =>		array("CSS",1),
-					"script" =>		array("JAVASCRIPT",1),		//zachovame farbu tagu
-					"SCRIPT" =>		array("JAVASCRIPT",1),
-					"<?php" =>		array("TO_PHP",0),
-					"<?" =>			array("TO_PHP",0)
-					),
+					'>' => array('OUT', 1),
+					'SPACE' => array('inTAG', 0),
+					'style' => array('CSS', 1),
+					'STYLE' => array('CSS', 1),
+					'script' => array('JAVASCRIPT', 1),
+					'SCRIPT' => array('JAVASCRIPT', 1),
+					'<?php' => array('TO_PHP', 0),
+					'<?' => array('TO_PHP', 0)
+				),
 				0,
-				"html-tag",
-				null),
-
-			"inTAG" => array(
+				'html-tag',
+				null
+			),
+			'inTAG' => array(
 				array(
-						"\"" =>			array("QUOTE1",0),
-						">" => 			array("_RET",1),
-						"'" => 			array("QUOTE2",0),
-						"<?php" => 		array("TO_PHP",0),
-						"<?" => 		array("TO_PHP",0),
-						"_COUNTAB" =>	array("inTAG",0),
-						),
+					'"' => array('QUOTE1', 0),
+					'>' => array(Fshl_Generator::P_RET_STATE, 1),
+					'\'' => array('QUOTE2', 0),
+					'<?php' => array('TO_PHP', 0),
+					'<?' => array('TO_PHP', 0),
+					'_COUNTAB' => array('inTAG', 0)
+				),
 				Fshl_Generator::PF_RECURSION,
-				"html-tagin",
-				null),
-
-			//CSS je to iste ako inTAG az na male zmeny
-			"CSS" => array(
+				'html-tagin',
+				null
+			),
+			'CSS' => array(
 				array(
-						"\"" => 		array("QUOTE1",0),
-						"'" => 			array("QUOTE2",0),
-						">" => 			array("TO_CSS",0),
-						"<?php" => 		array("TO_PHP",0),
-						"<?" => 		array("TO_PHP",0),
-						"_COUNTAB" =>	array("inTAG",0),
-						),
+					'"' => array('QUOTE1', 0),
+					'\'' => array('QUOTE2', 0),
+					'>' => array('TO_CSS', 0),
+					'<?php' => array('TO_PHP', 0),
+					'<?' => array('TO_PHP', 0),
+					'_COUNTAB' => array('inTAG', 0)
+				),
 				Fshl_Generator::PF_RECURSION,
-				"html-tagin",
-				null),
-
-			//TO_CSS - port to CSS language.
-			//Stav nie je virtualny, po navrate z jazyka CSS sa pouziju prechody...
-			"TO_CSS" => array (
-					array(
-							">" => 			array("_RET",1),
-							// RET preto, lebo stav CSS bol z TAG volany rekurzivne a treba tuto rekurziu niekde ukoncit (podobne ako TAGin)
-							),
-					Fshl_Generator::PF_NEWLANG,
-					"html-tag", /* =style*/
-					"CSS", /* =new language*/
-					),
-
-			//JAVASCRIPT je to iste ako inTAG az na male zmeny
-			"JAVASCRIPT" => array(
+				'html-tagin',
+				null
+			),
+			'TO_CSS' => array(
 				array(
-						"\"" => 		array("QUOTE1",0),
-						"'" => 			array("QUOTE2",0),
-						">" => 			array("TO_JAVASCRIPT",0),
-						"<?php" => 		array("TO_PHP",0),
-						"<?" => 		array("TO_PHP",0),
-						"_COUNTAB" =>	array("inTAG",0),
-						),
+					'>' => array(Fshl_Generator::P_RET_STATE, 1)
+				),
+				Fshl_Generator::PF_NEWLANG,
+				'html-tag',
+				'CSS'
+			),
+			'JAVASCRIPT' => array(
+				array(
+					'"' => array('QUOTE1', 0),
+					'\'' => array('QUOTE2', 0),
+					'>' => array('TO_JAVASCRIPT', 0),
+					'<?php' => array('TO_PHP', 0),
+					'<?' => array('TO_PHP', 0),
+					'_COUNTAB' => array('inTAG', 0)
+				),
 				Fshl_Generator::PF_RECURSION,
-				"html-tagin",
-				null),
-
-			//TO_JAVACSRIPT - port to JS language.
-			//Stav nie je virtualny, po navrate z jazyka JS sa pouziju prechody...
-			"TO_JAVASCRIPT" => array (
-					array(
-							">" => 			array("_RET",1),
-							),
-					Fshl_Generator::PF_NEWLANG,
-					"html-tag", /* =style*/
-					"JS", /* =new language*/
-					),
-
-
-
-			"QUOTE1" => array(
+				'html-tagin',
+				null
+			),
+			'TO_JAVASCRIPT' => array(
 				array(
-						"\"" =>			array("_RET",0),
-						"<?php" =>		array("TO_PHP",0),
-						"<?" =>			array("TO_PHP",0),
-						"_COUNTAB" =>	array("QUOTE1",0),
-						),
+					'>' => array(Fshl_Generator::P_RET_STATE, 1)
+				),
+				Fshl_Generator::PF_NEWLANG,
+				'html-tag',
+				'JS'
+			),
+			'QUOTE1' => array(
+				array(
+					'"' => array(Fshl_Generator::P_RET_STATE, 0),
+					'<?php' => array('TO_PHP', 0),
+					'<?' => array('TO_PHP', 0),
+					'_COUNTAB' => array('QUOTE1', 0)
+				),
 				Fshl_Generator::PF_RECURSION,
-				"html-quote",
-				null),
-
-			"QUOTE2" => array(
+				'html-quote',
+				null
+			),
+			'QUOTE2' => array(
 				array(
-						"'" => 			array("_RET",0),
-						"<?php" => 		array("TO_PHP",0),
-						"<?" => 		array("TO_PHP",0),
-						"_COUNTAB" =>	array("QUOTE2",0),
-						),
+					'\'' => array(Fshl_Generator::P_RET_STATE, 0),
+					'<?php' => array('TO_PHP', 0),
+					'<?' => array('TO_PHP', 0),
+					'_COUNTAB' => array('QUOTE2', 0)
+				),
 				Fshl_Generator::PF_RECURSION,
-				"html-quote",
-				null),
-
-			"COMMENT" => array(
+				'html-quote',
+				null
+			),
+			'COMMENT' => array(
 				array(
-						"-->" =>	 	array("OUT",1),
-						"<?php" =>		array("TO_PHP",0),
-						"<?" =>			array("TO_PHP",0),
-						"_COUNTAB" =>	array("COMMENT",0),
-						),
+					'-->' => array('OUT', 1),
+					'<?php' => array('TO_PHP', 0),
+					'<?' => array('TO_PHP', 0),
+					'_COUNTAB' => array('COMMENT', 0)
+				),
 				0,
-				"html-comment",
-				null),
-
-			//TO_PHP - port to PHP language
-			"TO_PHP" => array (
-					//stav je virtualny - nie su definovane ziadne prechody (null), cize po navrate z PHP je nadalej
-					//pouzivany stav, odkial bol TO_PHP volany
-					null,
-					Fshl_Generator::PF_NEWLANG,
-					"xlang", /* =style*/
-					"PHP", /* =new language*/
-					),
-
+				'html-comment',
+				null
+			),
+			'TO_PHP' => array(
+				null,
+				Fshl_Generator::PF_NEWLANG,
+				'xlang',
+				'PHP'
+			)
 		);
+	}
 
-		$this->keywords=null;
+	/**
+	 * Returns keywords.
+	 *
+	 * @return array
+	 */
+	public function getKeywords()
+	{
+		return array();
 	}
 }
-?>

@@ -1,158 +1,186 @@
 <?php
-/*
+
+/**
  * FastSHL                              | Universal Syntax HighLighter |
  * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 
-   Copyright (C) 2002-2006  Juraj 'hvge' Durech
-
-   This program is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
- * ---------------------------------------------------------------------
- * JS - JavaScript SHL Language File
+/**
+ * Javascript language file.
+ *
+ * @category Fshl
+ * @package Fshl
+ * @subpackage Lang
+ * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
+ * @copyright Copyright (c) 2011 Jaroslav Hanslík
+ * @license https://github.com/kukulich/fshl/blob/master/!LICENSE.txt
  */
 class Fshl_Lang_Javascript
 {
-	public $states;
-	public $initial_state;
-	public $keywords;
-	public $version;
+	/**
+	 * Version.
+	 *
+	 * @var string
+	 */
+	const VERSION = '1.2';
 
-	public function __construct()
+	/**
+	 * Returns initial state.
+	 *
+	 * @return string
+	 */
+	public function getInitialState()
 	{
-		$this->version = "1.2";
-		$this->initial_state="OUT";
-		$this->states = array(
+		return 'OUT';
+	}
 
-	// initial state
-
-			"OUT" => array (
+	/**
+	 * Returns states.
+	 *
+	 * @return array
+	 */
+	public function getStates()
+	{
+		return array(
+			'OUT' => array(
 				array(
-						"_COUNTAB" => array("OUT",0),
-						"ALPHA" => array("KEYWORD", -1),
-						"." => array("KEYWORD", 1),
-						"NUMBER" => array("NUM",0),
-						"\"" => array("QUOTE1", 0),
-						"'" => array("QUOTE2", 0),
-						"/*" => array("COMMENT1",0),
-						"//" => array("COMMENT2",0),
-						"<?php" => 			array("TO_PHP",0),
-						"<?" =>				array("TO_PHP",0),
-						"</" =>				array("_QUIT",0),
-						),
-				0,
-				"js-out",
-				null
+					'_COUNTAB' => array('OUT', 0),
+					'ALPHA' => array('KEYWORD', -1),
+					'.' => array('KEYWORD', 1),
+					'NUMBER' => array('NUM', 0),
+					'"' => array('QUOTE1', 0),
+					'\'' => array('QUOTE2', 0),
+					'/*' => array('COMMENT1', 0),
+					'//' => array('COMMENT2', 0),
+					'<?php' => array('TO_PHP', 0),
+					'<?' => array('TO_PHP', 0),
+					'</' => array(Fshl_Generator::P_QUIT_STATE, 0)
 				),
-
-	// keyword
-
-			"KEYWORD" => array (
+				0,
+				'js-out',
+				null
+			),
+			// Keyword
+			'KEYWORD' => array(
 				array(
-						"!SAFECHAR" => array("_RET", 0),
-					),
+					'!SAFECHAR' => array(Fshl_Generator::P_RET_STATE, 0)
+				),
 				Fshl_Generator::PF_KEYWORD | Fshl_Generator::PF_RECURSION,
-				"js-out",
+				'js-out',
 				null
+			),
+			// Numbers
+			'NUM' => array(
+				array(
+					'x' => array('HEX_NUM', 0),
+					'.' => array('DEC_NUM', 0),
+					'!NUMBER' => array(Fshl_Generator::P_RET_STATE, 1),
+					'NUMBER' => array('DEC_NUM', 0)
 				),
-
-
-	// NUMBERS
-
-			"NUM" => array(
-				array(
-						"x" => array("HEX_NUM",0),
-						"." => array("DEC_NUM", 0),		//float
-						"!NUMBER" => array("_RET",1),	//char back to stream
-						"NUMBER" => array("DEC_NUM",0),
-						),
 				Fshl_Generator::PF_RECURSION,
-				"js-num",
-				null),
-
-			"DEC_NUM" => array(
+				'js-num',
+				null
+			),
+			'DEC_NUM' => array(
 				array(
-						"." => array("DEC_NUM", 0),
-						//"f" => array("DEC_NUM", 0),
-						"!NUMBER" => array("_RET",1)	//char back to stream
-						),
+					'.' => array('DEC_NUM', 0),
+					'!NUMBER' => array(Fshl_Generator::P_RET_STATE, 1)
+				),
 				0,
-				"js-num",
-				null),
-
-
-			"HEX_NUM" => array(
+				'js-num',
+				null
+			),
+			'HEX_NUM' => array(
 				array(
-						"!HEXNUM" => array("_RET",1)	//char back to stream
-						),
+					'!HEXNUM' => array(Fshl_Generator::P_RET_STATE, 1)
+				),
 				0,
-				"js-num",
-				null),
-
-
-	// quotes BF definition, TODO...
-
-			"QUOTE1" => array(
+				'js-num',
+				null
+			),
+			// Quotes BF definition
+			'QUOTE1' => array(
 				array(
-						"\"" => array("_RET",0),
-						"<?php" => 			array("TO_PHP",0),
-						"<?" =>				array("TO_PHP",0),
-						),
+					'"' => array(Fshl_Generator::P_RET_STATE, 0),
+					'<?php' => array('TO_PHP', 0),
+					'<?' => array('TO_PHP', 0)
+				),
 				Fshl_Generator::PF_RECURSION,
-				"js-quote",
-				null),
-
-			"QUOTE2" => array(
+				'js-quote',
+				null
+			),
+			'QUOTE2' => array(
 				array(
-						"'" => array("_RET",0),
-						"<?php" => 			array("TO_PHP",0),
-						"<?" =>				array("TO_PHP",0),
-						),
+					'\'' => array(Fshl_Generator::P_RET_STATE, 0),
+					'<?php' => array('TO_PHP', 0),
+					'<?' => array('TO_PHP', 0)
+				),
 				Fshl_Generator::PF_RECURSION,
-				"js-quote",
-				null),
-
-	// comments
-
-			"COMMENT1" => array(
+				'js-quote',
+				null
+			),
+			// Comments
+			'COMMENT1' => array(
 				array(
-						"_COUNTAB" => array("COMMENT1",0),
-						"*/" => array("_RET",0),
-						"<?php" => 			array("TO_PHP",0),
-						"<?" =>				array("TO_PHP",0),
-						),
+					'_COUNTAB' => array('COMMENT1', 0),
+					'*/' => array(Fshl_Generator::P_RET_STATE, 0),
+					'<?php' => array('TO_PHP', 0),
+					'<?' => array('TO_PHP', 0)
+				),
 				Fshl_Generator::PF_RECURSION,
-				"js-comment",
-				null),
-
-			"COMMENT2" => array(
+				'js-comment',
+				null
+			),
+			'COMMENT2' => array(
 				array(
-						"\n" => array("_RET",0),
-						"_COUNTAB" => array("COMMENT2",0),
-						"<?php" => 			array("TO_PHP",0),
-						"<?" =>				array("TO_PHP",0),
-						),
+					"\n" => array(Fshl_Generator::P_RET_STATE, 0),
+					'_COUNTAB' => array('COMMENT2', 0),
+					'<?php' => array('TO_PHP', 0),
+					'<?' => array('TO_PHP', 0)
+				),
 				Fshl_Generator::PF_RECURSION,
-				"js-comment",
-				null),
-
-			"TO_PHP" => array (null, Fshl_Generator::PF_NEWLANG, "xlang", /* =style*/ "PHP" /*  =new language*/),
-			"_QUIT" => array (null, Fshl_Generator::PF_NEWLANG, "html-tag", /* =style*/ null, /* =new language*/)	//return to previous language
-
+				'js-comment',
+				null
+			),
+			'TO_PHP' => array(
+				null,
+				Fshl_Generator::PF_NEWLANG,
+				'xlang',
+				'PHP'
+			),
+			Fshl_Generator::P_QUIT_STATE => array(
+				null,
+				Fshl_Generator::PF_NEWLANG,
+				'html-tag',
+				null,
+			)
 		);
+	}
 
-		$this->keywords=array(
+	/**
+	 * Returns keywords.
+	 *
+	 * @return array
+	 */
+	public function getKeywords()
+	{
+		return array(
 			'js-keywords',
 			array(
 				'abstract' => 1,
@@ -224,4 +252,3 @@ class Fshl_Lang_Javascript
 		);
 	}
 }
-?>

@@ -1,173 +1,194 @@
 <?php
-/*
+
+/**
  * FastSHL                              | Universal Syntax HighLighter |
  * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 
-   Copyright (C) 2002-2005  Juraj 'hvge' Durech
-
-   This program is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
- * ---------------------------------------------------------------------
- * CPP - SHL Language File
+/**
+ * CPP language file.
+ *
+ * @category Fshl
+ * @package Fshl
+ * @subpackage Lang
+ * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
+ * @copyright Copyright (c) 2011 Jaroslav Hanslík
+ * @license https://github.com/kukulich/fshl/blob/master/!LICENSE.txt
  */
 class Fshl_Lang_Cpp
 {
-	public $states;
-	public $initial_state;
-	public $keywords;
-	public $version;
+	/**
+	 * Version.
+	 *
+	 * @var string
+	 */
+	const VERSION = '1.2';
 
-	public function __construct()
+	/**
+	 * Returns initial state.
+	 *
+	 * @return string
+	 */
+	public function getInitialState()
 	{
-		$this->version = "1.2";
-		$this->initial_state="OUT";
-		$this->states = array(
+		return 'OUT';
+	}
 
-	// initial state
-
-			"OUT" => array (
+	/**
+	 * Returns states.
+	 *
+	 * @return array
+	 */
+	public function getStates()
+	{
+		return array(
+			// Initial state
+			'OUT' => array(
 				array(
-						"_COUNTAB" => array("OUT",0),
-						"ALPHA" => array("KEYWORD", -1),
-						"//" => array("COMMENT2",0),
-						"#" => array("PREPROC", 0),
-						"NUMBER" => array("NUM",0),
-						"DOT_NUMBER" => array("FLOAT_NUM",0),
-						"\"" => array("QUOTE1", 0),
-						"'" => array("QUOTE2", 0),
-						"/*" => array("COMMENT1",0),
-						),
+					'_COUNTAB' => array('OUT', 0),
+					'ALPHA' => array('KEYWORD', -1),
+					'//' => array('COMMENT2', 0),
+					'#' => array('PREPROC', 0),
+					'NUMBER' => array('NUM', 0),
+					'DOT_NUMBER' => array('FLOAT_NUM', 0),
+					'"' => array('QUOTE1', 0),
+					'\'' => array('QUOTE2', 0),
+					'/*' => array('COMMENT1', 0)
+				),
 				0,
 				null,
 				null
-				),
-
-	// keyword
-
-			"KEYWORD" => array (
+			),
+			// Keyword
+			'KEYWORD' => array(
 				array(
-						"!SAFECHAR" => array("_RET", 0),
-					),
+					'!SAFECHAR' => array(Fshl_Generator::P_RET_STATE, 0)
+				),
 				Fshl_Generator::PF_KEYWORD | Fshl_Generator::PF_RECURSION,
 				null,
 				null
+			),
+			// Numbers
+			'NUM' => array(
+				array(
+					'NUMBER' => array('DEC_NUM', 0),
+					'x' => array('HEX_NUM', 0),
+					'.' => array('FLOAT_NUM', 0),
+					'!NUMBER' => array(Fshl_Generator::P_RET_STATE, 1)
 				),
-
-
-	// NUMBERS
-
-			"NUM" => array(
-				array(
-						"NUMBER" => array("DEC_NUM",0),
-						"x" => array("HEX_NUM",0),
-						"." => array("FLOAT_NUM", 0),
-						"!NUMBER" => array("_RET",1)	//char back to stream
-						),
 				Fshl_Generator::PF_RECURSION,
-				"cpp-num",
-				null),
-
-			"DEC_NUM" => array(
+				'cpp-num',
+				null
+			),
+			'DEC_NUM' => array(
 				array(
-						"." => array("DEC_NUM", 0),
-						"f" => array("DEC_NUM", 0),
-						"!NUMBER" => array("_RET",1)	//char back to stream
-						),
+					'.' => array('DEC_NUM', 0),
+					'f' => array('DEC_NUM', 0),
+					'!NUMBER' => array(Fshl_Generator::P_RET_STATE, 1)
+				),
 				0,
-				"cpp-num",
-				null),
-
-			"FLOAT_NUM" => array(
+				'cpp-num',
+				null
+			),
+			'FLOAT_NUM' => array(
 				array(
-						"f" => array("FLOAT_NUM", 0),
-						"!NUMBER" => array("_RET",1)	//char back to stream
-						),
+					'f' => array('FLOAT_NUM', 0),
+					'!NUMBER' => array(Fshl_Generator::P_RET_STATE, 1)
+				),
 				Fshl_Generator::PF_RECURSION,
-				"cpp-num",
-				null),
-
-			"HEX_NUM" => array(
+				'cpp-num',
+				null
+			),
+			'HEX_NUM' => array(
 				array(
-						"L" => array("HEX_NUM", 0),
-						"!HEXNUM" => array("_RET",1)	//char back to stream
-						),
+					'L' => array('HEX_NUM', 0),
+					'!HEXNUM' => array(Fshl_Generator::P_RET_STATE, 1)
+				),
 				0,
-				"cpp-num",
-				null),
-
-	// preprocessor (TODO: highlight strings keywords etc...)
-
-			"PREPROC" => array(
+				'cpp-num',
+				null
+			),
+			// Preprocessor (@todo: highlight strings keywords etc)
+			'PREPROC' => array(
 				array(
-						"\\\n"    => array("PREPROC", 0),		// backslash in preprocessor
-						"\t" => array("PREPROC", 0),
-						"\\\xd\xa" => array("PREPROC", 0),		// backslash in preprocessor
-						"\n" => array("_RET",0),
-						),
+					"\\\n" => array('PREPROC', 0), // Backslash in preprocessor
+					"\t" => array('PREPROC', 0),
+					"\\\xd\xa" => array('PREPROC', 0), // Backslash in preprocessor
+					"\n" => array(Fshl_Generator::P_RET_STATE, 0)
+				),
 				Fshl_Generator::PF_RECURSION,
-				"cpp-preproc",
-				null),
-
-	// CPP quotes BF definition, TODO...
-
-			"QUOTE1" => array(
+				'cpp-preproc',
+				null
+			),
+			// CPP quotes BF definition
+			'QUOTE1' => array(
 				array(
-						"\\\\" => array("QUOTE1",0),
-						"\\\"" => array("QUOTE1",0),
-						"_COUNTAB" => array("QUOTE1",0),
-						'"' => array("_RET",0),
-						),
+					'\\\\' => array('QUOTE1', 0),
+					'\\"' => array('QUOTE1', 0),
+					'_COUNTAB' => array('QUOTE1', 0),
+					'"' => array(Fshl_Generator::P_RET_STATE, 0)
+				),
 				Fshl_Generator::PF_RECURSION,
-				"cpp-quote",
-				null),
-
-			"QUOTE2" => array(
+				'cpp-quote',
+				null
+			),
+			'QUOTE2' => array(
 				array(
-						"\\'" => array("QUOTE2",0),
-						"'" => array("_RET",0),
-						"_COUNTAB" => array("QUOTE2",0),
-						),
+					'\\\'' => array('QUOTE2', 0),
+					'\'' => array(Fshl_Generator::P_RET_STATE, 0),
+					'_COUNTAB' => array('QUOTE2', 0)
+				),
 				Fshl_Generator::PF_RECURSION,
-				"cpp-quote",
-				null),
-
-	// comments
-
-			"COMMENT1" => array(
+				'cpp-quote',
+				null
+			),
+			// Comments
+			'COMMENT1' => array(
 				array(
-						"_COUNTAB" => array("COMMENT1",0),
-						"*/" => array("_RET",0),
-						),
+					'_COUNTAB' => array('COMMENT1', 0),
+					'*/' => array(Fshl_Generator::P_RET_STATE, 0)
+				),
 				Fshl_Generator::PF_RECURSION,
-				"cpp-comment",
-				null),
-
-			"COMMENT2" => array(
+				'cpp-comment',
+				null
+			),
+			'COMMENT2' => array(
 				array(
-						"\n" => array("_RET",0),
-						"\t" => array("COMMENT2",0),
-						),
+					"\n" => array(Fshl_Generator::P_RET_STATE, 0),
+					"\t" => array('COMMENT2', 0)
+				),
 				Fshl_Generator::PF_RECURSION,
-				"cpp-comment",
-				null),
-
-
+				'cpp-comment',
+				null
+			)
 		);
+	}
 
-		$this->keywords=array(
-			"cpp-keywords",
+	/**
+	 * Returns keywords.
+	 *
+	 * @return array
+	 */
+	public function getKeywords()
+	{
+		return array(
+			'cpp-keywords',
 			array(
 				'bool' => 1,
 				'break' => 1,
@@ -290,10 +311,9 @@ class Fshl_Lang_Cpp
 				'__uuidof' => 1,
 				'__value' => 1,
 				'__virtual_inheritance' => 1,
-				'__w64'  => 1,
+				'__w64' => 1
 			),
 			true
 		);
 	}
 }
-?>

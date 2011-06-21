@@ -27,7 +27,7 @@ function __construct () {
 	$this->names=array(0=>'OUT',1=>'_RET',2=>'_QUIT');
 	$this->data=array(0=>null);
 	$this->class=array(0=>null);
-	$this->keywords=null;
+	$this->keywords=array();
 }
 
 // OUT

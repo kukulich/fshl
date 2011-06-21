@@ -20,13 +20,14 @@
    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  * ---------------------------------------------------------------------
- * HTML_HP_output.php		SPECIAL HTML output module
+ * HTML_HP_output.php		SPECIAL HTML output module with UTF-8 encoding
+ *
+ * Description:
  *
  * This piece of code shows what a trick are output modules.
  * Little modiffication of basic code produces links to PHP help pages.
  *
  */
-
 class HTML_HP_output
 {
 	var $last_class;
@@ -49,7 +50,7 @@ class HTML_HP_output
 
 	function template ($word, $class)
 	{
-		$word = htmlEntities($word);
+		$word = htmlEntities($word, ENT_COMPAT, 'UTF-8');
 
 		if ($this->last_class == $class)
 		{
@@ -86,7 +87,7 @@ class HTML_HP_output
 
 	function keyword ($word, $class)
 	{
-		$word = htmlEntities($word);
+		$word = htmlEntities($word, ENT_COMPAT, 'UTF-8');
 
 		if ($this->last_class == $class)
 		{

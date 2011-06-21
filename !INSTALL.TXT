@@ -42,18 +42,6 @@ Installation and usage notes
 		 HTML_HP      - like HTML module, but adds links to help pages on
 						defined keywords.
 
-		 HTML_UTF8    - like HTML, but uses UTF8 multilingual coding scheme
-
-		 HTML_HP_UTF8 - like HTML_HP but multilingual with UTF8 coding
-
-
-	   NOTE: I recommend you to use UTF8 output, but when you need parse
-			 strings in differend code page, this may be changed in
-			 output module. FSHL working with raw text data at input,
-			 and results are converted through htmlEntities() inside the
-			 output module.
-
-
 	3. Create your best adapter between FSHL and your project
 
 	   FSHL is only highlighter, simple and fast :)

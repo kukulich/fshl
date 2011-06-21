@@ -34,8 +34,6 @@ if(!defined('FSHL_CACHE')) {
 	define ('FSHL_CACHE', FSHL_PATH.'Lang/Cache/');
 }
 
-require_once FSHL_PATH . 'Generator.php';
-
 class Fshl_Highlighter
 {
 	const VERSION = '0.4.20';
@@ -87,8 +85,7 @@ class Fshl_Highlighter
 		$this->options  = $options;
 		// initialize output module
 		$outClass = 'Fshl_Output_' . $output_mode;
-		require_once FSHL_PATH . 'Output/' . $output_mode .'.php';
-		$this->output = new $outClass;
+		$this->output = new $outClass();
 		// initialize tab emulation and line counter
 		if($options & self::OPTION_TAB_INDENT) {
 			if($tab_indent_value > 0) {
@@ -193,14 +190,12 @@ class Fshl_Highlighter
 	function setLanguage($language) {
 		if(!isset($this->lexers[$language])) {
 			// load new language
-			$file = FSHL_CACHE.$language.'.php';
-			if(!file_exists($file)) {
+			$languageClass = 'Fshl_Lang_Cache_' . $language;
+			if(!class_exists($languageClass)) {
 				// if lexer doesn't exists use minimal line counter
 				$language = self::LANG_SAFE;
-				$file = FSHL_CACHE.$language.'.php';
+				$languageClass = 'Fshl_Lang_Cache_' . $language;
 			}
-			require_once ($file);
-			$languageClass = 'Fshl_Lang_Cache_' . $language;
 			$this->lexers[$language] = new $languageClass();
 			$this->loadStatisticsIntoLexer($language);
 		}

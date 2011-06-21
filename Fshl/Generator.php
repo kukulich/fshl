@@ -77,36 +77,6 @@ if(!defined('FSHL_CACHE')) {
 	define ('FSHL_CACHE', FSHL_PATH.'Lang/Cache/');
 }
 
-// Group delimiters
-$group_delimiters=array(
-	// delimiter name	required size for compare
-	"SPACE"		=>		1,
-	"!SPACE"	=>		1,
-	"NUMBER"	=>		1,
-	"!NUMBER"	=>		1,
-	"ALPHA"		=>		1,
-	"!ALPHA"	=>		1,
-	"ALNUM"		=>		1,
-	"!ALNUM"	=>		1,
-	"HEXNUM"	=>		1,
-	"!HEXNUM"	=>		1,
-	"SAFECHAR"	=>		1,
-	"!SAFECHAR"	=>		1,
-	"_ALL"		=>		1,
-	"_COUNTAB"	=>		1,	// line counter & Tab indent delimiter ('\n' || '\t')
-	"DOT_NUMBER"  	=>	2,	// match ".N" where N is number
-	"!DOT_NUMBER"	=>	2,
-
-	// TODO: Add special language depended groups here.
-	//       See function shlParser::isdelimiter()
-	//       or fshlGenerator::get_ctype_condition() or get_older_condition()
-	"PHP_DELIM"	=>		1,
-);
-
-$fshl_signatures = array("SHL","TW");
-
-require_once(FSHL_PATH.'Helper.php');
-
 class Fshl_Generator
 {
 	const VERSION = '0.4.11';
@@ -146,22 +116,40 @@ class Fshl_Generator
 	// class constructor
 	function __construct($language, $options = 0)
 	{
-		global $group_delimiters;
-		global $fshl_signatures;
-
 		$this->error = false;
 		$this->language = $language;
 		$langClass = 'Fshl_Lang_' . $this->language;
-		$lang_filename = FSHL_PATH . 'Lang/' . $this->language . '.php';
 		$this->inject_statistic_code = $options & self::P_STATISTIC;
-		if(file_exists($lang_filename)) {
-			require_once ($lang_filename);
+		if(class_exists($langClass)) {
 			$this->lang = new $langClass();
 			$this->options  = $options;
-			$this->groups = &$group_delimiters;
+			$this->groups = array(
+				// delimiter name	required size for compare
+				"SPACE"		=>		1,
+				"!SPACE"	=>		1,
+				"NUMBER"	=>		1,
+				"!NUMBER"	=>		1,
+				"ALPHA"		=>		1,
+				"!ALPHA"	=>		1,
+				"ALNUM"		=>		1,
+				"!ALNUM"	=>		1,
+				"HEXNUM"	=>		1,
+				"!HEXNUM"	=>		1,
+				"SAFECHAR"	=>		1,
+				"!SAFECHAR"	=>		1,
+				"_ALL"		=>		1,
+				"_COUNTAB"	=>		1,	// line counter & Tab indent delimiter ('\n' || '\t')
+				"DOT_NUMBER"  	=>	2,	// match ".N" where N is number
+				"!DOT_NUMBER"	=>	2,
+
+				// TODO: Add special language depended groups here.
+				//       See function shlParser::isdelimiter()
+				//       or fshlGenerator::get_ctype_condition() or get_older_condition()
+				"PHP_DELIM"	=>		1,
+			);
 			$this->signature = $this->lang->signature;
 			$this->version = $this->lang->version;
-			if(!in_array($this->signature,$fshl_signatures))
+			if(!in_array($this->signature,array("SHL","TW")))
 			{
 				$this->print_error("Unknown signature '<b>$this->signature</b>'.");
 				return;

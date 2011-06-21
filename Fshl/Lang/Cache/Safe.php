@@ -3,7 +3,7 @@
  *        WARNING: ALL CHANGES IN THIS FILE WILL BE LOST
  *
  *   Source language file: Lang/Safe.php
- *       Language version: 1.0 (Sign:SHL)
+ *       Language version: 1.0
  *
  *            Target file: Lang/Cache/Safe.php
  *      Generator version: 0.4.11
@@ -11,13 +11,12 @@
 class Fshl_Lang_Cache_Safe
 {
 var $trans,$flags,$data,$delim,$class,$keywords;
-var $version,$signature,$initial_state,$ret,$quit;
+var $version,$initial_state,$ret,$quit;
 var $pt,$pti,$generator_version;
 var $names;
 
 function __construct () {
 	$this->version=1.0;
-	$this->signature='SHL';
 	$this->generator_version='0.4.11';
 	$this->initial_state=0;
 	$this->trans=array(0=>array(0=>array(0=>0,1=>0)));

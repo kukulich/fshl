@@ -32,11 +32,9 @@ class Fshl_Lang_Texy
 	public $initial_state;
 	public $keywords;
 	public $version;
-	public $signature;
 
 	public function __construct()
 	{
-		$this->signature = "SHL";
 		$this->version = "0.1";
 		$this->initial_state="SingleNewLine";
 		$this->states = array(

@@ -3,7 +3,7 @@
  *        WARNING: ALL CHANGES IN THIS FILE WILL BE LOST
  *
  *   Source language file: Lang/Python.php
- *       Language version: 1.1 (Sign:SHL)
+ *       Language version: 1.1
  *
  *            Target file: Lang/Cache/Python.php
  *      Generator version: 0.4.11
@@ -11,13 +11,12 @@
 class Fshl_Lang_Cache_Python
 {
 var $trans,$flags,$data,$delim,$class,$keywords;
-var $version,$signature,$initial_state,$ret,$quit;
+var $version,$initial_state,$ret,$quit;
 var $pt,$pti,$generator_version;
 var $names;
 
 function __construct () {
 	$this->version=1.1;
-	$this->signature='SHL';
 	$this->generator_version='0.4.11';
 	$this->initial_state=0;
 	$this->trans=array(0=>array(0=>array(0=>0,1=>0),1=>array(0=>1,1=>-1),2=>array(0=>1,1=>-1),3=>array(0=>2,1=>0),4=>array(0=>3,1=>0),5=>array(0=>4,1=>0),6=>array(0=>5,1=>0),7=>array(0=>6,1=>0),8=>array(0=>7,1=>0),9=>array(0=>7,1=>0),10=>array(0=>8,1=>0),11=>array(0=>8,1=>0)),1=>array(0=>array(0=>11,1=>0)),2=>array(0=>array(0=>11,1=>0),1=>array(0=>2,1=>0),2=>array(0=>2,1=>0),3=>array(0=>2,1=>0)),3=>array(0=>array(0=>11,1=>0),1=>array(0=>3,1=>0),2=>array(0=>3,1=>0),3=>array(0=>3,1=>0)),4=>array(0=>array(0=>11,1=>0),1=>array(0=>4,1=>0),2=>array(0=>4,1=>0),3=>array(0=>4,1=>0)),5=>array(0=>array(0=>11,1=>0),1=>array(0=>5,1=>0),2=>array(0=>5,1=>0),3=>array(0=>5,1=>0)),6=>array(0=>array(0=>11,1=>1),1=>array(0=>6,1=>0)),7=>array(0=>array(0=>11,1=>0),1=>array(0=>11,1=>0),2=>array(0=>11,1=>1)),8=>array(0=>array(0=>9,1=>0),1=>array(0=>11,1=>0),2=>array(0=>11,1=>0),3=>array(0=>11,1=>0),4=>array(0=>11,1=>0),5=>array(0=>10,1=>0),6=>array(0=>10,1=>0),7=>array(0=>10,1=>0),8=>array(0=>11,1=>1)),9=>array(0=>array(0=>11,1=>0),1=>array(0=>11,1=>0),2=>array(0=>10,1=>0),3=>array(0=>10,1=>0),4=>array(0=>10,1=>0),5=>array(0=>11,1=>1)),10=>array(0=>array(0=>11,1=>0),1=>array(0=>11,1=>0),2=>array(0=>11,1=>1)));

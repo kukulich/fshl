@@ -3,7 +3,7 @@
  *        WARNING: ALL CHANGES IN THIS FILE WILL BE LOST
  *
  *   Source language file: Lang/Css.php
- *       Language version: 1.12 (Sign:SHL)
+ *       Language version: 1.12
  *
  *            Target file: Lang/Cache/Css.php
  *      Generator version: 0.4.11
@@ -11,13 +11,12 @@
 class Fshl_Lang_Cache_Css
 {
 var $trans,$flags,$data,$delim,$class,$keywords;
-var $version,$signature,$initial_state,$ret,$quit;
+var $version,$initial_state,$ret,$quit;
 var $pt,$pti,$generator_version;
 var $names;
 
 function __construct () {
 	$this->version=1.12;
-	$this->signature='SHL';
 	$this->generator_version='0.4.11';
 	$this->initial_state=0;
 	$this->trans=array(0=>array(0=>array(0=>0,1=>0),1=>array(0=>2,1=>0),2=>array(0=>1,1=>0),3=>array(0=>6,1=>0),4=>array(0=>9,1=>0),5=>array(0=>7,1=>0),6=>array(0=>7,1=>0)),1=>array(0=>array(0=>8,1=>1),1=>array(0=>6,1=>0),2=>array(0=>8,1=>1)),2=>array(0=>array(0=>4,1=>1),1=>array(0=>2,1=>0),2=>array(0=>2,1=>1),3=>array(0=>8,1=>0),4=>array(0=>6,1=>0),5=>array(0=>3,1=>0)),3=>array(0=>array(0=>3,1=>0),1=>array(0=>8,1=>1),2=>array(0=>8,1=>1),3=>array(0=>6,1=>0)),4=>array(0=>array(0=>8,1=>1),1=>array(0=>5,1=>0),2=>array(0=>8,1=>1),3=>array(0=>4,1=>0),4=>array(0=>6,1=>0)),5=>array(0=>array(0=>8,1=>1)),6=>array(0=>array(0=>6,1=>0),1=>array(0=>8,1=>0)),7=>null,9=>null);

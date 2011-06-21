@@ -28,11 +28,9 @@ class Fshl_Lang_Css
 	public $initial_state;
 	public $keywords;
 	public $version;
-	public $signature;
 
 	public function __construct()
 	{
-		$this->signature = "SHL";
 		$this->version = "1.12";
 		$this->initial_state = "OUT";
 		$this->states = array(

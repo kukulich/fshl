@@ -102,7 +102,7 @@ class Fshl_Generator
 	const P_QUIT_STATE = '_QUIT';
 
 	// class variables
-	var $lang, $flang, $options, $signature, $version, $langname, $language;
+	var $lang, $flang, $options, $version, $langname, $language;
 	var $out, $groups;
 
 	var $_trans, $_flags, $_data, $_delim, $_class, $_states, $_names;
@@ -147,13 +147,7 @@ class Fshl_Generator
 				//       or fshlGenerator::get_ctype_condition() or get_older_condition()
 				"PHP_DELIM"	=>		1,
 			);
-			$this->signature = $this->lang->signature;
 			$this->version = $this->lang->version;
-			if(!in_array($this->signature,array("SHL","TW")))
-			{
-				$this->print_error("Unknown signature '<b>$this->signature</b>'.");
-				return;
-			}
 			if($this->language_array_optimise()) {
 				return;
 			}
@@ -208,7 +202,7 @@ class Fshl_Generator
 		$this->out.="/* --------------------------------------------------------------- *\n";
 		$this->out.=" *        WARNING: ALL CHANGES IN THIS FILE WILL BE LOST\n *\n";
 		$this->out.=" *   Source language file: ".str_replace(FSHL_PATH, '', FSHL_PATH . 'Lang/'.$this->language).".php\n";
-		$this->out.=" *       Language version: $this->version (Sign:$this->signature)\n *\n";
+		$this->out.=" *       Language version: $this->version\n *\n";
 		$this->out.=" *            Target file: ".str_replace(FSHL_PATH, '', FSHL_CACHE.$this->language).".php\n";
 		$this->out.=" *      Generator version: ".self::VERSION."\n";
 		$this->out.=" * --------------------------------------------------------------- */\n";
@@ -216,12 +210,9 @@ class Fshl_Generator
 		// make class
 		$this->out.="class Fshl_Lang_Cache_$this->language";
 
-		if($this->signature=="TW")
-			$this->out.=" extends ".$this->language."_base";
-
 		$this->out.="\n{\n";
 		$this->out.='var $trans,$flags,$data,$delim,$class,$keywords;'."\n";
-		$this->out.='var $version,$signature,$initial_state,$ret,$quit;'."\n";
+		$this->out.='var $version,$initial_state,$ret,$quit;'."\n";
 		$this->out.='var $pt,$pti,$generator_version;'."\n";
 		$this->out.='var $names;'."\n";
 
@@ -236,7 +227,6 @@ class Fshl_Generator
 
 		// make class variables
 		$this->out.="\t".Fshl_Helper::getVarSource("this->version",$this->version);
-		$this->out.="\t".Fshl_Helper::getVarSource("this->signature",$this->signature);
 		$this->out.="\t".Fshl_Helper::getVarSource("this->generator_version",self::VERSION);
 		$this->out.="\t".Fshl_Helper::getVarSource("this->initial_state",$this->lang->initial_state);
 		$this->out.="\t".Fshl_Helper::getVarSource("this->trans",$this->_trans);
@@ -245,11 +235,9 @@ class Fshl_Generator
 		$this->out.="\t".Fshl_Helper::getVarSource("this->ret",$this->_ret);
 		$this->out.="\t".Fshl_Helper::getVarSource("this->quit",$this->_quit);
 		$this->out.="\t".Fshl_Helper::getVarSource("this->names",$this->_names);
-		if($this->signature!="TW") {
-			$this->out.="\t".Fshl_Helper::getVarSource("this->data",$this->_data);
-			$this->out.="\t".Fshl_Helper::getVarSource("this->class",$this->_class);
-			$this->out.="\t".Fshl_Helper::getVarSource("this->keywords",$this->lang->keywords);
-		}
+		$this->out.="\t".Fshl_Helper::getVarSource("this->data",$this->_data);
+		$this->out.="\t".Fshl_Helper::getVarSource("this->class",$this->_class);
+		$this->out.="\t".Fshl_Helper::getVarSource("this->keywords",$this->lang->keywords);
 		if($this->inject_statistic_code) {
 			$this->out.="\t".Fshl_Helper::getVarSource("this->statistic",array());
 			$this->out.="\t".Fshl_Helper::getVarSource("this->total_statistic",array());

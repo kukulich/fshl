@@ -43,11 +43,11 @@ class Fshl_Output_Html implements Fshl_Output
 	/**
 	 * Writes template.
 	 *
-	 * @param string $word
+	 * @param string $part
 	 * @param string $class
 	 * @return string
 	 */
-	public function template($word, $class)
+	public function template($part, $class)
 	{
 		$output = '';
 
@@ -62,17 +62,17 @@ class Fshl_Output_Html implements Fshl_Output
 			$this->lastClass = $class;
 		}
 
-		return $output . htmlspecialchars($word, ENT_COMPAT, 'UTF-8');
+		return $output . htmlspecialchars($part, ENT_COMPAT, 'UTF-8');
 	}
 
 	/**
 	 * Writes keyword.
 	 *
-	 * @param string $word
+	 * @param string $part
 	 * @param string $class
 	 * @return string
 	 */
-	public function keyword($word, $class)
+	public function keyword($part, $class)
 	{
 		$output = '';
 
@@ -87,6 +87,6 @@ class Fshl_Output_Html implements Fshl_Output
 			$this->lastClass = $class;
 		}
 
-		return $output . htmlspecialchars($word, ENT_COMPAT, 'UTF-8');
+		return $output . htmlspecialchars($part, ENT_COMPAT, 'UTF-8');
 	}
 }

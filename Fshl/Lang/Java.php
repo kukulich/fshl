@@ -71,16 +71,16 @@ class Fshl_Lang_Java implements Fshl_Lang
 					'//' => array('COMMENT2', 0),
 					'_COUNTAB' => array('OUT', 0)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				null,
 				null
 			),
 			// Keyword
 			'KEYWORD' => array(
 				array(
-					'!SAFECHAR' => array(Fshl_Generator::P_RET_STATE, 0)
+					'!SAFECHAR' => array(Fshl_Generator::STATE_RETURN, 0)
 				),
-				Fshl_Generator::PF_KEYWORD | Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_KEYWORD | Fshl_Generator::STATE_FLAG_RECURSION,
 				null,
 				null
 			),
@@ -90,26 +90,26 @@ class Fshl_Lang_Java implements Fshl_Lang
 					'x' => array('HEX_NUM', 0),
 					'.' => array('DEC_NUM', 0),
 					'NUMBER' => array('DEC_NUM', 0),
-					'!NUMBER' => array(Fshl_Generator::P_RET_STATE, 1)
+					'!NUMBER' => array(Fshl_Generator::STATE_RETURN, 1)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'java-num',
 				null
 			),
 			'DEC_NUM' => array(
 				array(
 					'.' => array('DEC_NUM', 0),
-					'!NUMBER' => array(Fshl_Generator::P_RET_STATE, 1)
+					'!NUMBER' => array(Fshl_Generator::STATE_RETURN, 1)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'java-num',
 				null
 			),
 			'HEX_NUM' => array(
 				array(
-					'!HEXNUM' => array(Fshl_Generator::P_RET_STATE, 1)
+					'!HEXNUM' => array(Fshl_Generator::STATE_RETURN, 1)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'java-num',
 				null
 			),
@@ -119,9 +119,9 @@ class Fshl_Lang_Java implements Fshl_Lang
 					'\\\\' => array('QUOTE1', 0),
 					'\\"' => array('QUOTE1', 0),
 					'_COUNTAB' => array('QUOTE1', 0),
-					'"' => array(Fshl_Generator::P_RET_STATE, 0)
+					'"' => array(Fshl_Generator::STATE_RETURN, 0)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'java-quote',
 				null
 			),
@@ -130,28 +130,28 @@ class Fshl_Lang_Java implements Fshl_Lang
 					'\\\\' => array('QUOTE2', 0),
 					'\\\''  => array('QUOTE2', 0),
 					'_COUNTAB' => array('QUOTE2', 0),
-					'\'' => array(Fshl_Generator::P_RET_STATE, 0)
+					'\'' => array(Fshl_Generator::STATE_RETURN, 0)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'java-quote',
 				null
 			),
 			// Comments
 			'COMMENT1' => array(
 				array(
-					'*/' => array(Fshl_Generator::P_RET_STATE, 0),
+					'*/' => array(Fshl_Generator::STATE_RETURN, 0),
 					'_COUNTAB' => array('COMMENT1', 0)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'java-comment',
 				null
 			),
 			'COMMENT2' => array(
 				array(
-					"\n" => array(Fshl_Generator::P_RET_STATE, 0),
+					"\n" => array(Fshl_Generator::STATE_RETURN, 0),
 					"\t" => array('COMMENT2', 0)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'java-comment',
 				null
 			)
@@ -217,7 +217,7 @@ class Fshl_Lang_Java implements Fshl_Lang
 				'static' => 1,
 				'while' => 1
 			),
-			true
+			Fshl_Generator::CASE_SENSITIVE
 		);
 	}
 }

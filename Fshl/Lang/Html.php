@@ -70,7 +70,7 @@ class Fshl_Lang_Html implements Fshl_Lang
 					'&' => array('ENTITY', 0),
 					'_COUNTAB' => array('OUT', 0)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				null,
 				null
 			),
@@ -80,7 +80,7 @@ class Fshl_Lang_Html implements Fshl_Lang
 					'&' => array('OUT', 1),
 					'SPACE' => array('OUT', 1)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'html-entity',
 				null
 			),
@@ -95,20 +95,20 @@ class Fshl_Lang_Html implements Fshl_Lang
 					'<?php' => array('TO_PHP', 0),
 					'<?' => array('TO_PHP', 0)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'html-tag',
 				null
 			),
 			'inTAG' => array(
 				array(
 					'"' => array('QUOTE1', 0),
-					'>' => array(Fshl_Generator::P_RET_STATE, 1),
+					'>' => array(Fshl_Generator::STATE_RETURN, 1),
 					'\'' => array('QUOTE2', 0),
 					'<?php' => array('TO_PHP', 0),
 					'<?' => array('TO_PHP', 0),
 					'_COUNTAB' => array('inTAG', 0)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'html-tagin',
 				null
 			),
@@ -121,15 +121,15 @@ class Fshl_Lang_Html implements Fshl_Lang
 					'<?' => array('TO_PHP', 0),
 					'_COUNTAB' => array('inTAG', 0)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'html-tagin',
 				null
 			),
 			'TO_CSS' => array(
 				array(
-					'>' => array(Fshl_Generator::P_RET_STATE, 1)
+					'>' => array(Fshl_Generator::STATE_RETURN, 1)
 				),
-				Fshl_Generator::PF_NEWLANG,
+				Fshl_Generator::STATE_FLAG_NEWLANG,
 				'html-tag',
 				'CSS'
 			),
@@ -142,37 +142,37 @@ class Fshl_Lang_Html implements Fshl_Lang
 					'<?' => array('TO_PHP', 0),
 					'_COUNTAB' => array('inTAG', 0)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'html-tagin',
 				null
 			),
 			'TO_JAVASCRIPT' => array(
 				array(
-					'>' => array(Fshl_Generator::P_RET_STATE, 1)
+					'>' => array(Fshl_Generator::STATE_RETURN, 1)
 				),
-				Fshl_Generator::PF_NEWLANG,
+				Fshl_Generator::STATE_FLAG_NEWLANG,
 				'html-tag',
 				'JS'
 			),
 			'QUOTE1' => array(
 				array(
-					'"' => array(Fshl_Generator::P_RET_STATE, 0),
+					'"' => array(Fshl_Generator::STATE_RETURN, 0),
 					'<?php' => array('TO_PHP', 0),
 					'<?' => array('TO_PHP', 0),
 					'_COUNTAB' => array('QUOTE1', 0)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'html-quote',
 				null
 			),
 			'QUOTE2' => array(
 				array(
-					'\'' => array(Fshl_Generator::P_RET_STATE, 0),
+					'\'' => array(Fshl_Generator::STATE_RETURN, 0),
 					'<?php' => array('TO_PHP', 0),
 					'<?' => array('TO_PHP', 0),
 					'_COUNTAB' => array('QUOTE2', 0)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'html-quote',
 				null
 			),
@@ -183,13 +183,13 @@ class Fshl_Lang_Html implements Fshl_Lang
 					'<?' => array('TO_PHP', 0),
 					'_COUNTAB' => array('COMMENT', 0)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'html-comment',
 				null
 			),
 			'TO_PHP' => array(
 				null,
-				Fshl_Generator::PF_NEWLANG,
+				Fshl_Generator::STATE_FLAG_NEWLANG,
 				'xlang',
 				'PHP'
 			)

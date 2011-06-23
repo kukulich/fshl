@@ -67,7 +67,7 @@ class Fshl_Lang_Texy implements Fshl_Lang
 					'\---' => array('BlockOUT', 0),
 					"\n" => array('NewLineTypeSelector', 0)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				null,
 				null
 			),
@@ -76,7 +76,7 @@ class Fshl_Lang_Texy implements Fshl_Lang
 					"\n" => array('DoubleNewLine', 0),
 					'!SPACE' => array('SingleNewLine', -1)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				null,
 				null
 			),
@@ -88,7 +88,7 @@ class Fshl_Lang_Texy implements Fshl_Lang
 					'--' => array('HeaderIN', 0),
 					'_ALL' => array('LineBODY', -1)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				null,
 				null
 			),
@@ -117,7 +117,7 @@ class Fshl_Lang_Texy implements Fshl_Lang
 					"\n" => array('DoubleNewLine', 0),
 					'_ALL' => array('HeaderBody', -1)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'texy-hlead',
 				null
 			),
@@ -129,7 +129,7 @@ class Fshl_Lang_Texy implements Fshl_Lang
 					'*' => array('HeaderOUT', 0),
 					"\n" => array('DoubleNewLine', 0)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'texy-hbody',
 				null
 			),
@@ -137,7 +137,7 @@ class Fshl_Lang_Texy implements Fshl_Lang
 				array(
 					"\n" => array('DoubleNewLine', 0)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'texy-hlead',
 				null
 			),
@@ -145,7 +145,7 @@ class Fshl_Lang_Texy implements Fshl_Lang
 				array(
 					"\n" => array('LineBODY', -1)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'texy-hr',
 				null
 			),
@@ -157,7 +157,7 @@ class Fshl_Lang_Texy implements Fshl_Lang
 					'text' => array('BlockTEXT', 0),
 					'_ALL' => array('LineBODY', -1)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'texy-hr',
 				null
 			),
@@ -165,7 +165,7 @@ class Fshl_Lang_Texy implements Fshl_Lang
 				array(
 					'_ALL' => array('LineBODY', -1)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'texy-hr',
 				null
 			),
@@ -173,7 +173,7 @@ class Fshl_Lang_Texy implements Fshl_Lang
 				array(
 					'_ALL' => array('LineBODY', -1)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'texy-hr',
 				null
 			),
@@ -182,7 +182,7 @@ class Fshl_Lang_Texy implements Fshl_Lang
 				array(
 					"\n" => array('BlockTEXTBody', -1)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'texy-hr',
 				null
 			),
@@ -190,7 +190,7 @@ class Fshl_Lang_Texy implements Fshl_Lang
 				array(
 					"\n" => array('BlockTEXTBodyNL', 0)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'texy-text',
 				null
 			),
@@ -199,7 +199,7 @@ class Fshl_Lang_Texy implements Fshl_Lang
 					'\---' => array('BlockTEXTBodyOUT', 0),
 					'_ALL' => array('BlockTEXTBody', -1)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'texy-text',
 				null
 			),
@@ -207,7 +207,7 @@ class Fshl_Lang_Texy implements Fshl_Lang
 				array(
 					'_ALL' => array('LineBODY', -1)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'texy-hr',
 				null
 			),
@@ -216,7 +216,7 @@ class Fshl_Lang_Texy implements Fshl_Lang
 				array(
 					"\n" => array('BlockHTMLBody', -1)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'texy-hr',
 				null
 			),
@@ -224,7 +224,7 @@ class Fshl_Lang_Texy implements Fshl_Lang
 				array(
 					"\n" => array('BlockHTMLBodyNL', 0)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'texy-html',
 				null
 			),
@@ -233,7 +233,7 @@ class Fshl_Lang_Texy implements Fshl_Lang
 					'\---' => array('BlockHTMLBodyOUT', 0),
 					'_ALL' => array('BlockHTMLBody', -1)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'texy-html',
 				null
 			),
@@ -241,7 +241,7 @@ class Fshl_Lang_Texy implements Fshl_Lang
 				array(
 					'_ALL' => array('LineBODY', -1)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'texy-hr',
 				null
 			),
@@ -250,7 +250,7 @@ class Fshl_Lang_Texy implements Fshl_Lang
 				array(
 					"\n" => array('BlockCODEBody', -1)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'texy-hr',
 				null
 			),
@@ -258,7 +258,7 @@ class Fshl_Lang_Texy implements Fshl_Lang
 				array(
 					"\n" => array('BlockCODEBodyNL', 0)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'texy-code',
 				null
 			),
@@ -267,7 +267,7 @@ class Fshl_Lang_Texy implements Fshl_Lang
 					'\---' => array('BlockCODEBodyOUT', 0),
 					'_ALL' => array('BlockCODEBody', -1)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'texy-code',
 				null
 			),
@@ -275,7 +275,7 @@ class Fshl_Lang_Texy implements Fshl_Lang
 				array(
 					'_ALL' => array('LineBODY', -1)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'texy-hr',
 				null
 			)

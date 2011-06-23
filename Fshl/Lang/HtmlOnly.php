@@ -68,7 +68,7 @@ class Fshl_Lang_HtmlOnly implements Fshl_Lang
 					'&' => array('ENTITY', 0),
 					'_COUNTAB' => array('OUT', 0)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				null,
 				null
 			),
@@ -78,7 +78,7 @@ class Fshl_Lang_HtmlOnly implements Fshl_Lang
 					'&' => array('OUT', 1),
 					'SPACE' => array('OUT', 1)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'html-entity',
 				null
 			),
@@ -87,7 +87,7 @@ class Fshl_Lang_HtmlOnly implements Fshl_Lang
 					'>' => array('OUT', 1),
 					'SPACE' => array('inTAG', 0)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'html-tag',
 				null
 			),
@@ -98,7 +98,7 @@ class Fshl_Lang_HtmlOnly implements Fshl_Lang
 					'_COUNTAB' => array('inTAG', 0),
 					'\'' => array('QUOTE2', 0)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'html-tagin',
 				null
 			),
@@ -106,7 +106,7 @@ class Fshl_Lang_HtmlOnly implements Fshl_Lang
 				array(
 					'"' => array('inTAG', 0)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'html-quote',
 				null
 			),
@@ -114,7 +114,7 @@ class Fshl_Lang_HtmlOnly implements Fshl_Lang
 				array(
 					'\'' => array('inTAG', 0)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'html-quote',
 				null
 			),
@@ -123,7 +123,7 @@ class Fshl_Lang_HtmlOnly implements Fshl_Lang
 					'-->' => array('OUT', 1),
 					'_COUNTAB' => array('COMMENT', 0)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'html-comment',
 				null
 			)

@@ -70,48 +70,48 @@ class Fshl_Lang_Php implements Fshl_Lang
 					'"' => array('QUOTE', 0),
 					'//' => array('COMMENT1', 0),
 					'NUMBER' => array('NUM', 0),
-					'?>' => array(Fshl_Generator::P_QUIT_STATE, 0),
+					'?>' => array(Fshl_Generator::STATE_QUIT, 0),
 					'/*' => array('COMMENT', 0) ,
 					'<?' => array('DUMMY_PHP',-1),
 					'#' => array('COMMENT1', 0)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				null,
 				null
 			),
 			'DUMMY_PHP' => array(
 				array(
-					'<?php' => array(Fshl_Generator::P_RET_STATE, 0),
-					'<?' => array(Fshl_Generator::P_RET_STATE, 0)
+					'<?php' => array(Fshl_Generator::STATE_RETURN, 0),
+					'<?' => array(Fshl_Generator::STATE_RETURN, 0)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'xlang',
 				null
 			),
 			'FUNCTION' => array(
 				array(
-					'!SAFECHAR' => array(Fshl_Generator::P_RET_STATE, 1)
+					'!SAFECHAR' => array(Fshl_Generator::STATE_RETURN, 1)
 				),
-				Fshl_Generator::PF_KEYWORD | Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_KEYWORD | Fshl_Generator::STATE_FLAG_RECURSION,
 				null,
 				null
 			),
 			'COMMENT' => array(
 				array(
 					'_COUNTAB' => array('COMMENT', 0),
-					'*/' => array(Fshl_Generator::P_RET_STATE, 0)
+					'*/' => array(Fshl_Generator::STATE_RETURN, 0)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'php-comment',
 				null
 			),
 			'COMMENT1' => array(
 				array(
-					"\n" => array(Fshl_Generator::P_RET_STATE, 0),
+					"\n" => array(Fshl_Generator::STATE_RETURN, 0),
 					'_COUNTAB' => array('COMMENT1', 0),
-					'?>' => array(Fshl_Generator::P_RET_STATE, -1)
+					'?>' => array(Fshl_Generator::STATE_RETURN, -1)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'php-comment',
 				null
 			),
@@ -120,73 +120,73 @@ class Fshl_Lang_Php implements Fshl_Lang
 					'$' => array('VAR', 0),
 					'{' => array('VAR', 0),
 					'}' => array('VAR', 0),
-					'!SAFECHAR' => array(Fshl_Generator::P_RET_STATE, 1)
+					'!SAFECHAR' => array(Fshl_Generator::STATE_RETURN, 1)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'php-var',
 				null
 			),
 			'VAR_STR' => array(
 				array(
-					'}' => array(Fshl_Generator::P_RET_STATE, 0),
-					'SPACE' => array(Fshl_Generator::P_RET_STATE, 0)
+					'}' => array(Fshl_Generator::STATE_RETURN, 0),
+					'SPACE' => array(Fshl_Generator::STATE_RETURN, 0)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'php-var',
 				null
 			),
 			'QUOTE' => array(
 				array(
-					'"' => array(Fshl_Generator::P_RET_STATE, 0),
+					'"' => array(Fshl_Generator::STATE_RETURN, 0),
 					'\\\\' => array('QUOTE', 0),
 					'\\"' => array('QUOTE', 0),
 					'$' => array('VAR', 0),
 					'{$' => array('VAR_STR', 0),
 					'_COUNTAB' => array('QUOTE', 0)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'php-quote',
 				null),
 			'QUOTE1' => array(
 				array(
-					'\'' => array(Fshl_Generator::P_RET_STATE, 0),
+					'\'' => array(Fshl_Generator::STATE_RETURN, 0),
 					'\\\\' => array('QUOTE1', 0),
 					'\\\'' => array('QUOTE1', 0),
 					'_COUNTAB' => array('QUOTE1', 0)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'php-quote',
 				null
 			),
 			'NUM' => array(
 				array(
 					'x' => array('HEX_NUM', 0),
-					'!NUMBER' => array(Fshl_Generator::P_RET_STATE, 1),
+					'!NUMBER' => array(Fshl_Generator::STATE_RETURN, 1),
 					'NUMBER' => array('DEC_NUM', 0)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'php-num',
 				null
 			),
 			'DEC_NUM' => array(
 				array(
-					'!NUMBER' => array(Fshl_Generator::P_RET_STATE, 1)
+					'!NUMBER' => array(Fshl_Generator::STATE_RETURN, 1)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'php-num',
 				null
 			),
 			'HEX_NUM' => array(
 				array(
-					'!HEXNUM' => array(Fshl_Generator::P_RET_STATE, 1)
+					'!HEXNUM' => array(Fshl_Generator::STATE_RETURN, 1)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'php-num',
 				null
 			),
-			Fshl_Generator::P_QUIT_STATE => array(
+			Fshl_Generator::STATE_QUIT => array(
 				null,
-				Fshl_Generator::PF_NEWLANG,
+				Fshl_Generator::STATE_FLAG_NEWLANG,
 				'xlang',
 				''
 			)
@@ -3577,7 +3577,7 @@ class Fshl_Lang_Php implements Fshl_Lang
 				'zip_read' => 2,
 				'zlib_get_coding_type' => 2
 			),
-			false
+			Fshl_Generator::CASE_INSENSITIVE
 		);
 	}
 }

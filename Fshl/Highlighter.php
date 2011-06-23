@@ -244,8 +244,6 @@ class Fshl_Highlighter
 		$text = str_replace(array("\r\n", "\r"), "\n", (string) $text);
 		$textLength = strlen($text);
 		$textPos = 0;
-		// @todo ???
-		$text .= 'MULHOLLANDDRIVE';
 
 		// Parses text
 		$output = array();
@@ -258,23 +256,22 @@ class Fshl_Highlighter
 			$output[] = $this->line($line, $maxLineWidth);
 		}
 		$newLanguage = $language;
-		$newState = $state = $this->lang->initial_state;
+		$newState = $state = $this->lang->initialState;
 		$this->stack = array();
 
 		while (true) {
-			// array($transitionId, $delimiterString, $collectedString, $collectedStringLength, $delimiterLength);
+			// array($transitionId, $delimiterString, $delimiterLength, $collectedString, $collectedStringLength);
 			//  - transitionId - may be -1 when we are at the end of stream
-			//  - delimiterString - may be -1 when we are at the end of stream
-			$word = $this->lang->{'getw' . $state}($text, $textPos, $textLength);
+			$part = $this->lang->{'getPart' . $state}($text, $textLength, $textPos);
 
-			// Some data was collected before getw reaches the delimiter, we must output this before other processing
-			if (false !== $word[2]) {
-				$textPos += $word[4];
-				$char += $word[4];
-				$output[] = $this->template($word[2], $state);
+			// Some data may be collected before getPart reaches the delimiter, we must output this before other processing
+			if (false !== $part[3]) {
+				$textPos += $part[2];
+				$char += $part[2];
+				$output[] = $this->template($part[3], $state);
 			}
 
-			if ($word[0] < 0) {
+			if (-1 === $part[0]) {
 				// End of stream
 				break;
 			}
@@ -284,12 +281,12 @@ class Fshl_Highlighter
 			$prevChar = $char;
 			$prevTextPos = $textPos;
 
-			$textPos += $word[3];
-			$char += $word[3];
+			$textPos += $part[4];
+			$char += $part[4];
 
 			// Adds line counter and tab indentation
 			$addLine = false;
-			if ("\n" === $word[1][$word[3] - 1]) {
+			if ("\n" === $part[1][$part[4] - 1]) {
 				// Line counter
 				$line++;
 				$char = 0;
@@ -297,26 +294,26 @@ class Fshl_Highlighter
 					$addLine = true;
 					$actualLine = $line;
 				}
-			} elseif ("\t" === $word[1] && ($this->options & self::OPTION_TAB_INDENT)) {
+			} elseif ("\t" === $part[1] && ($this->options & self::OPTION_TAB_INDENT)) {
 				// Tab indentation
 				$i = $char % $this->tabIndentWidth;
-				$word[1] = $this->tabs[$i][0];
+				$part[1] = $this->tabs[$i][0];
 				$char += $this->tabs[$i][1];
 			}
 
 			// Gets new state from transitions table
-			$newState = $this->lang->trans[$state][$word[0]][Fshl_Generator::XL_DSTATE];
-			if ($newState === $this->lang->ret) {
+			$newState = $this->lang->trans[$state][$part[0]][Fshl_Generator::STATE_DIAGRAM_INDEX_STATE];
+			if ($newState === $this->lang->returnState) {
 				// Returns to previous context
 				// Chooses delimiter processing (second value in destination array)
 				//  0 - style from current state will be applied at received delimiter
 				//  1 - delimiter will be returned to input stream
-				if ($this->lang->trans[$state][$word[0]][Fshl_Generator::XL_DTYPE] > 0) {
+				if ($this->lang->trans[$state][$part[0]][Fshl_Generator::STATE_DIAGRAM_INDEX_TYPE] > 0) {
 					$line = $prevLine;
 					$char = $prevChar;
 					$textPos = $prevTextPos;
 				} else {
-					$output[] = $this->template($word[1], $state);
+					$output[] = $this->template($part[1], $state);
 					if ($addLine) {
 						$output[] = $this->line($actualLine, $maxLineWidth);
 					}
@@ -331,7 +328,7 @@ class Fshl_Highlighter
 						$language = $newLanguage;
 					}
 				} else {
-					$state = $this->lang->initial_state;
+					$state = $this->lang->initialState;
 				}
 
 				continue;
@@ -341,22 +338,22 @@ class Fshl_Highlighter
 			//  0 - style from new state will be applied at received delimiter
 			//  1 - style from current state will be applied
 			// -1 - delimiter must be returned to stream (back to previous position)
-			$type = $this->lang->trans[$state][$word[0]][Fshl_Generator::XL_DTYPE];
+			$type = $this->lang->trans[$state][$part[0]][Fshl_Generator::STATE_DIAGRAM_INDEX_TYPE];
 			if ($type < 0) {
 				// Back to stream
 				$line = $prevLine;
 				$char = $prevChar;
 				$textPos = $prevTextPos;
 			} else {
-				$output[] = $this->template($word[1], $type > 0 ? $state : $newState);
+				$output[] = $this->template($part[1], $type > 0 ? $state : $newState);
 				if ($addLine) {
 					$output[] = $this->line($actualLine, $maxLineWidth);
 				}
 			}
 
 			// Switches between languages (transition to embedded language)
-			if ($this->lang->flags[$newState] & Fshl_Generator::PF_NEWLANG) {
-				if ($newState === $this->lang->quit) {
+			if ($this->lang->flags[$newState] & Fshl_Generator::STATE_FLAG_NEWLANG) {
+				if ($newState === $this->lang->quitState) {
 					// Returns to previous language
 					if ($item = $this->popState()) {
 						list($newLanguage, $state) = $item;
@@ -365,7 +362,7 @@ class Fshl_Highlighter
 							$language = $newLanguage;
 						}
 					} else {
-						$state = $this->lang->initial_state;
+						$state = $this->lang->initialState;
 					}
 				} else {
 					// Switches to embedded language
@@ -373,14 +370,14 @@ class Fshl_Highlighter
 					$this->pushState($language, $this->lang->trans[$newState] ? $newState : $state);
 					$this->setLanguage($newLanguage);
 					$language = $newLanguage;
-					$state = $this->lang->initial_state;
+					$state = $this->lang->initialState;
 				}
 
 				continue;
 			}
 
 			// If newState is marked with recursion flag (alias call), push current state to context stack
-			if (($this->lang->flags[$newState] & Fshl_Generator::PF_RECURSION) && $state !== $newState) {
+			if (($this->lang->flags[$newState] & Fshl_Generator::STATE_FLAG_RECURSION) && $state !== $newState) {
 				$this->pushState($language, $state);
 			}
 
@@ -421,21 +418,21 @@ class Fshl_Highlighter
 	/**
 	 * Outputs word.
 	 *
-	 * @param string $word
+	 * @param string $part
 	 * @param string $state
 	 * @return string
 	 */
-	private function template($word, $state)
+	private function template($part, $state)
 	{
-		if ($this->lang->flags[$state] & Fshl_Generator::PF_KEYWORD) {
-			$normalized = $this->lang->keywords[Fshl_Generator::KEYWORD_CASE_SENSITIVE] ? $word : strtolower($word);
+		if ($this->lang->flags[$state] & Fshl_Generator::STATE_FLAG_KEYWORD) {
+			$normalized = Fshl_Generator::CASE_SENSITIVE === $this->lang->keywords[Fshl_Generator::KEYWORD_INDEX_CASE_SENSITIVE] ? $part : strtolower($part);
 
-			if (isset($this->lang->keywords[Fshl_Generator::KEYWORD_LIST][$normalized])) {
-				return $this->output->keyword($word, $this->lang->keywords[Fshl_Generator::KEYWORD_CLASS] . $this->lang->keywords[Fshl_Generator::KEYWORD_LIST][$normalized]);
+			if (isset($this->lang->keywords[Fshl_Generator::KEYWORD_INDEX_LIST][$normalized])) {
+				return $this->output->keyword($part, $this->lang->keywords[Fshl_Generator::KEYWORD_INDEX_CLASS] . $this->lang->keywords[Fshl_Generator::KEYWORD_INDEX_LIST][$normalized]);
 			}
 		}
 
-		return $this->output->template($word, $this->lang->class[$state]);
+		return $this->output->template($part, $this->lang->classes[$state]);
 	}
 
 	/**

@@ -77,117 +77,117 @@ class Fshl_Lang_Python implements Fshl_Lang
 					'DOT_NUMBER' => array('NUM_DECIMAL', 0),
 					'NUMBER' => array('NUM_DECIMAL', 0)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				null,
 				null
 			),
 			'KEYWORD' => array(
 				array(
-					'!SAFECHAR' => array(Fshl_Generator::P_RET_STATE, 0)
+					'!SAFECHAR' => array(Fshl_Generator::STATE_RETURN, 0)
 				),
-				Fshl_Generator::PF_KEYWORD | Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_KEYWORD | Fshl_Generator::STATE_FLAG_RECURSION,
 				null,
 				null
 			),
 			'DOCSTRING1' => array(
 				array(
-					'\'\'\'' => array(Fshl_Generator::P_RET_STATE, 0),
+					'\'\'\'' => array(Fshl_Generator::STATE_RETURN, 0),
 					'\\\\' => array('DOCSTRING1', 0),
 					'\\\'\'\'' => array('DOCSTRING1', 0),
 					'_COUNTAB' => array('DOCSTRING1', 0)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'py-docstring',
 				null
 			),
 			'DOCSTRING2' => array(
 				array(
-					'"""' => array(Fshl_Generator::P_RET_STATE, 0),
+					'"""' => array(Fshl_Generator::STATE_RETURN, 0),
 					'\\\\' => array('DOCSTRING2', 0),
 					'\\"""' => array('DOCSTRING2', 0),
 					'_COUNTAB' => array('DOCSTRING2', 0)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'py-docstring',
 				null
 			),
 			'QUOTE1' => array(
 				array(
-					'\'' => array(Fshl_Generator::P_RET_STATE, 0),
+					'\'' => array(Fshl_Generator::STATE_RETURN, 0),
 					'\\\\' => array('QUOTE1', 0),
 					'\\\'' => array('QUOTE1', 0),
 					'_COUNTAB' => array('QUOTE1', 0)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'py-quote',
 				null
 			),
 			'QUOTE2' => array(
 				array(
-					'"' => array(Fshl_Generator::P_RET_STATE, 0),
+					'"' => array(Fshl_Generator::STATE_RETURN, 0),
 					'\\\\' => array('QUOTE2', 0),
 					'\\"' => array('QUOTE2', 0),
 					'_COUNTAB' => array('QUOTE2', 0)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'py-quote',
 				null
 			),
 			'COMMENT' => array(
 				array(
-					"\n" => array(Fshl_Generator::P_RET_STATE, 1),
+					"\n" => array(Fshl_Generator::STATE_RETURN, 1),
 					"\t" => array('COMMENT', 0)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'py-comment',
 				null
 			),
 			'NUM_HEXADECIMAL' => array(
 				array(
-					'L' => array(Fshl_Generator::P_RET_STATE, 0),
-					'l' => array(Fshl_Generator::P_RET_STATE, 0),
-					'!HEXNUM' => array(Fshl_Generator::P_RET_STATE, 1)
+					'L' => array(Fshl_Generator::STATE_RETURN, 0),
+					'l' => array(Fshl_Generator::STATE_RETURN, 0),
+					'!HEXNUM' => array(Fshl_Generator::STATE_RETURN, 1)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'py-number',
 				null
 			),
 			'NUM_DECIMAL' => array(
 				array(
 					'.' => array('NUM_FRACTION', 0),
-					'L' => array(Fshl_Generator::P_RET_STATE, 0),
-					'l' => array(Fshl_Generator::P_RET_STATE, 0),
-					'j' => array(Fshl_Generator::P_RET_STATE, 0),
-					'J' => array(Fshl_Generator::P_RET_STATE, 0),
+					'L' => array(Fshl_Generator::STATE_RETURN, 0),
+					'l' => array(Fshl_Generator::STATE_RETURN, 0),
+					'j' => array(Fshl_Generator::STATE_RETURN, 0),
+					'J' => array(Fshl_Generator::STATE_RETURN, 0),
 					'e-' => array('NUM_EXPONENT', 0),
 					'e+' => array('NUM_EXPONENT', 0),
 					'e' => array('NUM_EXPONENT', 0),
-					'!NUMBER' => array(Fshl_Generator::P_RET_STATE, 1)
+					'!NUMBER' => array(Fshl_Generator::STATE_RETURN, 1)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'py-number',
 				null
 			),
 			'NUM_FRACTION' => array(
 				array(
-					'j' => array(Fshl_Generator::P_RET_STATE, 0),
-					'J' => array(Fshl_Generator::P_RET_STATE, 0),
+					'j' => array(Fshl_Generator::STATE_RETURN, 0),
+					'J' => array(Fshl_Generator::STATE_RETURN, 0),
 					'e-' => array('NUM_EXPONENT', 0),
 					'e+' => array('NUM_EXPONENT', 0),
 					'e' => array('NUM_EXPONENT', 0),
-					'!NUMBER' => array(Fshl_Generator::P_RET_STATE, 1)
+					'!NUMBER' => array(Fshl_Generator::STATE_RETURN, 1)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'py-number',
 				null
 			),
 			'NUM_EXPONENT' => array(
 				array(
-					'j' => array(Fshl_Generator::P_RET_STATE, 0),
-					'J' => array(Fshl_Generator::P_RET_STATE, 0),
-					'!NUMBER' => array(Fshl_Generator::P_RET_STATE, 1)
+					'j' => array(Fshl_Generator::STATE_RETURN, 0),
+					'J' => array(Fshl_Generator::STATE_RETURN, 0),
+					'!NUMBER' => array(Fshl_Generator::STATE_RETURN, 1)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'py-number',
 				null
 			)
@@ -484,7 +484,7 @@ class Fshl_Lang_Python implements Fshl_Lang
 				'__version__' => 3,
 				'__xor__' => 3
 			),
-			true
+			Fshl_Generator::CASE_SENSITIVE
 		);
 	}
 }

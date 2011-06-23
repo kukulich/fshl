@@ -1,176 +1,376 @@
 <?php
-/* --------------------------------------------------------------- *
- *        WARNING: ALL CHANGES IN THIS FILE WILL BE LOST
+
+/**
+ * FastSHL                              | Universal Syntax HighLighter |
+ * ---------------------------------------------------------------------
  *
- *   Source language file: Lang/HtmlOnly.php
- *       Language version: 1.10
+ * LICENSE
  *
- *            Target file: Lang/Cache/HtmlOnly.php
- *      Generator version: 0.4.11
- * --------------------------------------------------------------- */
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
+
+/**
+ * Cache file for language HtmlOnly.
+ *
+ * This file is generated. All changes made in this file will be lost.
+ *
+ * @category Fshl
+ * @package Fshl
+ * @subpackage Lang
+ * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
+ * @copyright Copyright (c) 2011 Jaroslav Hanslík
+ * @license https://github.com/kukulich/fshl/blob/master/!LICENSE.txt
+ * @see Fshl_Generator
+ * @see Fshl_Lang_HtmlOnly
+ */
 class Fshl_Lang_Cache_HtmlOnly
 {
-var $trans,$flags,$data,$delim,$class,$keywords;
-var $version,$initial_state,$ret,$quit;
-var $pt,$pti,$generator_version;
-var $names;
+	/**
+	 * Generator version/language version.
+	 *
+	 * @var string
+	 */
+	public $version;
 
-function __construct () {
-	$this->version=1.10;
-	$this->generator_version='0.4.11';
-	$this->initial_state=0;
-	$this->trans=array(0=>array(0=>array(0=>6,1=>0),1=>array(0=>2,1=>0),2=>array(0=>1,1=>0),3=>array(0=>0,1=>0)),1=>array(0=>array(0=>0,1=>1),1=>array(0=>0,1=>1),2=>array(0=>0,1=>1)),2=>array(0=>array(0=>0,1=>1),1=>array(0=>3,1=>0)),3=>array(0=>array(0=>4,1=>0),1=>array(0=>0,1=>1),2=>array(0=>3,1=>0),3=>array(0=>5,1=>0)),4=>array(0=>array(0=>3,1=>0)),5=>array(0=>array(0=>3,1=>0)),6=>array(0=>array(0=>0,1=>1),1=>array(0=>6,1=>0)));
-	$this->flags=array(0=>0,1=>0,2=>0,3=>0,4=>0,5=>0,6=>0);
-	$this->delim=array(0=>array(0=>'<!--',1=>'<',2=>'&',3=>'_COUNTAB'),1=>array(0=>';',1=>'&',2=>'SPACE'),2=>array(0=>'>',1=>'SPACE'),3=>array(0=>'"',1=>'>',2=>'_COUNTAB',3=>'\''),4=>array(0=>'"'),5=>array(0=>'\''),6=>array(0=>'-->',1=>'_COUNTAB'));
-	$this->ret=7;
-	$this->quit=8;
-	$this->names=array(0=>'OUT',1=>'ENTITY',2=>'TAG',3=>'inTAG',4=>'QUOTE1',5=>'QUOTE2',6=>'COMMENT',7=>'_RET',8=>'_QUIT');
-	$this->data=array(0=>null,1=>null,2=>null,3=>null,4=>null,5=>null,6=>null);
-	$this->class=array(0=>null,1=>'html-entity',2=>'html-tag',3=>'html-tagin',4=>'html-quote',5=>'html-quote',6=>'html-comment');
-	$this->keywords=array();
-}
+	/**
+	 * Transitions table.
+	 *
+	 * @var array
+	 */
+	public $trans;
 
-// OUT
-function getw0 (&$s, $i, $l) {
-	$o = false;
-	$start = $i;
-	while($i<$l) {
-		$p=$i;
-		$c1=$s[$p++];
-		$c2=$c1.$s[$p++];
-		$c3=$c2.$s[$p++];
-		$c4=$c3.$s[$p];
-		if($c4=='<!--'){
-			return array(0,'<!--',$o,4,$i-$start);
-		}
-		if($c1=='<'){
-			return array(1,'<',$o,1,$i-$start);
-		}
-		if($c1=='&'){
-			return array(2,'&',$o,1,$i-$start);
-		}
-		if(($c1=="\t"||$c1=="\n")){
-			return array(3,$c1,$o,1,$i-$start);
-		}
-		$o.=$c1;
-		$i++;
+	/**
+	 * Id of initial state.
+	 *
+	 * @var integer
+	 */
+	public $initialState;
+
+	/**
+	 * Id of return state.
+	 *
+	 * @var integer
+	 */
+	public $returnState;
+
+	/**
+	 * Id of quit state.
+	 *
+	 * @var integer
+	 */
+	public $quitState;
+
+	/**
+	 * List of flags for all states.
+	 *
+	 * @var array
+	 */
+	public $flags;
+
+	/**
+	 * Data for all states.
+	 *
+	 * @var array
+	 */
+	public $data;
+
+	/**
+	 * List of CSS classes.
+	 *
+	 * @var array
+	 */
+	public $classes;
+
+	/**
+	 * List of keywords.
+	 *
+	 * @var array
+	 */
+	public $keywords;
+
+	/**
+	 * Initializes language.
+	 */
+	public function __construct()
+	{
+		$this->version = '0.4.11/1.10';
+		$this->trans = array(
+			0 => array(
+				0 => array(
+					0 => 6, 1 => 0
+				), 1 => array(
+					0 => 2, 1 => 0
+				), 2 => array(
+					0 => 1, 1 => 0
+				), 3 => array(
+					0 => 0, 1 => 0
+				)
+			), 1 => array(
+				0 => array(
+					0 => 0, 1 => 1
+				), 1 => array(
+					0 => 0, 1 => 1
+				), 2 => array(
+					0 => 0, 1 => 1
+				)
+			), 2 => array(
+				0 => array(
+					0 => 0, 1 => 1
+				), 1 => array(
+					0 => 3, 1 => 0
+				)
+			), 3 => array(
+				0 => array(
+					0 => 4, 1 => 0
+				), 1 => array(
+					0 => 0, 1 => 1
+				), 2 => array(
+					0 => 3, 1 => 0
+				), 3 => array(
+					0 => 5, 1 => 0
+				)
+			), 4 => array(
+				0 => array(
+					0 => 3, 1 => 0
+				)
+			), 5 => array(
+				0 => array(
+					0 => 3, 1 => 0
+				)
+			), 6 => array(
+				0 => array(
+					0 => 0, 1 => 1
+				), 1 => array(
+					0 => 6, 1 => 0
+				)
+			)
+		);
+		$this->initialState = 0;
+		$this->returnState = 7;
+		$this->quitState = 8;
+		$this->flags = array(
+			0 => 0, 1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0, 6 => 0
+		);
+		$this->data = array(
+			0 => NULL, 1 => NULL, 2 => NULL, 3 => NULL, 4 => NULL, 5 => NULL, 6 => NULL
+		);
+		$this->classes = array(
+			0 => NULL, 1 => 'html-entity', 2 => 'html-tag', 3 => 'html-tagin', 4 => 'html-quote', 5 => 'html-quote', 6 => 'html-comment'
+		);
+		$this->keywords = array(
+			
+		);
+
 	}
-	return array(-1,-1,$o,-1,-1);
-}
 
-// ENTITY
-function getw1 (&$s, $i, $l) {
-	$o = false;
-	$start = $i;
-	while($i<$l) {
-		$c1=$s[$i];
-		if($c1==';'){
-			return array(0,';',$o,1,$i-$start);
+	/**
+	 * Parses state OUT.
+	 *
+	 * @param string $text
+	 * @param string $textLength
+	 * @param string $textPos
+	 * @return array
+	 */
+	public function getPart0(&$text, $textLength, $textPos)
+	{
+		$buffer = false;
+		$start = $textPos;
+		while ($textPos < $textLength) {
+			$letter = $text[$textPos];
+			if ($textPos === strpos($text, '<!--', $textPos)) {
+				return array(0, '<!--', $textPos - $start, $buffer, 4);
+			}
+			if ('<' === $letter) {
+				return array(1, '<', $textPos - $start, $buffer, 1);
+			}
+			if ('&' === $letter) {
+				return array(2, '&', $textPos - $start, $buffer, 1);
+			}
+			if ("\t" === $letter || "\n" === $letter) {
+				return array(3, $letter, $textPos - $start, $buffer, 1);
+			}
+
+			$buffer .= $letter;
+			$textPos++;
 		}
-		if($c1=='&'){
-			return array(1,'&',$o,1,$i-$start);
-		}
-		if(ctype_space($c1)){
-			return array(2,$c1,$o,1,$i-$start);
-		}
-		$o.=$c1;
-		$i++;
+		return array(-1, -1, -1, $buffer, -1);
 	}
-	return array(-1,-1,$o,-1,-1);
-}
 
-// TAG
-function getw2 (&$s, $i, $l) {
-	$o = false;
-	$start = $i;
-	while($i<$l) {
-		$c1=$s[$i];
-		if($c1=='>'){
-			return array(0,'>',$o,1,$i-$start);
+	/**
+	 * Parses state ENTITY.
+	 *
+	 * @param string $text
+	 * @param string $textLength
+	 * @param string $textPos
+	 * @return array
+	 */
+	public function getPart1(&$text, $textLength, $textPos)
+	{
+		$buffer = false;
+		$start = $textPos;
+		while ($textPos < $textLength) {
+			$letter = $text[$textPos];
+			if (';' === $letter) {
+				return array(0, ';', $textPos - $start, $buffer, 1);
+			}
+			if ('&' === $letter) {
+				return array(1, '&', $textPos - $start, $buffer, 1);
+			}
+			if (ctype_space($letter)) {
+				return array(2, $letter, $textPos - $start, $buffer, 1);
+			}
+
+			$buffer .= $letter;
+			$textPos++;
 		}
-		if(ctype_space($c1)){
-			return array(1,$c1,$o,1,$i-$start);
-		}
-		$o.=$c1;
-		$i++;
+		return array(-1, -1, -1, $buffer, -1);
 	}
-	return array(-1,-1,$o,-1,-1);
-}
 
-// inTAG
-function getw3 (&$s, $i, $l) {
-	$o = false;
-	$start = $i;
-	while($i<$l) {
-		$c1=$s[$i];
-		if($c1=='"'){
-			return array(0,'"',$o,1,$i-$start);
+	/**
+	 * Parses state TAG.
+	 *
+	 * @param string $text
+	 * @param string $textLength
+	 * @param string $textPos
+	 * @return array
+	 */
+	public function getPart2(&$text, $textLength, $textPos)
+	{
+		$buffer = false;
+		$start = $textPos;
+		while ($textPos < $textLength) {
+			$letter = $text[$textPos];
+			if ('>' === $letter) {
+				return array(0, '>', $textPos - $start, $buffer, 1);
+			}
+			if (ctype_space($letter)) {
+				return array(1, $letter, $textPos - $start, $buffer, 1);
+			}
+
+			$buffer .= $letter;
+			$textPos++;
 		}
-		if($c1=='>'){
-			return array(1,'>',$o,1,$i-$start);
-		}
-		if(($c1=="\t"||$c1=="\n")){
-			return array(2,$c1,$o,1,$i-$start);
-		}
-		if($c1=='\''){
-			return array(3,'\'',$o,1,$i-$start);
-		}
-		$o.=$c1;
-		$i++;
+		return array(-1, -1, -1, $buffer, -1);
 	}
-	return array(-1,-1,$o,-1,-1);
-}
 
-// QUOTE1
-function getw4 (&$s, $i, $l) {
-	$o = false;
-	$start = $i;
-	while($i<$l) {
-		$c1=$s[$i];
-		if($c1=='"'){
-			return array(0,'"',$o,1,$i-$start);
+	/**
+	 * Parses state inTAG.
+	 *
+	 * @param string $text
+	 * @param string $textLength
+	 * @param string $textPos
+	 * @return array
+	 */
+	public function getPart3(&$text, $textLength, $textPos)
+	{
+		$buffer = false;
+		$start = $textPos;
+		while ($textPos < $textLength) {
+			$letter = $text[$textPos];
+			if ('"' === $letter) {
+				return array(0, '"', $textPos - $start, $buffer, 1);
+			}
+			if ('>' === $letter) {
+				return array(1, '>', $textPos - $start, $buffer, 1);
+			}
+			if ("\t" === $letter || "\n" === $letter) {
+				return array(2, $letter, $textPos - $start, $buffer, 1);
+			}
+			if ('\'' === $letter) {
+				return array(3, '\'', $textPos - $start, $buffer, 1);
+			}
+
+			$buffer .= $letter;
+			$textPos++;
 		}
-		$o.=$c1;
-		$i++;
+		return array(-1, -1, -1, $buffer, -1);
 	}
-	return array(-1,-1,$o,-1,-1);
-}
 
-// QUOTE2
-function getw5 (&$s, $i, $l) {
-	$o = false;
-	$start = $i;
-	while($i<$l) {
-		$c1=$s[$i];
-		if($c1=='\''){
-			return array(0,'\'',$o,1,$i-$start);
+	/**
+	 * Parses state QUOTE1.
+	 *
+	 * @param string $text
+	 * @param string $textLength
+	 * @param string $textPos
+	 * @return array
+	 */
+	public function getPart4(&$text, $textLength, $textPos)
+	{
+		$buffer = false;
+		$start = $textPos;
+		while ($textPos < $textLength) {
+			$letter = $text[$textPos];
+			if ('"' === $letter) {
+				return array(0, '"', $textPos - $start, $buffer, 1);
+			}
+
+			$buffer .= $letter;
+			$textPos++;
 		}
-		$o.=$c1;
-		$i++;
+		return array(-1, -1, -1, $buffer, -1);
 	}
-	return array(-1,-1,$o,-1,-1);
-}
 
-// COMMENT
-function getw6 (&$s, $i, $l) {
-	$o = false;
-	$start = $i;
-	while($i<$l) {
-		$p=$i;
-		$c1=$s[$p++];
-		$c2=$c1.$s[$p++];
-		$c3=$c2.$s[$p];
-		if($c3=='-->'){
-			return array(0,'-->',$o,3,$i-$start);
+	/**
+	 * Parses state QUOTE2.
+	 *
+	 * @param string $text
+	 * @param string $textLength
+	 * @param string $textPos
+	 * @return array
+	 */
+	public function getPart5(&$text, $textLength, $textPos)
+	{
+		$buffer = false;
+		$start = $textPos;
+		while ($textPos < $textLength) {
+			$letter = $text[$textPos];
+			if ('\'' === $letter) {
+				return array(0, '\'', $textPos - $start, $buffer, 1);
+			}
+
+			$buffer .= $letter;
+			$textPos++;
 		}
-		if(($c1=="\t"||$c1=="\n")){
-			return array(1,$c1,$o,1,$i-$start);
-		}
-		$o.=$c1;
-		$i++;
+		return array(-1, -1, -1, $buffer, -1);
 	}
-	return array(-1,-1,$o,-1,-1);
-}
+
+	/**
+	 * Parses state COMMENT.
+	 *
+	 * @param string $text
+	 * @param string $textLength
+	 * @param string $textPos
+	 * @return array
+	 */
+	public function getPart6(&$text, $textLength, $textPos)
+	{
+		$buffer = false;
+		$start = $textPos;
+		while ($textPos < $textLength) {
+			$letter = $text[$textPos];
+			if ($textPos === strpos($text, '-->', $textPos)) {
+				return array(0, '-->', $textPos - $start, $buffer, 3);
+			}
+			if ("\t" === $letter || "\n" === $letter) {
+				return array(1, $letter, $textPos - $start, $buffer, 1);
+			}
+
+			$buffer .= $letter;
+			$textPos++;
+		}
+		return array(-1, -1, -1, $buffer, -1);
+	}
 
 }
-?>

@@ -65,7 +65,7 @@ class Fshl_Lang_Safe implements Fshl_Lang
 				array(
 					'_COUNTAB' => array('OUT', 0),
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				null,
 				null
 			)

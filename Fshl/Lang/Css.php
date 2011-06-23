@@ -67,21 +67,21 @@ class Fshl_Lang_Css implements Fshl_Lang
 					'{' => array('DEF', 0),
 					'.' => array('CLASS', 0),
 					'/*' => array('COMMENT', 0),
-					'</' => array(Fshl_Generator::P_QUIT_STATE, 0),
+					'</' => array(Fshl_Generator::STATE_QUIT, 0),
 					'<?php' => array('TO_PHP', 0),
 					'<?' => array('TO_PHP', 0)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				null,
 				null
 			),
 			'CLASS' => array(
 				array(
-					'SPACE' => array(Fshl_Generator::P_RET_STATE, 1),
+					'SPACE' => array(Fshl_Generator::STATE_RETURN, 1),
 					'/*' => array('COMMENT', 0),
-					'{' => array(Fshl_Generator::P_RET_STATE, 1)
+					'{' => array(Fshl_Generator::STATE_RETURN, 1)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'css-class',
 				null
 			),
@@ -90,63 +90,63 @@ class Fshl_Lang_Css implements Fshl_Lang
 					':' => array('VALUE', 1),
 					'_COUNTAB' => array('DEF', 0),
 					';' => array('DEF', 1),
-					'}' => array(Fshl_Generator::P_RET_STATE, 0),
+					'}' => array(Fshl_Generator::STATE_RETURN, 0),
 					'/*' => array('COMMENT', 0),
 					'!SPACE' => array('PROPERTY', 0)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'',
 				null
 			),
 			'PROPERTY' => array(
 				array(
 					'_COUNTAB' => array('PROPERTY', 0),
-					':' => array(Fshl_Generator::P_RET_STATE, 1),
-					'}' => array(Fshl_Generator::P_RET_STATE, 1),
+					':' => array(Fshl_Generator::STATE_RETURN, 1),
+					'}' => array(Fshl_Generator::STATE_RETURN, 1),
 					'/*' => array('COMMENT', 0)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'css-property',
 				null
 			),
 			'VALUE' => array(
 				array(
-					';' => array(Fshl_Generator::P_RET_STATE, 1),
+					';' => array(Fshl_Generator::STATE_RETURN, 1),
 					'#' => array('COLOR', 0),
-					'}' => array(Fshl_Generator::P_RET_STATE, 1),
+					'}' => array(Fshl_Generator::STATE_RETURN, 1),
 					'_COUNTAB' => array('VALUE', 0),
 					'/*' => array('COMMENT', 0)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'css-value',
 				null
 			),
 			'COLOR' => array(
 				array(
-					'!HEXNUM' => array(Fshl_Generator::P_RET_STATE, 1)
+					'!HEXNUM' => array(Fshl_Generator::STATE_RETURN, 1)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'css-color',
 				null
 			),
 			'COMMENT' => array(
 				array(
 					'_COUNTAB' => array('COMMENT', 0),
-					'*/' => array(Fshl_Generator::P_RET_STATE, 0)
+					'*/' => array(Fshl_Generator::STATE_RETURN, 0)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'css-comment',
 				null
 			),
 			'TO_PHP' => array(
 				null,
-				Fshl_Generator::PF_NEWLANG,
+				Fshl_Generator::STATE_FLAG_NEWLANG,
 				'xlang',
 				'PHP'
 			),
-			Fshl_Generator::P_QUIT_STATE => array(
+			Fshl_Generator::STATE_QUIT => array(
 				null,
-				Fshl_Generator::PF_NEWLANG,
+				Fshl_Generator::STATE_FLAG_NEWLANG,
 				'html-tag',
 				null
 			)

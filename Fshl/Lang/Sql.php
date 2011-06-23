@@ -75,63 +75,63 @@ class Fshl_Lang_Sql implements Fshl_Lang
 					'NUMBER' => array('NUM', 0),
 					'_COUNTAB' => array('OUT', 0)
 				),
-				Fshl_Generator::PF_KEYWORD,
+				Fshl_Generator::STATE_FLAG_KEYWORD,
 				null,
 				null
 			),
 			'FUNCTION' => array(
 				array(
-					'!SAFECHAR' => array(Fshl_Generator::P_RET_STATE, 1)
+					'!SAFECHAR' => array(Fshl_Generator::STATE_RETURN, 1)
 				),
-				Fshl_Generator::PF_KEYWORD | Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_KEYWORD | Fshl_Generator::STATE_FLAG_RECURSION,
 				null,
 				null
 			),
 			'COMMENT' => array(
 				array(
-					'*/' => array(Fshl_Generator::P_RET_STATE, 0),
+					'*/' => array(Fshl_Generator::STATE_RETURN, 0),
 					'_COUNTAB' => array('COMMENT', 0)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'sql-comment',
 				null
 			),
 			'COMMENT1' => array(
 				array(
-					"\n" => array(Fshl_Generator::P_RET_STATE, 0),
+					"\n" => array(Fshl_Generator::STATE_RETURN, 0),
 					'_COUNTAB' => array('COMMENT1', 0)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'sql-comment',
 				null
 			),
 			'QUOTE' => array(
 				array(
 					'\\"' => array('QUOTE', 0),
-					'"' => array(Fshl_Generator::P_RET_STATE, 0),
+					'"' => array(Fshl_Generator::STATE_RETURN, 0),
 					'_COUNTAB' => array('QUOTE', 0)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'sql-value',
 				null
 			),
 			'QUOTE1' => array(
 				array(
 					'\\\'' => array('QUOTE1', 0),
-					'\'' => array(Fshl_Generator::P_RET_STATE, 0),
+					'\'' => array(Fshl_Generator::STATE_RETURN, 0),
 					'_COUNTAB' => array('QUOTE1', 0)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'sql-value',
 				null
 			),
 			'QUOTE3' => array(
 				array(
 					'\\`' => array('QUOTE3', 0),
-					'`' => array(Fshl_Generator::P_RET_STATE, 0),
+					'`' => array(Fshl_Generator::STATE_RETURN, 0),
 					'_COUNTAB' => array('QUOTE3', 0)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'sql-value',
 				null
 			),
@@ -139,25 +139,25 @@ class Fshl_Lang_Sql implements Fshl_Lang
 				array(
 					'x' => array('HEX_NUM', 0),
 					'NUMBER' => array('DEC_NUM', 0),
-					'!NUMBER' => array(Fshl_Generator::P_RET_STATE, 1)
+					'!NUMBER' => array(Fshl_Generator::STATE_RETURN, 1)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'sql-num',
 				null
 			),
 			'DEC_NUM' => array(
 				array(
-					'!NUMBER' => array(Fshl_Generator::P_RET_STATE, 1)
+					'!NUMBER' => array(Fshl_Generator::STATE_RETURN, 1)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'sql-num',
 				null
 			),
 			'HEX_NUM' => array(
 				array(
-					'!HEXNUM' => array(Fshl_Generator::P_RET_STATE, 1)
+					'!HEXNUM' => array(Fshl_Generator::STATE_RETURN, 1)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'sql-num',
 				null
 			),
@@ -170,7 +170,7 @@ class Fshl_Lang_Sql implements Fshl_Lang
 					'TEXT' => array('OPTION', 0),
 					'DATE' => array('OPTION', 0)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'sql-option',
 				null
 			)
@@ -546,7 +546,7 @@ class Fshl_Lang_Sql implements Fshl_Lang
 				'work' => 1,
 				'year' => 1
 			),
-			false
+			Fshl_Generator::CASE_INSENSITIVE
 		);
 	}
 }

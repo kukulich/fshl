@@ -73,18 +73,18 @@ class Fshl_Lang_Javascript implements Fshl_Lang
 					'//' => array('COMMENT2', 0),
 					'<?php' => array('TO_PHP', 0),
 					'<?' => array('TO_PHP', 0),
-					'</' => array(Fshl_Generator::P_QUIT_STATE, 0)
+					'</' => array(Fshl_Generator::STATE_QUIT, 0)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'js-out',
 				null
 			),
 			// Keyword
 			'KEYWORD' => array(
 				array(
-					'!SAFECHAR' => array(Fshl_Generator::P_RET_STATE, 0)
+					'!SAFECHAR' => array(Fshl_Generator::STATE_RETURN, 0)
 				),
-				Fshl_Generator::PF_KEYWORD | Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_KEYWORD | Fshl_Generator::STATE_FLAG_RECURSION,
 				'js-out',
 				null
 			),
@@ -93,48 +93,48 @@ class Fshl_Lang_Javascript implements Fshl_Lang
 				array(
 					'x' => array('HEX_NUM', 0),
 					'.' => array('DEC_NUM', 0),
-					'!NUMBER' => array(Fshl_Generator::P_RET_STATE, 1),
+					'!NUMBER' => array(Fshl_Generator::STATE_RETURN, 1),
 					'NUMBER' => array('DEC_NUM', 0)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'js-num',
 				null
 			),
 			'DEC_NUM' => array(
 				array(
 					'.' => array('DEC_NUM', 0),
-					'!NUMBER' => array(Fshl_Generator::P_RET_STATE, 1)
+					'!NUMBER' => array(Fshl_Generator::STATE_RETURN, 1)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'js-num',
 				null
 			),
 			'HEX_NUM' => array(
 				array(
-					'!HEXNUM' => array(Fshl_Generator::P_RET_STATE, 1)
+					'!HEXNUM' => array(Fshl_Generator::STATE_RETURN, 1)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'js-num',
 				null
 			),
 			// Quotes BF definition
 			'QUOTE1' => array(
 				array(
-					'"' => array(Fshl_Generator::P_RET_STATE, 0),
+					'"' => array(Fshl_Generator::STATE_RETURN, 0),
 					'<?php' => array('TO_PHP', 0),
 					'<?' => array('TO_PHP', 0)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'js-quote',
 				null
 			),
 			'QUOTE2' => array(
 				array(
-					'\'' => array(Fshl_Generator::P_RET_STATE, 0),
+					'\'' => array(Fshl_Generator::STATE_RETURN, 0),
 					'<?php' => array('TO_PHP', 0),
 					'<?' => array('TO_PHP', 0)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'js-quote',
 				null
 			),
@@ -142,34 +142,34 @@ class Fshl_Lang_Javascript implements Fshl_Lang
 			'COMMENT1' => array(
 				array(
 					'_COUNTAB' => array('COMMENT1', 0),
-					'*/' => array(Fshl_Generator::P_RET_STATE, 0),
+					'*/' => array(Fshl_Generator::STATE_RETURN, 0),
 					'<?php' => array('TO_PHP', 0),
 					'<?' => array('TO_PHP', 0)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'js-comment',
 				null
 			),
 			'COMMENT2' => array(
 				array(
-					"\n" => array(Fshl_Generator::P_RET_STATE, 0),
+					"\n" => array(Fshl_Generator::STATE_RETURN, 0),
 					'_COUNTAB' => array('COMMENT2', 0),
 					'<?php' => array('TO_PHP', 0),
 					'<?' => array('TO_PHP', 0)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'js-comment',
 				null
 			),
 			'TO_PHP' => array(
 				null,
-				Fshl_Generator::PF_NEWLANG,
+				Fshl_Generator::STATE_FLAG_NEWLANG,
 				'xlang',
 				'PHP'
 			),
-			Fshl_Generator::P_QUIT_STATE => array(
+			Fshl_Generator::STATE_QUIT => array(
 				null,
-				Fshl_Generator::PF_NEWLANG,
+				Fshl_Generator::STATE_FLAG_NEWLANG,
 				'html-tag',
 				null,
 			)
@@ -251,7 +251,7 @@ class Fshl_Lang_Javascript implements Fshl_Lang
 				'getElementsByTagName' => 2,
 				'getElementById' => 2,
 			),
-			true
+			Fshl_Generator::CASE_SENSITIVE
 		);
 	}
 }

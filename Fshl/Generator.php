@@ -1,522 +1,619 @@
 <?php
-/*
+
+/**
  * FastSHL                              | Universal Syntax HighLighter |
  * ---------------------------------------------------------------------
-
-   Copyright (C) 2002-2006  Juraj 'hvge' Durech
-
-   This program is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
- * ---------------------------------------------------------------------
- * fshl-generator.php   - language code generator
  *
+ * LICENSE
  *
- * Version      Changes                                         Authors
- * ---------------------------------------------------------------------
- *  0.4.0     - TW/SHL signature support                        hvge
- *            - added print_error()
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
  *
- *  0.4.1     - better '_ALL' condition optimalization          hvge
- *            - In some cases generator producing faster code
- *              in variable $xXX initialization section.*)
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- *            - experimental ctype library support
- *              In this file set manually FSHL_USE_CTYPE
- *              to true, and generator produce code, which
- *              using ctype library. This library is available
- *              in PHP4.2.0 and greater by default. See PHP
- *              documentation for details.
- *
- *  0.4.2     - fixed some ctype bugs	                        hvge
- *
- *  0.4.3     - new group delimiter _COUNTAB					hvge
- *            - CTYPE is default
- *
- *  0.4.4     - new group delimiters: SAFECHAR, !SAFECHAR
- *
- *  0.4.5     - arrays with string indexes was completely		hvge
- *				removed
- *
- *  0.4.6     - new experimental fshl-helper.php
- *
- *  0.4.7     - statistic mode was added
- *
- *  0.4.8     - NEW optimization, without backward compatibility
- *              This generator produces lexers for FSHL parser
- *              latest than V0.4.14 and newer.
- *              isdXX functions was replaced with getwXX()
- *
- *  0.4.9     - Johno's optimizations
- *
- *  0.4.10    - Added support for case (non) sensitivity in grammars
- *            - Support for group delimiters with variable length
- *            - New group delimiter DOT_NUMBER
- *
- *  0.4.11    - Fixed bug where group delimiter with variable length returns
- *			    incorrect text size.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-define('FSHL_USE_CTYPE',			true  );
-
-if(!defined('FSHL_PATH')) {
-	define('FSHL_PATH', dirname(__FILE__).'/');		// thanx to martin*cohen for this great hack:)
-}
-if(!defined('FSHL_CACHE')) {
-	define ('FSHL_CACHE', FSHL_PATH.'Lang/Cache/');
-}
-
+/**
+ * Generator of language cache files.
+ *
+ * @category Fshl
+ * @package Fshl
+ * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
+ * @copyright Copyright (c) 2011 Jaroslav Hanslík
+ * @license https://github.com/kukulich/fshl/blob/master/!LICENSE.txt
+ */
 class Fshl_Generator
 {
+	/**
+	 * Version.
+	 *
+	 * @var string
+	 */
 	const VERSION = '0.4.11';
 
-	// state field indexes
-	const XL_DIAGR = 0;
-	const XL_FLAGS = 1;
-	const XL_CLASS = 2;
-	const XL_DATA = 3;
+	/**
+	 * State to return back.
+	 *
+	 * @var string
+	 */
+	const STATE_RETURN = '_RETURN';
 
-	const XL_DSTATE = 0;
-	const XL_DTYPE = 1;
+	/**
+	 * State to quit current state.
+	 *
+	 * @var string
+	 */
+	const STATE_QUIT = '_QUIT';
 
-	// state flags
-	const PF_KEYWORD = 0x0001;
-	const PF_RECURSION = 0x0004;
-	const PF_NEWLANG = 0x0008;
+	/**
+	 * Default state flag.
+	 *
+	 * @var integer
+	 */
+	const STATE_FLAG_NONE = 0;
 
-	// internal and special states
-	const P_RET_STATE = '_RET';
-	const P_QUIT_STATE = '_QUIT';
+	/**
+	 * State flag for keyword.
+	 *
+	 * @var integer
+	 */
+	const STATE_FLAG_KEYWORD = 0x0001;
 
-	const KEYWORD_CLASS = 0;
-	const KEYWORD_LIST = 1;
-	const KEYWORD_CASE_SENSITIVE = 2;
+	/**
+	 * State flag for recursion.
+	 *
+	 * @var integer
+	 */
+	const STATE_FLAG_RECURSION = 0x0004;
 
-	// class variables
-	var $lang, $flang, $version, $langname, $language;
-	var $out, $groups;
+	/**
+	 * State flag for new language.
+	 *
+	 * @var integer
+	 */
+	const STATE_FLAG_NEWLANG = 0x0008;
 
-	var $_trans, $_flags, $_data, $_delim, $_class, $_states, $_names;
-	var $_ret,$_quit;
+	/**
+	 * Array index for state diagram.
+	 *
+	 * @var integer
+	 */
+	const STATE_INDEX_DIAGRAM = 0;
 
-	var $error;
+	/**
+	 * Array index for state flags.
+	 *
+	 * @var integer
+	 */
+	const STATE_INDEX_FLAGS = 1;
 
-	// USER LEVEL functions
-	//
-	// class constructor
-	function __construct($language)
+	/**
+	 * Array index for state class.
+	 *
+	 * @var integer
+	 */
+	const STATE_INDEX_CLASS = 2;
+
+	/**
+	 * Array index for state data.
+	 *
+	 * @var integer
+	 */
+	const STATE_INDEX_DATA = 3;
+
+	/**
+	 * Array index for state in state diagram.
+	 *
+	 * @var integer
+	 */
+	const STATE_DIAGRAM_INDEX_STATE = 0;
+
+	/**
+	 * Array index for type in state diagram.
+	 *
+	 * @var integer
+	 */
+	const STATE_DIAGRAM_INDEX_TYPE = 1;
+
+	/**
+	 * Array index for keyword class.
+	 *
+	 * @var interger
+	 */
+	const KEYWORD_INDEX_CLASS = 0;
+
+	/**
+	 * Array index for list of keywords.
+	 *
+	 * @var interger
+	 */
+	const KEYWORD_INDEX_LIST = 1;
+
+	/**
+	 * Array index for information if keywords are case-sensitive.
+	 *
+	 * @var interger
+	 */
+	const KEYWORD_INDEX_CASE_SENSITIVE = 2;
+
+	/**
+	 * Flag case-sensitive.
+	 *
+	 * @var boolean
+	 */
+	const CASE_SENSITIVE = true;
+
+	/**
+	 * Flag case-insensitive.
+	 *
+	 * @var boolean
+	 */
+	const CASE_INSENSITIVE = false;
+
+	/**
+	 * Generated source for given language.
+	 *
+	 * @var string
+	 */
+	private $source;
+
+	/**
+	 * Actual language name.
+	 *
+	 * @var string
+	 */
+	private $language;
+
+	/**
+	 * Actual language.
+	 *
+	 * @var Fshl_Lang
+	 */
+	private $lang = null;
+
+	/**
+	 * List of CSS classes of actual language.
+	 *
+	 * @var array
+	 */
+	private $classes = array();
+
+	/**
+	 * List of states.
+	 *
+	 * @var array
+	 */
+	private $states = array();
+
+	/**
+	 * List of flags for all states.
+	 *
+	 * @var array
+	 */
+	private $flags = array();
+
+	/**
+	 * Data for all states.
+	 *
+	 * @var array
+	 */
+	private $data = array();
+
+	/**
+	 * List of delimiters
+	 *
+	 * @var array
+	 */
+	private $delimiters = array();
+
+	/**
+	 * Transitions table.
+	 *
+	 * @var array
+	 */
+	private $trans = array();
+
+	/**
+	 * Initializes generator for given language.
+	 *
+	 * @param string $language
+	 * @throws InvalidArgumentException If the class for given language doesn't exist.
+	 */
+	public function __construct($language)
 	{
-		$this->error = false;
-		$this->language = $language;
+		$this->language = (string) $language;
 		$langClass = 'Fshl_Lang_' . $this->language;
-		if(class_exists($langClass)) {
-			$this->lang = new $langClass();
-			$this->groups = array(
-				// delimiter name	required size for compare
-				"SPACE"		=>		1,
-				"!SPACE"	=>		1,
-				"NUMBER"	=>		1,
-				"!NUMBER"	=>		1,
-				"ALPHA"		=>		1,
-				"!ALPHA"	=>		1,
-				"ALNUM"		=>		1,
-				"!ALNUM"	=>		1,
-				"HEXNUM"	=>		1,
-				"!HEXNUM"	=>		1,
-				"SAFECHAR"	=>		1,
-				"!SAFECHAR"	=>		1,
-				"_ALL"		=>		1,
-				"_COUNTAB"	=>		1,	// line counter & Tab indent delimiter ('\n' || '\t')
-				"DOT_NUMBER"  	=>	2,	// match ".N" where N is number
-				"!DOT_NUMBER"	=>	2,
+		if (!class_exists($langClass)) {
+			throw new InvalidArgumentException(sprintf('Missing class for language %s', $this->language));
+		}
 
-				// TODO: Add special language depended groups here.
-				//       See function shlParser::isdelimiter()
-				//       or fshlGenerator::get_ctype_condition() or get_older_condition()
-				"PHP_DELIM"	=>		1,
-			);
-			$this->version = $this->lang->getVersion();
-			if($this->language_array_optimise()) {
-				return;
+		$this->lang = new $langClass();
+		$this->source = $this->generate();
+	}
+
+	/**
+	 * Returns generated source.
+	 *
+	 * @return string
+	 */
+	public function getSource()
+	{
+		return $this->source;
+	}
+
+	/**
+	 * Saves generated source to language cache file.
+	 *
+	 * @throws Exception If the file has not been saved.
+	 */
+	public function saveToCache()
+	{
+		$file = dirname(__FILE__) . '/Lang/Cache/' . $this->language . '.php';
+		if (false === file_put_contents($file, $this->source)) {
+			throw new RuntimeException(sprintf('Cannot save source to "%s"', $file));
+		}
+	}
+
+	/**
+	 * Generates source.
+	 *
+	 * @return string
+	 */
+	private function generate()
+	{
+		$this->optimize();
+
+		$constructor = '';
+		$constructor .= $this->getVarSource('$this->version', self::VERSION . '/' . $this->lang->getVersion());
+		$constructor .= $this->getVarSource('$this->trans', $this->trans);
+		$constructor .= $this->getVarSource('$this->initialState', $this->states[$this->lang->getInitialState()]);
+		$constructor .= $this->getVarSource('$this->returnState', $this->states[self::STATE_RETURN]);
+		$constructor .= $this->getVarSource('$this->quitState', $this->states[self::STATE_QUIT]);
+		$constructor .= $this->getVarSource('$this->flags', $this->flags);
+		$constructor .= $this->getVarSource('$this->data', $this->data);
+		$constructor .= $this->getVarSource('$this->classes', $this->classes);
+		$constructor .= $this->getVarSource('$this->keywords', $this->lang->getKeywords());
+
+		$functions = '';
+		foreach ($this->delimiters as $state => $delimiter) {
+			if (null !== $delimiter) {
+				$functions .= $this->generateState($state);
 			}
-			$this->make();
-		} else {
-			$this->print_error("Language file '<b>$lang_filename</b>' not found.");
 		}
-	}
 
-	function get_source()
+		return <<<SOURCE
+<?php
+
+/**
+ * FastSHL                              | Universal Syntax HighLighter |
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
+
+/**
+ * Cache file for language {$this->language}.
+ *
+ * This file is generated. All changes made in this file will be lost.
+ *
+ * @category Fshl
+ * @package Fshl
+ * @subpackage Lang
+ * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
+ * @copyright Copyright (c) 2011 Jaroslav Hanslík
+ * @license https://github.com/kukulich/fshl/blob/master/!LICENSE.txt
+ * @see Fshl_Generator
+ * @see Fshl_Lang_{$this->language}
+ */
+class Fshl_Lang_Cache_{$this->language}
+{
+	/**
+	 * Generator version/language version.
+	 *
+	 * @var string
+	 */
+	public \$version;
+
+	/**
+	 * Transitions table.
+	 *
+	 * @var array
+	 */
+	public \$trans;
+
+	/**
+	 * Id of initial state.
+	 *
+	 * @var integer
+	 */
+	public \$initialState;
+
+	/**
+	 * Id of return state.
+	 *
+	 * @var integer
+	 */
+	public \$returnState;
+
+	/**
+	 * Id of quit state.
+	 *
+	 * @var integer
+	 */
+	public \$quitState;
+
+	/**
+	 * List of flags for all states.
+	 *
+	 * @var array
+	 */
+	public \$flags;
+
+	/**
+	 * Data for all states.
+	 *
+	 * @var array
+	 */
+	public \$data;
+
+	/**
+	 * List of CSS classes.
+	 *
+	 * @var array
+	 */
+	public \$classes;
+
+	/**
+	 * List of keywords.
+	 *
+	 * @var array
+	 */
+	public \$keywords;
+
+	/**
+	 * Initializes language.
+	 */
+	public function __construct()
 	{
-		if($this->is_error())
-			return null;
-		else
-			return $this->out;
+{$constructor}
 	}
-
-	function is_error()
-	{
-		return $this->error;
-	}
-
-	function write($filename=null)
-	{
-		if($filename==null)
-			$filename=FSHL_CACHE."$this->language.php";
-		if($this->is_error())
-		{
-			$this->print_error("File '<b>$filename</b>' not saved.");
-			return;
-		}
-		$filedes = fopen($filename,"w");
-		fwrite($filedes,$this->out,strlen($this->out));
-		fclose($filedes);
-	}
-
-	//
-	// LOW LEVEL FUNCTIONS
-	//
-	function print_error($text)
-	{
-		print ("fshl-generator: <b>$this->language:</b> $text\n");
-		$this->error = true;
-	}
-
-	function make()
-	{
-		$this->out = null;
-
-		// make source
-		$this->out.="<?php\n";
-		$this->out.="/* --------------------------------------------------------------- *\n";
-		$this->out.=" *        WARNING: ALL CHANGES IN THIS FILE WILL BE LOST\n *\n";
-		$this->out.=" *   Source language file: ".str_replace(FSHL_PATH, '', FSHL_PATH . 'Lang/'.$this->language).".php\n";
-		$this->out.=" *       Language version: $this->version\n *\n";
-		$this->out.=" *            Target file: ".str_replace(FSHL_PATH, '', FSHL_CACHE.$this->language).".php\n";
-		$this->out.=" *      Generator version: ".self::VERSION."\n";
-		$this->out.=" * --------------------------------------------------------------- */\n";
-
-		// make class
-		$this->out.="class Fshl_Lang_Cache_$this->language";
-
-		$this->out.="\n{\n";
-		$this->out.='var $trans,$flags,$data,$delim,$class,$keywords;'."\n";
-		$this->out.='var $version,$initial_state,$ret,$quit;'."\n";
-		$this->out.='var $pt,$pti,$generator_version;'."\n";
-		$this->out.='var $names;'."\n";
-
-		$this->out.="\n";
-
-		// make constructor
-		$this->out.=Fshl_Helper::getFncSource('__construct');
-
-		// make class variables
-		$this->out.="\t".Fshl_Helper::getVarSource("this->version",$this->version);
-		$this->out.="\t".Fshl_Helper::getVarSource("this->generator_version",self::VERSION);
-		$this->out.="\t".Fshl_Helper::getVarSource("this->initial_state",$this->_states[$this->lang->getInitialState()]);
-		$this->out.="\t".Fshl_Helper::getVarSource("this->trans",$this->_trans);
-		$this->out.="\t".Fshl_Helper::getVarSource("this->flags",$this->_flags);
-		$this->out.="\t".Fshl_Helper::getVarSource("this->delim",$this->_delim);
-		$this->out.="\t".Fshl_Helper::getVarSource("this->ret",$this->_ret);
-		$this->out.="\t".Fshl_Helper::getVarSource("this->quit",$this->_quit);
-		$this->out.="\t".Fshl_Helper::getVarSource("this->names",$this->_names);
-		$this->out.="\t".Fshl_Helper::getVarSource("this->data",$this->_data);
-		$this->out.="\t".Fshl_Helper::getVarSource("this->class",$this->_class);
-		$this->out.="\t".Fshl_Helper::getVarSource("this->keywords",$this->lang->getKeywords());
-		//end constructor
-		$this->out.="}\n\n";
-
-		// make ISDx() functions
-
-		foreach($this->_delim as $state=>$delim)
-			if($delim==null)
-				continue;
-			else
-				$this->make_state_code($state);
-
-		$this->out.="}\n";	//end class
-		$this->out.="?>";	//end source <? (hack for PSpad :))
-	}
-
-/*
-// code template
-function getw4 (&$s, $i, $l) {
-	$o = null;
-	while($i < $l) {
-		$c1=$s[$i++];
-		if(!ctype_xdigit($c1)){
-			return array(0,$c1,$o);
-		}
-		$o.=$c1;
-	}
-	return array(-1,-1,$o);
+{$functions}
 }
-*/
+SOURCE;
+	}
 
-	function make_state_code($state)
+	/**
+	 * Generates state code.
+	 *
+	 * @param integer $state
+	 * @return string
+	 */
+	private function generateState($state)
 	{
-		$statename=array_keys($this->_states,$state);
-		$tab = "\t"; $tab2 = "\t\t"; $tab3 = "\t\t\t";
-		$nl = "\n";
-		$this->out.="// $statename[0]\n";
-		$this->out.=Fshl_Helper::getFncSource("getw$state", '&$s, $i, $l');
+		// Delimiter name => Required length for compare
+		static $commonDelimiters = array(
+			'_ALL' => 1,
+			'_COUNTAB' => 1, // Line counter & tab indent
+			'SPACE' => 1,
+			'!SPACE' => 1,
+			'ALPHA' => 1,
+			'!ALPHA' => 1,
+			'ALNUM' => 1,
+			'!ALNUM' => 1,
+			'NUMBER' => 1,
+			'!NUMBER' => 1,
+			'HEXNUM' => 1,
+			'!HEXNUM' => 1,
+			'DOT_NUMBER' => 2,	// '.N' where N is number
+			'!DOT_NUMBER' => 2,
+			'SAFECHAR' => 1,
+			'!SAFECHAR' => 1
+		);
 
-		//
-		// generate local variables initialization
-		//
-		$max = 1;
-		$var_init = null;
-		$transitions = 0;
-		$all_break = false;
-		foreach($this->_delim[$state] as $del)
+		$conditions = '';
+		foreach ($this->delimiters[$state] as $no => $delimiter)
 		{
-			$transitions++;
-			if(isset($this->groups[$del])) {
-				// group delimiter
-				if($del == '_ALL') {
-					$all_break = true;
-					$tab3 = $tab2;
-					$tab2 = $tab;
-				}
-				// length for group delims is stored in array now
-				$len = $this->groups[$del];
+			if (isset($commonDelimiters[$delimiter])) {
+				$length = $commonDelimiters[$delimiter];
+				$delimiterSource = '$letter';
+				$condition = $this->getDelimiterCondition($delimiter);
 			} else {
-				// normal delimiter
-				$len = strlen($del);
-			}
-			if($max < $len) {
-				$max = $len;
-			}
-		}
-		if($max > 1)
-		{
-			$var_init.=					$tab2.'$p=$i;'.$nl;			// p - stream pointer
-			if($transitions > 1)
-			{
-				$var_init.=				$tab2.'$c1=$s[$p++];'.$nl;
-				for($x=2;$x<=$max;$x++)
-				{
-					$xx=$x-1;
-					if($x!=$max) {
-						$var_init.=		$tab2."\$c$x=\$c$xx.\$s[\$p++];".$nl;
-					} else {
-						$var_init.=		$tab2."\$c$x=\$c$xx.\$s[\$p];".$nl;
-					}
+				$length = strlen($delimiter);
+				$delimiterSource = $this->getVarValueSource($delimiter);
+				if (1 === $length) {
+					$condition = sprintf('%s === $letter', $delimiterSource);
+				} else {
+					$condition = sprintf('$textPos === strpos($text, %s, $textPos)', $delimiterSource);
 				}
 			}
-			else
-			{
-				// only one transition
-				$var_init.=				$tab2.'$c1=';
-				for($x=1;$x<=$max;$x++)
-				{
-					if($x!=$max) {
-						$var_init.=					'$s[$p++].';
-					} else {
-						$var_init.=					'$s[$p];'.$nl;
-					}
-				}
+
+			$conditions .= <<<CONDITION
+			if ($condition) {
+				return array({$no}, {$delimiterSource}, \$textPos - \$start, \$buffer, {$length});
 			}
-		}
-		else
-		{
-			$var_init.=					$tab2.'$c1=$s[$i];'.$nl;
+
+CONDITION;
 		}
 
-		$this->out.= 				$tab.'$o = false;'.		$nl;
-		$this->out.= 				$tab.'$start = $i;'.		$nl;
-		if(!$all_break) {
-			$this->out.= 			$tab.'while($i<$l) {'.	$nl;
-		}
-		$this->out.=				$var_init;
+		$stateName = array_search($state, $this->states);
+		return <<<STATE
 
-		//
-		// generate conditions and transitions
-		//
-		$cond = null;
+	/**
+	 * Parses state {$stateName}.
+	 *
+	 * @param string \$text
+	 * @param string \$textLength
+	 * @param string \$textPos
+	 * @return array
+	 */
+	public function getPart{$state}(&\$text, \$textLength, \$textPos)
+	{
+		\$buffer = false;
+		\$start = \$textPos;
+		while (\$textPos < \$textLength) {
+			\$letter = \$text[\$textPos];
+{$conditions}
+			\$buffer .= \$letter;
+			\$textPos++;
+		}
+		return array(-1, -1, -1, \$buffer, -1);
+	}
+
+STATE;
+	}
+
+	/**
+	 * Returns delimiter condition.
+	 *
+	 * @param mixed $del
+	 * @return string
+	 */
+	private function getDelimiterCondition($delimiter)
+	{
+		switch ($delimiter) {
+			case '_ALL':
+				return 'true';
+			case '_COUNTAB':
+				return '"\\t" === $letter || "\\n" === $letter';
+			case 'SPACE':
+				return 'ctype_space($letter)';
+			case 'ALPHA':
+				return 'ctype_alpha($letter)';
+			case 'ALNUM':
+				return 'ctype_alnum($letter)';
+			case 'NUMBER':
+				return 'ctype_digit($letter)';
+			case 'HEXNUM':
+				return 'ctype_xdigit($letter)';
+			case 'DOT_NUMBER':
+				return '\'.\' === $letter && ctype_digit($text[$textPos + 1])';
+			case 'SAFECHAR':
+				return 'ctype_alnum($letter) || \'_\' === $letter';
+			case '!SPACE':
+			case '!ALPHA':
+			case '!ALNUM':
+			case '!NUMBER':
+			case '!HEXNUM':
+			case '!DOT_NUMBER':
+			case '!SAFECHAR':
+				return '!' . $this->getDelimiterCondition(substr($delimiter, 1));
+			default:
+				throw new InvalidArgumentException(sprintf('Group delimiter "%s" is not implemented', $delimiter));
+		}
+	}
+
+	/**
+	 * Optimizes language definition.
+	 *
+	 * @return Fshl_Generator
+	 * @throws RuntimeException If the language definition is wrong.
+	 */
+	private function optimize()
+	{
 		$i = 0;
-		foreach($this->_delim[$state] as $del)
-		{
-			$size = strlen($del);
-			$delstring=Fshl_Helper::getStringSource($del);
-			if(isset($this->groups[$del]))
-			{
-				// delimiter is group delimiter
-				// make condition
-				$size = $this->groups[$del];
-				if( FSHL_USE_CTYPE )	$cond = $this->get_ctype_condition($del);
-				else					$cond = $this->get_older_condition($del);
-				if($cond == "1") break;
-
-				$this->out.=			$tab2."if($cond){".$nl;
-
-				$this->out.=				$tab3."return array($i,\$c1,\$o,$size,\$i-\$start);".$nl;
-				$this->out.=			$tab2.'}'.$nl;
-			}
-			else
-			{
-				// delimiter is not group delimiter
-				//$i_str = $size == 1 ? '$i' : '$i+'.($size-1);
-				$this->out.=			$tab2."if(\$c$size==$delstring){".$nl;
-
-				//$this->out.=				$tab3."return array($i,$delstring,\$o,$i_str);".$nl;
-				$this->out.=				$tab3."return array($i,$delstring,\$o,$size,\$i-\$start);".$nl;
-				$this->out.=			$tab2.'}'.$nl;
-			}
-			$i++;
-		} // END foreach()
-
-		if($cond == "1") {
-			$this->out.=				$tab2."return array($i,\$c1,false,\$i-\$start);".$nl;
-		} else {
-			$this->out.=				$tab2.'$o.=$c1;'.$nl;
-			$this->out.=				$tab2.'$i++;'.$nl;
-		}
-
-		if(!$all_break) {
-			$this->out.=			$tab."}".$nl;	//end while()
-			$this->out.=			$tab.'return array(-1,-1,$o,-1,-1);'.$nl;
-		}
-
-		$this->out.=			"}".$nl.$nl;	//end getw() function
-
-	} // END make_state_code()
-
-
-	// condition generator for older PHP's
-	//
-	function get_older_condition($del)
-	{
-		switch ($del)
-		{
-			case "SPACE":		$cond=	"strchr(\" \\t\\n\\r\",\$c1)";	break;
-			case "!SPACE":		$cond=	"!strchr(\" \\t\\n\\r\",\$c1)";	break;
-			case "NUMBER":		$cond=	"strchr('0123456789',\$c1)";	break;
-			case "!NUMBER":		$cond=	"!strchr('0123456789',\$c1)";	break;
-			case "ALPHA":		$cond=	"stristr('eaoinltsrvdukzmcpyhjbfgxwq',\$c1)";	break;
-			case "!ALPHA":		$cond=	"!stristr('eaoinltsrvdukzmcpyhjbfgxwq',\$c1)";	break;
-			case "ALNUM":		$cond=	"stristr('eaoinltsrvdukzmcpyhjbfgxwq0123456789',\$c1)";	break;
-			case "!ALNUM":		$cond=	"!stristr('eaoinltsrvdukzmcpyhjbfgxwq0123456789',\$c1)";	break;
-			case "HEXNUM":		$cond=	"stristr('0123456789abcdef',\$c1)"; break;
-			case "!HEXNUM":		$cond=	"!stristr('0123456789abcdef',\$c1)"; break;
-			case "_ALL":		$cond=	"1"; break;
-			case "_COUNTAB":	$cond=	"strchr(\"\\t\\n\",\$c1)"; break;
-			case "SAFECHAR":	$cond=  "stristr('eaoinltsrvdukzmcpyhjbfgxwq_0123456789',\$c1)";	break;
-			case "!SAFECHAR":	$cond=  "!stristr('eaoinltsrvdukzmcpyhjbfgxwq_0123456789',\$c1)";	break;
-			case "DOT_NUMBER":	$cond=	"\$c1=='.' && strchr('0123456789',\$c2[1])";	break;
-			case "!DOT_NUMBER":	$cond=	"!(\$c1=='.' && strchr('0123456789',\$c2[1]))";	break;
-			// Special group delimiters
-
-			case "PHP_DELIM":	$cond=	"strchr(\" \\t\\n\\r;,:(){}[]!=%&|+-*/\",\$c1)"; break;
-
-			default:			$cond = "BAD_FSHL_GENERATOR_VERSION__check_older";
-								$this->print_error("Group delimiter '<b>$del</b>' is not implemented.");
-								break;
-		} // END switch($del)
-		return $cond;
-	}
-
-	// new ctype condition generator (is really faster?)
-	//
-	function get_ctype_condition($del)
-	{
-		switch ($del)
-		{
-			case "SPACE":		$cond=	'ctype_space($c1)';		break;
-			case "!SPACE":		$cond=	'!ctype_space($c1)';	break;
-			case "NUMBER":		$cond=	'ctype_digit($c1)';		break;
-			case "!NUMBER":		$cond=	'!ctype_digit($c1)';	break;
-			case "ALPHA":		$cond=	'ctype_alpha($c1)';		break;
-			case "!ALPHA":		$cond=	'!ctype_alpha($c1)';	break;
-			case "ALNUM":		$cond=	'ctype_alnum($c1)';		break;
-			case "!ALNUM":		$cond=	'!ctype_alnum($c1)';	break;
-			case "HEXNUM":		$cond=	'ctype_xdigit($c1)';	break;
-			case "!HEXNUM":		$cond=	'!ctype_xdigit($c1)';	break;
-			case "_ALL":		$cond=	"1"; break;
-			case "_COUNTAB":	$cond=	"(\$c1==\"\\t\"||\$c1==\"\\n\")"; break;
-			case "SAFECHAR":	$cond=	"ctype_alnum(\$c1)||\$c1=='_'";	break;
-			case "!SAFECHAR":	$cond=	"!(\$c1=='_'||ctype_alnum(\$c1))";	break;
-			case "DOT_NUMBER":	$cond=	"\$c1=='.'&&ctype_digit(\$c2[1])";	break;
-			case "!DOT_NUMBER":	$cond=	"!(\$c1=='.'&&ctype_digit(\$c2[1]))";	break;
-
-			// Special group delimiters
-
-			case "PHP_DELIM":	$cond=	"strchr(\" \\t\\n\\r;,:(){}[]!=%&|+-*/\",\$c1)"; break;
-
-			default:			$cond = "BAD_FSHL_GENERATOR_VERSION";
-								$this->print_error("Group delimiter '<b>$del</b>' is not implemented.");
-								break;
-		} // END switch($del)
-		return $cond;
-	}
-
-
-	function language_array_optimise()
-	{
-		// internal language structures initialization
-		$j=0;
-		foreach ($this->lang->getStates() as $state => $state_array)
-		{
-			if($state==self::P_QUIT_STATE)
+		foreach (array_keys($this->lang->getStates()) as $stateName) {
+			if (self::STATE_QUIT === $stateName) {
 				continue;
-			$this->_states[$state]=$j;
-			$this->_names[$j++]=$state;
+			}
+			$this->states[$stateName] = $i;
+			$i++;
 		}
-		$this->_states[self::P_RET_STATE] = $this->_ret = $j++;
-		$this->_states[self::P_QUIT_STATE] = $this->_quit = $j++;
-		$this->_names[$this->_ret] = self::P_RET_STATE;
-		$this->_names[$this->_quit] = self::P_QUIT_STATE;
+		$this->states[self::STATE_RETURN] = $i++;
+		$this->states[self::STATE_QUIT] = $i++;
 
-		foreach ($this->lang->getStates() as $statename => $state_array)
-		{
-			$state = $this->_states[$statename];
-			$this->_flags[$state] = $state_array[self::XL_FLAGS];
-			$this->_data[$state] = $state_array[self::XL_DATA];
-			$this->_class[$state] = $state_array[self::XL_CLASS];
-			if(is_array($state_array[self::XL_DIAGR]))
-			{
-				$i=0;
-				foreach ($state_array[self::XL_DIAGR] as $delimiter => $trans_array )
-				{
-					$transname=$trans_array[self::XL_DSTATE];
-					if(!isset($this->_states[$transname]))
-					{
-						$delimiter=str_replace("<","&lt;",$delimiter);
-						$this->print_error("Unknown state in transition '$statename [$delimiter] => <b>$transname</b>'.");
-						return $this->error = true;
+		foreach ($this->lang->getStates() as $stateName => $state) {
+			$stateId = $this->states[$stateName];
+
+			$this->classes[$stateId] = $state[self::STATE_INDEX_CLASS];
+			$this->flags[$stateId] = $state[self::STATE_INDEX_FLAGS];
+			$this->data[$stateId] = $state[self::STATE_INDEX_DATA];
+
+			if (is_array($state[self::STATE_INDEX_DIAGRAM])) {
+				$i = 0;
+				foreach ($state[self::STATE_INDEX_DIAGRAM] as $delimiter => $trans) {
+					$transName = $trans[self::STATE_DIAGRAM_INDEX_STATE];
+					if (!isset($this->states[$transName])) {
+						throw new RuntimeException(sprintf('Unknown state in transition %s [%s] => %s', $stateName, $delimiter, $transName));
 					}
-					// V 0.4.5
-					$this->_delim[$state][$i]=$delimiter;
-					$trans_array[self::XL_DSTATE]=$this->_states[$transname];
-					$this->_trans[$state][$i]=$trans_array;
+					$this->delimiters[$stateId][$i] = $delimiter;
+					$trans[self::STATE_DIAGRAM_INDEX_STATE] = $this->states[$transName];
+					$this->trans[$stateId][$i] = $trans;
 					$i++;
 				}
-			}
-			else
-			{
-				$this->_delim[$state]=null;
-				$this->_trans[$state]=null;
+			} else {
+				$this->delimiters[$stateId] = null;
+				$this->trans[$stateId] = null;
 			}
 		}
-		$initial = $this->lang->getInitialState();
-		if(!isset($this->_states[$initial]))
-		{
-			$this->print_error("Unknown initial state '<b>$initial</b>'.");
-			return $this->error = true;
+
+		if (!isset($this->states[$this->lang->getInitialState()])) {
+			throw new RuntimeException(sprintf('Unknown initial state "%s"', $this->lang->getInitialState()));
 		}
-		return false;
+
+		return $this;
 	}
 
+	/**
+	 * Returns variable source.
+	 *
+	 * @param string $name
+	 * @param mixed $value
+	 * @return string
+	 */
+	private function getVarSource($name, $value)
+	{
+		return sprintf("\t\t%s = %s;\n", $name, $this->getVarValueSource($value));
+	}
 
+	/**
+	 * Returns variable value source.
+	 *
+	 * @param mixed $value
+	 * @param integer $level
+	 * @return string
+	 */
+	private function getVarValueSource($value, $level = 0)
+	{
+		if (is_array($value)) {
+			$tmp = '';
+			$line = 0;
+			$total = 0;
+			foreach ($value as $k => $v) {
+				if ($line > 25) {
+					$tmp .= ",\n\t\t" . str_repeat("\t", $level);
+					$line = 0;
+				} elseif (0 !== $total) {
+					$tmp .= ', ';
+				}
+				$tmp .= $this->getVarValueSource($k, $level + 1) . ' => ' . $this->getVarValueSource($v, $level + 1);
+
+				$line++;
+				$total++;
+			}
+			return "array(\n\t\t\t" . str_repeat("\t", $level) . $tmp . "\n" . str_repeat("\t", $level) . "\t\t)";
+		}
+		return var_export($value, true);
+	}
 }
-?>

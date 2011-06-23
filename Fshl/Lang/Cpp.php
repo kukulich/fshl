@@ -74,16 +74,16 @@ class Fshl_Lang_Cpp implements Fshl_Lang
 					'\'' => array('QUOTE2', 0),
 					'/*' => array('COMMENT1', 0)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				null,
 				null
 			),
 			// Keyword
 			'KEYWORD' => array(
 				array(
-					'!SAFECHAR' => array(Fshl_Generator::P_RET_STATE, 0)
+					'!SAFECHAR' => array(Fshl_Generator::STATE_RETURN, 0)
 				),
-				Fshl_Generator::PF_KEYWORD | Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_KEYWORD | Fshl_Generator::STATE_FLAG_RECURSION,
 				null,
 				null
 			),
@@ -93,9 +93,9 @@ class Fshl_Lang_Cpp implements Fshl_Lang
 					'NUMBER' => array('DEC_NUM', 0),
 					'x' => array('HEX_NUM', 0),
 					'.' => array('FLOAT_NUM', 0),
-					'!NUMBER' => array(Fshl_Generator::P_RET_STATE, 1)
+					'!NUMBER' => array(Fshl_Generator::STATE_RETURN, 1)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'cpp-num',
 				null
 			),
@@ -103,27 +103,27 @@ class Fshl_Lang_Cpp implements Fshl_Lang
 				array(
 					'.' => array('DEC_NUM', 0),
 					'f' => array('DEC_NUM', 0),
-					'!NUMBER' => array(Fshl_Generator::P_RET_STATE, 1)
+					'!NUMBER' => array(Fshl_Generator::STATE_RETURN, 1)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'cpp-num',
 				null
 			),
 			'FLOAT_NUM' => array(
 				array(
 					'f' => array('FLOAT_NUM', 0),
-					'!NUMBER' => array(Fshl_Generator::P_RET_STATE, 1)
+					'!NUMBER' => array(Fshl_Generator::STATE_RETURN, 1)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'cpp-num',
 				null
 			),
 			'HEX_NUM' => array(
 				array(
 					'L' => array('HEX_NUM', 0),
-					'!HEXNUM' => array(Fshl_Generator::P_RET_STATE, 1)
+					'!HEXNUM' => array(Fshl_Generator::STATE_RETURN, 1)
 				),
-				0,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'cpp-num',
 				null
 			),
@@ -133,9 +133,9 @@ class Fshl_Lang_Cpp implements Fshl_Lang
 					"\\\n" => array('PREPROC', 0), // Backslash in preprocessor
 					"\t" => array('PREPROC', 0),
 					"\\\xd\xa" => array('PREPROC', 0), // Backslash in preprocessor
-					"\n" => array(Fshl_Generator::P_RET_STATE, 0)
+					"\n" => array(Fshl_Generator::STATE_RETURN, 0)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'cpp-preproc',
 				null
 			),
@@ -145,19 +145,19 @@ class Fshl_Lang_Cpp implements Fshl_Lang
 					'\\\\' => array('QUOTE1', 0),
 					'\\"' => array('QUOTE1', 0),
 					'_COUNTAB' => array('QUOTE1', 0),
-					'"' => array(Fshl_Generator::P_RET_STATE, 0)
+					'"' => array(Fshl_Generator::STATE_RETURN, 0)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'cpp-quote',
 				null
 			),
 			'QUOTE2' => array(
 				array(
 					'\\\'' => array('QUOTE2', 0),
-					'\'' => array(Fshl_Generator::P_RET_STATE, 0),
+					'\'' => array(Fshl_Generator::STATE_RETURN, 0),
 					'_COUNTAB' => array('QUOTE2', 0)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'cpp-quote',
 				null
 			),
@@ -165,18 +165,18 @@ class Fshl_Lang_Cpp implements Fshl_Lang
 			'COMMENT1' => array(
 				array(
 					'_COUNTAB' => array('COMMENT1', 0),
-					'*/' => array(Fshl_Generator::P_RET_STATE, 0)
+					'*/' => array(Fshl_Generator::STATE_RETURN, 0)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'cpp-comment',
 				null
 			),
 			'COMMENT2' => array(
 				array(
-					"\n" => array(Fshl_Generator::P_RET_STATE, 0),
+					"\n" => array(Fshl_Generator::STATE_RETURN, 0),
 					"\t" => array('COMMENT2', 0)
 				),
-				Fshl_Generator::PF_RECURSION,
+				Fshl_Generator::STATE_FLAG_RECURSION,
 				'cpp-comment',
 				null
 			)
@@ -316,7 +316,7 @@ class Fshl_Lang_Cpp implements Fshl_Lang
 				'__virtual_inheritance' => 1,
 				'__w64' => 1
 			),
-			true
+			Fshl_Generator::CASE_SENSITIVE
 		);
 	}
 }

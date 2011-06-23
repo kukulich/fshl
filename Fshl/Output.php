@@ -22,7 +22,7 @@
  */
 
 /**
- * HTML output.
+ * Output interface.
  *
  * @category Fshl
  * @package Fshl
@@ -31,15 +31,8 @@
  * @copyright Copyright (c) 2011 Jaroslav Hanslík
  * @license https://github.com/kukulich/fshl/blob/master/!LICENSE.txt
  */
-class Fshl_Output_Html implements Fshl_Output
+interface Fshl_Output
 {
-	/**
-	 * Last used class.
-	 *
-	 * @var string
-	 */
-	private $lastClass = null;
-
 	/**
 	 * Writes template.
 	 *
@@ -47,23 +40,7 @@ class Fshl_Output_Html implements Fshl_Output
 	 * @param string $class
 	 * @return string
 	 */
-	public function template($word, $class)
-	{
-		$output = '';
-
-		if ($this->lastClass !== $class) {
-			if (null !== $this->lastClass) {
-				$output .= '</span>';
-			}
-			if (null !== $class) {
-				$output .= sprintf('<span class="%s">', $class);
-			}
-
-			$this->lastClass = $class;
-		}
-
-		return $output . htmlspecialchars($word, ENT_COMPAT, 'UTF-8');
-	}
+	public function template($word, $class);
 
 	/**
 	 * Writes keyword.
@@ -72,21 +49,5 @@ class Fshl_Output_Html implements Fshl_Output
 	 * @param string $class
 	 * @return string
 	 */
-	public function keyword($word, $class)
-	{
-		$output = '';
-
-		if ($this->lastClass !== $class) {
-			if (null !== $this->lastClass) {
-				$output .= '</span>';
-			}
-			if (null !== $class) {
-				$output .= sprintf('<span class="%s">', $class);
-			}
-
-			$this->lastClass = $class;
-		}
-
-		return $output . htmlspecialchars($word, ENT_COMPAT, 'UTF-8');
-	}
+	public function keyword($word, $class);
 }

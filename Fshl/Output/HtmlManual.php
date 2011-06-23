@@ -31,7 +31,7 @@
  * @copyright Copyright (c) 2011 Jaroslav Hanslík
  * @license https://github.com/kukulich/fshl/blob/master/!LICENSE.txt
  */
-class Fshl_Output_HtmlManual
+class Fshl_Output_HtmlManual implements Fshl_Output
 {
 	/**
 	 * Last used class.

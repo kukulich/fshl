@@ -31,14 +31,17 @@
  * @copyright Copyright (c) 2011 Jaroslav Hanslík
  * @license https://github.com/kukulich/fshl/blob/master/!LICENSE.txt
  */
-class Fshl_Lang_Texy
+class Fshl_Lang_Texy implements Fshl_Lang
 {
 	/**
-	 * Version.
+	 * Returns version.
 	 *
-	 * @var string
+	 * @return string
 	 */
-	const VERSION = '0.1';
+	public function getVersion()
+	{
+		return '0.1';
+	}
 
 	/**
 	 * Returns initial state.

@@ -31,14 +31,17 @@
  * @copyright Copyright (c) 2011 Jaroslav Hanslík
  * @license https://github.com/kukulich/fshl/blob/master/!LICENSE.txt
  */
-class Fshl_Lang_Php
+class Fshl_Lang_Php implements Fshl_Lang
 {
 	/**
-	 * Version.
+	 * Returns version.
 	 *
-	 * @var string
+	 * @return string
 	 */
-	const VERSION = '1.29';
+	public function getVersion()
+	{
+		return '1.29';
+	}
 
 	/**
 	 * Returns initial state.

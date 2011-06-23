@@ -22,71 +22,42 @@
  */
 
 /**
- * HTML output.
+ * Language interface.
  *
  * @category Fshl
  * @package Fshl
- * @subpackage Output
+ * @subpackage Lang
  * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
  * @copyright Copyright (c) 2011 Jaroslav Hanslík
  * @license https://github.com/kukulich/fshl/blob/master/!LICENSE.txt
  */
-class Fshl_Output_Html implements Fshl_Output
+interface Fshl_Lang
 {
 	/**
-	 * Last used class.
+	 * Returns version.
 	 *
-	 * @var string
-	 */
-	private $lastClass = null;
-
-	/**
-	 * Writes template.
-	 *
-	 * @param string $word
-	 * @param string $class
 	 * @return string
 	 */
-	public function template($word, $class)
-	{
-		$output = '';
-
-		if ($this->lastClass !== $class) {
-			if (null !== $this->lastClass) {
-				$output .= '</span>';
-			}
-			if (null !== $class) {
-				$output .= sprintf('<span class="%s">', $class);
-			}
-
-			$this->lastClass = $class;
-		}
-
-		return $output . htmlspecialchars($word, ENT_COMPAT, 'UTF-8');
-	}
+	public function getVersion();
 
 	/**
-	 * Writes keyword.
+	 * Returns initial state.
 	 *
-	 * @param string $word
-	 * @param string $class
 	 * @return string
 	 */
-	public function keyword($word, $class)
-	{
-		$output = '';
+	public function getInitialState();
 
-		if ($this->lastClass !== $class) {
-			if (null !== $this->lastClass) {
-				$output .= '</span>';
-			}
-			if (null !== $class) {
-				$output .= sprintf('<span class="%s">', $class);
-			}
+	/**
+	 * Returns states.
+	 *
+	 * @return array
+	 */
+	public function getStates();
 
-			$this->lastClass = $class;
-		}
-
-		return $output . htmlspecialchars($word, ENT_COMPAT, 'UTF-8');
-	}
+	/**
+	 * Returns keywords.
+	 *
+	 * @return array
+	 */
+	public function getKeywords();
 }

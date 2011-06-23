@@ -142,7 +142,7 @@ class Fshl_Generator
 				//       or fshlGenerator::get_ctype_condition() or get_older_condition()
 				"PHP_DELIM"	=>		1,
 			);
-			$this->version = $langClass::VERSION;
+			$this->version = $this->lang->getVersion();
 			if($this->language_array_optimise()) {
 				return;
 			}

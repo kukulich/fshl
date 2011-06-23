@@ -99,6 +99,10 @@ class Fshl_Generator
 	const P_RET_STATE = '_RET';
 	const P_QUIT_STATE = '_QUIT';
 
+	const KEYWORD_CLASS = 0;
+	const KEYWORD_LIST = 1;
+	const KEYWORD_CASE_SENSITIVE = 2;
+
 	// class variables
 	var $lang, $flang, $version, $langname, $language;
 	var $out, $groups;

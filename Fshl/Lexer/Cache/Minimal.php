@@ -146,7 +146,7 @@ class Fshl_Lexer_Cache_Minimal
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if ("\t" === $letter || "\n" === $letter) {
-				return array(0, $letter, $textPos - $start, $buffer, 1);
+				return array(0, $letter, 1, $buffer, $textPos - $start);
 			}
 
 			$buffer .= $letter;

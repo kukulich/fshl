@@ -264,8 +264,8 @@ class Fshl_Highlighter
 
 			// Some data may be collected before getPart reaches the delimiter, we must output this before other processing
 			if (false !== $buffer) {
-				$textPos += $delimiterLength;
-				$char += $delimiterLength;
+				$textPos += $bufferLength;
+				$char += $bufferLength;
 				$output[] = $this->template($buffer, $state);
 			}
 
@@ -279,12 +279,12 @@ class Fshl_Highlighter
 			$prevChar = $char;
 			$prevTextPos = $textPos;
 
-			$textPos += $bufferLength;
-			$char += $bufferLength;
+			$textPos += $delimiterLength;
+			$char += $delimiterLength;
 
 			// Adds line counter and tab indentation
 			$addLine = false;
-			if ("\n" === $delimiter[$bufferLength - 1]) {
+			if ("\n" === $delimiter[$delimiterLength - 1]) {
 				// Line counter
 				$line++;
 				$char = 0;

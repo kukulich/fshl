@@ -436,13 +436,13 @@ SOURCE;
 		foreach ($this->delimiters[$state] as $no => $delimiter)
 		{
 			if (isset($commonDelimiters[$delimiter])) {
-				$length = $commonDelimiters[$delimiter];
+				$delimiterLength = $commonDelimiters[$delimiter];
 				$delimiterSource = '$letter';
 				$condition = $this->getDelimiterCondition($delimiter);
 			} else {
-				$length = strlen($delimiter);
+				$delimiterLength = strlen($delimiter);
 				$delimiterSource = $this->getVarValueSource($delimiter);
-				if (1 === $length) {
+				if (1 === $delimiterLength) {
 					$condition = sprintf('%s === $letter', $delimiterSource);
 				} else {
 					$condition = sprintf('$textPos === strpos($text, %s, $textPos)', $delimiterSource);
@@ -451,7 +451,7 @@ SOURCE;
 
 			$conditions .= <<<CONDITION
 			if ($condition) {
-				return array({$no}, {$delimiterSource}, \$textPos - \$start, \$buffer, {$length});
+				return array({$no}, {$delimiterSource}, {$delimiterLength}, \$buffer, \$textPos - \$start);
 			}
 
 CONDITION;

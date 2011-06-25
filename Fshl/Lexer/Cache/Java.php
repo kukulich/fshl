@@ -217,25 +217,25 @@ class Fshl_Lexer_Cache_Java
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if (preg_match('~^[a-z]$~i', $letter)) {
-				return array(0, $letter, $textPos - $start, $buffer, 1);
+				return array(0, $letter, 1, $buffer, $textPos - $start);
 			}
 			if (preg_match('~^\\d$~', $letter)) {
-				return array(1, $letter, $textPos - $start, $buffer, 1);
+				return array(1, $letter, 1, $buffer, $textPos - $start);
 			}
 			if ('"' === $letter) {
-				return array(2, '"', $textPos - $start, $buffer, 1);
+				return array(2, '"', 1, $buffer, $textPos - $start);
 			}
 			if ('\'' === $letter) {
-				return array(3, '\'', $textPos - $start, $buffer, 1);
+				return array(3, '\'', 1, $buffer, $textPos - $start);
 			}
 			if ($textPos === strpos($text, '/*', $textPos)) {
-				return array(4, '/*', $textPos - $start, $buffer, 2);
+				return array(4, '/*', 2, $buffer, $textPos - $start);
 			}
 			if ($textPos === strpos($text, '//', $textPos)) {
-				return array(5, '//', $textPos - $start, $buffer, 2);
+				return array(5, '//', 2, $buffer, $textPos - $start);
 			}
 			if ("\t" === $letter || "\n" === $letter) {
-				return array(6, $letter, $textPos - $start, $buffer, 1);
+				return array(6, $letter, 1, $buffer, $textPos - $start);
 			}
 
 			$buffer .= $letter;
@@ -259,7 +259,7 @@ class Fshl_Lexer_Cache_Java
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if (!preg_match('~^\\w$~i', $letter)) {
-				return array(0, $letter, $textPos - $start, $buffer, 1);
+				return array(0, $letter, 1, $buffer, $textPos - $start);
 			}
 
 			$buffer .= $letter;
@@ -283,16 +283,16 @@ class Fshl_Lexer_Cache_Java
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if ('x' === $letter) {
-				return array(0, 'x', $textPos - $start, $buffer, 1);
+				return array(0, 'x', 1, $buffer, $textPos - $start);
 			}
 			if ('.' === $letter) {
-				return array(1, '.', $textPos - $start, $buffer, 1);
+				return array(1, '.', 1, $buffer, $textPos - $start);
 			}
 			if (preg_match('~^\\d$~', $letter)) {
-				return array(2, $letter, $textPos - $start, $buffer, 1);
+				return array(2, $letter, 1, $buffer, $textPos - $start);
 			}
 			if (!preg_match('~^\\d$~', $letter)) {
-				return array(3, $letter, $textPos - $start, $buffer, 1);
+				return array(3, $letter, 1, $buffer, $textPos - $start);
 			}
 
 			$buffer .= $letter;
@@ -316,10 +316,10 @@ class Fshl_Lexer_Cache_Java
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if ('.' === $letter) {
-				return array(0, '.', $textPos - $start, $buffer, 1);
+				return array(0, '.', 1, $buffer, $textPos - $start);
 			}
 			if (!preg_match('~^\\d$~', $letter)) {
-				return array(1, $letter, $textPos - $start, $buffer, 1);
+				return array(1, $letter, 1, $buffer, $textPos - $start);
 			}
 
 			$buffer .= $letter;
@@ -343,7 +343,7 @@ class Fshl_Lexer_Cache_Java
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if (!preg_match('~^[a-f]\\d$~i', $letter)) {
-				return array(0, $letter, $textPos - $start, $buffer, 1);
+				return array(0, $letter, 1, $buffer, $textPos - $start);
 			}
 
 			$buffer .= $letter;
@@ -367,16 +367,16 @@ class Fshl_Lexer_Cache_Java
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if ($textPos === strpos($text, '\\\\', $textPos)) {
-				return array(0, '\\\\', $textPos - $start, $buffer, 2);
+				return array(0, '\\\\', 2, $buffer, $textPos - $start);
 			}
 			if ($textPos === strpos($text, '\\"', $textPos)) {
-				return array(1, '\\"', $textPos - $start, $buffer, 2);
+				return array(1, '\\"', 2, $buffer, $textPos - $start);
 			}
 			if ("\t" === $letter || "\n" === $letter) {
-				return array(2, $letter, $textPos - $start, $buffer, 1);
+				return array(2, $letter, 1, $buffer, $textPos - $start);
 			}
 			if ('"' === $letter) {
-				return array(3, '"', $textPos - $start, $buffer, 1);
+				return array(3, '"', 1, $buffer, $textPos - $start);
 			}
 
 			$buffer .= $letter;
@@ -400,16 +400,16 @@ class Fshl_Lexer_Cache_Java
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if ($textPos === strpos($text, '\\\\', $textPos)) {
-				return array(0, '\\\\', $textPos - $start, $buffer, 2);
+				return array(0, '\\\\', 2, $buffer, $textPos - $start);
 			}
 			if ($textPos === strpos($text, '\\\'', $textPos)) {
-				return array(1, '\\\'', $textPos - $start, $buffer, 2);
+				return array(1, '\\\'', 2, $buffer, $textPos - $start);
 			}
 			if ("\t" === $letter || "\n" === $letter) {
-				return array(2, $letter, $textPos - $start, $buffer, 1);
+				return array(2, $letter, 1, $buffer, $textPos - $start);
 			}
 			if ('\'' === $letter) {
-				return array(3, '\'', $textPos - $start, $buffer, 1);
+				return array(3, '\'', 1, $buffer, $textPos - $start);
 			}
 
 			$buffer .= $letter;
@@ -433,10 +433,10 @@ class Fshl_Lexer_Cache_Java
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if ($textPos === strpos($text, '*/', $textPos)) {
-				return array(0, '*/', $textPos - $start, $buffer, 2);
+				return array(0, '*/', 2, $buffer, $textPos - $start);
 			}
 			if ("\t" === $letter || "\n" === $letter) {
-				return array(1, $letter, $textPos - $start, $buffer, 1);
+				return array(1, $letter, 1, $buffer, $textPos - $start);
 			}
 
 			$buffer .= $letter;
@@ -462,10 +462,10 @@ class Fshl_Lexer_Cache_Java
 			if ('
 ' === $letter) {
 				return array(0, '
-', $textPos - $start, $buffer, 1);
+', 1, $buffer, $textPos - $start);
 			}
 			if ('	' === $letter) {
-				return array(1, '	', $textPos - $start, $buffer, 1);
+				return array(1, '	', 1, $buffer, $textPos - $start);
 			}
 
 			$buffer .= $letter;

@@ -190,16 +190,16 @@ class Fshl_Lexer_Cache_HtmlOnly
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if ($textPos === strpos($text, '<!--', $textPos)) {
-				return array(0, '<!--', $textPos - $start, $buffer, 4);
+				return array(0, '<!--', 4, $buffer, $textPos - $start);
 			}
 			if ('<' === $letter) {
-				return array(1, '<', $textPos - $start, $buffer, 1);
+				return array(1, '<', 1, $buffer, $textPos - $start);
 			}
 			if ('&' === $letter) {
-				return array(2, '&', $textPos - $start, $buffer, 1);
+				return array(2, '&', 1, $buffer, $textPos - $start);
 			}
 			if ("\t" === $letter || "\n" === $letter) {
-				return array(3, $letter, $textPos - $start, $buffer, 1);
+				return array(3, $letter, 1, $buffer, $textPos - $start);
 			}
 
 			$buffer .= $letter;
@@ -223,13 +223,13 @@ class Fshl_Lexer_Cache_HtmlOnly
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if (';' === $letter) {
-				return array(0, ';', $textPos - $start, $buffer, 1);
+				return array(0, ';', 1, $buffer, $textPos - $start);
 			}
 			if ('&' === $letter) {
-				return array(1, '&', $textPos - $start, $buffer, 1);
+				return array(1, '&', 1, $buffer, $textPos - $start);
 			}
 			if (preg_match('~^\\s$~', $letter)) {
-				return array(2, $letter, $textPos - $start, $buffer, 1);
+				return array(2, $letter, 1, $buffer, $textPos - $start);
 			}
 
 			$buffer .= $letter;
@@ -253,10 +253,10 @@ class Fshl_Lexer_Cache_HtmlOnly
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if ('>' === $letter) {
-				return array(0, '>', $textPos - $start, $buffer, 1);
+				return array(0, '>', 1, $buffer, $textPos - $start);
 			}
 			if (preg_match('~^\\s$~', $letter)) {
-				return array(1, $letter, $textPos - $start, $buffer, 1);
+				return array(1, $letter, 1, $buffer, $textPos - $start);
 			}
 
 			$buffer .= $letter;
@@ -280,16 +280,16 @@ class Fshl_Lexer_Cache_HtmlOnly
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if ('"' === $letter) {
-				return array(0, '"', $textPos - $start, $buffer, 1);
+				return array(0, '"', 1, $buffer, $textPos - $start);
 			}
 			if ('>' === $letter) {
-				return array(1, '>', $textPos - $start, $buffer, 1);
+				return array(1, '>', 1, $buffer, $textPos - $start);
 			}
 			if ("\t" === $letter || "\n" === $letter) {
-				return array(2, $letter, $textPos - $start, $buffer, 1);
+				return array(2, $letter, 1, $buffer, $textPos - $start);
 			}
 			if ('\'' === $letter) {
-				return array(3, '\'', $textPos - $start, $buffer, 1);
+				return array(3, '\'', 1, $buffer, $textPos - $start);
 			}
 
 			$buffer .= $letter;
@@ -313,7 +313,7 @@ class Fshl_Lexer_Cache_HtmlOnly
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if ('"' === $letter) {
-				return array(0, '"', $textPos - $start, $buffer, 1);
+				return array(0, '"', 1, $buffer, $textPos - $start);
 			}
 
 			$buffer .= $letter;
@@ -337,7 +337,7 @@ class Fshl_Lexer_Cache_HtmlOnly
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if ('\'' === $letter) {
-				return array(0, '\'', $textPos - $start, $buffer, 1);
+				return array(0, '\'', 1, $buffer, $textPos - $start);
 			}
 
 			$buffer .= $letter;
@@ -361,10 +361,10 @@ class Fshl_Lexer_Cache_HtmlOnly
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if ($textPos === strpos($text, '-->', $textPos)) {
-				return array(0, '-->', $textPos - $start, $buffer, 3);
+				return array(0, '-->', 3, $buffer, $textPos - $start);
 			}
 			if ("\t" === $letter || "\n" === $letter) {
-				return array(1, $letter, $textPos - $start, $buffer, 1);
+				return array(1, $letter, 1, $buffer, $textPos - $start);
 			}
 
 			$buffer .= $letter;

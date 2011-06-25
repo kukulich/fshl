@@ -260,18 +260,16 @@ class Fshl_Highlighter
 		$this->stack = array();
 
 		while (true) {
-			// array($transitionId, $delimiterString, $delimiterLength, $collectedString, $collectedStringLength);
-			//  - transitionId - may be -1 when we are at the end of stream
-			$part = $this->lexer->{'getPart' . $state}($text, $textLength, $textPos);
+			list($transitionId, $delimiter, $delimiterLength, $buffer, $bufferLength) = $this->lexer->{'getPart' . $state}($text, $textLength, $textPos);
 
 			// Some data may be collected before getPart reaches the delimiter, we must output this before other processing
-			if (false !== $part[3]) {
-				$textPos += $part[2];
-				$char += $part[2];
-				$output[] = $this->template($part[3], $state);
+			if (false !== $buffer) {
+				$textPos += $delimiterLength;
+				$char += $delimiterLength;
+				$output[] = $this->template($buffer, $state);
 			}
 
-			if (-1 === $part[0]) {
+			if (-1 === $transitionId) {
 				// End of stream
 				break;
 			}
@@ -281,12 +279,12 @@ class Fshl_Highlighter
 			$prevChar = $char;
 			$prevTextPos = $textPos;
 
-			$textPos += $part[4];
-			$char += $part[4];
+			$textPos += $bufferLength;
+			$char += $bufferLength;
 
 			// Adds line counter and tab indentation
 			$addLine = false;
-			if ("\n" === $part[1][$part[4] - 1]) {
+			if ("\n" === $delimiter[$bufferLength - 1]) {
 				// Line counter
 				$line++;
 				$char = 0;
@@ -294,26 +292,26 @@ class Fshl_Highlighter
 					$addLine = true;
 					$actualLine = $line;
 				}
-			} elseif ("\t" === $part[1] && ($this->options & self::OPTION_TAB_INDENT)) {
+			} elseif ("\t" === $delimiter && ($this->options & self::OPTION_TAB_INDENT)) {
 				// Tab indentation
 				$i = $char % $this->tabIndentWidth;
-				$part[1] = $this->tabs[$i][0];
+				$delimiter = $this->tabs[$i][0];
 				$char += $this->tabs[$i][1];
 			}
 
 			// Gets new state from transitions table
-			$newState = $this->lexer->trans[$state][$part[0]][Fshl_Generator::STATE_DIAGRAM_INDEX_STATE];
+			$newState = $this->lexer->trans[$state][$transitionId][Fshl_Generator::STATE_DIAGRAM_INDEX_STATE];
 			if ($newState === $this->lexer->returnState) {
 				// Returns to previous context
 				// Chooses delimiter processing (second value in destination array)
 				//  0 - style from current state will be applied at received delimiter
 				//  1 - delimiter will be returned to input stream
-				if ($this->lexer->trans[$state][$part[0]][Fshl_Generator::STATE_DIAGRAM_INDEX_TYPE] > 0) {
+				if ($this->lexer->trans[$state][$transitionId][Fshl_Generator::STATE_DIAGRAM_INDEX_TYPE] > 0) {
 					$line = $prevLine;
 					$char = $prevChar;
 					$textPos = $prevTextPos;
 				} else {
-					$output[] = $this->template($part[1], $state);
+					$output[] = $this->template($delimiter, $state);
 					if ($addLine) {
 						$output[] = $this->line($actualLine, $maxLineWidth);
 					}
@@ -338,14 +336,14 @@ class Fshl_Highlighter
 			//  0 - style from new state will be applied at received delimiter
 			//  1 - style from current state will be applied
 			// -1 - delimiter must be returned to stream (back to previous position)
-			$type = $this->lexer->trans[$state][$part[0]][Fshl_Generator::STATE_DIAGRAM_INDEX_TYPE];
+			$type = $this->lexer->trans[$state][$transitionId][Fshl_Generator::STATE_DIAGRAM_INDEX_TYPE];
 			if ($type < 0) {
 				// Back to stream
 				$line = $prevLine;
 				$char = $prevChar;
 				$textPos = $prevTextPos;
 			} else {
-				$output[] = $this->template($part[1], $type > 0 ? $state : $newState);
+				$output[] = $this->template($delimiter, $type > 0 ? $state : $newState);
 				if ($addLine) {
 					$output[] = $this->line($actualLine, $maxLineWidth);
 				}

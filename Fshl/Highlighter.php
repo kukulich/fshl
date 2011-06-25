@@ -403,9 +403,19 @@ class Fshl_Highlighter
 			// Load new lexer
 			$lexerClass = 'Fshl_Lexer_Cache_' . $lexerName;
 			if (!class_exists($lexerClass)) {
-				// If lexer doesn't exists, use minimal line counter
-				$lexerName = self::LEXER_MINIMAL;
-				$lexerClass = 'Fshl_Lexer_Cache_' . $lexerName;
+				$lexerDefinitionClass = 'Fshl_Lexer_' . $lexerName;
+				if (class_exists($lexerDefinitionClass) && class_exists('Fshl_Generator')) {
+					// Generate lexer on fly
+					$generator = new Fshl_Generator($lexerName);
+					$file = tempnam(sys_get_temp_dir(), 'fshl');
+					file_put_contents($file, $generator->getSource());
+					require_once $file;
+					unlink($file);
+				} else {
+					// Use minimal lexer with line counter
+					$lexerName = self::LEXER_MINIMAL;
+					$lexerClass = 'Fshl_Lexer_Cache_' . $lexerName;
+				}
 			}
 			$this->lexers[$lexerName] = new $lexerClass();
 		}

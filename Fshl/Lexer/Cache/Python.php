@@ -282,7 +282,7 @@ class Fshl_Lexer_Cache_Python
 			if ("\t" === $letter || "\n" === $letter) {
 				return array(0, $letter, $textPos - $start, $buffer, 1);
 			}
-			if (ctype_alpha($letter)) {
+			if (preg_match('~^[a-z]$~i', $letter)) {
 				return array(1, $letter, $textPos - $start, $buffer, 1);
 			}
 			if ('_' === $letter) {
@@ -309,10 +309,10 @@ class Fshl_Lexer_Cache_Python
 			if ($textPos === strpos($text, '0X', $textPos)) {
 				return array(9, '0X', $textPos - $start, $buffer, 2);
 			}
-			if ('.' === $letter && ctype_digit($text[$textPos + 1])) {
+			if ('.' === $letter && preg_match('~^\\d$~', $text[$textPos + 1])) {
 				return array(10, $letter, $textPos - $start, $buffer, 2);
 			}
-			if (ctype_digit($letter)) {
+			if (preg_match('~^\\d$~', $letter)) {
 				return array(11, $letter, $textPos - $start, $buffer, 1);
 			}
 
@@ -336,7 +336,7 @@ class Fshl_Lexer_Cache_Python
 		$start = $textPos;
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
-			if (!ctype_alnum($letter) || '_' === $letter) {
+			if (!preg_match('~^\\w$~i', $letter)) {
 				return array(0, $letter, $textPos - $start, $buffer, 1);
 			}
 
@@ -527,7 +527,7 @@ class Fshl_Lexer_Cache_Python
 			if ('l' === $letter) {
 				return array(1, 'l', $textPos - $start, $buffer, 1);
 			}
-			if (!ctype_xdigit($letter)) {
+			if (!preg_match('~^[a-f]\\d$~i', $letter)) {
 				return array(2, $letter, $textPos - $start, $buffer, 1);
 			}
 
@@ -575,7 +575,7 @@ class Fshl_Lexer_Cache_Python
 			if ('e' === $letter) {
 				return array(7, 'e', $textPos - $start, $buffer, 1);
 			}
-			if (!ctype_digit($letter)) {
+			if (!preg_match('~^\\d$~', $letter)) {
 				return array(8, $letter, $textPos - $start, $buffer, 1);
 			}
 
@@ -614,7 +614,7 @@ class Fshl_Lexer_Cache_Python
 			if ('e' === $letter) {
 				return array(4, 'e', $textPos - $start, $buffer, 1);
 			}
-			if (!ctype_digit($letter)) {
+			if (!preg_match('~^\\d$~', $letter)) {
 				return array(5, $letter, $textPos - $start, $buffer, 1);
 			}
 
@@ -644,7 +644,7 @@ class Fshl_Lexer_Cache_Python
 			if ('J' === $letter) {
 				return array(1, 'J', $textPos - $start, $buffer, 1);
 			}
-			if (!ctype_digit($letter)) {
+			if (!preg_match('~^\\d$~', $letter)) {
 				return array(2, $letter, $textPos - $start, $buffer, 1);
 			}
 

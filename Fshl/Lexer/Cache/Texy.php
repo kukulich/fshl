@@ -332,7 +332,7 @@ class Fshl_Lexer_Cache_Texy
 				return array(0, '
 ', $textPos - $start, $buffer, 1);
 			}
-			if (!ctype_space($letter)) {
+			if (!preg_match('~^\\s$~', $letter)) {
 				return array(1, $letter, $textPos - $start, $buffer, 1);
 			}
 

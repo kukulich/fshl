@@ -228,7 +228,7 @@ class Fshl_Lexer_Cache_HtmlOnly
 			if ('&' === $letter) {
 				return array(1, '&', $textPos - $start, $buffer, 1);
 			}
-			if (ctype_space($letter)) {
+			if (preg_match('~^\\s$~', $letter)) {
 				return array(2, $letter, $textPos - $start, $buffer, 1);
 			}
 
@@ -255,7 +255,7 @@ class Fshl_Lexer_Cache_HtmlOnly
 			if ('>' === $letter) {
 				return array(0, '>', $textPos - $start, $buffer, 1);
 			}
-			if (ctype_space($letter)) {
+			if (preg_match('~^\\s$~', $letter)) {
 				return array(1, $letter, $textPos - $start, $buffer, 1);
 			}
 

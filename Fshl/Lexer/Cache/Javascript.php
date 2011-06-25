@@ -232,13 +232,13 @@ class Fshl_Lexer_Cache_Javascript
 			if ("\t" === $letter || "\n" === $letter) {
 				return array(0, $letter, $textPos - $start, $buffer, 1);
 			}
-			if (ctype_alpha($letter)) {
+			if (preg_match('~^[a-z]$~i', $letter)) {
 				return array(1, $letter, $textPos - $start, $buffer, 1);
 			}
 			if ('.' === $letter) {
 				return array(2, '.', $textPos - $start, $buffer, 1);
 			}
-			if (ctype_digit($letter)) {
+			if (preg_match('~^\\d$~', $letter)) {
 				return array(3, $letter, $textPos - $start, $buffer, 1);
 			}
 			if ('"' === $letter) {
@@ -283,7 +283,7 @@ class Fshl_Lexer_Cache_Javascript
 		$start = $textPos;
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
-			if (!ctype_alnum($letter) || '_' === $letter) {
+			if (!preg_match('~^\\w$~i', $letter)) {
 				return array(0, $letter, $textPos - $start, $buffer, 1);
 			}
 
@@ -313,10 +313,10 @@ class Fshl_Lexer_Cache_Javascript
 			if ('.' === $letter) {
 				return array(1, '.', $textPos - $start, $buffer, 1);
 			}
-			if (!ctype_digit($letter)) {
+			if (!preg_match('~^\\d$~', $letter)) {
 				return array(2, $letter, $textPos - $start, $buffer, 1);
 			}
-			if (ctype_digit($letter)) {
+			if (preg_match('~^\\d$~', $letter)) {
 				return array(3, $letter, $textPos - $start, $buffer, 1);
 			}
 
@@ -343,7 +343,7 @@ class Fshl_Lexer_Cache_Javascript
 			if ('.' === $letter) {
 				return array(0, '.', $textPos - $start, $buffer, 1);
 			}
-			if (!ctype_digit($letter)) {
+			if (!preg_match('~^\\d$~', $letter)) {
 				return array(1, $letter, $textPos - $start, $buffer, 1);
 			}
 
@@ -367,7 +367,7 @@ class Fshl_Lexer_Cache_Javascript
 		$start = $textPos;
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
-			if (!ctype_xdigit($letter)) {
+			if (!preg_match('~^[a-f]\\d$~i', $letter)) {
 				return array(0, $letter, $textPos - $start, $buffer, 1);
 			}
 

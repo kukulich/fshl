@@ -498,19 +498,19 @@ STATE;
 			case '_COUNTAB':
 				return '"\\t" === $letter || "\\n" === $letter';
 			case 'SPACE':
-				return 'ctype_space($letter)';
+				return 'preg_match(\'~^\\\\s$~\', $letter)';
 			case 'ALPHA':
-				return 'ctype_alpha($letter)';
+				return 'preg_match(\'~^[a-z]$~i\', $letter)';
 			case 'ALNUM':
-				return 'ctype_alnum($letter)';
+				return 'preg_match(\'~^[a-z\\\\d]$~i\', $letter)';
 			case 'NUMBER':
-				return 'ctype_digit($letter)';
+				return 'preg_match(\'~^\\\\d$~\', $letter)';
 			case 'HEXNUM':
-				return 'ctype_xdigit($letter)';
+				return 'preg_match(\'~^[a-f]\\\\d$~i\', $letter)';
 			case 'DOT_NUMBER':
-				return '\'.\' === $letter && ctype_digit($text[$textPos + 1])';
+				return '\'.\' === $letter && preg_match(\'~^\\\\d$~\', $text[$textPos + 1])';
 			case 'SAFECHAR':
-				return 'ctype_alnum($letter) || \'_\' === $letter';
+				return 'preg_match(\'~^\\\\w$~i\', $letter)';
 			case '!SPACE':
 			case '!ALPHA':
 			case '!ALNUM':

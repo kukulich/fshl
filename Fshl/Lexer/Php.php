@@ -22,16 +22,16 @@
  */
 
 /**
- * PHP language file.
+ * PHP lexer.
  *
  * @category Fshl
  * @package Fshl
- * @subpackage Lang
+ * @subpackage Lexer
  * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
  * @copyright Copyright (c) 2011 Jaroslav Hanslík
  * @license https://github.com/kukulich/fshl/blob/master/!LICENSE.txt
  */
-class Fshl_Lang_Php implements Fshl_Lang
+class Fshl_Lexer_Php implements Fshl_Lexer
 {
 	/**
 	 * Returns version.
@@ -186,7 +186,7 @@ class Fshl_Lang_Php implements Fshl_Lang
 			),
 			Fshl_Generator::STATE_QUIT => array(
 				null,
-				Fshl_Generator::STATE_FLAG_NEWLANG,
+				Fshl_Generator::STATE_FLAG_NEWLEXER,
 				'xlang',
 				''
 			)

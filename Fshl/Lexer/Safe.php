@@ -22,16 +22,16 @@
  */
 
 /**
- * HTML language file without other languages.
+ * Safe lexer.
  *
  * @category Fshl
  * @package Fshl
- * @subpackage Lang
+ * @subpackage Lexer
  * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
  * @copyright Copyright (c) 2011 Jaroslav Hanslík
  * @license https://github.com/kukulich/fshl/blob/master/!LICENSE.txt
  */
-class Fshl_Lang_HtmlOnly implements Fshl_Lang
+class Fshl_Lexer_Safe implements Fshl_Lexer
 {
 	/**
 	 * Returns version.
@@ -40,7 +40,7 @@ class Fshl_Lang_HtmlOnly implements Fshl_Lang
 	 */
 	public function getVersion()
 	{
-		return '1.10';
+		return '1.0';
 	}
 
 	/**
@@ -63,68 +63,10 @@ class Fshl_Lang_HtmlOnly implements Fshl_Lang
 		return array(
 			'OUT' => array(
 				array(
-					'<!--' => array('COMMENT', 0),
-					'<' => array('TAG', 0),
-					'&' => array('ENTITY', 0),
-					'_COUNTAB' => array('OUT', 0)
+					'_COUNTAB' => array('OUT', 0),
 				),
 				Fshl_Generator::STATE_FLAG_NONE,
 				null,
-				null
-			),
-			'ENTITY' => array(
-				array(
-					';' => array('OUT', 1),
-					'&' => array('OUT', 1),
-					'SPACE' => array('OUT', 1)
-				),
-				Fshl_Generator::STATE_FLAG_NONE,
-				'html-entity',
-				null
-			),
-			'TAG' => array(
-				array(
-					'>' => array('OUT', 1),
-					'SPACE' => array('inTAG', 0)
-				),
-				Fshl_Generator::STATE_FLAG_NONE,
-				'html-tag',
-				null
-			),
-			'inTAG' => array(
-				array(
-					'"' => array('QUOTE1', 0),
-					'>' => array('OUT', 1),
-					'_COUNTAB' => array('inTAG', 0),
-					'\'' => array('QUOTE2', 0)
-				),
-				Fshl_Generator::STATE_FLAG_NONE,
-				'html-tagin',
-				null
-			),
-			'QUOTE1' => array(
-				array(
-					'"' => array('inTAG', 0)
-				),
-				Fshl_Generator::STATE_FLAG_NONE,
-				'html-quote',
-				null
-			),
-			'QUOTE2' => array(
-				array(
-					'\'' => array('inTAG', 0)
-				),
-				Fshl_Generator::STATE_FLAG_NONE,
-				'html-quote',
-				null
-			),
-			'COMMENT' => array(
-				array(
-					'-->' => array('OUT', 1),
-					'_COUNTAB' => array('COMMENT', 0)
-				),
-				Fshl_Generator::STATE_FLAG_NONE,
-				'html-comment',
 				null
 			)
 		);

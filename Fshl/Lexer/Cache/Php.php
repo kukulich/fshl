@@ -22,23 +22,23 @@
  */
 
 /**
- * Cache file for language Php.
+ * Optimized and cached Php lexer.
  *
  * This file is generated. All changes made in this file will be lost.
  *
  * @category Fshl
  * @package Fshl
- * @subpackage Lang
+ * @subpackage Lexer
  * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
  * @copyright Copyright (c) 2011 Jaroslav Hanslík
  * @license https://github.com/kukulich/fshl/blob/master/!LICENSE.txt
  * @see Fshl_Generator
- * @see Fshl_Lang_Php
+ * @see Fshl_Lexer_Php
  */
-class Fshl_Lang_Cache_Php
+class Fshl_Lexer_Cache_Php
 {
 	/**
-	 * Generator version/language version.
+	 * Generator version/lexer version.
 	 *
 	 * @var string
 	 */
@@ -101,7 +101,7 @@ class Fshl_Lang_Cache_Php
 	public $keywords;
 
 	/**
-	 * Initializes language.
+	 * Initializes lexer.
 	 */
 	public function __construct()
 	{

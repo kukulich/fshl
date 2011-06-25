@@ -22,16 +22,16 @@
  */
 
 /**
- * Java language file.
+ * Javascript lexer.
  *
  * @category Fshl
  * @package Fshl
- * @subpackage Lang
+ * @subpackage Lexer
  * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
  * @copyright Copyright (c) 2011 Jaroslav Hanslík
  * @license https://github.com/kukulich/fshl/blob/master/!LICENSE.txt
  */
-class Fshl_Lang_Java implements Fshl_Lang
+class Fshl_Lexer_Javascript implements Fshl_Lexer
 {
 	/**
 	 * Returns version.
@@ -63,16 +63,20 @@ class Fshl_Lang_Java implements Fshl_Lang
 		return array(
 			'OUT' => array(
 				array(
+					'_COUNTAB' => array('OUT', 0),
 					'ALPHA' => array('KEYWORD', -1),
+					'.' => array('KEYWORD', 1),
 					'NUMBER' => array('NUM', 0),
 					'"' => array('QUOTE1', 0),
 					'\'' => array('QUOTE2', 0),
 					'/*' => array('COMMENT1', 0),
 					'//' => array('COMMENT2', 0),
-					'_COUNTAB' => array('OUT', 0)
+					'<?php' => array('TO_PHP', 0),
+					'<?' => array('TO_PHP', 0),
+					'</' => array(Fshl_Generator::STATE_QUIT, 0)
 				),
 				Fshl_Generator::STATE_FLAG_NONE,
-				null,
+				'js-out',
 				null
 			),
 			// Keyword
@@ -81,7 +85,7 @@ class Fshl_Lang_Java implements Fshl_Lang
 					'!SAFECHAR' => array(Fshl_Generator::STATE_RETURN, 0)
 				),
 				Fshl_Generator::STATE_FLAG_KEYWORD | Fshl_Generator::STATE_FLAG_RECURSION,
-				null,
+				'js-out',
 				null
 			),
 			// Numbers
@@ -89,11 +93,11 @@ class Fshl_Lang_Java implements Fshl_Lang
 				array(
 					'x' => array('HEX_NUM', 0),
 					'.' => array('DEC_NUM', 0),
-					'NUMBER' => array('DEC_NUM', 0),
-					'!NUMBER' => array(Fshl_Generator::STATE_RETURN, 1)
+					'!NUMBER' => array(Fshl_Generator::STATE_RETURN, 1),
+					'NUMBER' => array('DEC_NUM', 0)
 				),
 				Fshl_Generator::STATE_FLAG_RECURSION,
-				'java-num',
+				'js-num',
 				null
 			),
 			'DEC_NUM' => array(
@@ -102,7 +106,7 @@ class Fshl_Lang_Java implements Fshl_Lang
 					'!NUMBER' => array(Fshl_Generator::STATE_RETURN, 1)
 				),
 				Fshl_Generator::STATE_FLAG_NONE,
-				'java-num',
+				'js-num',
 				null
 			),
 			'HEX_NUM' => array(
@@ -110,50 +114,64 @@ class Fshl_Lang_Java implements Fshl_Lang
 					'!HEXNUM' => array(Fshl_Generator::STATE_RETURN, 1)
 				),
 				Fshl_Generator::STATE_FLAG_NONE,
-				'java-num',
+				'js-num',
 				null
 			),
 			// Quotes BF definition
 			'QUOTE1' => array(
 				array(
-					'\\\\' => array('QUOTE1', 0),
-					'\\"' => array('QUOTE1', 0),
-					'_COUNTAB' => array('QUOTE1', 0),
-					'"' => array(Fshl_Generator::STATE_RETURN, 0)
+					'"' => array(Fshl_Generator::STATE_RETURN, 0),
+					'<?php' => array('TO_PHP', 0),
+					'<?' => array('TO_PHP', 0)
 				),
 				Fshl_Generator::STATE_FLAG_RECURSION,
-				'java-quote',
+				'js-quote',
 				null
 			),
 			'QUOTE2' => array(
 				array(
-					'\\\\' => array('QUOTE2', 0),
-					'\\\''  => array('QUOTE2', 0),
-					'_COUNTAB' => array('QUOTE2', 0),
-					'\'' => array(Fshl_Generator::STATE_RETURN, 0)
+					'\'' => array(Fshl_Generator::STATE_RETURN, 0),
+					'<?php' => array('TO_PHP', 0),
+					'<?' => array('TO_PHP', 0)
 				),
 				Fshl_Generator::STATE_FLAG_RECURSION,
-				'java-quote',
+				'js-quote',
 				null
 			),
 			// Comments
 			'COMMENT1' => array(
 				array(
+					'_COUNTAB' => array('COMMENT1', 0),
 					'*/' => array(Fshl_Generator::STATE_RETURN, 0),
-					'_COUNTAB' => array('COMMENT1', 0)
+					'<?php' => array('TO_PHP', 0),
+					'<?' => array('TO_PHP', 0)
 				),
 				Fshl_Generator::STATE_FLAG_RECURSION,
-				'java-comment',
+				'js-comment',
 				null
 			),
 			'COMMENT2' => array(
 				array(
 					"\n" => array(Fshl_Generator::STATE_RETURN, 0),
-					"\t" => array('COMMENT2', 0)
+					'_COUNTAB' => array('COMMENT2', 0),
+					'<?php' => array('TO_PHP', 0),
+					'<?' => array('TO_PHP', 0)
 				),
 				Fshl_Generator::STATE_FLAG_RECURSION,
-				'java-comment',
+				'js-comment',
 				null
+			),
+			'TO_PHP' => array(
+				null,
+				Fshl_Generator::STATE_FLAG_NEWLEXER,
+				'xlang',
+				'PHP'
+			),
+			Fshl_Generator::STATE_QUIT => array(
+				null,
+				Fshl_Generator::STATE_FLAG_NEWLEXER,
+				'html-tag',
+				null,
 			)
 		);
 	}
@@ -166,56 +184,72 @@ class Fshl_Lang_Java implements Fshl_Lang
 	public function getKeywords()
 	{
 		return array(
-			'java-keywords',
+			'js-keywords',
 			array(
 				'abstract' => 1,
-				'double' => 1,
-				'int' => 1,
-				'strictfp' => 1,
 				'boolean' => 1,
-				'else' => 1,
-				'interface' => 1,
-				'super' => 1,
 				'break' => 1,
-				'extends' => 1,
-				'long' => 1,
-				'switch' => 1,
 				'byte' => 1,
-				'final' => 1,
-				'native' => 1,
-				'synchronized' => 1,
 				'case' => 1,
-				'finally' => 1,
-				'new' => 1,
-				'this' => 1,
 				'catch' => 1,
-				'float' => 1,
-				'package' => 1,
-				'throw' => 1,
 				'char' => 1,
-				'for' => 1,
-				'private' => 1,
-				'throws' => 1,
 				'class' => 1,
-				'goto' => 1,
-				'protected' => 1,
-				'transient' => 1,
 				'const' => 1,
-				'if' => 1,
-				'public' => 1,
-				'try' => 1,
 				'continue' => 1,
-				'implements' => 1,
-				'return' => 1,
-				'void' => 1,
+				'debugger' => 1,
 				'default' => 1,
-				'import' => 1,
-				'short' => 1,
-				'volatile' => 1,
+				'delete' => 1,
 				'do' => 1,
+				'double' => 1,
+				'else' => 1,
+				'enum' => 1,
+				'export' => 1,
+				'extends' => 1,
+				'false' => 1,
+				'final' => 1,
+				'finally' => 1,
+				'float' => 1,
+				'for' => 1,
+				'function' => 1,
+				'goto' => 1,
+				'if' => 1,
+				'implements' => 1,
+				'import' => 1,
+				'in' => 1,
 				'instanceof' => 1,
+				'int' => 1,
+				'interface' => 1,
+				'long' => 1,
+				'native' => 1,
+				'new' => 1,
+				'null' => 1,
+				'package' => 1,
+				'private' => 1,
+				'protected' => 1,
+				'public' => 1,
+				'return' => 1,
+				'short' => 1,
 				'static' => 1,
-				'while' => 1
+				'super' => 1,
+				'switch' => 1,
+				'synchronized' => 1,
+				'this' => 1,
+				'throw' => 1,
+				'throws' => 1,
+				'transient' => 1,
+				'true' => 1,
+				'try' => 1,
+				'typeof' => 1,
+				'var' => 1,
+				'void' => 1,
+				'volatile' => 1,
+				'while' => 1,
+				'with' => 1,
+
+				'document' => 2,
+				'getAttribute' => 2,
+				'getElementsByTagName' => 2,
+				'getElementById' => 2,
 			),
 			Fshl_Generator::CASE_SENSITIVE
 		);

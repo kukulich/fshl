@@ -22,16 +22,16 @@
  */
 
 /**
- * HTML language file.
+ * HTML lexer without other languages.
  *
  * @category Fshl
  * @package Fshl
- * @subpackage Lang
+ * @subpackage Lexer
  * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
  * @copyright Copyright (c) 2011 Jaroslav Hanslík
  * @license https://github.com/kukulich/fshl/blob/master/!LICENSE.txt
  */
-class Fshl_Lang_Html implements Fshl_Lang
+class Fshl_Lexer_HtmlOnly implements Fshl_Lexer
 {
 	/**
 	 * Returns version.
@@ -40,7 +40,7 @@ class Fshl_Lang_Html implements Fshl_Lang
 	 */
 	public function getVersion()
 	{
-		return '1.11';
+		return '1.10';
 	}
 
 	/**
@@ -64,8 +64,6 @@ class Fshl_Lang_Html implements Fshl_Lang
 			'OUT' => array(
 				array(
 					'<!--' => array('COMMENT', 0),
-					'<?php' => array('TO_PHP', 0),
-					'<?' => array('TO_PHP', 0),
 					'<' => array('TAG', 0),
 					'&' => array('ENTITY', 0),
 					'_COUNTAB' => array('OUT', 0)
@@ -87,13 +85,7 @@ class Fshl_Lang_Html implements Fshl_Lang
 			'TAG' => array(
 				array(
 					'>' => array('OUT', 1),
-					'SPACE' => array('inTAG', 0),
-					'style' => array('CSS', 1),
-					'STYLE' => array('CSS', 1),
-					'script' => array('JAVASCRIPT', 1),
-					'SCRIPT' => array('JAVASCRIPT', 1),
-					'<?php' => array('TO_PHP', 0),
-					'<?' => array('TO_PHP', 0)
+					'SPACE' => array('inTAG', 0)
 				),
 				Fshl_Generator::STATE_FLAG_NONE,
 				'html-tag',
@@ -102,96 +94,38 @@ class Fshl_Lang_Html implements Fshl_Lang
 			'inTAG' => array(
 				array(
 					'"' => array('QUOTE1', 0),
-					'>' => array(Fshl_Generator::STATE_RETURN, 1),
-					'\'' => array('QUOTE2', 0),
-					'<?php' => array('TO_PHP', 0),
-					'<?' => array('TO_PHP', 0),
-					'_COUNTAB' => array('inTAG', 0)
+					'>' => array('OUT', 1),
+					'_COUNTAB' => array('inTAG', 0),
+					'\'' => array('QUOTE2', 0)
 				),
-				Fshl_Generator::STATE_FLAG_RECURSION,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'html-tagin',
 				null
-			),
-			'CSS' => array(
-				array(
-					'"' => array('QUOTE1', 0),
-					'\'' => array('QUOTE2', 0),
-					'>' => array('TO_CSS', 0),
-					'<?php' => array('TO_PHP', 0),
-					'<?' => array('TO_PHP', 0),
-					'_COUNTAB' => array('inTAG', 0)
-				),
-				Fshl_Generator::STATE_FLAG_RECURSION,
-				'html-tagin',
-				null
-			),
-			'TO_CSS' => array(
-				array(
-					'>' => array(Fshl_Generator::STATE_RETURN, 1)
-				),
-				Fshl_Generator::STATE_FLAG_NEWLANG,
-				'html-tag',
-				'CSS'
-			),
-			'JAVASCRIPT' => array(
-				array(
-					'"' => array('QUOTE1', 0),
-					'\'' => array('QUOTE2', 0),
-					'>' => array('TO_JAVASCRIPT', 0),
-					'<?php' => array('TO_PHP', 0),
-					'<?' => array('TO_PHP', 0),
-					'_COUNTAB' => array('inTAG', 0)
-				),
-				Fshl_Generator::STATE_FLAG_RECURSION,
-				'html-tagin',
-				null
-			),
-			'TO_JAVASCRIPT' => array(
-				array(
-					'>' => array(Fshl_Generator::STATE_RETURN, 1)
-				),
-				Fshl_Generator::STATE_FLAG_NEWLANG,
-				'html-tag',
-				'JS'
 			),
 			'QUOTE1' => array(
 				array(
-					'"' => array(Fshl_Generator::STATE_RETURN, 0),
-					'<?php' => array('TO_PHP', 0),
-					'<?' => array('TO_PHP', 0),
-					'_COUNTAB' => array('QUOTE1', 0)
+					'"' => array('inTAG', 0)
 				),
-				Fshl_Generator::STATE_FLAG_RECURSION,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'html-quote',
 				null
 			),
 			'QUOTE2' => array(
 				array(
-					'\'' => array(Fshl_Generator::STATE_RETURN, 0),
-					'<?php' => array('TO_PHP', 0),
-					'<?' => array('TO_PHP', 0),
-					'_COUNTAB' => array('QUOTE2', 0)
+					'\'' => array('inTAG', 0)
 				),
-				Fshl_Generator::STATE_FLAG_RECURSION,
+				Fshl_Generator::STATE_FLAG_NONE,
 				'html-quote',
 				null
 			),
 			'COMMENT' => array(
 				array(
 					'-->' => array('OUT', 1),
-					'<?php' => array('TO_PHP', 0),
-					'<?' => array('TO_PHP', 0),
 					'_COUNTAB' => array('COMMENT', 0)
 				),
 				Fshl_Generator::STATE_FLAG_NONE,
 				'html-comment',
 				null
-			),
-			'TO_PHP' => array(
-				null,
-				Fshl_Generator::STATE_FLAG_NEWLANG,
-				'xlang',
-				'PHP'
 			)
 		);
 	}

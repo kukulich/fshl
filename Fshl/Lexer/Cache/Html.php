@@ -22,23 +22,23 @@
  */
 
 /**
- * Cache file for language Html.
+ * Optimized and cached Html lexer.
  *
  * This file is generated. All changes made in this file will be lost.
  *
  * @category Fshl
  * @package Fshl
- * @subpackage Lang
+ * @subpackage Lexer
  * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
  * @copyright Copyright (c) 2011 Jaroslav Hanslík
  * @license https://github.com/kukulich/fshl/blob/master/!LICENSE.txt
  * @see Fshl_Generator
- * @see Fshl_Lang_Html
+ * @see Fshl_Lexer_Html
  */
-class Fshl_Lang_Cache_Html
+class Fshl_Lexer_Cache_Html
 {
 	/**
-	 * Generator version/language version.
+	 * Generator version/lexer version.
 	 *
 	 * @var string
 	 */
@@ -101,7 +101,7 @@ class Fshl_Lang_Cache_Html
 	public $keywords;
 
 	/**
-	 * Initializes language.
+	 * Initializes lexer.
 	 */
 	public function __construct()
 	{

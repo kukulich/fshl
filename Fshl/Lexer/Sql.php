@@ -22,17 +22,17 @@
  */
 
 /**
- * SQL language file.
+ * SQL lexer.
  *
  * @category Fshl
  * @package Fshl
- * @subpackage Lang
+ * @subpackage Lexer
  * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
  * @copyright Copyright (C) 2005 Matěj 'Finwë' Humpál
  * @copyright Copyright (c) 2011 Jaroslav Hanslík
  * @license https://github.com/kukulich/fshl/blob/master/!LICENSE.txt
  */
-class Fshl_Lang_Sql implements Fshl_Lang
+class Fshl_Lexer_Sql implements Fshl_Lexer
 {
 	/**
 	 * Returns version.

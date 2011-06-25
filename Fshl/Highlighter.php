@@ -40,81 +40,81 @@ class Fshl_Highlighter
 	const VERSION = '0.4.20';
 
 	/**
-	 * CPP language.
+	 * CPP lexer.
 	 *
 	 * @var string
 	 */
-	const LANG_CPP = 'Cpp';
+	const LEXER_CPP = 'Cpp';
 
 	/**
-	 * CSS language.
+	 * CSS lexer.
 	 *
 	 * @var string
 	 */
-	const LANG_CSS = 'Css';
+	const LEXER_CSS = 'Css';
 
 	/**
-	 * HTML language.
+	 * HTML lexer.
 	 *
 	 * @var string
 	 */
-	const LANG_HTML = 'Html';
+	const LEXER_HTML = 'Html';
 
 	/**
-	 * HTML language without other languages.
+	 * HTML lexer without other languages.
 	 *
 	 * @var string
 	 */
-	const LANG_HTML_ONLY = 'HtmlOnly';
+	const LEXER_HTML_ONLY = 'HtmlOnly';
 
 	/**
-	 * Java language.
+	 * Java lexer.
 	 *
 	 * @var string
 	 */
-	const LANG_JAVA = 'Java';
+	const LEXER_JAVA = 'Java';
 
 	/**
-	 * Javascript language.
+	 * Javascript lexer.
 	 *
 	 * @var string
 	 */
-	const LANG_JAVASCRIPT = 'Javascript';
+	const LEXER_JAVASCRIPT = 'Javascript';
 
 	/**
-	 * PHP language.
+	 * PHP lexer.
 	 *
 	 * @var string
 	 */
-	const LANG_PHP = 'Php';
+	const LEXER_PHP = 'Php';
 
 	/**
-	 * Python language.
+	 * Python lexer.
 	 *
 	 * @var string
 	 */
-	const LANG_PYTHON = 'Python';
+	const LEXER_PYTHON = 'Python';
 
 	/**
-	 * Safe language.
+	 * Safe lexer.
 	 *
 	 * @var string
 	 */
-	const LANG_SAFE = 'Safe';
+	const LEXER_SAFE = 'Safe';
 
 	/**
-	 * SQL language.
+	 * SQL lexer.
 	 *
 	 * @var string
 	 */
-	const LANG_SQL = 'Sql';
+	const LEXER_SQL = 'Sql';
 
 	/**
-	 * Texy language.
+	 * Texy lexer.
 	 *
 	 * @var string
 	 */
-	const LANG_TEXY = 'Texy';
+	const LEXER_TEXY = 'Texy';
 
 	/**
 	 * HTML output.
@@ -173,18 +173,18 @@ class Fshl_Highlighter
 	private $tabIndentWidth;
 
 	/**
-	 * List of already used langs.
+	 * List of already used lexers.
 	 *
 	 * @var array
 	 */
-	private $langs = array();
+	private $lexers = array();
 
 	/**
-	 * Actual language.
+	 * Actual lexer.
 	 *
-	 * @var Fshl_Lang
+	 * @var Fshl_Lexer
 	 */
-	private $lang = null;
+	private $lexer = null;
 
 	/**
 	 * Table for tab indentation
@@ -231,14 +231,14 @@ class Fshl_Highlighter
 	/**
 	 * Highlightes string.
 	 *
-	 * @param string $language
+	 * @param string $lexer
 	 * @param string $text
 	 * @return string
 	 */
-	public function highlight($language, $text)
+	public function highlight($lexer, $text)
 	{
-		// Sets language
-		$this->setLanguage((string) $language);
+		// Sets lexer
+		$this->setLexer((string) $lexer);
 
 		// Prepares text
 		$text = str_replace(array("\r\n", "\r"), "\n", (string) $text);
@@ -255,14 +255,14 @@ class Fshl_Highlighter
 			$maxLineWidth = strlen(substr_count($text, "\n") + 1);
 			$output[] = $this->line($line, $maxLineWidth);
 		}
-		$newLanguage = $language;
-		$newState = $state = $this->lang->initialState;
+		$newLexer = $lexer;
+		$newState = $state = $this->lexer->initialState;
 		$this->stack = array();
 
 		while (true) {
 			// array($transitionId, $delimiterString, $delimiterLength, $collectedString, $collectedStringLength);
 			//  - transitionId - may be -1 when we are at the end of stream
-			$part = $this->lang->{'getPart' . $state}($text, $textLength, $textPos);
+			$part = $this->lexer->{'getPart' . $state}($text, $textLength, $textPos);
 
 			// Some data may be collected before getPart reaches the delimiter, we must output this before other processing
 			if (false !== $part[3]) {
@@ -302,13 +302,13 @@ class Fshl_Highlighter
 			}
 
 			// Gets new state from transitions table
-			$newState = $this->lang->trans[$state][$part[0]][Fshl_Generator::STATE_DIAGRAM_INDEX_STATE];
-			if ($newState === $this->lang->returnState) {
+			$newState = $this->lexer->trans[$state][$part[0]][Fshl_Generator::STATE_DIAGRAM_INDEX_STATE];
+			if ($newState === $this->lexer->returnState) {
 				// Returns to previous context
 				// Chooses delimiter processing (second value in destination array)
 				//  0 - style from current state will be applied at received delimiter
 				//  1 - delimiter will be returned to input stream
-				if ($this->lang->trans[$state][$part[0]][Fshl_Generator::STATE_DIAGRAM_INDEX_TYPE] > 0) {
+				if ($this->lexer->trans[$state][$part[0]][Fshl_Generator::STATE_DIAGRAM_INDEX_TYPE] > 0) {
 					$line = $prevLine;
 					$char = $prevChar;
 					$textPos = $prevTextPos;
@@ -321,14 +321,14 @@ class Fshl_Highlighter
 
 				// Get state from context stack
 				if ($item = $this->popState()) {
-					list($newLanguage, $state) = $item;
-					// If previous context was in different language, switch language too
-					if ($newLanguage !== $language) {
-						$this->setLanguage($newLanguage);
-						$language = $newLanguage;
+					list($newLexer, $state) = $item;
+					// If previous context was in different lexer, switch lexer too
+					if ($newLexer !== $lexer) {
+						$this->setLexer($newLexer);
+						$lexer = $newLexer;
 					}
 				} else {
-					$state = $this->lang->initialState;
+					$state = $this->lexer->initialState;
 				}
 
 				continue;
@@ -338,7 +338,7 @@ class Fshl_Highlighter
 			//  0 - style from new state will be applied at received delimiter
 			//  1 - style from current state will be applied
 			// -1 - delimiter must be returned to stream (back to previous position)
-			$type = $this->lang->trans[$state][$part[0]][Fshl_Generator::STATE_DIAGRAM_INDEX_TYPE];
+			$type = $this->lexer->trans[$state][$part[0]][Fshl_Generator::STATE_DIAGRAM_INDEX_TYPE];
 			if ($type < 0) {
 				// Back to stream
 				$line = $prevLine;
@@ -351,34 +351,34 @@ class Fshl_Highlighter
 				}
 			}
 
-			// Switches between languages (transition to embedded language)
-			if ($this->lang->flags[$newState] & Fshl_Generator::STATE_FLAG_NEWLANG) {
-				if ($newState === $this->lang->quitState) {
-					// Returns to previous language
+			// Switches between lexers (transition to embedded language)
+			if ($this->lexer->flags[$newState] & Fshl_Generator::STATE_FLAG_NEWLEXER) {
+				if ($newState === $this->lexer->quitState) {
+					// Returns to previous lexer
 					if ($item = $this->popState()) {
-						list($newLanguage, $state) = $item;
-						if ($newLanguage !== $language) {
-							$this->setLanguage($newLanguage);
-							$language = $newLanguage;
+						list($newLexer, $state) = $item;
+						if ($newLexer !== $lexer) {
+							$this->setLexer($newLexer);
+							$lexer = $newLexer;
 						}
 					} else {
-						$state = $this->lang->initialState;
+						$state = $this->lexer->initialState;
 					}
 				} else {
 					// Switches to embedded language
-					$newLanguage = $this->lang->data[$newState];
-					$this->pushState($language, $this->lang->trans[$newState] ? $newState : $state);
-					$this->setLanguage($newLanguage);
-					$language = $newLanguage;
-					$state = $this->lang->initialState;
+					$newLexer = $this->lexer->data[$newState];
+					$this->pushState($lexer, $this->lexer->trans[$newState] ? $newState : $state);
+					$this->setLexer($newLexer);
+					$lexer = $newLexer;
+					$state = $this->lexer->initialState;
 				}
 
 				continue;
 			}
 
 			// If newState is marked with recursion flag (alias call), push current state to context stack
-			if (($this->lang->flags[$newState] & Fshl_Generator::STATE_FLAG_RECURSION) && $state !== $newState) {
-				$this->pushState($language, $state);
+			if (($this->lexer->flags[$newState] & Fshl_Generator::STATE_FLAG_RECURSION) && $state !== $newState) {
+				$this->pushState($lexer, $state);
 			}
 
 			// Change the state
@@ -392,25 +392,25 @@ class Fshl_Highlighter
 	}
 
 	/**
-	 * Sets actual language.
+	 * Sets actual lexer.
 	 *
-	 * @param string $language
+	 * @param string $lexerName
 	 * @return Fshl_Highlighter
 	 */
-	private function setLanguage($language)
+	private function setLexer($lexerName)
 	{
-		if (!isset($this->langs[$language])) {
-			// Load new language
-			$languageClass = 'Fshl_Lang_Cache_' . $language;
-			if (!class_exists($languageClass)) {
-				// If language doesn't exists, use minimal line counter
-				$language = self::LANG_SAFE;
-				$languageClass = 'Fshl_Lang_Cache_' . $language;
+		if (!isset($this->lexers[$lexerName])) {
+			// Load new lexer
+			$lexerClass = 'Fshl_Lexer_Cache_' . $lexerName;
+			if (!class_exists($lexerClass)) {
+				// If lexer doesn't exists, use minimal line counter
+				$lexerName = self::LEXER_SAFE;
+				$lexerClass = 'Fshl_Lexer_Cache_' . $lexerName;
 			}
-			$this->langs[$language] = new $languageClass();
+			$this->lexers[$lexerName] = new $lexerClass();
 		}
 
-		$this->lang	= $this->langs[$language];
+		$this->lexer = $this->lexers[$lexerName];
 
 		return $this;
 	}
@@ -424,15 +424,15 @@ class Fshl_Highlighter
 	 */
 	private function template($part, $state)
 	{
-		if ($this->lang->flags[$state] & Fshl_Generator::STATE_FLAG_KEYWORD) {
-			$normalized = Fshl_Generator::CASE_SENSITIVE === $this->lang->keywords[Fshl_Generator::KEYWORD_INDEX_CASE_SENSITIVE] ? $part : strtolower($part);
+		if ($this->lexer->flags[$state] & Fshl_Generator::STATE_FLAG_KEYWORD) {
+			$normalized = Fshl_Generator::CASE_SENSITIVE === $this->lexer->keywords[Fshl_Generator::KEYWORD_INDEX_CASE_SENSITIVE] ? $part : strtolower($part);
 
-			if (isset($this->lang->keywords[Fshl_Generator::KEYWORD_INDEX_LIST][$normalized])) {
-				return $this->output->keyword($part, $this->lang->keywords[Fshl_Generator::KEYWORD_INDEX_CLASS] . $this->lang->keywords[Fshl_Generator::KEYWORD_INDEX_LIST][$normalized]);
+			if (isset($this->lexer->keywords[Fshl_Generator::KEYWORD_INDEX_LIST][$normalized])) {
+				return $this->output->keyword($part, $this->lexer->keywords[Fshl_Generator::KEYWORD_INDEX_CLASS] . $this->lexer->keywords[Fshl_Generator::KEYWORD_INDEX_LIST][$normalized]);
 			}
 		}
 
-		return $this->output->template($part, $this->lang->classes[$state]);
+		return $this->output->template($part, $this->lexer->classes[$state]);
 	}
 
 	/**
@@ -450,13 +450,13 @@ class Fshl_Highlighter
 	/**
 	 * Pushes state to context stack.
 	 *
-	 * @param string $language
+	 * @param string $lexer
 	 * @param string $state
 	 * @return Fshl_Highlighter
 	 */
-	private function pushState($language, $state)
+	private function pushState($lexer, $state)
 	{
-		array_unshift($this->stack, array($language, $state));
+		array_unshift($this->stack, array($lexer, $state));
 		return $this;
 	}
 

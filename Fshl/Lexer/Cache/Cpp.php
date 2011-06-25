@@ -22,23 +22,23 @@
  */
 
 /**
- * Cache file for language Java.
+ * Optimized and cached Cpp lexer.
  *
  * This file is generated. All changes made in this file will be lost.
  *
  * @category Fshl
  * @package Fshl
- * @subpackage Lang
+ * @subpackage Lexer
  * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
  * @copyright Copyright (c) 2011 Jaroslav Hanslík
  * @license https://github.com/kukulich/fshl/blob/master/!LICENSE.txt
  * @see Fshl_Generator
- * @see Fshl_Lang_Java
+ * @see Fshl_Lexer_Cpp
  */
-class Fshl_Lang_Cache_Java
+class Fshl_Lexer_Cache_Cpp
 {
 	/**
-	 * Generator version/language version.
+	 * Generator version/lexer version.
 	 *
 	 * @var string
 	 */
@@ -101,7 +101,7 @@ class Fshl_Lang_Cache_Java
 	public $keywords;
 
 	/**
-	 * Initializes language.
+	 * Initializes lexer.
 	 */
 	public function __construct()
 	{
@@ -109,53 +109,57 @@ class Fshl_Lang_Cache_Java
 		$this->trans = array(
 			0 => array(
 				0 => array(
-					0 => 1, 1 => -1
+					0 => 0, 1 => 0
 				), 1 => array(
-					0 => 2, 1 => 0
+					0 => 1, 1 => -1
 				), 2 => array(
-					0 => 5, 1 => 0
+					0 => 10, 1 => 0
 				), 3 => array(
 					0 => 6, 1 => 0
 				), 4 => array(
-					0 => 7, 1 => 0
+					0 => 2, 1 => 0
 				), 5 => array(
-					0 => 8, 1 => 0
+					0 => 4, 1 => 0
 				), 6 => array(
-					0 => 0, 1 => 0
+					0 => 7, 1 => 0
+				), 7 => array(
+					0 => 8, 1 => 0
+				), 8 => array(
+					0 => 9, 1 => 0
 				)
 			), 1 => array(
 				0 => array(
-					0 => 9, 1 => 0
+					0 => 11, 1 => 0
 				)
 			), 2 => array(
 				0 => array(
-					0 => 4, 1 => 0
+					0 => 3, 1 => 0
 				), 1 => array(
-					0 => 3, 1 => 0
+					0 => 5, 1 => 0
 				), 2 => array(
-					0 => 3, 1 => 0
+					0 => 4, 1 => 0
 				), 3 => array(
-					0 => 9, 1 => 1
+					0 => 11, 1 => 1
 				)
 			), 3 => array(
 				0 => array(
 					0 => 3, 1 => 0
 				), 1 => array(
-					0 => 9, 1 => 1
+					0 => 3, 1 => 0
+				), 2 => array(
+					0 => 11, 1 => 1
 				)
 			), 4 => array(
 				0 => array(
-					0 => 9, 1 => 1
+					0 => 4, 1 => 0
+				), 1 => array(
+					0 => 11, 1 => 1
 				)
 			), 5 => array(
 				0 => array(
 					0 => 5, 1 => 0
 				), 1 => array(
-					0 => 5, 1 => 0
-				), 2 => array(
-					0 => 5, 1 => 0
-				), 3 => array(
-					0 => 9, 1 => 0
+					0 => 11, 1 => 1
 				)
 			), 6 => array(
 				0 => array(
@@ -165,38 +169,59 @@ class Fshl_Lang_Cache_Java
 				), 2 => array(
 					0 => 6, 1 => 0
 				), 3 => array(
-					0 => 9, 1 => 0
+					0 => 11, 1 => 0
 				)
 			), 7 => array(
 				0 => array(
-					0 => 9, 1 => 0
+					0 => 7, 1 => 0
 				), 1 => array(
 					0 => 7, 1 => 0
+				), 2 => array(
+					0 => 7, 1 => 0
+				), 3 => array(
+					0 => 11, 1 => 0
 				)
 			), 8 => array(
 				0 => array(
+					0 => 8, 1 => 0
+				), 1 => array(
+					0 => 11, 1 => 0
+				), 2 => array(
+					0 => 8, 1 => 0
+				)
+			), 9 => array(
+				0 => array(
 					0 => 9, 1 => 0
 				), 1 => array(
-					0 => 8, 1 => 0
+					0 => 11, 1 => 0
+				)
+			), 10 => array(
+				0 => array(
+					0 => 11, 1 => 0
+				), 1 => array(
+					0 => 10, 1 => 0
 				)
 			)
 		);
 		$this->initialState = 0;
-		$this->returnState = 9;
-		$this->quitState = 10;
+		$this->returnState = 11;
+		$this->quitState = 12;
 		$this->flags = array(
-			0 => 0, 1 => 5, 2 => 4, 3 => 0, 4 => 0, 5 => 4, 6 => 4, 7 => 4, 8 => 4
+			0 => 0, 1 => 5, 2 => 4, 3 => 0, 4 => 4, 5 => 0, 6 => 4, 7 => 4, 8 => 4, 9 => 4, 10 => 4
 		);
 		$this->data = array(
-			0 => NULL, 1 => NULL, 2 => NULL, 3 => NULL, 4 => NULL, 5 => NULL, 6 => NULL, 7 => NULL, 8 => NULL
+			0 => NULL, 1 => NULL, 2 => NULL, 3 => NULL, 4 => NULL, 5 => NULL, 6 => NULL, 7 => NULL, 8 => NULL, 9 => NULL, 10 => NULL
 		);
 		$this->classes = array(
-			0 => NULL, 1 => NULL, 2 => 'java-num', 3 => 'java-num', 4 => 'java-num', 5 => 'java-quote', 6 => 'java-quote', 7 => 'java-comment', 8 => 'java-comment'
+			0 => NULL, 1 => NULL, 2 => 'cpp-num', 3 => 'cpp-num', 4 => 'cpp-num', 5 => 'cpp-num', 6 => 'cpp-preproc', 7 => 'cpp-quote', 8 => 'cpp-quote', 9 => 'cpp-comment', 10 => 'cpp-comment'
 		);
 		$this->keywords = array(
-			0 => 'java-keywords', 1 => array(
-				'abstract' => 1, 'double' => 1, 'int' => 1, 'strictfp' => 1, 'boolean' => 1, 'else' => 1, 'interface' => 1, 'super' => 1, 'break' => 1, 'extends' => 1, 'long' => 1, 'switch' => 1, 'byte' => 1, 'final' => 1, 'native' => 1, 'synchronized' => 1, 'case' => 1, 'finally' => 1, 'new' => 1, 'this' => 1, 'catch' => 1, 'float' => 1, 'package' => 1, 'throw' => 1, 'char' => 1, 'for' => 1,
-			'private' => 1, 'throws' => 1, 'class' => 1, 'goto' => 1, 'protected' => 1, 'transient' => 1, 'const' => 1, 'if' => 1, 'public' => 1, 'try' => 1, 'continue' => 1, 'implements' => 1, 'return' => 1, 'void' => 1, 'default' => 1, 'import' => 1, 'short' => 1, 'volatile' => 1, 'do' => 1, 'instanceof' => 1, 'static' => 1, 'while' => 1
+			0 => 'cpp-keywords', 1 => array(
+				'bool' => 1, 'break' => 1, 'case' => 1, 'catch' => 1, 'char' => 1, 'class' => 1, 'const' => 1, 'const_cast' => 1, 'continue' => 1, 'default' => 1, 'delete' => 1, 'deprecated' => 1, 'dllexport' => 1, 'dllimport' => 1, 'do' => 1, 'double' => 1, 'dynamic_cast' => 1, 'else' => 1, 'enum' => 1, 'explicit' => 1, 'extern' => 1, 'false' => 1, 'float' => 1, 'for' => 1, 'friend' => 1, 'goto' => 1,
+			'if' => 1, 'inline' => 1, 'int' => 1, 'long' => 1, 'mutable' => 1, 'naked' => 1, 'namespace' => 1, 'new' => 1, 'noinline' => 1, 'noreturn' => 1, 'nothrow' => 1, 'novtable' => 1, 'operator' => 1, 'private' => 1, 'property' => 1, 'protected' => 1, 'public' => 1, 'register' => 1, 'reinterpret_cast' => 1, 'return' => 1, 'selectany' => 1, 'short' => 1, 'signed' => 1, 'sizeof' => 1, 'static' => 1, 'static_cast' => 1,
+			'struct' => 1, 'switch' => 1, 'template' => 1, 'this' => 1, 'thread' => 1, 'throw' => 1, 'true' => 1, 'try' => 1, 'typedef' => 1, 'typeid' => 1, 'typename' => 1, 'union' => 1, 'unsigned' => 1, 'using' => 1, 'uuid' => 1, 'virtual' => 1, 'void' => 1, 'volatile' => 1, '__wchar_t' => 1, 'wchar_t' => 1, 'while' => 1, '__abstract' => 1, '__alignof' => 1, '__asm' => 1, '__assume' => 1, '__based' => 1,
+			'__box' => 1, '__cdecl' => 1, '__declspec' => 1, '__delegate' => 1, '__event' => 1, '__except' => 1, '__fastcall' => 1, '__finally' => 1, '__forceinline' => 1, '__gc' => 1, '__hook' => 1, '__identifier' => 1, '__if_exists' => 1, '__if_not_exists' => 1, '__inline' => 1, '__int8' => 1, '__int16' => 1, '__int32' => 1, '__int64' => 1, '__interface' => 1, '__leave' => 1, '__m64' => 1, '__m128' => 1, '__m128d' => 1, '__m128i' => 1, '__multiple_inheritance' => 1,
+			'__nogc' => 1, '__noop' => 1, '__pin' => 1, '__property' => 1, '__raise' => 1, '__sealed' => 1, '__single_inheritance' => 1, '__stdcall' => 1, '__super' => 1, '__try_cast' => 1, '__try' => 1, '__unhook' => 1, '__uuidof' => 1, '__value' => 1, '__virtual_inheritance' => 1, '__w64' => 1
 			), 2 => true
 		);
 
@@ -216,26 +241,32 @@ class Fshl_Lang_Cache_Java
 		$start = $textPos;
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
-			if (ctype_alpha($letter)) {
+			if ("\t" === $letter || "\n" === $letter) {
 				return array(0, $letter, $textPos - $start, $buffer, 1);
 			}
-			if (ctype_digit($letter)) {
+			if (ctype_alpha($letter)) {
 				return array(1, $letter, $textPos - $start, $buffer, 1);
 			}
+			if ($textPos === strpos($text, '//', $textPos)) {
+				return array(2, '//', $textPos - $start, $buffer, 2);
+			}
+			if ('#' === $letter) {
+				return array(3, '#', $textPos - $start, $buffer, 1);
+			}
+			if (ctype_digit($letter)) {
+				return array(4, $letter, $textPos - $start, $buffer, 1);
+			}
+			if ('.' === $letter && ctype_digit($text[$textPos + 1])) {
+				return array(5, $letter, $textPos - $start, $buffer, 2);
+			}
 			if ('"' === $letter) {
-				return array(2, '"', $textPos - $start, $buffer, 1);
+				return array(6, '"', $textPos - $start, $buffer, 1);
 			}
 			if ('\'' === $letter) {
-				return array(3, '\'', $textPos - $start, $buffer, 1);
+				return array(7, '\'', $textPos - $start, $buffer, 1);
 			}
 			if ($textPos === strpos($text, '/*', $textPos)) {
-				return array(4, '/*', $textPos - $start, $buffer, 2);
-			}
-			if ($textPos === strpos($text, '//', $textPos)) {
-				return array(5, '//', $textPos - $start, $buffer, 2);
-			}
-			if ("\t" === $letter || "\n" === $letter) {
-				return array(6, $letter, $textPos - $start, $buffer, 1);
+				return array(8, '/*', $textPos - $start, $buffer, 2);
 			}
 
 			$buffer .= $letter;
@@ -282,14 +313,14 @@ class Fshl_Lang_Cache_Java
 		$start = $textPos;
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
+			if (ctype_digit($letter)) {
+				return array(0, $letter, $textPos - $start, $buffer, 1);
+			}
 			if ('x' === $letter) {
-				return array(0, 'x', $textPos - $start, $buffer, 1);
+				return array(1, 'x', $textPos - $start, $buffer, 1);
 			}
 			if ('.' === $letter) {
-				return array(1, '.', $textPos - $start, $buffer, 1);
-			}
-			if (ctype_digit($letter)) {
-				return array(2, $letter, $textPos - $start, $buffer, 1);
+				return array(2, '.', $textPos - $start, $buffer, 1);
 			}
 			if (!ctype_digit($letter)) {
 				return array(3, $letter, $textPos - $start, $buffer, 1);
@@ -318,6 +349,36 @@ class Fshl_Lang_Cache_Java
 			if ('.' === $letter) {
 				return array(0, '.', $textPos - $start, $buffer, 1);
 			}
+			if ('f' === $letter) {
+				return array(1, 'f', $textPos - $start, $buffer, 1);
+			}
+			if (!ctype_digit($letter)) {
+				return array(2, $letter, $textPos - $start, $buffer, 1);
+			}
+
+			$buffer .= $letter;
+			$textPos++;
+		}
+		return array(-1, -1, -1, $buffer, -1);
+	}
+
+	/**
+	 * Parses state FLOAT_NUM.
+	 *
+	 * @param string $text
+	 * @param string $textLength
+	 * @param string $textPos
+	 * @return array
+	 */
+	public function getPart4(&$text, $textLength, $textPos)
+	{
+		$buffer = false;
+		$start = $textPos;
+		while ($textPos < $textLength) {
+			$letter = $text[$textPos];
+			if ('f' === $letter) {
+				return array(0, 'f', $textPos - $start, $buffer, 1);
+			}
 			if (!ctype_digit($letter)) {
 				return array(1, $letter, $textPos - $start, $buffer, 1);
 			}
@@ -336,14 +397,56 @@ class Fshl_Lang_Cache_Java
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart4(&$text, $textLength, $textPos)
+	public function getPart5(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		$start = $textPos;
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
+			if ('L' === $letter) {
+				return array(0, 'L', $textPos - $start, $buffer, 1);
+			}
 			if (!ctype_xdigit($letter)) {
-				return array(0, $letter, $textPos - $start, $buffer, 1);
+				return array(1, $letter, $textPos - $start, $buffer, 1);
+			}
+
+			$buffer .= $letter;
+			$textPos++;
+		}
+		return array(-1, -1, -1, $buffer, -1);
+	}
+
+	/**
+	 * Parses state PREPROC.
+	 *
+	 * @param string $text
+	 * @param string $textLength
+	 * @param string $textPos
+	 * @return array
+	 */
+	public function getPart6(&$text, $textLength, $textPos)
+	{
+		$buffer = false;
+		$start = $textPos;
+		while ($textPos < $textLength) {
+			$letter = $text[$textPos];
+			if ($textPos === strpos($text, '\\
+', $textPos)) {
+				return array(0, '\\
+', $textPos - $start, $buffer, 2);
+			}
+			if ('	' === $letter) {
+				return array(1, '	', $textPos - $start, $buffer, 1);
+			}
+			if ($textPos === strpos($text, '\\
+', $textPos)) {
+				return array(2, '\\
+', $textPos - $start, $buffer, 3);
+			}
+			if ('
+' === $letter) {
+				return array(3, '
+', $textPos - $start, $buffer, 1);
 			}
 
 			$buffer .= $letter;
@@ -360,7 +463,7 @@ class Fshl_Lang_Cache_Java
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart5(&$text, $textLength, $textPos)
+	public function getPart7(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		$start = $textPos;
@@ -393,23 +496,20 @@ class Fshl_Lang_Cache_Java
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart6(&$text, $textLength, $textPos)
+	public function getPart8(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		$start = $textPos;
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
-			if ($textPos === strpos($text, '\\\\', $textPos)) {
-				return array(0, '\\\\', $textPos - $start, $buffer, 2);
-			}
 			if ($textPos === strpos($text, '\\\'', $textPos)) {
-				return array(1, '\\\'', $textPos - $start, $buffer, 2);
+				return array(0, '\\\'', $textPos - $start, $buffer, 2);
+			}
+			if ('\'' === $letter) {
+				return array(1, '\'', $textPos - $start, $buffer, 1);
 			}
 			if ("\t" === $letter || "\n" === $letter) {
 				return array(2, $letter, $textPos - $start, $buffer, 1);
-			}
-			if ('\'' === $letter) {
-				return array(3, '\'', $textPos - $start, $buffer, 1);
 			}
 
 			$buffer .= $letter;
@@ -426,17 +526,17 @@ class Fshl_Lang_Cache_Java
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart7(&$text, $textLength, $textPos)
+	public function getPart9(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		$start = $textPos;
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
-			if ($textPos === strpos($text, '*/', $textPos)) {
-				return array(0, '*/', $textPos - $start, $buffer, 2);
-			}
 			if ("\t" === $letter || "\n" === $letter) {
-				return array(1, $letter, $textPos - $start, $buffer, 1);
+				return array(0, $letter, $textPos - $start, $buffer, 1);
+			}
+			if ($textPos === strpos($text, '*/', $textPos)) {
+				return array(1, '*/', $textPos - $start, $buffer, 2);
 			}
 
 			$buffer .= $letter;
@@ -453,7 +553,7 @@ class Fshl_Lang_Cache_Java
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart8(&$text, $textLength, $textPos)
+	public function getPart10(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		$start = $textPos;

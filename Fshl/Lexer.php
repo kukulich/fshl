@@ -22,16 +22,16 @@
  */
 
 /**
- * Language interface.
+ * Lexer interface.
  *
  * @category Fshl
  * @package Fshl
- * @subpackage Lang
+ * @subpackage Lexer
  * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
  * @copyright Copyright (c) 2011 Jaroslav Hanslík
  * @license https://github.com/kukulich/fshl/blob/master/!LICENSE.txt
  */
-interface Fshl_Lang
+interface Fshl_Lexer
 {
 	/**
 	 * Returns version.

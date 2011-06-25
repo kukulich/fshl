@@ -22,7 +22,7 @@
  */
 
 /**
- * Generator of language cache files.
+ * Generator of lexer cache files.
  *
  * @category Fshl
  * @package Fshl
@@ -79,7 +79,7 @@ class Fshl_Generator
 	 *
 	 * @var integer
 	 */
-	const STATE_FLAG_NEWLANG = 0x0008;
+	const STATE_FLAG_NEWLEXER = 0x0008;
 
 	/**
 	 * Array index for state diagram.
@@ -159,28 +159,28 @@ class Fshl_Generator
 	const CASE_INSENSITIVE = false;
 
 	/**
-	 * Generated source for given language.
+	 * Generated source for given lexer.
 	 *
 	 * @var string
 	 */
 	private $source;
 
 	/**
-	 * Actual language name.
+	 * Actual lexer name.
 	 *
 	 * @var string
 	 */
-	private $language;
+	private $lexerName;
 
 	/**
-	 * Actual language.
+	 * Actual lexer.
 	 *
-	 * @var Fshl_Lang
+	 * @var Fshl_Lexer
 	 */
-	private $lang = null;
+	private $lexer = null;
 
 	/**
-	 * List of CSS classes of actual language.
+	 * List of CSS classes of actual lexer.
 	 *
 	 * @var array
 	 */
@@ -222,20 +222,20 @@ class Fshl_Generator
 	private $trans = array();
 
 	/**
-	 * Initializes generator for given language.
+	 * Initializes generator for given lexer.
 	 *
-	 * @param string $language
-	 * @throws InvalidArgumentException If the class for given language doesn't exist.
+	 * @param string $lexerName
+	 * @throws InvalidArgumentException If the class for given lexer doesn't exist.
 	 */
-	public function __construct($language)
+	public function __construct($lexerName)
 	{
-		$this->language = (string) $language;
-		$langClass = 'Fshl_Lang_' . $this->language;
-		if (!class_exists($langClass)) {
-			throw new InvalidArgumentException(sprintf('Missing class for language %s', $this->language));
+		$this->lexerName = (string) $lexerName;
+		$lexerClass = 'Fshl_Lexer_' . $this->lexerName;
+		if (!class_exists($lexerClass)) {
+			throw new InvalidArgumentException(sprintf('Missing class for lexer %s', $this->lexerName));
 		}
 
-		$this->lang = new $langClass();
+		$this->lexer = new $lexerClass();
 		$this->source = $this->generate();
 	}
 
@@ -250,13 +250,13 @@ class Fshl_Generator
 	}
 
 	/**
-	 * Saves generated source to language cache file.
+	 * Saves generated source to lexer cache file.
 	 *
 	 * @throws Exception If the file has not been saved.
 	 */
 	public function saveToCache()
 	{
-		$file = dirname(__FILE__) . '/Lang/Cache/' . $this->language . '.php';
+		$file = dirname(__FILE__) . '/Lexer/Cache/' . $this->lexerName . '.php';
 		if (false === file_put_contents($file, $this->source)) {
 			throw new RuntimeException(sprintf('Cannot save source to "%s"', $file));
 		}
@@ -272,15 +272,15 @@ class Fshl_Generator
 		$this->optimize();
 
 		$constructor = '';
-		$constructor .= $this->getVarSource('$this->version', self::VERSION . '/' . $this->lang->getVersion());
+		$constructor .= $this->getVarSource('$this->version', self::VERSION . '/' . $this->lexer->getVersion());
 		$constructor .= $this->getVarSource('$this->trans', $this->trans);
-		$constructor .= $this->getVarSource('$this->initialState', $this->states[$this->lang->getInitialState()]);
+		$constructor .= $this->getVarSource('$this->initialState', $this->states[$this->lexer->getInitialState()]);
 		$constructor .= $this->getVarSource('$this->returnState', $this->states[self::STATE_RETURN]);
 		$constructor .= $this->getVarSource('$this->quitState', $this->states[self::STATE_QUIT]);
 		$constructor .= $this->getVarSource('$this->flags', $this->flags);
 		$constructor .= $this->getVarSource('$this->data', $this->data);
 		$constructor .= $this->getVarSource('$this->classes', $this->classes);
-		$constructor .= $this->getVarSource('$this->keywords', $this->lang->getKeywords());
+		$constructor .= $this->getVarSource('$this->keywords', $this->lexer->getKeywords());
 
 		$functions = '';
 		foreach ($this->delimiters as $state => $delimiter) {
@@ -314,23 +314,23 @@ class Fshl_Generator
  */
 
 /**
- * Cache file for language {$this->language}.
+ * Optimized and cached {$this->lexerName} lexer.
  *
  * This file is generated. All changes made in this file will be lost.
  *
  * @category Fshl
  * @package Fshl
- * @subpackage Lang
+ * @subpackage Lexer
  * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
  * @copyright Copyright (c) 2011 Jaroslav Hanslík
  * @license https://github.com/kukulich/fshl/blob/master/!LICENSE.txt
  * @see Fshl_Generator
- * @see Fshl_Lang_{$this->language}
+ * @see Fshl_Lexer_{$this->lexerName}
  */
-class Fshl_Lang_Cache_{$this->language}
+class Fshl_Lexer_Cache_{$this->lexerName}
 {
 	/**
-	 * Generator version/language version.
+	 * Generator version/lexer version.
 	 *
 	 * @var string
 	 */
@@ -393,7 +393,7 @@ class Fshl_Lang_Cache_{$this->language}
 	public \$keywords;
 
 	/**
-	 * Initializes language.
+	 * Initializes lexer.
 	 */
 	public function __construct()
 	{
@@ -525,15 +525,15 @@ STATE;
 	}
 
 	/**
-	 * Optimizes language definition.
+	 * Optimizes lexer definition.
 	 *
 	 * @return Fshl_Generator
-	 * @throws RuntimeException If the language definition is wrong.
+	 * @throws RuntimeException If the lexer definition is wrong.
 	 */
 	private function optimize()
 	{
 		$i = 0;
-		foreach (array_keys($this->lang->getStates()) as $stateName) {
+		foreach (array_keys($this->lexer->getStates()) as $stateName) {
 			if (self::STATE_QUIT === $stateName) {
 				continue;
 			}
@@ -543,7 +543,7 @@ STATE;
 		$this->states[self::STATE_RETURN] = $i++;
 		$this->states[self::STATE_QUIT] = $i++;
 
-		foreach ($this->lang->getStates() as $stateName => $state) {
+		foreach ($this->lexer->getStates() as $stateName => $state) {
 			$stateId = $this->states[$stateName];
 
 			$this->classes[$stateId] = $state[self::STATE_INDEX_CLASS];
@@ -568,8 +568,8 @@ STATE;
 			}
 		}
 
-		if (!isset($this->states[$this->lang->getInitialState()])) {
-			throw new RuntimeException(sprintf('Unknown initial state "%s"', $this->lang->getInitialState()));
+		if (!isset($this->states[$this->lexer->getInitialState()])) {
+			throw new RuntimeException(sprintf('Unknown initial state "%s"', $this->lexer->getInitialState()));
 		}
 
 		return $this;

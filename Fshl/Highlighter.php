@@ -82,6 +82,13 @@ class Fshl_Highlighter
 	const LEXER_JAVASCRIPT = 'Javascript';
 
 	/**
+	 * Minimal lexer.
+	 *
+	 * @var string
+	 */
+	const LEXER_MINIMAL = 'Minimal';
+
+	/**
 	 * PHP lexer.
 	 *
 	 * @var string
@@ -94,13 +101,6 @@ class Fshl_Highlighter
 	 * @var string
 	 */
 	const LEXER_PYTHON = 'Python';
-
-	/**
-	 * Safe lexer.
-	 *
-	 * @var string
-	 */
-	const LEXER_SAFE = 'Safe';
 
 	/**
 	 * SQL lexer.
@@ -404,7 +404,7 @@ class Fshl_Highlighter
 			$lexerClass = 'Fshl_Lexer_Cache_' . $lexerName;
 			if (!class_exists($lexerClass)) {
 				// If lexer doesn't exists, use minimal line counter
-				$lexerName = self::LEXER_SAFE;
+				$lexerName = self::LEXER_MINIMAL;
 				$lexerClass = 'Fshl_Lexer_Cache_' . $lexerName;
 			}
 			$this->lexers[$lexerName] = new $lexerClass();

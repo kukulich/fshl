@@ -22,7 +22,7 @@
  */
 
 /**
- * Safe lexer.
+ * Minimal lexer.
  *
  * @category Fshl
  * @package Fshl
@@ -31,7 +31,7 @@
  * @copyright Copyright (c) 2011 Jaroslav Hanslík
  * @license https://github.com/kukulich/fshl/blob/master/!LICENSE.txt
  */
-class Fshl_Lexer_Safe implements Fshl_Lexer
+class Fshl_Lexer_Minimal implements Fshl_Lexer
 {
 	/**
 	 * Returns version.

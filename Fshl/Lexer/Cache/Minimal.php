@@ -22,7 +22,7 @@
  */
 
 /**
- * Optimized and cached Safe lexer.
+ * Optimized and cached Minimal lexer.
  *
  * This file is generated. All changes made in this file will be lost.
  *
@@ -33,9 +33,9 @@
  * @copyright Copyright (c) 2011 Jaroslav Hanslík
  * @license https://github.com/kukulich/fshl/blob/master/!LICENSE.txt
  * @see Fshl_Generator
- * @see Fshl_Lexer_Safe
+ * @see Fshl_Lexer_Minimal
  */
-class Fshl_Lexer_Cache_Safe
+class Fshl_Lexer_Cache_Minimal
 {
 	/**
 	 * Generator version/lexer version.

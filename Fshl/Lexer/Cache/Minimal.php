@@ -132,14 +132,14 @@ class Fshl_Lexer_Cache_Minimal
 	}
 
 	/**
-	 * Parses state OUT.
+	 * Finds delimiter for state OUT.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart0(&$text, $textLength, $textPos)
+	public function findDelimiter0(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {

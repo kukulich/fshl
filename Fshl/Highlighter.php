@@ -260,7 +260,7 @@ class Fshl_Highlighter
 		$this->stack = array();
 
 		while (true) {
-			list($transitionId, $delimiter, $buffer) = $this->lexer->{'getPart' . $state}($text, $textLength, $textPos);
+			list($transitionId, $delimiter, $buffer) = $this->lexer->{'findDelimiter' . $state}($text, $textLength, $textPos);
 
 			// Some data may be collected before getPart reaches the delimiter, we must output this before other processing
 			if (false !== $buffer) {

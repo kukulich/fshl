@@ -200,14 +200,14 @@ class Fshl_Lexer_Cache_Css
 	}
 
 	/**
-	 * Parses state OUT.
+	 * Finds delimiter for state OUT.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart0(&$text, $textLength, $textPos)
+	public function findDelimiter0(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -245,14 +245,14 @@ class Fshl_Lexer_Cache_Css
 	}
 
 	/**
-	 * Parses state CLASS.
+	 * Finds delimiter for state CLASS.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart1(&$text, $textLength, $textPos)
+	public function findDelimiter1(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -275,14 +275,14 @@ class Fshl_Lexer_Cache_Css
 	}
 
 	/**
-	 * Parses state DEF.
+	 * Finds delimiter for state DEF.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart2(&$text, $textLength, $textPos)
+	public function findDelimiter2(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -314,14 +314,14 @@ class Fshl_Lexer_Cache_Css
 	}
 
 	/**
-	 * Parses state PROPERTY.
+	 * Finds delimiter for state PROPERTY.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart3(&$text, $textLength, $textPos)
+	public function findDelimiter3(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -347,14 +347,14 @@ class Fshl_Lexer_Cache_Css
 	}
 
 	/**
-	 * Parses state VALUE.
+	 * Finds delimiter for state VALUE.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart4(&$text, $textLength, $textPos)
+	public function findDelimiter4(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -383,14 +383,14 @@ class Fshl_Lexer_Cache_Css
 	}
 
 	/**
-	 * Parses state COLOR.
+	 * Finds delimiter for state COLOR.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart5(&$text, $textLength, $textPos)
+	public function findDelimiter5(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -407,14 +407,14 @@ class Fshl_Lexer_Cache_Css
 	}
 
 	/**
-	 * Parses state COMMENT.
+	 * Finds delimiter for state COMMENT.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart6(&$text, $textLength, $textPos)
+	public function findDelimiter6(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {

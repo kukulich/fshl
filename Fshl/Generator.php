@@ -464,14 +464,14 @@ CONDITION;
 		return <<<STATE
 
 	/**
-	 * Parses state {$stateName}.
+	 * Finds delimiter for state {$stateName}.
 	 *
 	 * @param string \$text
 	 * @param string \$textLength
 	 * @param string \$textPos
 	 * @return array
 	 */
-	public function getPart{$state}(&\$text, \$textLength, \$textPos)
+	public function findDelimiter{$state}(&\$text, \$textLength, \$textPos)
 	{
 		\$buffer = false;
 		while (\$textPos < \$textLength) {

@@ -386,14 +386,14 @@ class Fshl_Lexer_Cache_Php
 	}
 
 	/**
-	 * Parses state OUT.
+	 * Finds delimiter for state OUT.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart0(&$text, $textLength, $textPos)
+	public function findDelimiter0(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -446,14 +446,14 @@ class Fshl_Lexer_Cache_Php
 	}
 
 	/**
-	 * Parses state DUMMY_PHP.
+	 * Finds delimiter for state DUMMY_PHP.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart1(&$text, $textLength, $textPos)
+	public function findDelimiter1(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -476,14 +476,14 @@ class Fshl_Lexer_Cache_Php
 	}
 
 	/**
-	 * Parses state FUNCTION.
+	 * Finds delimiter for state FUNCTION.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart2(&$text, $textLength, $textPos)
+	public function findDelimiter2(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -500,14 +500,14 @@ class Fshl_Lexer_Cache_Php
 	}
 
 	/**
-	 * Parses state COMMENT.
+	 * Finds delimiter for state COMMENT.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart3(&$text, $textLength, $textPos)
+	public function findDelimiter3(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -527,14 +527,14 @@ class Fshl_Lexer_Cache_Php
 	}
 
 	/**
-	 * Parses state COMMENT1.
+	 * Finds delimiter for state COMMENT1.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart4(&$text, $textLength, $textPos)
+	public function findDelimiter4(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -559,14 +559,14 @@ class Fshl_Lexer_Cache_Php
 	}
 
 	/**
-	 * Parses state VAR.
+	 * Finds delimiter for state VAR.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart5(&$text, $textLength, $textPos)
+	public function findDelimiter5(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -592,14 +592,14 @@ class Fshl_Lexer_Cache_Php
 	}
 
 	/**
-	 * Parses state VAR_STR.
+	 * Finds delimiter for state VAR_STR.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart6(&$text, $textLength, $textPos)
+	public function findDelimiter6(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -619,14 +619,14 @@ class Fshl_Lexer_Cache_Php
 	}
 
 	/**
-	 * Parses state QUOTE.
+	 * Finds delimiter for state QUOTE.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart7(&$text, $textLength, $textPos)
+	public function findDelimiter7(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -658,14 +658,14 @@ class Fshl_Lexer_Cache_Php
 	}
 
 	/**
-	 * Parses state HEREDOC.
+	 * Finds delimiter for state HEREDOC.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart8(&$text, $textLength, $textPos)
+	public function findDelimiter8(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -694,14 +694,14 @@ class Fshl_Lexer_Cache_Php
 	}
 
 	/**
-	 * Parses state QUOTE1.
+	 * Finds delimiter for state QUOTE1.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart9(&$text, $textLength, $textPos)
+	public function findDelimiter9(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -727,14 +727,14 @@ class Fshl_Lexer_Cache_Php
 	}
 
 	/**
-	 * Parses state NOWDOC.
+	 * Finds delimiter for state NOWDOC.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart10(&$text, $textLength, $textPos)
+	public function findDelimiter10(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -754,14 +754,14 @@ class Fshl_Lexer_Cache_Php
 	}
 
 	/**
-	 * Parses state NUM.
+	 * Finds delimiter for state NUM.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart11(&$text, $textLength, $textPos)
+	public function findDelimiter11(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -784,14 +784,14 @@ class Fshl_Lexer_Cache_Php
 	}
 
 	/**
-	 * Parses state DEC_NUM.
+	 * Finds delimiter for state DEC_NUM.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart12(&$text, $textLength, $textPos)
+	public function findDelimiter12(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -808,14 +808,14 @@ class Fshl_Lexer_Cache_Php
 	}
 
 	/**
-	 * Parses state HEX_NUM.
+	 * Finds delimiter for state HEX_NUM.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart13(&$text, $textLength, $textPos)
+	public function findDelimiter13(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {

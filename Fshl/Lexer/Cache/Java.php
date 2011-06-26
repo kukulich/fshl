@@ -203,14 +203,14 @@ class Fshl_Lexer_Cache_Java
 	}
 
 	/**
-	 * Parses state OUT.
+	 * Finds delimiter for state OUT.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart0(&$text, $textLength, $textPos)
+	public function findDelimiter0(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -245,14 +245,14 @@ class Fshl_Lexer_Cache_Java
 	}
 
 	/**
-	 * Parses state KEYWORD.
+	 * Finds delimiter for state KEYWORD.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart1(&$text, $textLength, $textPos)
+	public function findDelimiter1(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -269,14 +269,14 @@ class Fshl_Lexer_Cache_Java
 	}
 
 	/**
-	 * Parses state NUM.
+	 * Finds delimiter for state NUM.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart2(&$text, $textLength, $textPos)
+	public function findDelimiter2(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -302,14 +302,14 @@ class Fshl_Lexer_Cache_Java
 	}
 
 	/**
-	 * Parses state DEC_NUM.
+	 * Finds delimiter for state DEC_NUM.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart3(&$text, $textLength, $textPos)
+	public function findDelimiter3(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -329,14 +329,14 @@ class Fshl_Lexer_Cache_Java
 	}
 
 	/**
-	 * Parses state HEX_NUM.
+	 * Finds delimiter for state HEX_NUM.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart4(&$text, $textLength, $textPos)
+	public function findDelimiter4(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -353,14 +353,14 @@ class Fshl_Lexer_Cache_Java
 	}
 
 	/**
-	 * Parses state QUOTE1.
+	 * Finds delimiter for state QUOTE1.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart5(&$text, $textLength, $textPos)
+	public function findDelimiter5(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -386,14 +386,14 @@ class Fshl_Lexer_Cache_Java
 	}
 
 	/**
-	 * Parses state QUOTE2.
+	 * Finds delimiter for state QUOTE2.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart6(&$text, $textLength, $textPos)
+	public function findDelimiter6(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -419,14 +419,14 @@ class Fshl_Lexer_Cache_Java
 	}
 
 	/**
-	 * Parses state COMMENT1.
+	 * Finds delimiter for state COMMENT1.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart7(&$text, $textLength, $textPos)
+	public function findDelimiter7(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -446,14 +446,14 @@ class Fshl_Lexer_Cache_Java
 	}
 
 	/**
-	 * Parses state COMMENT2.
+	 * Finds delimiter for state COMMENT2.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart8(&$text, $textLength, $textPos)
+	public function findDelimiter8(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {

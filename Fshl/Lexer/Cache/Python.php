@@ -266,14 +266,14 @@ class Fshl_Lexer_Cache_Python
 	}
 
 	/**
-	 * Parses state OUT.
+	 * Finds delimiter for state OUT.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart0(&$text, $textLength, $textPos)
+	public function findDelimiter0(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -323,14 +323,14 @@ class Fshl_Lexer_Cache_Python
 	}
 
 	/**
-	 * Parses state KEYWORD.
+	 * Finds delimiter for state KEYWORD.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart1(&$text, $textLength, $textPos)
+	public function findDelimiter1(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -347,14 +347,14 @@ class Fshl_Lexer_Cache_Python
 	}
 
 	/**
-	 * Parses state DOCSTRING1.
+	 * Finds delimiter for state DOCSTRING1.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart2(&$text, $textLength, $textPos)
+	public function findDelimiter2(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -380,14 +380,14 @@ class Fshl_Lexer_Cache_Python
 	}
 
 	/**
-	 * Parses state DOCSTRING2.
+	 * Finds delimiter for state DOCSTRING2.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart3(&$text, $textLength, $textPos)
+	public function findDelimiter3(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -413,14 +413,14 @@ class Fshl_Lexer_Cache_Python
 	}
 
 	/**
-	 * Parses state QUOTE1.
+	 * Finds delimiter for state QUOTE1.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart4(&$text, $textLength, $textPos)
+	public function findDelimiter4(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -446,14 +446,14 @@ class Fshl_Lexer_Cache_Python
 	}
 
 	/**
-	 * Parses state QUOTE2.
+	 * Finds delimiter for state QUOTE2.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart5(&$text, $textLength, $textPos)
+	public function findDelimiter5(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -479,14 +479,14 @@ class Fshl_Lexer_Cache_Python
 	}
 
 	/**
-	 * Parses state COMMENT.
+	 * Finds delimiter for state COMMENT.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart6(&$text, $textLength, $textPos)
+	public function findDelimiter6(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -508,14 +508,14 @@ class Fshl_Lexer_Cache_Python
 	}
 
 	/**
-	 * Parses state NUM_HEXADECIMAL.
+	 * Finds delimiter for state NUM_HEXADECIMAL.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart7(&$text, $textLength, $textPos)
+	public function findDelimiter7(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -538,14 +538,14 @@ class Fshl_Lexer_Cache_Python
 	}
 
 	/**
-	 * Parses state NUM_DECIMAL.
+	 * Finds delimiter for state NUM_DECIMAL.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart8(&$text, $textLength, $textPos)
+	public function findDelimiter8(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -586,14 +586,14 @@ class Fshl_Lexer_Cache_Python
 	}
 
 	/**
-	 * Parses state NUM_FRACTION.
+	 * Finds delimiter for state NUM_FRACTION.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart9(&$text, $textLength, $textPos)
+	public function findDelimiter9(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -625,14 +625,14 @@ class Fshl_Lexer_Cache_Python
 	}
 
 	/**
-	 * Parses state NUM_EXPONENT.
+	 * Finds delimiter for state NUM_EXPONENT.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart10(&$text, $textLength, $textPos)
+	public function findDelimiter10(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {

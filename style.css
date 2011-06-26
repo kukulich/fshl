@@ -1,0 +1,82 @@
+/* (c) 2002 Martin Cohen */
+
+/* Common */
+.xlang {color: #ff0000; font-weight: bold;}
+.line {color: #000000; background-color: #fffff;}
+
+/* CSS */
+.css-class {color: #004a80; }
+.css-id {color: #7da7d9; font-weight: bold; }
+.css-def {color: #5674b9;}
+.css-property {color: #003663; font-weight: bold; }
+.css-value {color: #448ccb;}
+.css-color {color: #0076a3;}
+.css-comment { background-color: #e5f8ff; color: #999; }
+
+/* CPP */
+.cpp-keywords1 {color: #0000ff; font-weight: bold;}
+.cpp-num {color: #ff0000;}
+.cpp-quote {color: #a52a2a; font-weight: bold;}
+.cpp-comment {color: #00ff00;}
+.cpp-preproc {color: #c0c0c0;}
+
+/* HTML */
+.html-tag {color: #598527; font-weight: bold;}
+.html-tagin {color: #89a315}
+.html-quote {color: #598527; font-weight: bold;}
+.html-comment {color: #999; background-color: #f1fae4;}
+.html-entity {color: #89a315}
+
+/* Java */
+.java-keywords1 {color: #0000ff; font-weight: bold;}
+.java-num {color: #ff0000;}
+.java-quote {color: #a52a2a; font-weight: bold;}
+.java-comment {color: #00ff00;}
+.java-preproc {color: #c0c0c0;}
+
+/* Javascript */
+.js-out {color: #898993;}
+.js-keywords1 {color: #575757; font-weight: bold;}
+.js-num {color: #575757;}
+.js-quote {color: #575757; font-weight: bold;}
+.js-comment {color: #898993; background-color: #f4f4f4;}
+
+/* PHP */
+.php-keyword1 {color: #dd2244; font-weight: bold;}
+.php-keyword2 {color: #dd2244;}
+.php-var {color: #ffaa00; font-weight: bold;}
+.php-num {color: #ff0000;}
+.php-quote {color: #884433; font-weight: bold;}
+.php-vquote {color: #ffaa00;}
+.php-comment {color: #999999; background-color: #ffffee;}
+
+/* Python */
+.py-keyword1 {color: #0033cc; font-weight: bold;}
+.py-keyword2 {color: #ce3333; font-weight: bold;}
+.py-keyword3 {color: #660066; font-weight: bold;}
+.py-number {color: #993300;}
+.py-docstring {color: #e86a18;}
+.py-quote {color: #878787; font-weight: bold;}
+.py-comment {color: #009900; font-style: italic;}
+
+/* SQL */
+.sql-keyword1 {color: #dd0000; font-weight: bold;}
+.sql-keyword2 {color: #dd2222;}
+.sql-keyword3 {color: #0000ff; font-weight: bold;}
+.sql-value {color: #5674b9;}
+.sql-comment {color: #ffaa00;}
+.sql-num {color: #ff0000;}
+.sql-option {color: #004a80; font-weight: bold;}
+
+/* Texy */
+.texy-hlead {color: #4444bb; font-weight: bold;}
+.texy-hbody {background-color: #eeeeff; color: #4444bb;}
+.texy-hr {color: #bb4444;}
+.texy-code {color: #666666;}
+.texy-html {color: #66aa66;}
+.texy-text {color: #6666aa;}
+.texy-err {background-color: #ff0000; color: white;}
+
+
+
+

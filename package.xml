@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
+		http://pear.php.net/dtd/tasks-1.0.xsd
+		http://pear.php.net/dtd/package-2.0
+		http://pear.php.net/dtd/package-2.0.xsd">
+<name>FSHL</name>
+<channel>pear.kukulich.cz</channel>
+<summary>Universal Syntax HighLighter.</summary>
+<description>
+	FSHL is a free, open source universal syntax highlighter written in PHP. Very fast FSHL parser performs syntax highlighting for few languages and produces HTML output.
+</description>
+<lead>
+	<name>Jaroslav Hanslík</name>
+	<user>kukulich</user>
+	<email>kontakt@kukulich.cz</email>
+	<active>yes</active>
+</lead>
+<date>2011-06-26</date>
+<version>
+	<release>2.0.0beta</release>
+	<api>2.0.0</api>
+</version>
+<stability>
+	<release>beta</release>
+	<api>stable</api>
+</stability>
+<license uri="https://github.com/kukulich/fshl/blob/master/LICENSE">GPL v2, GPL v3</license>
+<notes>-</notes>
+<contents>
+	<dir name="/">
+		<dir name="Fshl">
+			<dir name="Lexer">
+				<dir name="Cache">
+					<file name="Cpp.php" role="php" />
+					<file name="Css.php" role="php" />
+					<file name="Html.php" role="php" />
+					<file name="HtmlOnly.php" role="php" />
+					<file name="Java.php" role="php" />
+					<file name="Javascript.php" role="php" />
+					<file name="Minimal.php" role="php" />
+					<file name="Php.php" role="php" />
+					<file name="Python.php" role="php" />
+					<file name="Sql.php" role="php" />
+					<file name="Texy.php" role="php" />
+				</dir>
+				<file name="Cpp.php" role="php" />
+				<file name="Css.php" role="php" />
+				<file name="Html.php" role="php" />
+				<file name="HtmlOnly.php" role="php" />
+				<file name="Java.php" role="php" />
+				<file name="Javascript.php" role="php" />
+				<file name="Minimal.php" role="php" />
+				<file name="Php.php" role="php" />
+				<file name="Python.php" role="php" />
+				<file name="Sql.php" role="php" />
+				<file name="Texy.php" role="php" />
+			</dir>
+			<dir name="Output">
+				<file name="Html.php" role="php" />
+				<file name="HtmlManual.php" role="php" />
+			</dir>
+			<file name="Generator.php" role="php" />
+			<file name="Highlighter.php" role="php" />
+			<file name="Lexer.php" role="php" />
+			<file name="Output.php" role="php" />
+		</dir>
+		<file name="style.css" role="data" />
+		<file name="LICENSE" role="doc" />
+		<file name="README.md" role="doc" />
+	</dir>
+</contents>
+<dependencies>
+	<required>
+		<php>
+			<min>5.3.0</min>
+		</php>
+		<pearinstaller>
+			<min>1.4.0</min>
+		</pearinstaller>
+	</required>
+</dependencies>
+<phprelease />
+</package>

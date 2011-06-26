@@ -21,17 +21,18 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
+namespace Fshl\Lexer;
+
+use Fshl;
+
 /**
  * Texy lexer.
  *
- * @category Fshl
- * @package Fshl
- * @subpackage Lexer
  * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
  * @copyright Copyright (c) 2011 Jaroslav Hanslík
  * @license https://github.com/kukulich/fshl/blob/master/!LICENSE.txt
  */
-class Fshl_Lexer_Texy implements Fshl_Lexer
+class Texy implements Fshl\Lexer
 {
 	/**
 	 * Returns version.
@@ -67,7 +68,7 @@ class Fshl_Lexer_Texy implements Fshl_Lexer
 					'\---' => array('BlockOUT', 0),
 					"\n" => array('NewLineTypeSelector', 0)
 				),
-				Fshl_Generator::STATE_FLAG_NONE,
+				Fshl\Generator::STATE_FLAG_NONE,
 				null,
 				null
 			),
@@ -76,7 +77,7 @@ class Fshl_Lexer_Texy implements Fshl_Lexer
 					"\n" => array('DoubleNewLine', 0),
 					'!SPACE' => array('SingleNewLine', -1)
 				),
-				Fshl_Generator::STATE_FLAG_NONE,
+				Fshl\Generator::STATE_FLAG_NONE,
 				null,
 				null
 			),
@@ -88,7 +89,7 @@ class Fshl_Lexer_Texy implements Fshl_Lexer
 					'--' => array('HeaderIN', 0),
 					'_ALL' => array('LineBODY', -1)
 				),
-				Fshl_Generator::STATE_FLAG_NONE,
+				Fshl\Generator::STATE_FLAG_NONE,
 				null,
 				null
 			),
@@ -116,7 +117,7 @@ class Fshl_Lexer_Texy implements Fshl_Lexer
 					"\n" => array('DoubleNewLine', 0),
 					'_ALL' => array('HeaderBody', -1)
 				),
-				Fshl_Generator::STATE_FLAG_NONE,
+				Fshl\Generator::STATE_FLAG_NONE,
 				'texy-hlead',
 				null
 			),
@@ -128,7 +129,7 @@ class Fshl_Lexer_Texy implements Fshl_Lexer
 					'*' => array('HeaderOUT', 0),
 					"\n" => array('DoubleNewLine', 0)
 				),
-				Fshl_Generator::STATE_FLAG_NONE,
+				Fshl\Generator::STATE_FLAG_NONE,
 				'texy-hbody',
 				null
 			),
@@ -136,7 +137,7 @@ class Fshl_Lexer_Texy implements Fshl_Lexer
 				array(
 					"\n" => array('DoubleNewLine', 0)
 				),
-				Fshl_Generator::STATE_FLAG_NONE,
+				Fshl\Generator::STATE_FLAG_NONE,
 				'texy-hlead',
 				null
 			),
@@ -144,7 +145,7 @@ class Fshl_Lexer_Texy implements Fshl_Lexer
 				array(
 					"\n" => array('LineBODY', -1)
 				),
-				Fshl_Generator::STATE_FLAG_NONE,
+				Fshl\Generator::STATE_FLAG_NONE,
 				'texy-hr',
 				null
 			),
@@ -156,7 +157,7 @@ class Fshl_Lexer_Texy implements Fshl_Lexer
 					'text' => array('BlockTEXT', 0),
 					'_ALL' => array('LineBODY', -1)
 				),
-				Fshl_Generator::STATE_FLAG_NONE,
+				Fshl\Generator::STATE_FLAG_NONE,
 				'texy-hr',
 				null
 			),
@@ -164,7 +165,7 @@ class Fshl_Lexer_Texy implements Fshl_Lexer
 				array(
 					'_ALL' => array('LineBODY', -1)
 				),
-				Fshl_Generator::STATE_FLAG_NONE,
+				Fshl\Generator::STATE_FLAG_NONE,
 				'texy-hr',
 				null
 			),
@@ -172,7 +173,7 @@ class Fshl_Lexer_Texy implements Fshl_Lexer
 				array(
 					'_ALL' => array('LineBODY', -1)
 				),
-				Fshl_Generator::STATE_FLAG_NONE,
+				Fshl\Generator::STATE_FLAG_NONE,
 				'texy-hr',
 				null
 			),
@@ -181,7 +182,7 @@ class Fshl_Lexer_Texy implements Fshl_Lexer
 				array(
 					"\n" => array('BlockTEXTBody', -1)
 				),
-				Fshl_Generator::STATE_FLAG_NONE,
+				Fshl\Generator::STATE_FLAG_NONE,
 				'texy-hr',
 				null
 			),
@@ -189,7 +190,7 @@ class Fshl_Lexer_Texy implements Fshl_Lexer
 				array(
 					"\n" => array('BlockTEXTBodyNL', 0)
 				),
-				Fshl_Generator::STATE_FLAG_NONE,
+				Fshl\Generator::STATE_FLAG_NONE,
 				'texy-text',
 				null
 			),
@@ -198,7 +199,7 @@ class Fshl_Lexer_Texy implements Fshl_Lexer
 					'\---' => array('BlockTEXTBodyOUT', 0),
 					'_ALL' => array('BlockTEXTBody', -1)
 				),
-				Fshl_Generator::STATE_FLAG_NONE,
+				Fshl\Generator::STATE_FLAG_NONE,
 				'texy-text',
 				null
 			),
@@ -206,7 +207,7 @@ class Fshl_Lexer_Texy implements Fshl_Lexer
 				array(
 					'_ALL' => array('LineBODY', -1)
 				),
-				Fshl_Generator::STATE_FLAG_NONE,
+				Fshl\Generator::STATE_FLAG_NONE,
 				'texy-hr',
 				null
 			),
@@ -215,7 +216,7 @@ class Fshl_Lexer_Texy implements Fshl_Lexer
 				array(
 					"\n" => array('BlockHTMLBody', -1)
 				),
-				Fshl_Generator::STATE_FLAG_NONE,
+				Fshl\Generator::STATE_FLAG_NONE,
 				'texy-hr',
 				null
 			),
@@ -223,7 +224,7 @@ class Fshl_Lexer_Texy implements Fshl_Lexer
 				array(
 					"\n" => array('BlockHTMLBodyNL', 0)
 				),
-				Fshl_Generator::STATE_FLAG_NONE,
+				Fshl\Generator::STATE_FLAG_NONE,
 				'texy-html',
 				null
 			),
@@ -232,7 +233,7 @@ class Fshl_Lexer_Texy implements Fshl_Lexer
 					'\---' => array('BlockHTMLBodyOUT', 0),
 					'_ALL' => array('BlockHTMLBody', -1)
 				),
-				Fshl_Generator::STATE_FLAG_NONE,
+				Fshl\Generator::STATE_FLAG_NONE,
 				'texy-html',
 				null
 			),
@@ -240,7 +241,7 @@ class Fshl_Lexer_Texy implements Fshl_Lexer
 				array(
 					'_ALL' => array('LineBODY', -1)
 				),
-				Fshl_Generator::STATE_FLAG_NONE,
+				Fshl\Generator::STATE_FLAG_NONE,
 				'texy-hr',
 				null
 			),
@@ -249,7 +250,7 @@ class Fshl_Lexer_Texy implements Fshl_Lexer
 				array(
 					"\n" => array('BlockCODEBody', -1)
 				),
-				Fshl_Generator::STATE_FLAG_NONE,
+				Fshl\Generator::STATE_FLAG_NONE,
 				'texy-hr',
 				null
 			),
@@ -257,7 +258,7 @@ class Fshl_Lexer_Texy implements Fshl_Lexer
 				array(
 					"\n" => array('BlockCODEBodyNL', 0)
 				),
-				Fshl_Generator::STATE_FLAG_NONE,
+				Fshl\Generator::STATE_FLAG_NONE,
 				'texy-code',
 				null
 			),
@@ -266,7 +267,7 @@ class Fshl_Lexer_Texy implements Fshl_Lexer
 					'\---' => array('BlockCODEBodyOUT', 0),
 					'_ALL' => array('BlockCODEBody', -1)
 				),
-				Fshl_Generator::STATE_FLAG_NONE,
+				Fshl\Generator::STATE_FLAG_NONE,
 				'texy-code',
 				null
 			),
@@ -274,7 +275,7 @@ class Fshl_Lexer_Texy implements Fshl_Lexer
 				array(
 					'_ALL' => array('LineBODY', -1)
 				),
-				Fshl_Generator::STATE_FLAG_NONE,
+				Fshl\Generator::STATE_FLAG_NONE,
 				'texy-hr',
 				null
 			)

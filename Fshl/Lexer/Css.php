@@ -21,17 +21,18 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
+namespace Fshl\Lexer;
+
+use Fshl;
+
 /**
  * CSS lexer.
  *
- * @category Fshl
- * @package Fshl
- * @subpackage Lexer
  * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
  * @copyright Copyright (c) 2011 Jaroslav Hanslík
  * @license https://github.com/kukulich/fshl/blob/master/!LICENSE.txt
  */
-class Fshl_Lexer_Css implements Fshl_Lexer
+class Css implements Fshl\Lexer
 {
 	/**
 	 * Returns version.
@@ -67,22 +68,22 @@ class Fshl_Lexer_Css implements Fshl_Lexer
 					'{' => array('DEF', 0),
 					'.' => array('CLASS', 0),
 					'/*' => array('COMMENT', 0),
-					'</' => array(Fshl_Generator::STATE_QUIT, 0),
+					'</' => array(Fshl\Generator::STATE_QUIT, 0),
 					'<?php' => array('TO_PHP', 0),
 					'<?=' => array('TO_PHP', 0),
 					'<?' => array('TO_PHP', 0)
 				),
-				Fshl_Generator::STATE_FLAG_NONE,
+				Fshl\Generator::STATE_FLAG_NONE,
 				null,
 				null
 			),
 			'CLASS' => array(
 				array(
-					'SPACE' => array(Fshl_Generator::STATE_RETURN, 1),
+					'SPACE' => array(Fshl\Generator::STATE_RETURN, 1),
 					'/*' => array('COMMENT', 0),
-					'{' => array(Fshl_Generator::STATE_RETURN, 1)
+					'{' => array(Fshl\Generator::STATE_RETURN, 1)
 				),
-				Fshl_Generator::STATE_FLAG_RECURSION,
+				Fshl\Generator::STATE_FLAG_RECURSION,
 				'css-class',
 				null
 			),
@@ -91,63 +92,63 @@ class Fshl_Lexer_Css implements Fshl_Lexer
 					':' => array('VALUE', 1),
 					'_COUNTAB' => array('DEF', 0),
 					';' => array('DEF', 1),
-					'}' => array(Fshl_Generator::STATE_RETURN, 0),
+					'}' => array(Fshl\Generator::STATE_RETURN, 0),
 					'/*' => array('COMMENT', 0),
 					'!SPACE' => array('PROPERTY', 0)
 				),
-				Fshl_Generator::STATE_FLAG_RECURSION,
+				Fshl\Generator::STATE_FLAG_RECURSION,
 				'',
 				null
 			),
 			'PROPERTY' => array(
 				array(
 					'_COUNTAB' => array('PROPERTY', 0),
-					':' => array(Fshl_Generator::STATE_RETURN, 1),
-					'}' => array(Fshl_Generator::STATE_RETURN, 1),
+					':' => array(Fshl\Generator::STATE_RETURN, 1),
+					'}' => array(Fshl\Generator::STATE_RETURN, 1),
 					'/*' => array('COMMENT', 0)
 				),
-				Fshl_Generator::STATE_FLAG_RECURSION,
+				Fshl\Generator::STATE_FLAG_RECURSION,
 				'css-property',
 				null
 			),
 			'VALUE' => array(
 				array(
-					';' => array(Fshl_Generator::STATE_RETURN, 1),
+					';' => array(Fshl\Generator::STATE_RETURN, 1),
 					'#' => array('COLOR', 0),
-					'}' => array(Fshl_Generator::STATE_RETURN, 1),
+					'}' => array(Fshl\Generator::STATE_RETURN, 1),
 					'_COUNTAB' => array('VALUE', 0),
 					'/*' => array('COMMENT', 0)
 				),
-				Fshl_Generator::STATE_FLAG_RECURSION,
+				Fshl\Generator::STATE_FLAG_RECURSION,
 				'css-value',
 				null
 			),
 			'COLOR' => array(
 				array(
-					'!HEXNUM' => array(Fshl_Generator::STATE_RETURN, 1)
+					'!HEXNUM' => array(Fshl\Generator::STATE_RETURN, 1)
 				),
-				Fshl_Generator::STATE_FLAG_RECURSION,
+				Fshl\Generator::STATE_FLAG_RECURSION,
 				'css-color',
 				null
 			),
 			'COMMENT' => array(
 				array(
 					'_COUNTAB' => array('COMMENT', 0),
-					'*/' => array(Fshl_Generator::STATE_RETURN, 0)
+					'*/' => array(Fshl\Generator::STATE_RETURN, 0)
 				),
-				Fshl_Generator::STATE_FLAG_RECURSION,
+				Fshl\Generator::STATE_FLAG_RECURSION,
 				'css-comment',
 				null
 			),
 			'TO_PHP' => array(
 				null,
-				Fshl_Generator::STATE_FLAG_NEWLEXER,
+				Fshl\Generator::STATE_FLAG_NEWLEXER,
 				'xlang',
 				'PHP'
 			),
-			Fshl_Generator::STATE_QUIT => array(
+			Fshl\Generator::STATE_QUIT => array(
 				null,
-				Fshl_Generator::STATE_FLAG_NEWLEXER,
+				Fshl\Generator::STATE_FLAG_NEWLEXER,
 				'html-tag',
 				null
 			)

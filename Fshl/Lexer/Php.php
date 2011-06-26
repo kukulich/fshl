@@ -21,17 +21,18 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
+namespace Fshl\Lexer;
+
+use Fshl;
+
 /**
  * PHP lexer.
  *
- * @category Fshl
- * @package Fshl
- * @subpackage Lexer
  * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
  * @copyright Copyright (c) 2011 Jaroslav Hanslík
  * @license https://github.com/kukulich/fshl/blob/master/!LICENSE.txt
  */
-class Fshl_Lexer_Php implements Fshl_Lexer
+class Php implements Fshl\Lexer
 {
 	/**
 	 * Returns version.
@@ -70,51 +71,51 @@ class Fshl_Lexer_Php implements Fshl_Lexer
 					'"' => array('QUOTE', 0),
 					'//' => array('COMMENT1', 0),
 					'NUMBER' => array('NUM', 0),
-					'?>' => array(Fshl_Generator::STATE_QUIT, 0),
+					'?>' => array(Fshl\Generator::STATE_QUIT, 0),
 					'/*' => array('COMMENT', 0) ,
 					'<?' => array('DUMMY_PHP', -1),
 					'#' => array('COMMENT1', 0),
 					'NOWDOC' => array('NOWDOC', 0),
 					'HEREDOC' => array('HEREDOC', 0)
 				),
-				Fshl_Generator::STATE_FLAG_NONE,
+				Fshl\Generator::STATE_FLAG_NONE,
 				null,
 				null
 			),
 			'DUMMY_PHP' => array(
 				array(
-					'<?php' => array(Fshl_Generator::STATE_RETURN, 0),
-					'<?=' => array(Fshl_Generator::STATE_RETURN, 0),
-					'<?' => array(Fshl_Generator::STATE_RETURN, 0)
+					'<?php' => array(Fshl\Generator::STATE_RETURN, 0),
+					'<?=' => array(Fshl\Generator::STATE_RETURN, 0),
+					'<?' => array(Fshl\Generator::STATE_RETURN, 0)
 				),
-				Fshl_Generator::STATE_FLAG_RECURSION,
+				Fshl\Generator::STATE_FLAG_RECURSION,
 				'xlang',
 				null
 			),
 			'FUNCTION' => array(
 				array(
-					'!SAFECHAR' => array(Fshl_Generator::STATE_RETURN, 1)
+					'!SAFECHAR' => array(Fshl\Generator::STATE_RETURN, 1)
 				),
-				Fshl_Generator::STATE_FLAG_KEYWORD | Fshl_Generator::STATE_FLAG_RECURSION,
+				Fshl\Generator::STATE_FLAG_KEYWORD | Fshl\Generator::STATE_FLAG_RECURSION,
 				null,
 				null
 			),
 			'COMMENT' => array(
 				array(
 					'_COUNTAB' => array('COMMENT', 0),
-					'*/' => array(Fshl_Generator::STATE_RETURN, 0)
+					'*/' => array(Fshl\Generator::STATE_RETURN, 0)
 				),
-				Fshl_Generator::STATE_FLAG_RECURSION,
+				Fshl\Generator::STATE_FLAG_RECURSION,
 				'php-comment',
 				null
 			),
 			'COMMENT1' => array(
 				array(
-					"\n" => array(Fshl_Generator::STATE_RETURN, 1),
+					"\n" => array(Fshl\Generator::STATE_RETURN, 1),
 					'_COUNTAB' => array('COMMENT1', 0),
-					'?>' => array(Fshl_Generator::STATE_RETURN, -1)
+					'?>' => array(Fshl\Generator::STATE_RETURN, -1)
 				),
-				Fshl_Generator::STATE_FLAG_RECURSION,
+				Fshl\Generator::STATE_FLAG_RECURSION,
 				'php-comment',
 				null
 			),
@@ -123,95 +124,95 @@ class Fshl_Lexer_Php implements Fshl_Lexer
 					'$' => array('VAR', 0),
 					'{' => array('VAR', 0),
 					'}' => array('VAR', 0),
-					'!SAFECHAR' => array(Fshl_Generator::STATE_RETURN, 1)
+					'!SAFECHAR' => array(Fshl\Generator::STATE_RETURN, 1)
 				),
-				Fshl_Generator::STATE_FLAG_RECURSION,
+				Fshl\Generator::STATE_FLAG_RECURSION,
 				'php-var',
 				null
 			),
 			'VAR_STR' => array(
 				array(
-					'}' => array(Fshl_Generator::STATE_RETURN, 0),
-					'SPACE' => array(Fshl_Generator::STATE_RETURN, 1)
+					'}' => array(Fshl\Generator::STATE_RETURN, 0),
+					'SPACE' => array(Fshl\Generator::STATE_RETURN, 1)
 				),
-				Fshl_Generator::STATE_FLAG_RECURSION,
+				Fshl\Generator::STATE_FLAG_RECURSION,
 				'php-var',
 				null
 			),
 			'QUOTE' => array(
 				array(
-					'"' => array(Fshl_Generator::STATE_RETURN, 0),
+					'"' => array(Fshl\Generator::STATE_RETURN, 0),
 					'\\\\' => array('QUOTE', 0),
 					'\\"' => array('QUOTE', 0),
 					'$' => array('VAR', 0),
 					'{$' => array('VAR_STR', 0),
 					'_COUNTAB' => array('QUOTE', 0)
 				),
-				Fshl_Generator::STATE_FLAG_RECURSION,
+				Fshl\Generator::STATE_FLAG_RECURSION,
 				'php-quote',
 				null
 			),
 			'HEREDOC' => array(
 				array(
 					'_COUNTAB' => array('HEREDOC', 0),
-					'HEREDOC_END' => array(Fshl_Generator::STATE_RETURN, 0),
+					'HEREDOC_END' => array(Fshl\Generator::STATE_RETURN, 0),
 					'\\$' => array('HEREDOC', 0),
 					'$' => array('VAR', 0),
 					'{$' => array('VAR_STR', 0),
 				),
-				Fshl_Generator::STATE_FLAG_NONE,
+				Fshl\Generator::STATE_FLAG_NONE,
 				'php-quote',
 				null
 			),
 			'QUOTE1' => array(
 				array(
-					'\'' => array(Fshl_Generator::STATE_RETURN, 0),
+					'\'' => array(Fshl\Generator::STATE_RETURN, 0),
 					'\\\\' => array('QUOTE1', 0),
 					'\\\'' => array('QUOTE1', 0),
 					'_COUNTAB' => array('QUOTE1', 0)
 				),
-				Fshl_Generator::STATE_FLAG_RECURSION,
+				Fshl\Generator::STATE_FLAG_RECURSION,
 				'php-quote',
 				null
 			),
 			'NOWDOC' => array(
 				array(
 					'_COUNTAB' => array('NOWDOC', 0),
-					'NOWDOC_END' => array(Fshl_Generator::STATE_RETURN, 0),
+					'NOWDOC_END' => array(Fshl\Generator::STATE_RETURN, 0),
 				),
-				Fshl_Generator::STATE_FLAG_NONE,
+				Fshl\Generator::STATE_FLAG_NONE,
 				'php-quote',
 				null
 			),
 			'NUM' => array(
 				array(
 					'x' => array('HEX_NUM', 0),
-					'!NUMBER' => array(Fshl_Generator::STATE_RETURN, 1),
+					'!NUMBER' => array(Fshl\Generator::STATE_RETURN, 1),
 					'NUMBER' => array('DEC_NUM', 0)
 				),
-				Fshl_Generator::STATE_FLAG_RECURSION,
+				Fshl\Generator::STATE_FLAG_RECURSION,
 				'php-num',
 				null
 			),
 			'DEC_NUM' => array(
 				array(
-					'!NUMBER' => array(Fshl_Generator::STATE_RETURN, 1)
+					'!NUMBER' => array(Fshl\Generator::STATE_RETURN, 1)
 				),
-				Fshl_Generator::STATE_FLAG_NONE,
+				Fshl\Generator::STATE_FLAG_NONE,
 				'php-num',
 				null
 			),
 			'HEX_NUM' => array(
 				array(
-					'!HEXNUM' => array(Fshl_Generator::STATE_RETURN, 1)
+					'!HEXNUM' => array(Fshl\Generator::STATE_RETURN, 1)
 				),
-				Fshl_Generator::STATE_FLAG_NONE,
+				Fshl\Generator::STATE_FLAG_NONE,
 				'php-num',
 				null
 			),
-			Fshl_Generator::STATE_QUIT => array(
+			Fshl\Generator::STATE_QUIT => array(
 				null,
-				Fshl_Generator::STATE_FLAG_NEWLEXER,
+				Fshl\Generator::STATE_FLAG_NEWLEXER,
 				'xlang',
 				''
 			)
@@ -3617,7 +3618,7 @@ class Fshl_Lexer_Php implements Fshl_Lexer
 				'zip_read' => 2,
 				'zlib_get_coding_type' => 2
 			),
-			Fshl_Generator::CASE_INSENSITIVE
+			Fshl\Generator::CASE_INSENSITIVE
 		);
 	}
 }

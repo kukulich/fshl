@@ -21,17 +21,16 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
+namespace Fshl;
+
 /**
  * Output interface.
  *
- * @category Fshl
- * @package Fshl
- * @subpackage Output
  * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
  * @copyright Copyright (c) 2011 Jaroslav Hanslík
  * @license https://github.com/kukulich/fshl/blob/master/!LICENSE.txt
  */
-interface Fshl_Output
+interface Output
 {
 	/**
 	 * Writes template.

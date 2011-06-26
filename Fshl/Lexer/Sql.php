@@ -21,18 +21,19 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
+namespace Fshl\Lexer;
+
+use Fshl;
+
 /**
  * SQL lexer.
  *
- * @category Fshl
- * @package Fshl
- * @subpackage Lexer
  * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
  * @copyright Copyright (C) 2005 Matěj 'Finwë' Humpál
  * @copyright Copyright (c) 2011 Jaroslav Hanslík
  * @license https://github.com/kukulich/fshl/blob/master/!LICENSE.txt
  */
-class Fshl_Lexer_Sql implements Fshl_Lexer
+class Sql implements Fshl\Lexer
 {
 	/**
 	 * Returns version.
@@ -75,63 +76,63 @@ class Fshl_Lexer_Sql implements Fshl_Lexer
 					'NUMBER' => array('NUM', 0),
 					'_COUNTAB' => array('OUT', 0)
 				),
-				Fshl_Generator::STATE_FLAG_KEYWORD,
+				Fshl\Generator::STATE_FLAG_KEYWORD,
 				null,
 				null
 			),
 			'FUNCTION' => array(
 				array(
-					'!SAFECHAR' => array(Fshl_Generator::STATE_RETURN, 1)
+					'!SAFECHAR' => array(Fshl\Generator::STATE_RETURN, 1)
 				),
-				Fshl_Generator::STATE_FLAG_KEYWORD | Fshl_Generator::STATE_FLAG_RECURSION,
+				Fshl\Generator::STATE_FLAG_KEYWORD | Fshl\Generator::STATE_FLAG_RECURSION,
 				null,
 				null
 			),
 			'COMMENT' => array(
 				array(
-					'*/' => array(Fshl_Generator::STATE_RETURN, 0),
+					'*/' => array(Fshl\Generator::STATE_RETURN, 0),
 					'_COUNTAB' => array('COMMENT', 0)
 				),
-				Fshl_Generator::STATE_FLAG_RECURSION,
+				Fshl\Generator::STATE_FLAG_RECURSION,
 				'sql-comment',
 				null
 			),
 			'COMMENT1' => array(
 				array(
-					"\n" => array(Fshl_Generator::STATE_RETURN, 1),
+					"\n" => array(Fshl\Generator::STATE_RETURN, 1),
 					'_COUNTAB' => array('COMMENT1', 0)
 				),
-				Fshl_Generator::STATE_FLAG_RECURSION,
+				Fshl\Generator::STATE_FLAG_RECURSION,
 				'sql-comment',
 				null
 			),
 			'QUOTE' => array(
 				array(
 					'\\"' => array('QUOTE', 0),
-					'"' => array(Fshl_Generator::STATE_RETURN, 0),
+					'"' => array(Fshl\Generator::STATE_RETURN, 0),
 					'_COUNTAB' => array('QUOTE', 0)
 				),
-				Fshl_Generator::STATE_FLAG_RECURSION,
+				Fshl\Generator::STATE_FLAG_RECURSION,
 				'sql-value',
 				null
 			),
 			'QUOTE1' => array(
 				array(
 					'\\\'' => array('QUOTE1', 0),
-					'\'' => array(Fshl_Generator::STATE_RETURN, 0),
+					'\'' => array(Fshl\Generator::STATE_RETURN, 0),
 					'_COUNTAB' => array('QUOTE1', 0)
 				),
-				Fshl_Generator::STATE_FLAG_RECURSION,
+				Fshl\Generator::STATE_FLAG_RECURSION,
 				'sql-value',
 				null
 			),
 			'QUOTE3' => array(
 				array(
 					'\\`' => array('QUOTE3', 0),
-					'`' => array(Fshl_Generator::STATE_RETURN, 0),
+					'`' => array(Fshl\Generator::STATE_RETURN, 0),
 					'_COUNTAB' => array('QUOTE3', 0)
 				),
-				Fshl_Generator::STATE_FLAG_RECURSION,
+				Fshl\Generator::STATE_FLAG_RECURSION,
 				'sql-value',
 				null
 			),
@@ -139,25 +140,25 @@ class Fshl_Lexer_Sql implements Fshl_Lexer
 				array(
 					'x' => array('HEX_NUM', 0),
 					'NUMBER' => array('DEC_NUM', 0),
-					'!NUMBER' => array(Fshl_Generator::STATE_RETURN, 1)
+					'!NUMBER' => array(Fshl\Generator::STATE_RETURN, 1)
 				),
-				Fshl_Generator::STATE_FLAG_RECURSION,
+				Fshl\Generator::STATE_FLAG_RECURSION,
 				'sql-num',
 				null
 			),
 			'DEC_NUM' => array(
 				array(
-					'!NUMBER' => array(Fshl_Generator::STATE_RETURN, 1)
+					'!NUMBER' => array(Fshl\Generator::STATE_RETURN, 1)
 				),
-				Fshl_Generator::STATE_FLAG_NONE,
+				Fshl\Generator::STATE_FLAG_NONE,
 				'sql-num',
 				null
 			),
 			'HEX_NUM' => array(
 				array(
-					'!HEXNUM' => array(Fshl_Generator::STATE_RETURN, 1)
+					'!HEXNUM' => array(Fshl\Generator::STATE_RETURN, 1)
 				),
-				Fshl_Generator::STATE_FLAG_NONE,
+				Fshl\Generator::STATE_FLAG_NONE,
 				'sql-num',
 				null
 			),
@@ -170,7 +171,7 @@ class Fshl_Lexer_Sql implements Fshl_Lexer
 					'TEXT' => array('OPTION', 0),
 					'DATE' => array('OPTION', 0)
 				),
-				Fshl_Generator::STATE_FLAG_RECURSION,
+				Fshl\Generator::STATE_FLAG_RECURSION,
 				'sql-option',
 				null
 			)
@@ -556,7 +557,7 @@ class Fshl_Lexer_Sql implements Fshl_Lexer
 				'work' => 1,
 				'year' => 1
 			),
-			Fshl_Generator::CASE_INSENSITIVE
+			Fshl\Generator::CASE_INSENSITIVE
 		);
 	}
 }

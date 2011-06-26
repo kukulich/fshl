@@ -21,17 +21,18 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
+namespace Fshl\Lexer;
+
+use Fshl;
+
 /**
  * Minimal lexer.
  *
- * @category Fshl
- * @package Fshl
- * @subpackage Lexer
  * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
  * @copyright Copyright (c) 2011 Jaroslav Hanslík
  * @license https://github.com/kukulich/fshl/blob/master/!LICENSE.txt
  */
-class Fshl_Lexer_Minimal implements Fshl_Lexer
+class Minimal implements Fshl\Lexer
 {
 	/**
 	 * Returns version.
@@ -65,7 +66,7 @@ class Fshl_Lexer_Minimal implements Fshl_Lexer
 				array(
 					'_COUNTAB' => array('OUT', 0),
 				),
-				Fshl_Generator::STATE_FLAG_NONE,
+				Fshl\Generator::STATE_FLAG_NONE,
 				null,
 				null
 			)

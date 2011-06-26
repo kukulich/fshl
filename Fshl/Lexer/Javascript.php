@@ -21,17 +21,18 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
+namespace Fshl\Lexer;
+
+use Fshl;
+
 /**
  * Javascript lexer.
  *
- * @category Fshl
- * @package Fshl
- * @subpackage Lexer
  * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
  * @copyright Copyright (c) 2011 Jaroslav Hanslík
  * @license https://github.com/kukulich/fshl/blob/master/!LICENSE.txt
  */
-class Fshl_Lexer_Javascript implements Fshl_Lexer
+class Javascript implements Fshl\Lexer
 {
 	/**
 	 * Returns version.
@@ -74,18 +75,18 @@ class Fshl_Lexer_Javascript implements Fshl_Lexer
 					'<?php' => array('TO_PHP', 0),
 					'<?=' => array('TO_PHP', 0),
 					'<?' => array('TO_PHP', 0),
-					'</' => array(Fshl_Generator::STATE_QUIT, 0)
+					'</' => array(Fshl\Generator::STATE_QUIT, 0)
 				),
-				Fshl_Generator::STATE_FLAG_NONE,
+				Fshl\Generator::STATE_FLAG_NONE,
 				'js-out',
 				null
 			),
 			// Keyword
 			'KEYWORD' => array(
 				array(
-					'!SAFECHAR' => array(Fshl_Generator::STATE_RETURN, 1)
+					'!SAFECHAR' => array(Fshl\Generator::STATE_RETURN, 1)
 				),
-				Fshl_Generator::STATE_FLAG_KEYWORD | Fshl_Generator::STATE_FLAG_RECURSION,
+				Fshl\Generator::STATE_FLAG_KEYWORD | Fshl\Generator::STATE_FLAG_RECURSION,
 				'js-out',
 				null
 			),
@@ -94,50 +95,50 @@ class Fshl_Lexer_Javascript implements Fshl_Lexer
 				array(
 					'x' => array('HEX_NUM', 0),
 					'.' => array('DEC_NUM', 0),
-					'!NUMBER' => array(Fshl_Generator::STATE_RETURN, 1),
+					'!NUMBER' => array(Fshl\Generator::STATE_RETURN, 1),
 					'NUMBER' => array('DEC_NUM', 0)
 				),
-				Fshl_Generator::STATE_FLAG_RECURSION,
+				Fshl\Generator::STATE_FLAG_RECURSION,
 				'js-num',
 				null
 			),
 			'DEC_NUM' => array(
 				array(
 					'.' => array('DEC_NUM', 0),
-					'!NUMBER' => array(Fshl_Generator::STATE_RETURN, 1)
+					'!NUMBER' => array(Fshl\Generator::STATE_RETURN, 1)
 				),
-				Fshl_Generator::STATE_FLAG_NONE,
+				Fshl\Generator::STATE_FLAG_NONE,
 				'js-num',
 				null
 			),
 			'HEX_NUM' => array(
 				array(
-					'!HEXNUM' => array(Fshl_Generator::STATE_RETURN, 1)
+					'!HEXNUM' => array(Fshl\Generator::STATE_RETURN, 1)
 				),
-				Fshl_Generator::STATE_FLAG_NONE,
+				Fshl\Generator::STATE_FLAG_NONE,
 				'js-num',
 				null
 			),
 			// Quotes BF definition
 			'QUOTE1' => array(
 				array(
-					'"' => array(Fshl_Generator::STATE_RETURN, 0),
+					'"' => array(Fshl\Generator::STATE_RETURN, 0),
 					'<?php' => array('TO_PHP', 0),
 					'<?=' => array('TO_PHP', 0),
 					'<?' => array('TO_PHP', 0)
 				),
-				Fshl_Generator::STATE_FLAG_RECURSION,
+				Fshl\Generator::STATE_FLAG_RECURSION,
 				'js-quote',
 				null
 			),
 			'QUOTE2' => array(
 				array(
-					'\'' => array(Fshl_Generator::STATE_RETURN, 0),
+					'\'' => array(Fshl\Generator::STATE_RETURN, 0),
 					'<?php' => array('TO_PHP', 0),
 					'<?=' => array('TO_PHP', 0),
 					'<?' => array('TO_PHP', 0)
 				),
-				Fshl_Generator::STATE_FLAG_RECURSION,
+				Fshl\Generator::STATE_FLAG_RECURSION,
 				'js-quote',
 				null
 			),
@@ -145,36 +146,36 @@ class Fshl_Lexer_Javascript implements Fshl_Lexer
 			'COMMENT1' => array(
 				array(
 					'_COUNTAB' => array('COMMENT1', 0),
-					'*/' => array(Fshl_Generator::STATE_RETURN, 0),
+					'*/' => array(Fshl\Generator::STATE_RETURN, 0),
 					'<?php' => array('TO_PHP', 0),
 					'<?=' => array('TO_PHP', 0),
 					'<?' => array('TO_PHP', 0)
 				),
-				Fshl_Generator::STATE_FLAG_RECURSION,
+				Fshl\Generator::STATE_FLAG_RECURSION,
 				'js-comment',
 				null
 			),
 			'COMMENT2' => array(
 				array(
-					"\n" => array(Fshl_Generator::STATE_RETURN, 1),
+					"\n" => array(Fshl\Generator::STATE_RETURN, 1),
 					'_COUNTAB' => array('COMMENT2', 0),
 					'<?php' => array('TO_PHP', 0),
 					'<?=' => array('TO_PHP', 0),
 					'<?' => array('TO_PHP', 0)
 				),
-				Fshl_Generator::STATE_FLAG_RECURSION,
+				Fshl\Generator::STATE_FLAG_RECURSION,
 				'js-comment',
 				null
 			),
 			'TO_PHP' => array(
 				null,
-				Fshl_Generator::STATE_FLAG_NEWLEXER,
+				Fshl\Generator::STATE_FLAG_NEWLEXER,
 				'xlang',
 				'PHP'
 			),
-			Fshl_Generator::STATE_QUIT => array(
+			Fshl\Generator::STATE_QUIT => array(
 				null,
-				Fshl_Generator::STATE_FLAG_NEWLEXER,
+				Fshl\Generator::STATE_FLAG_NEWLEXER,
 				'html-tag',
 				null,
 			)
@@ -266,7 +267,7 @@ class Fshl_Lexer_Javascript implements Fshl_Lexer
 				'getElementsByTagName' => 2,
 				'getElementById' => 2,
 			),
-			Fshl_Generator::CASE_SENSITIVE
+			Fshl\Generator::CASE_SENSITIVE
 		);
 	}
 }

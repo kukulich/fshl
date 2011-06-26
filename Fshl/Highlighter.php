@@ -21,16 +21,16 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
+namespace Fshl;
+
 /**
  * Highlighter.
  *
- * @category Fshl
- * @package Fshl
  * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
  * @copyright Copyright (c) 2011 Jaroslav Hanslík
  * @license https://github.com/kukulich/fshl/blob/master/!LICENSE.txt
  */
-class Fshl_Highlighter
+class Highlighter
 {
 	/**
 	 * Version.
@@ -154,7 +154,7 @@ class Fshl_Highlighter
 	/**
 	 * Output mode.
 	 *
-	 * @var Fshl_Output
+	 * @var \Fshl\Output
 	 */
 	private $output = null;
 
@@ -182,7 +182,7 @@ class Fshl_Highlighter
 	/**
 	 * Actual lexer.
 	 *
-	 * @var Fshl_Lexer
+	 * @var \Fshl\Lexer
 	 */
 	private $lexer = null;
 
@@ -209,7 +209,7 @@ class Fshl_Highlighter
 	 */
 	public function __construct($output, $options = self::OPTION_DEFAULT, $tabIndentWidth = 4)
 	{
-		$outputClass = 'Fshl_Output_' . $output;
+		$outputClass = 'Fshl\\Output\\' . $output;
 		$this->output = new $outputClass();
 
 		$this->options = $options;
@@ -302,13 +302,13 @@ class Fshl_Highlighter
 			}
 
 			// Gets new state from transitions table
-			$newState = $this->lexer->trans[$state][$transitionId][Fshl_Generator::STATE_DIAGRAM_INDEX_STATE];
+			$newState = $this->lexer->trans[$state][$transitionId][Generator::STATE_DIAGRAM_INDEX_STATE];
 			if ($newState === $this->lexer->returnState) {
 				// Returns to previous context
 				// Chooses delimiter processing (second value in destination array)
 				//  0 - style from current state will be applied at received delimiter
 				//  1 - delimiter will be returned to input stream
-				if ($this->lexer->trans[$state][$transitionId][Fshl_Generator::STATE_DIAGRAM_INDEX_TYPE] > 0) {
+				if ($this->lexer->trans[$state][$transitionId][Generator::STATE_DIAGRAM_INDEX_TYPE] > 0) {
 					$line = $prevLine;
 					$char = $prevChar;
 					$textPos = $prevTextPos;
@@ -338,7 +338,7 @@ class Fshl_Highlighter
 			//  0 - style from new state will be applied at received delimiter
 			//  1 - style from current state will be applied
 			// -1 - delimiter must be returned to stream (back to previous position)
-			$type = $this->lexer->trans[$state][$transitionId][Fshl_Generator::STATE_DIAGRAM_INDEX_TYPE];
+			$type = $this->lexer->trans[$state][$transitionId][Generator::STATE_DIAGRAM_INDEX_TYPE];
 			if ($type < 0) {
 				// Back to stream
 				$line = $prevLine;
@@ -352,7 +352,7 @@ class Fshl_Highlighter
 			}
 
 			// Switches between lexers (transition to embedded language)
-			if ($this->lexer->flags[$newState] & Fshl_Generator::STATE_FLAG_NEWLEXER) {
+			if ($this->lexer->flags[$newState] & Generator::STATE_FLAG_NEWLEXER) {
 				if ($newState === $this->lexer->quitState) {
 					// Returns to previous lexer
 					if ($item = $this->popState()) {
@@ -377,7 +377,7 @@ class Fshl_Highlighter
 			}
 
 			// If newState is marked with recursion flag (alias call), push current state to context stack
-			if (($this->lexer->flags[$newState] & Fshl_Generator::STATE_FLAG_RECURSION) && $state !== $newState) {
+			if (($this->lexer->flags[$newState] & Generator::STATE_FLAG_RECURSION) && $state !== $newState) {
 				$this->pushState($lexer, $state);
 			}
 
@@ -395,18 +395,18 @@ class Fshl_Highlighter
 	 * Sets actual lexer.
 	 *
 	 * @param string $lexerName
-	 * @return Fshl_Highlighter
+	 * @return \Fshl\Highlighter
 	 */
 	private function setLexer($lexerName)
 	{
 		if (!isset($this->lexers[$lexerName])) {
 			// Load new lexer
-			$lexerClass = 'Fshl_Lexer_Cache_' . $lexerName;
+			$lexerClass = 'Fshl\\Lexer\Cache\\' . $lexerName;
 			if (!class_exists($lexerClass)) {
-				$lexerDefinitionClass = 'Fshl_Lexer_' . $lexerName;
-				if (class_exists($lexerDefinitionClass) && class_exists('Fshl_Generator')) {
+				$lexerDefinitionClass = 'Fshl\\Lexer\\' . $lexerName;
+				if (class_exists($lexerDefinitionClass) && class_exists('Fshl\\Generator')) {
 					// Generate lexer on fly
-					$generator = new Fshl_Generator($lexerName);
+					$generator = new Generator($lexerName);
 					$file = tempnam(sys_get_temp_dir(), 'fshl');
 					file_put_contents($file, $generator->getSource());
 					require_once $file;
@@ -414,7 +414,7 @@ class Fshl_Highlighter
 				} else {
 					// Use minimal lexer with line counter
 					$lexerName = self::LEXER_MINIMAL;
-					$lexerClass = 'Fshl_Lexer_Cache_' . $lexerName;
+					$lexerClass = 'Fshl\\Lexer\\Cache\\' . $lexerName;
 				}
 			}
 			$this->lexers[$lexerName] = new $lexerClass();
@@ -434,11 +434,11 @@ class Fshl_Highlighter
 	 */
 	private function template($part, $state)
 	{
-		if ($this->lexer->flags[$state] & Fshl_Generator::STATE_FLAG_KEYWORD) {
-			$normalized = Fshl_Generator::CASE_SENSITIVE === $this->lexer->keywords[Fshl_Generator::KEYWORD_INDEX_CASE_SENSITIVE] ? $part : strtolower($part);
+		if ($this->lexer->flags[$state] & Generator::STATE_FLAG_KEYWORD) {
+			$normalized = Generator::CASE_SENSITIVE === $this->lexer->keywords[Generator::KEYWORD_INDEX_CASE_SENSITIVE] ? $part : strtolower($part);
 
-			if (isset($this->lexer->keywords[Fshl_Generator::KEYWORD_INDEX_LIST][$normalized])) {
-				return $this->output->keyword($part, $this->lexer->keywords[Fshl_Generator::KEYWORD_INDEX_CLASS] . $this->lexer->keywords[Fshl_Generator::KEYWORD_INDEX_LIST][$normalized]);
+			if (isset($this->lexer->keywords[Generator::KEYWORD_INDEX_LIST][$normalized])) {
+				return $this->output->keyword($part, $this->lexer->keywords[Generator::KEYWORD_INDEX_CLASS] . $this->lexer->keywords[Generator::KEYWORD_INDEX_LIST][$normalized]);
 			}
 		}
 
@@ -462,7 +462,7 @@ class Fshl_Highlighter
 	 *
 	 * @param string $lexer
 	 * @param string $state
-	 * @return Fshl_Highlighter
+	 * @return \Fshl\Highlighter
 	 */
 	private function pushState($lexer, $state)
 	{

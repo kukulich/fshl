@@ -21,16 +21,16 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
+namespace Fshl;
+
 /**
  * Generator of lexer cache files.
  *
- * @category Fshl
- * @package Fshl
  * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
  * @copyright Copyright (c) 2011 Jaroslav Hanslík
  * @license https://github.com/kukulich/fshl/blob/master/!LICENSE.txt
  */
-class Fshl_Generator
+class Generator
 {
 	/**
 	 * Version.
@@ -175,7 +175,7 @@ class Fshl_Generator
 	/**
 	 * Actual lexer.
 	 *
-	 * @var Fshl_Lexer
+	 * @var \Fshl\Lexer
 	 */
 	private $lexer = null;
 
@@ -230,7 +230,7 @@ class Fshl_Generator
 	public function __construct($lexerName)
 	{
 		$this->lexerName = (string) $lexerName;
-		$lexerClass = 'Fshl_Lexer_' . $this->lexerName;
+		$lexerClass = 'Fshl\\Lexer\\' . $this->lexerName;
 		if (!class_exists($lexerClass)) {
 			throw new InvalidArgumentException(sprintf('Missing class for lexer %s', $this->lexerName));
 		}
@@ -313,21 +313,20 @@ class Fshl_Generator
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
+namespace Fshl\\Lexer\\Cache;
+
 /**
  * Optimized and cached {$this->lexerName} lexer.
  *
  * This file is generated. All changes made in this file will be lost.
  *
- * @category Fshl
- * @package Fshl
- * @subpackage Lexer
  * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
  * @copyright Copyright (c) 2011 Jaroslav Hanslík
  * @license https://github.com/kukulich/fshl/blob/master/!LICENSE.txt
- * @see Fshl_Generator
- * @see Fshl_Lexer_{$this->lexerName}
+ * @see \\Fshl\\Generator
+ * @see \\Fshl\\Lexer\\{$this->lexerName}
  */
-class Fshl_Lexer_Cache_{$this->lexerName}
+class {$this->lexerName}
 {
 	/**
 	 * Generator version/lexer version.
@@ -490,7 +489,7 @@ STATE;
 	/**
 	 * Optimizes lexer definition.
 	 *
-	 * @return Fshl_Generator
+	 * @return Generator
 	 * @throws RuntimeException If the lexer definition is wrong.
 	 */
 	private function optimize()

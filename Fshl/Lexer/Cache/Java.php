@@ -21,21 +21,20 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
+namespace Fshl\Lexer\Cache;
+
 /**
  * Optimized and cached Java lexer.
  *
  * This file is generated. All changes made in this file will be lost.
  *
- * @category Fshl
- * @package Fshl
- * @subpackage Lexer
  * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
  * @copyright Copyright (c) 2011 Jaroslav Hanslík
  * @license https://github.com/kukulich/fshl/blob/master/!LICENSE.txt
- * @see Fshl_Generator
- * @see Fshl_Lexer_Java
+ * @see \Fshl\Generator
+ * @see \Fshl\Lexer\Java
  */
-class Fshl_Lexer_Cache_Java
+class Java
 {
 	/**
 	 * Generator version/lexer version.

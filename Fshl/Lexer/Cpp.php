@@ -21,17 +21,18 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
+namespace Fshl\Lexer;
+
+use Fshl;
+
 /**
  * CPP lexer.
  *
- * @category Fshl
- * @package Fshl
- * @subpackage Lexer
  * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
  * @copyright Copyright (c) 2011 Jaroslav Hanslík
  * @license https://github.com/kukulich/fshl/blob/master/!LICENSE.txt
  */
-class Fshl_Lexer_Cpp implements Fshl_Lexer
+class Cpp implements Fshl\Lexer
 {
 	/**
 	 * Returns version.
@@ -74,16 +75,16 @@ class Fshl_Lexer_Cpp implements Fshl_Lexer
 					'\'' => array('QUOTE2', 0),
 					'/*' => array('COMMENT1', 0)
 				),
-				Fshl_Generator::STATE_FLAG_NONE,
+				Fshl\Generator::STATE_FLAG_NONE,
 				null,
 				null
 			),
 			// Keyword
 			'KEYWORD' => array(
 				array(
-					'!SAFECHAR' => array(Fshl_Generator::STATE_RETURN, 1)
+					'!SAFECHAR' => array(Fshl\Generator::STATE_RETURN, 1)
 				),
-				Fshl_Generator::STATE_FLAG_KEYWORD | Fshl_Generator::STATE_FLAG_RECURSION,
+				Fshl\Generator::STATE_FLAG_KEYWORD | Fshl\Generator::STATE_FLAG_RECURSION,
 				null,
 				null
 			),
@@ -93,9 +94,9 @@ class Fshl_Lexer_Cpp implements Fshl_Lexer
 					'NUMBER' => array('DEC_NUM', 0),
 					'x' => array('HEX_NUM', 0),
 					'.' => array('FLOAT_NUM', 0),
-					'!NUMBER' => array(Fshl_Generator::STATE_RETURN, 1)
+					'!NUMBER' => array(Fshl\Generator::STATE_RETURN, 1)
 				),
-				Fshl_Generator::STATE_FLAG_RECURSION,
+				Fshl\Generator::STATE_FLAG_RECURSION,
 				'cpp-num',
 				null
 			),
@@ -103,27 +104,27 @@ class Fshl_Lexer_Cpp implements Fshl_Lexer
 				array(
 					'.' => array('DEC_NUM', 0),
 					'f' => array('DEC_NUM', 0),
-					'!NUMBER' => array(Fshl_Generator::STATE_RETURN, 1)
+					'!NUMBER' => array(Fshl\Generator::STATE_RETURN, 1)
 				),
-				Fshl_Generator::STATE_FLAG_NONE,
+				Fshl\Generator::STATE_FLAG_NONE,
 				'cpp-num',
 				null
 			),
 			'FLOAT_NUM' => array(
 				array(
 					'f' => array('FLOAT_NUM', 0),
-					'!NUMBER' => array(Fshl_Generator::STATE_RETURN, 1)
+					'!NUMBER' => array(Fshl\Generator::STATE_RETURN, 1)
 				),
-				Fshl_Generator::STATE_FLAG_RECURSION,
+				Fshl\Generator::STATE_FLAG_RECURSION,
 				'cpp-num',
 				null
 			),
 			'HEX_NUM' => array(
 				array(
 					'L' => array('HEX_NUM', 0),
-					'!HEXNUM' => array(Fshl_Generator::STATE_RETURN, 1)
+					'!HEXNUM' => array(Fshl\Generator::STATE_RETURN, 1)
 				),
-				Fshl_Generator::STATE_FLAG_NONE,
+				Fshl\Generator::STATE_FLAG_NONE,
 				'cpp-num',
 				null
 			),
@@ -133,9 +134,9 @@ class Fshl_Lexer_Cpp implements Fshl_Lexer
 					"\\\n" => array('PREPROC', 0), // Backslash in preprocessor
 					"\t" => array('PREPROC', 0),
 					"\\\xd\xa" => array('PREPROC', 0), // Backslash in preprocessor
-					"\n" => array(Fshl_Generator::STATE_RETURN, 1)
+					"\n" => array(Fshl\Generator::STATE_RETURN, 1)
 				),
-				Fshl_Generator::STATE_FLAG_RECURSION,
+				Fshl\Generator::STATE_FLAG_RECURSION,
 				'cpp-preproc',
 				null
 			),
@@ -145,19 +146,19 @@ class Fshl_Lexer_Cpp implements Fshl_Lexer
 					'\\\\' => array('QUOTE1', 0),
 					'\\"' => array('QUOTE1', 0),
 					'_COUNTAB' => array('QUOTE1', 0),
-					'"' => array(Fshl_Generator::STATE_RETURN, 0)
+					'"' => array(Fshl\Generator::STATE_RETURN, 0)
 				),
-				Fshl_Generator::STATE_FLAG_RECURSION,
+				Fshl\Generator::STATE_FLAG_RECURSION,
 				'cpp-quote',
 				null
 			),
 			'QUOTE2' => array(
 				array(
 					'\\\'' => array('QUOTE2', 0),
-					'\'' => array(Fshl_Generator::STATE_RETURN, 0),
+					'\'' => array(Fshl\Generator::STATE_RETURN, 0),
 					'_COUNTAB' => array('QUOTE2', 0)
 				),
-				Fshl_Generator::STATE_FLAG_RECURSION,
+				Fshl\Generator::STATE_FLAG_RECURSION,
 				'cpp-quote',
 				null
 			),
@@ -165,18 +166,18 @@ class Fshl_Lexer_Cpp implements Fshl_Lexer
 			'COMMENT1' => array(
 				array(
 					'_COUNTAB' => array('COMMENT1', 0),
-					'*/' => array(Fshl_Generator::STATE_RETURN, 0)
+					'*/' => array(Fshl\Generator::STATE_RETURN, 0)
 				),
-				Fshl_Generator::STATE_FLAG_RECURSION,
+				Fshl\Generator::STATE_FLAG_RECURSION,
 				'cpp-comment',
 				null
 			),
 			'COMMENT2' => array(
 				array(
-					"\n" => array(Fshl_Generator::STATE_RETURN, 1),
+					"\n" => array(Fshl\Generator::STATE_RETURN, 1),
 					"\t" => array('COMMENT2', 0)
 				),
-				Fshl_Generator::STATE_FLAG_RECURSION,
+				Fshl\Generator::STATE_FLAG_RECURSION,
 				'cpp-comment',
 				null
 			)
@@ -326,7 +327,7 @@ class Fshl_Lexer_Cpp implements Fshl_Lexer
 				'__virtual_inheritance' => 1,
 				'__w64' => 1
 			),
-			Fshl_Generator::CASE_SENSITIVE
+			Fshl\Generator::CASE_SENSITIVE
 		);
 	}
 }

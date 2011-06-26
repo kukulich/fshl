@@ -117,20 +117,6 @@ class Highlighter
 	const LEXER_TEXY = 'Texy';
 
 	/**
-	 * HTML output.
-	 *
-	 * @var string
-	 */
-	const OUTPUT_HTML = 'Html';
-
-	/**
-	 * HTML output with links to manul.
-	 *
-	 * @var string
-	 */
-	const OUTPUT_HTML_MANUAL = 'HtmlManual';
-
-	/**
 	 * No options.
 	 *
 	 * @var integer
@@ -203,14 +189,13 @@ class Highlighter
 	/**
 	 * Prepares highlighter.
 	 *
-	 * @param string $output
+	 * @param \Fshl\Output $output
 	 * @param integer $options
 	 * @param integer $tabIndentWidth
 	 */
-	public function __construct($output, $options = self::OPTION_DEFAULT, $tabIndentWidth = 4)
+	public function __construct(Output $output, $options = self::OPTION_DEFAULT, $tabIndentWidth = 4)
 	{
-		$outputClass = 'Fshl\\Output\\' . $output;
-		$this->output = new $outputClass();
+		$this->output = new $output();
 
 		$this->options = $options;
 

@@ -115,47 +115,51 @@ class Fshl_Lexer_Cache_Php
 				), 2 => array(
 					0 => 2, 1 => -1
 				), 3 => array(
-					0 => 8, 1 => 0
+					0 => 9, 1 => 0
 				), 4 => array(
 					0 => 7, 1 => 0
 				), 5 => array(
 					0 => 4, 1 => 0
 				), 6 => array(
-					0 => 9, 1 => 0
+					0 => 11, 1 => 0
 				), 7 => array(
-					0 => 13, 1 => 0
+					0 => 15, 1 => 0
 				), 8 => array(
 					0 => 3, 1 => 0
 				), 9 => array(
 					0 => 1, 1 => -1
 				), 10 => array(
 					0 => 4, 1 => 0
+				), 11 => array(
+					0 => 10, 1 => 0
+				), 12 => array(
+					0 => 8, 1 => 0
 				)
 			), 1 => array(
 				0 => array(
-					0 => 12, 1 => 0
+					0 => 14, 1 => 0
 				), 1 => array(
-					0 => 12, 1 => 0
+					0 => 14, 1 => 0
 				), 2 => array(
-					0 => 12, 1 => 0
+					0 => 14, 1 => 0
 				)
 			), 2 => array(
 				0 => array(
-					0 => 12, 1 => 1
+					0 => 14, 1 => 1
 				)
 			), 3 => array(
 				0 => array(
 					0 => 3, 1 => 0
 				), 1 => array(
-					0 => 12, 1 => 0
+					0 => 14, 1 => 0
 				)
 			), 4 => array(
 				0 => array(
-					0 => 12, 1 => 0
+					0 => 14, 1 => 0
 				), 1 => array(
 					0 => 4, 1 => 0
 				), 2 => array(
-					0 => 12, 1 => -1
+					0 => 14, 1 => -1
 				)
 			), 5 => array(
 				0 => array(
@@ -165,17 +169,17 @@ class Fshl_Lexer_Cache_Php
 				), 2 => array(
 					0 => 5, 1 => 0
 				), 3 => array(
-					0 => 12, 1 => 1
+					0 => 14, 1 => 1
 				)
 			), 6 => array(
 				0 => array(
-					0 => 12, 1 => 0
+					0 => 14, 1 => 0
 				), 1 => array(
-					0 => 12, 1 => 0
+					0 => 14, 1 => 0
 				)
 			), 7 => array(
 				0 => array(
-					0 => 12, 1 => 0
+					0 => 14, 1 => 0
 				), 1 => array(
 					0 => 7, 1 => 0
 				), 2 => array(
@@ -189,43 +193,61 @@ class Fshl_Lexer_Cache_Php
 				)
 			), 8 => array(
 				0 => array(
-					0 => 12, 1 => 0
+					0 => 14, 1 => 0
 				), 1 => array(
 					0 => 8, 1 => 0
 				), 2 => array(
-					0 => 8, 1 => 0
+					0 => 5, 1 => 0
 				), 3 => array(
+					0 => 6, 1 => 0
+				), 4 => array(
 					0 => 8, 1 => 0
 				)
 			), 9 => array(
 				0 => array(
-					0 => 11, 1 => 0
+					0 => 14, 1 => 0
 				), 1 => array(
-					0 => 12, 1 => 1
+					0 => 9, 1 => 0
 				), 2 => array(
-					0 => 10, 1 => 0
+					0 => 9, 1 => 0
+				), 3 => array(
+					0 => 9, 1 => 0
 				)
 			), 10 => array(
 				0 => array(
-					0 => 12, 1 => 1
+					0 => 14, 1 => 0
+				), 1 => array(
+					0 => 10, 1 => 0
 				)
 			), 11 => array(
 				0 => array(
-					0 => 12, 1 => 1
+					0 => 13, 1 => 0
+				), 1 => array(
+					0 => 14, 1 => 1
+				), 2 => array(
+					0 => 12, 1 => 0
 				)
-			), 13 => NULL
+			), 12 => array(
+				0 => array(
+					0 => 14, 1 => 1
+				)
+			), 13 => array(
+				0 => array(
+					0 => 14, 1 => 1
+				)
+			), 15 => NULL
 		);
 		$this->initialState = 0;
-		$this->returnState = 12;
-		$this->quitState = 13;
+		$this->returnState = 14;
+		$this->quitState = 15;
 		$this->flags = array(
-			0 => 0, 1 => 4, 2 => 5, 3 => 4, 4 => 4, 5 => 4, 6 => 4, 7 => 4, 8 => 4, 9 => 4, 10 => 0, 11 => 0, 13 => 8
+			0 => 0, 1 => 4, 2 => 5, 3 => 4, 4 => 4, 5 => 4, 6 => 4, 7 => 4, 8 => 0, 9 => 4, 10 => 0, 11 => 4, 12 => 0, 13 => 0, 15 => 8
 		);
 		$this->data = array(
-			0 => NULL, 1 => NULL, 2 => NULL, 3 => NULL, 4 => NULL, 5 => NULL, 6 => NULL, 7 => NULL, 8 => NULL, 9 => NULL, 10 => NULL, 11 => NULL, 13 => ''
+			0 => NULL, 1 => NULL, 2 => NULL, 3 => NULL, 4 => NULL, 5 => NULL, 6 => NULL, 7 => NULL, 8 => NULL, 9 => NULL, 10 => NULL, 11 => NULL, 12 => NULL, 13 => NULL, 15 => ''
 		);
 		$this->classes = array(
-			0 => NULL, 1 => 'xlang', 2 => NULL, 3 => 'php-comment', 4 => 'php-comment', 5 => 'php-var', 6 => 'php-var', 7 => 'php-quote', 8 => 'php-quote', 9 => 'php-num', 10 => 'php-num', 11 => 'php-num', 13 => 'xlang'
+			0 => NULL, 1 => 'xlang', 2 => NULL, 3 => 'php-comment', 4 => 'php-comment', 5 => 'php-var', 6 => 'php-var', 7 => 'php-quote', 8 => 'php-quote', 9 => 'php-quote', 10 => 'php-quote', 11 => 'php-num', 12 => 'php-num', 13 => 'php-num', 15 => 'xlang'
 		);
 		$this->keywords = array(
 			0 => 'php-keyword', 1 => array(
@@ -408,6 +430,12 @@ class Fshl_Lexer_Cache_Php
 			}
 			if ('#' === $letter) {
 				return array(10, '#', $buffer);
+			}
+			if (preg_match('~^<<<\'\\w+\'\\n~', substr($text, $textPos), $matches)) {
+				return array(11, $matches[0], $buffer);
+			}
+			if (preg_match('~^<<<(?:\\w+|"\\w+")\\n~', substr($text, $textPos), $matches)) {
+				return array(12, $matches[0], $buffer);
 			}
 
 			$buffer .= $letter;
@@ -622,7 +650,7 @@ class Fshl_Lexer_Cache_Php
 	}
 
 	/**
-	 * Parses state QUOTE1.
+	 * Parses state HEREDOC.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -630,6 +658,41 @@ class Fshl_Lexer_Cache_Php
 	 * @return array
 	 */
 	public function getPart8(&$text, $textLength, $textPos)
+	{
+		$buffer = false;
+		while ($textPos < $textLength) {
+			$letter = $text[$textPos];
+			if (preg_match('~^\\n\\w+;\\n~', substr($text, $textPos), $matches)) {
+				return array(0, $matches[0], $buffer);
+			}
+			if ($textPos === strpos($text, '\\$', $textPos)) {
+				return array(1, '\\$', $buffer);
+			}
+			if ('$' === $letter) {
+				return array(2, '$', $buffer);
+			}
+			if ($textPos === strpos($text, '{$', $textPos)) {
+				return array(3, '{$', $buffer);
+			}
+			if ("\t" === $letter || "\n" === $letter) {
+				return array(4, $letter, $buffer);
+			}
+
+			$buffer .= $letter;
+			$textPos++;
+		}
+		return array(-1, -1, $buffer);
+	}
+
+	/**
+	 * Parses state QUOTE1.
+	 *
+	 * @param string $text
+	 * @param string $textLength
+	 * @param string $textPos
+	 * @return array
+	 */
+	public function getPart9(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -654,6 +717,32 @@ class Fshl_Lexer_Cache_Php
 	}
 
 	/**
+	 * Parses state NOWDOC.
+	 *
+	 * @param string $text
+	 * @param string $textLength
+	 * @param string $textPos
+	 * @return array
+	 */
+	public function getPart10(&$text, $textLength, $textPos)
+	{
+		$buffer = false;
+		while ($textPos < $textLength) {
+			$letter = $text[$textPos];
+			if (preg_match('~^\\n\\w+;\\n~', substr($text, $textPos), $matches)) {
+				return array(0, $matches[0], $buffer);
+			}
+			if ("\t" === $letter || "\n" === $letter) {
+				return array(1, $letter, $buffer);
+			}
+
+			$buffer .= $letter;
+			$textPos++;
+		}
+		return array(-1, -1, $buffer);
+	}
+
+	/**
 	 * Parses state NUM.
 	 *
 	 * @param string $text
@@ -661,7 +750,7 @@ class Fshl_Lexer_Cache_Php
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart9(&$text, $textLength, $textPos)
+	public function getPart11(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -690,7 +779,7 @@ class Fshl_Lexer_Cache_Php
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart10(&$text, $textLength, $textPos)
+	public function getPart12(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -713,7 +802,7 @@ class Fshl_Lexer_Cache_Php
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function getPart11(&$text, $textLength, $textPos)
+	public function getPart13(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {

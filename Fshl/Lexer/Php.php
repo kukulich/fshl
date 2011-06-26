@@ -73,7 +73,9 @@ class Fshl_Lexer_Php implements Fshl_Lexer
 					'?>' => array(Fshl_Generator::STATE_QUIT, 0),
 					'/*' => array('COMMENT', 0) ,
 					'<?' => array('DUMMY_PHP', -1),
-					'#' => array('COMMENT1', 0)
+					'#' => array('COMMENT1', 0),
+					'NOWDOC' => array('NOWDOC', 0),
+					'HEREDOC' => array('HEREDOC', 0)
 				),
 				Fshl_Generator::STATE_FLAG_NONE,
 				null,
@@ -149,6 +151,18 @@ class Fshl_Lexer_Php implements Fshl_Lexer
 				'php-quote',
 				null
 			),
+			'HEREDOC' => array(
+				array(
+					'HEREDOC_END' => array(Fshl_Generator::STATE_RETURN, 0),
+					'\\$' => array('HEREDOC', 0),
+					'$' => array('VAR', 0),
+					'{$' => array('VAR_STR', 0),
+					'_COUNTAB' => array('HEREDOC', 0)
+				),
+				Fshl_Generator::STATE_FLAG_NONE,
+				'php-quote',
+				null
+			),
 			'QUOTE1' => array(
 				array(
 					'\'' => array(Fshl_Generator::STATE_RETURN, 0),
@@ -157,6 +171,15 @@ class Fshl_Lexer_Php implements Fshl_Lexer
 					'_COUNTAB' => array('QUOTE1', 0)
 				),
 				Fshl_Generator::STATE_FLAG_RECURSION,
+				'php-quote',
+				null
+			),
+			'NOWDOC' => array(
+				array(
+					'NOWDOC_END' => array(Fshl_Generator::STATE_RETURN, 0),
+					'_COUNTAB' => array('NOWDOC', 0)
+				),
+				Fshl_Generator::STATE_FLAG_NONE,
 				'php-quote',
 				null
 			),
@@ -202,7 +225,12 @@ class Fshl_Lexer_Php implements Fshl_Lexer
 	 */
 	public function getDelimiters()
 	{
-		return array();
+		return array(
+			'NOWDOC' => 'preg_match(\'~^<<<\\\'\\\\w+\\\'\\\\n~\', substr($text, $textPos), $matches)',
+			'NOWDOC_END' => 'preg_match(\'~^\\\\n\\\\w+;\\\\n~\', substr($text, $textPos), $matches)',
+			'HEREDOC' => 'preg_match(\'~^<<<(?:\\\\w+|"\\\\w+")\\\\n~\', substr($text, $textPos), $matches)',
+			'HEREDOC_END' => 'preg_match(\'~^\\\\n\\\\w+;\\\\n~\', substr($text, $textPos), $matches)'
+		);
 	}
 
 	/**

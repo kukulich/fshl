@@ -209,7 +209,7 @@ class Javascript
 			0 => 0, 1 => 5, 2 => 4, 3 => 0, 4 => 0, 5 => 4, 6 => 4, 7 => 4, 8 => 4, 9 => 8, 11 => 8
 		);
 		$this->data = array(
-			0 => NULL, 1 => NULL, 2 => NULL, 3 => NULL, 4 => NULL, 5 => NULL, 6 => NULL, 7 => NULL, 8 => NULL, 9 => 'PHP', 11 => NULL
+			0 => NULL, 1 => NULL, 2 => NULL, 3 => NULL, 4 => NULL, 5 => NULL, 6 => NULL, 7 => NULL, 8 => NULL, 9 => 'Php', 11 => NULL
 		);
 		$this->classes = array(
 			0 => 'js-out', 1 => 'js-out', 2 => 'js-num', 3 => 'js-num', 4 => 'js-num', 5 => 'js-quote', 6 => 'js-quote', 7 => 'js-comment', 8 => 'js-comment', 9 => 'xlang', 11 => 'html-tag'

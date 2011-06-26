@@ -136,7 +136,7 @@ class Html implements Fshl\Lexer
 				),
 				Fshl\Generator::STATE_FLAG_NEWLEXER,
 				'html-tag',
-				'CSS'
+				Fshl\Highlighter::LEXER_CSS
 			),
 			'JAVASCRIPT' => array(
 				array(
@@ -158,7 +158,7 @@ class Html implements Fshl\Lexer
 				),
 				Fshl\Generator::STATE_FLAG_NEWLEXER,
 				'html-tag',
-				'JS'
+				Fshl\Highlighter::LEXER_JAVASCRIPT
 			),
 			'QUOTE1' => array(
 				array(
@@ -200,7 +200,7 @@ class Html implements Fshl\Lexer
 				null,
 				Fshl\Generator::STATE_FLAG_NEWLEXER,
 				'xlang',
-				'PHP'
+				Fshl\Highlighter::LEXER_PHP
 			)
 		);
 	}

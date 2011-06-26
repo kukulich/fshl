@@ -144,7 +144,7 @@ class Css implements Fshl\Lexer
 				null,
 				Fshl\Generator::STATE_FLAG_NEWLEXER,
 				'xlang',
-				'PHP'
+				Fshl\Highlighter::LEXER_PHP
 			),
 			Fshl\Generator::STATE_QUIT => array(
 				null,

@@ -187,7 +187,7 @@ class Css
 			0 => 0, 1 => 4, 2 => 4, 3 => 4, 4 => 4, 5 => 4, 6 => 4, 7 => 8, 9 => 8
 		);
 		$this->data = array(
-			0 => NULL, 1 => NULL, 2 => NULL, 3 => NULL, 4 => NULL, 5 => NULL, 6 => NULL, 7 => 'PHP', 9 => NULL
+			0 => NULL, 1 => NULL, 2 => NULL, 3 => NULL, 4 => NULL, 5 => NULL, 6 => NULL, 7 => 'Php', 9 => NULL
 		);
 		$this->classes = array(
 			0 => NULL, 1 => 'css-class', 2 => '', 3 => 'css-property', 4 => 'css-value', 5 => 'css-color', 6 => 'css-comment', 7 => 'xlang', 9 => 'html-tag'

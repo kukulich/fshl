@@ -251,7 +251,7 @@ class Html
 			0 => 0, 1 => 0, 2 => 0, 3 => 4, 4 => 4, 5 => 8, 6 => 4, 7 => 8, 8 => 4, 9 => 4, 10 => 0, 11 => 8
 		);
 		$this->data = array(
-			0 => NULL, 1 => NULL, 2 => NULL, 3 => NULL, 4 => NULL, 5 => 'CSS', 6 => NULL, 7 => 'JS', 8 => NULL, 9 => NULL, 10 => NULL, 11 => 'PHP'
+			0 => NULL, 1 => NULL, 2 => NULL, 3 => NULL, 4 => NULL, 5 => 'Css', 6 => NULL, 7 => 'Javascript', 8 => NULL, 9 => NULL, 10 => NULL, 11 => 'Php'
 		);
 		$this->classes = array(
 			0 => NULL, 1 => 'html-entity', 2 => 'html-tag', 3 => 'html-tagin', 4 => 'html-tagin', 5 => 'html-tag', 6 => 'html-tagin', 7 => 'html-tag', 8 => 'html-quote', 9 => 'html-quote', 10 => 'html-comment', 11 => 'xlang'

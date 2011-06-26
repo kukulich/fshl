@@ -104,7 +104,7 @@ class Css implements Fshl\Lexer
 					';' => array('DEF', 1),
 					'}' => array(Fshl\Generator::STATE_RETURN, 0),
 					'/*' => array('COMMENT', 0),
-					'!SPACE' => array('PROPERTY', 0)
+					'PROPERTY' => array('PROPERTY', 0)
 				),
 				Fshl\Generator::STATE_FLAG_RECURSION,
 				'',
@@ -172,7 +172,9 @@ class Css implements Fshl\Lexer
 	 */
 	public function getDelimiters()
 	{
-		return array();
+		return array(
+			'PROPERTY' => 'preg_match(\'~^[-a-z]+~i\', $part, $matches)'
+		);
 	}
 
 	/**

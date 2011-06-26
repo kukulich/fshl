@@ -302,7 +302,7 @@ class Css
 			if (0 === strpos($part, '/*')) {
 				return array(4, '/*', $buffer);
 			}
-			if (preg_match('~^\\S+~', $part, $matches)) {
+			if (preg_match('~^[-a-z]+~i', $part, $matches)) {
 				return array(5, $matches[0], $buffer);
 			}
 

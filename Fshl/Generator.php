@@ -28,7 +28,7 @@ namespace Fshl;
  *
  * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
  * @copyright Copyright (c) 2011 Jaroslav Hanslík
- * @license https://github.com/kukulich/fshl/blob/master/!LICENSE.txt
+ * @license https://github.com/kukulich/fshl/blob/master/LICENSE
  */
 class Generator
 {
@@ -324,7 +324,7 @@ namespace Fshl\\Lexer\\Cache;
  *
  * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
  * @copyright Copyright (c) 2011 Jaroslav Hanslík
- * @license https://github.com/kukulich/fshl/blob/master/!LICENSE.txt
+ * @license https://github.com/kukulich/fshl/blob/master/LICENSE
  * @see \\Fshl\\Generator
  * @see \\Fshl\\Lexer\\{$this->lexerName}
  */

@@ -42,7 +42,7 @@ class Sql implements Fshl\Lexer
 	 */
 	public function getVersion()
 	{
-		return '1.0';
+		return '2.0';
 	}
 
 	/**

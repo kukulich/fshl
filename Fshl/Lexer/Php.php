@@ -41,7 +41,7 @@ class Php implements Fshl\Lexer
 	 */
 	public function getVersion()
 	{
-		return '1.29';
+		return '2.0';
 	}
 
 	/**

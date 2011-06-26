@@ -41,7 +41,7 @@ class Java implements Fshl\Lexer
 	 */
 	public function getVersion()
 	{
-		return '1.2';
+		return '2.0';
 	}
 
 	/**

@@ -42,7 +42,7 @@ class Python implements Fshl\Lexer
 	 */
 	public function getVersion()
 	{
-		return '1.1';
+		return '2.0';
 	}
 
 	/**

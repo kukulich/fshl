@@ -41,7 +41,7 @@ class HtmlOnly implements Fshl\Lexer
 	 */
 	public function getVersion()
 	{
-		return '1.10';
+		return '2.0';
 	}
 
 	/**

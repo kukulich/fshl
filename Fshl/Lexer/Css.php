@@ -41,7 +41,7 @@ class Css implements Fshl\Lexer
 	 */
 	public function getVersion()
 	{
-		return '1.12';
+		return '2.0';
 	}
 
 	/**

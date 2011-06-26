@@ -104,7 +104,7 @@ class Python
 	 */
 	public function __construct()
 	{
-		$this->version = '0.4.11/1.1';
+		$this->version = '2.0/2.0';
 		$this->trans = array(
 			0 => array(
 				0 => array(

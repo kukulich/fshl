@@ -37,7 +37,7 @@ class Generator
 	 *
 	 * @var string
 	 */
-	const VERSION = '0.4.11';
+	const VERSION = '2.0';
 
 	/**
 	 * State to return back.

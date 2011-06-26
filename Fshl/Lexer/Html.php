@@ -41,7 +41,7 @@ class Html implements Fshl\Lexer
 	 */
 	public function getVersion()
 	{
-		return '1.11';
+		return '2.0';
 	}
 
 	/**

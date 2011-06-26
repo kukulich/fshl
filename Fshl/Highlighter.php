@@ -37,7 +37,7 @@ class Highlighter
 	 *
 	 * @var string
 	 */
-	const VERSION = '0.4.20';
+	const VERSION = '2.0';
 
 	/**
 	 * CPP lexer.

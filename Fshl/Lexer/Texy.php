@@ -41,7 +41,7 @@ class Texy implements Fshl\Lexer
 	 */
 	public function getVersion()
 	{
-		return '0.1';
+		return '2.0';
 	}
 
 	/**

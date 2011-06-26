@@ -298,10 +298,8 @@ class Texy
 			if (0 === strpos($part, '\\---')) {
 				return array(1, '\\---', $buffer);
 			}
-			if ('
-' === $letter) {
-				return array(2, '
-', $buffer);
+			if ("\n" === $letter) {
+				return array(2, "\n", $buffer);
 			}
 
 			$buffer .= $letter;
@@ -324,10 +322,8 @@ class Texy
 		while ($textPos < $textLength) {
 			$part = substr($text, $textPos, 10);
 			$letter = $part[0];
-			if ('
-' === $letter) {
-				return array(0, '
-', $buffer);
+			if ("\n" === $letter) {
+				return array(0, "\n", $buffer);
 			}
 			if (preg_match('~^\\S+~', $part, $matches)) {
 				return array(1, $matches[0], $buffer);
@@ -389,10 +385,8 @@ class Texy
 		while ($textPos < $textLength) {
 			$part = substr($text, $textPos, 10);
 			$letter = $part[0];
-			if ('
-' === $letter) {
-				return array(0, '
-', $buffer);
+			if ("\n" === $letter) {
+				return array(0, "\n", $buffer);
 			}
 			if (0 === strpos($part, '##')) {
 				return array(1, '##', $buffer);
@@ -448,10 +442,8 @@ class Texy
 			if ('*' === $letter) {
 				return array(3, '*', $buffer);
 			}
-			if ('
-' === $letter) {
-				return array(4, '
-', $buffer);
+			if ("\n" === $letter) {
+				return array(4, "\n", $buffer);
 			}
 			if (true) {
 				return array(5, $letter, $buffer);
@@ -489,10 +481,8 @@ class Texy
 			if ('*' === $letter) {
 				return array(3, '*', $buffer);
 			}
-			if ('
-' === $letter) {
-				return array(4, '
-', $buffer);
+			if ("\n" === $letter) {
+				return array(4, "\n", $buffer);
 			}
 
 			$buffer .= $letter;
@@ -515,10 +505,8 @@ class Texy
 		while ($textPos < $textLength) {
 			$part = substr($text, $textPos, 10);
 			$letter = $part[0];
-			if ('
-' === $letter) {
-				return array(0, '
-', $buffer);
+			if ("\n" === $letter) {
+				return array(0, "\n", $buffer);
 			}
 
 			$buffer .= $letter;
@@ -541,10 +529,8 @@ class Texy
 		while ($textPos < $textLength) {
 			$part = substr($text, $textPos, 10);
 			$letter = $part[0];
-			if ('
-' === $letter) {
-				return array(0, '
-', $buffer);
+			if ("\n" === $letter) {
+				return array(0, "\n", $buffer);
 			}
 
 			$buffer .= $letter;
@@ -651,10 +637,8 @@ class Texy
 		while ($textPos < $textLength) {
 			$part = substr($text, $textPos, 10);
 			$letter = $part[0];
-			if ('
-' === $letter) {
-				return array(0, '
-', $buffer);
+			if ("\n" === $letter) {
+				return array(0, "\n", $buffer);
 			}
 
 			$buffer .= $letter;
@@ -677,10 +661,8 @@ class Texy
 		while ($textPos < $textLength) {
 			$part = substr($text, $textPos, 10);
 			$letter = $part[0];
-			if ('
-' === $letter) {
-				return array(0, '
-', $buffer);
+			if ("\n" === $letter) {
+				return array(0, "\n", $buffer);
 			}
 
 			$buffer .= $letter;
@@ -754,10 +736,8 @@ class Texy
 		while ($textPos < $textLength) {
 			$part = substr($text, $textPos, 10);
 			$letter = $part[0];
-			if ('
-' === $letter) {
-				return array(0, '
-', $buffer);
+			if ("\n" === $letter) {
+				return array(0, "\n", $buffer);
 			}
 
 			$buffer .= $letter;
@@ -780,10 +760,8 @@ class Texy
 		while ($textPos < $textLength) {
 			$part = substr($text, $textPos, 10);
 			$letter = $part[0];
-			if ('
-' === $letter) {
-				return array(0, '
-', $buffer);
+			if ("\n" === $letter) {
+				return array(0, "\n", $buffer);
 			}
 
 			$buffer .= $letter;
@@ -857,10 +835,8 @@ class Texy
 		while ($textPos < $textLength) {
 			$part = substr($text, $textPos, 10);
 			$letter = $part[0];
-			if ('
-' === $letter) {
-				return array(0, '
-', $buffer);
+			if ("\n" === $letter) {
+				return array(0, "\n", $buffer);
 			}
 
 			$buffer .= $letter;
@@ -883,10 +859,8 @@ class Texy
 		while ($textPos < $textLength) {
 			$part = substr($text, $textPos, 10);
 			$letter = $part[0];
-			if ('
-' === $letter) {
-				return array(0, '
-', $buffer);
+			if ("\n" === $letter) {
+				return array(0, "\n", $buffer);
 			}
 
 			$buffer .= $letter;

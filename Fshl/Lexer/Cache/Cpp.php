@@ -429,23 +429,17 @@ class Cpp
 		while ($textPos < $textLength) {
 			$part = substr($text, $textPos, 10);
 			$letter = $part[0];
-			if (0 === strpos($part, '\\
-')) {
-				return array(0, '\\
-', $buffer);
+			if (0 === strpos($part, "\\\n")) {
+				return array(0, "\\\n", $buffer);
 			}
-			if ('	' === $letter) {
-				return array(1, '	', $buffer);
+			if ("\t" === $letter) {
+				return array(1, "\t", $buffer);
 			}
-			if (0 === strpos($part, '\\
-')) {
-				return array(2, '\\
-', $buffer);
+			if (0 === strpos($part, "\\\r\n")) {
+				return array(2, "\\\r\n", $buffer);
 			}
-			if ('
-' === $letter) {
-				return array(3, '
-', $buffer);
+			if ("\n" === $letter) {
+				return array(3, "\n", $buffer);
 			}
 
 			$buffer .= $letter;
@@ -558,13 +552,11 @@ class Cpp
 		while ($textPos < $textLength) {
 			$part = substr($text, $textPos, 10);
 			$letter = $part[0];
-			if ('
-' === $letter) {
-				return array(0, '
-', $buffer);
+			if ("\n" === $letter) {
+				return array(0, "\n", $buffer);
 			}
-			if ('	' === $letter) {
-				return array(1, '	', $buffer);
+			if ("\t" === $letter) {
+				return array(1, "\t", $buffer);
 			}
 
 			$buffer .= $letter;

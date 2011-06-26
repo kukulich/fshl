@@ -577,7 +577,12 @@ STATE;
 				$total++;
 			}
 			return "array(\n\t\t\t" . str_repeat("\t", $level) . $tmp . "\n" . str_repeat("\t", $level) . "\t\t)";
+		} elseif (is_string($value) && preg_match('~[\\t\\n\\r]~', $value)) {
+			$export = var_export($value, true);
+			$export = str_replace(array("\t", "\n", "\r"), array('\t', '\n', '\r'), $export);
+			return '"' . substr($export, 1, -1) . '"';
+		} else {
+			return var_export($value, true);
 		}
-		return var_export($value, true);
 	}
 }

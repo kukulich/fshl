@@ -539,10 +539,8 @@ class Php
 		while ($textPos < $textLength) {
 			$part = substr($text, $textPos, 10);
 			$letter = $part[0];
-			if ('
-' === $letter) {
-				return array(0, '
-', $buffer);
+			if ("\n" === $letter) {
+				return array(0, "\n", $buffer);
 			}
 			if ("\t" === $letter || "\n" === $letter) {
 				return array(1, $letter, $buffer);

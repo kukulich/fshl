@@ -292,25 +292,24 @@ class Fshl_Lexer_Cache_Texy
 	public function getPart0(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
-		$start = $textPos;
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if ($textPos === strpos($text, '/---', $textPos)) {
-				return array(0, '/---', 4, $buffer, $textPos - $start);
+				return array(0, '/---', $buffer);
 			}
 			if ($textPos === strpos($text, '\\---', $textPos)) {
-				return array(1, '\\---', 4, $buffer, $textPos - $start);
+				return array(1, '\\---', $buffer);
 			}
 			if ('
 ' === $letter) {
 				return array(2, '
-', 1, $buffer, $textPos - $start);
+', $buffer);
 			}
 
 			$buffer .= $letter;
 			$textPos++;
 		}
-		return array(-1, -1, -1, $buffer, -1);
+		return array(-1, -1, $buffer);
 	}
 
 	/**
@@ -324,22 +323,21 @@ class Fshl_Lexer_Cache_Texy
 	public function getPart1(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
-		$start = $textPos;
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if ('
 ' === $letter) {
 				return array(0, '
-', 1, $buffer, $textPos - $start);
+', $buffer);
 			}
-			if (!preg_match('~^\\s$~', $letter)) {
-				return array(1, $letter, 1, $buffer, $textPos - $start);
+			if (preg_match('~^\\S$~', $letter)) {
+				return array(1, $letter, $buffer);
 			}
 
 			$buffer .= $letter;
 			$textPos++;
 		}
-		return array(-1, -1, -1, $buffer, -1);
+		return array(-1, -1, $buffer);
 	}
 
 	/**
@@ -353,29 +351,28 @@ class Fshl_Lexer_Cache_Texy
 	public function getPart2(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
-		$start = $textPos;
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if ($textPos === strpos($text, '##', $textPos)) {
-				return array(0, '##', 2, $buffer, $textPos - $start);
+				return array(0, '##', $buffer);
 			}
 			if ($textPos === strpos($text, '**', $textPos)) {
-				return array(1, '**', 2, $buffer, $textPos - $start);
+				return array(1, '**', $buffer);
 			}
 			if ($textPos === strpos($text, '==', $textPos)) {
-				return array(2, '==', 2, $buffer, $textPos - $start);
+				return array(2, '==', $buffer);
 			}
 			if ($textPos === strpos($text, '--', $textPos)) {
-				return array(3, '--', 2, $buffer, $textPos - $start);
+				return array(3, '--', $buffer);
 			}
 			if (true) {
-				return array(4, $letter, 1, $buffer, $textPos - $start);
+				return array(4, $letter, $buffer);
 			}
 
 			$buffer .= $letter;
 			$textPos++;
 		}
-		return array(-1, -1, -1, $buffer, -1);
+		return array(-1, -1, $buffer);
 	}
 
 	/**
@@ -389,40 +386,39 @@ class Fshl_Lexer_Cache_Texy
 	public function getPart3(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
-		$start = $textPos;
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if ('
 ' === $letter) {
 				return array(0, '
-', 1, $buffer, $textPos - $start);
+', $buffer);
 			}
 			if ($textPos === strpos($text, '##', $textPos)) {
-				return array(1, '##', 2, $buffer, $textPos - $start);
+				return array(1, '##', $buffer);
 			}
 			if ($textPos === strpos($text, '==', $textPos)) {
-				return array(2, '==', 2, $buffer, $textPos - $start);
+				return array(2, '==', $buffer);
 			}
 			if ($textPos === strpos($text, '--', $textPos)) {
-				return array(3, '--', 2, $buffer, $textPos - $start);
+				return array(3, '--', $buffer);
 			}
 			if ($textPos === strpos($text, '- -', $textPos)) {
-				return array(4, '- -', 3, $buffer, $textPos - $start);
+				return array(4, '- -', $buffer);
 			}
 			if ($textPos === strpos($text, '**', $textPos)) {
-				return array(5, '**', 2, $buffer, $textPos - $start);
+				return array(5, '**', $buffer);
 			}
 			if ($textPos === strpos($text, '* *', $textPos)) {
-				return array(6, '* *', 3, $buffer, $textPos - $start);
+				return array(6, '* *', $buffer);
 			}
 			if (true) {
-				return array(7, $letter, 1, $buffer, $textPos - $start);
+				return array(7, $letter, $buffer);
 			}
 
 			$buffer .= $letter;
 			$textPos++;
 		}
-		return array(-1, -1, -1, $buffer, -1);
+		return array(-1, -1, $buffer);
 	}
 
 	/**
@@ -436,37 +432,36 @@ class Fshl_Lexer_Cache_Texy
 	public function getPart4(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
-		$start = $textPos;
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if ('=' === $letter) {
-				return array(0, '=', 1, $buffer, $textPos - $start);
+				return array(0, '=', $buffer);
 			}
 			if ('#' === $letter) {
-				return array(1, '#', 1, $buffer, $textPos - $start);
+				return array(1, '#', $buffer);
 			}
 			if ('-' === $letter) {
-				return array(2, '-', 1, $buffer, $textPos - $start);
+				return array(2, '-', $buffer);
 			}
 			if ('*' === $letter) {
-				return array(3, '*', 1, $buffer, $textPos - $start);
+				return array(3, '*', $buffer);
 			}
 			if ('' === $letter) {
-				return array(4, '', 1, $buffer, $textPos - $start);
+				return array(4, '', $buffer);
 			}
 			if ('
 ' === $letter) {
 				return array(5, '
-', 1, $buffer, $textPos - $start);
+', $buffer);
 			}
 			if (true) {
-				return array(6, $letter, 1, $buffer, $textPos - $start);
+				return array(6, $letter, $buffer);
 			}
 
 			$buffer .= $letter;
 			$textPos++;
 		}
-		return array(-1, -1, -1, $buffer, -1);
+		return array(-1, -1, $buffer);
 	}
 
 	/**
@@ -480,31 +475,30 @@ class Fshl_Lexer_Cache_Texy
 	public function getPart5(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
-		$start = $textPos;
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if ('=' === $letter) {
-				return array(0, '=', 1, $buffer, $textPos - $start);
+				return array(0, '=', $buffer);
 			}
 			if ('#' === $letter) {
-				return array(1, '#', 1, $buffer, $textPos - $start);
+				return array(1, '#', $buffer);
 			}
 			if ('-' === $letter) {
-				return array(2, '-', 1, $buffer, $textPos - $start);
+				return array(2, '-', $buffer);
 			}
 			if ('*' === $letter) {
-				return array(3, '*', 1, $buffer, $textPos - $start);
+				return array(3, '*', $buffer);
 			}
 			if ('
 ' === $letter) {
 				return array(4, '
-', 1, $buffer, $textPos - $start);
+', $buffer);
 			}
 
 			$buffer .= $letter;
 			$textPos++;
 		}
-		return array(-1, -1, -1, $buffer, -1);
+		return array(-1, -1, $buffer);
 	}
 
 	/**
@@ -518,19 +512,18 @@ class Fshl_Lexer_Cache_Texy
 	public function getPart6(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
-		$start = $textPos;
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if ('
 ' === $letter) {
 				return array(0, '
-', 1, $buffer, $textPos - $start);
+', $buffer);
 			}
 
 			$buffer .= $letter;
 			$textPos++;
 		}
-		return array(-1, -1, -1, $buffer, -1);
+		return array(-1, -1, $buffer);
 	}
 
 	/**
@@ -544,19 +537,18 @@ class Fshl_Lexer_Cache_Texy
 	public function getPart7(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
-		$start = $textPos;
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if ('
 ' === $letter) {
 				return array(0, '
-', 1, $buffer, $textPos - $start);
+', $buffer);
 			}
 
 			$buffer .= $letter;
 			$textPos++;
 		}
-		return array(-1, -1, -1, $buffer, -1);
+		return array(-1, -1, $buffer);
 	}
 
 	/**
@@ -570,29 +562,28 @@ class Fshl_Lexer_Cache_Texy
 	public function getPart8(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
-		$start = $textPos;
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if ($textPos === strpos($text, 'html', $textPos)) {
-				return array(0, 'html', 4, $buffer, $textPos - $start);
+				return array(0, 'html', $buffer);
 			}
 			if ($textPos === strpos($text, 'code', $textPos)) {
-				return array(1, 'code', 4, $buffer, $textPos - $start);
+				return array(1, 'code', $buffer);
 			}
 			if ($textPos === strpos($text, 'div', $textPos)) {
-				return array(2, 'div', 3, $buffer, $textPos - $start);
+				return array(2, 'div', $buffer);
 			}
 			if ($textPos === strpos($text, 'text', $textPos)) {
-				return array(3, 'text', 4, $buffer, $textPos - $start);
+				return array(3, 'text', $buffer);
 			}
 			if (true) {
-				return array(4, $letter, 1, $buffer, $textPos - $start);
+				return array(4, $letter, $buffer);
 			}
 
 			$buffer .= $letter;
 			$textPos++;
 		}
-		return array(-1, -1, -1, $buffer, -1);
+		return array(-1, -1, $buffer);
 	}
 
 	/**
@@ -606,17 +597,16 @@ class Fshl_Lexer_Cache_Texy
 	public function getPart9(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
-		$start = $textPos;
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if (true) {
-				return array(0, $letter, 1, $buffer, $textPos - $start);
+				return array(0, $letter, $buffer);
 			}
 
 			$buffer .= $letter;
 			$textPos++;
 		}
-		return array(-1, -1, -1, $buffer, -1);
+		return array(-1, -1, $buffer);
 	}
 
 	/**
@@ -630,17 +620,16 @@ class Fshl_Lexer_Cache_Texy
 	public function getPart10(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
-		$start = $textPos;
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if (true) {
-				return array(0, $letter, 1, $buffer, $textPos - $start);
+				return array(0, $letter, $buffer);
 			}
 
 			$buffer .= $letter;
 			$textPos++;
 		}
-		return array(-1, -1, -1, $buffer, -1);
+		return array(-1, -1, $buffer);
 	}
 
 	/**
@@ -654,19 +643,18 @@ class Fshl_Lexer_Cache_Texy
 	public function getPart11(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
-		$start = $textPos;
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if ('
 ' === $letter) {
 				return array(0, '
-', 1, $buffer, $textPos - $start);
+', $buffer);
 			}
 
 			$buffer .= $letter;
 			$textPos++;
 		}
-		return array(-1, -1, -1, $buffer, -1);
+		return array(-1, -1, $buffer);
 	}
 
 	/**
@@ -680,19 +668,18 @@ class Fshl_Lexer_Cache_Texy
 	public function getPart12(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
-		$start = $textPos;
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if ('
 ' === $letter) {
 				return array(0, '
-', 1, $buffer, $textPos - $start);
+', $buffer);
 			}
 
 			$buffer .= $letter;
 			$textPos++;
 		}
-		return array(-1, -1, -1, $buffer, -1);
+		return array(-1, -1, $buffer);
 	}
 
 	/**
@@ -706,20 +693,19 @@ class Fshl_Lexer_Cache_Texy
 	public function getPart13(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
-		$start = $textPos;
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if ($textPos === strpos($text, '\\---', $textPos)) {
-				return array(0, '\\---', 4, $buffer, $textPos - $start);
+				return array(0, '\\---', $buffer);
 			}
 			if (true) {
-				return array(1, $letter, 1, $buffer, $textPos - $start);
+				return array(1, $letter, $buffer);
 			}
 
 			$buffer .= $letter;
 			$textPos++;
 		}
-		return array(-1, -1, -1, $buffer, -1);
+		return array(-1, -1, $buffer);
 	}
 
 	/**
@@ -733,17 +719,16 @@ class Fshl_Lexer_Cache_Texy
 	public function getPart14(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
-		$start = $textPos;
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if (true) {
-				return array(0, $letter, 1, $buffer, $textPos - $start);
+				return array(0, $letter, $buffer);
 			}
 
 			$buffer .= $letter;
 			$textPos++;
 		}
-		return array(-1, -1, -1, $buffer, -1);
+		return array(-1, -1, $buffer);
 	}
 
 	/**
@@ -757,19 +742,18 @@ class Fshl_Lexer_Cache_Texy
 	public function getPart15(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
-		$start = $textPos;
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if ('
 ' === $letter) {
 				return array(0, '
-', 1, $buffer, $textPos - $start);
+', $buffer);
 			}
 
 			$buffer .= $letter;
 			$textPos++;
 		}
-		return array(-1, -1, -1, $buffer, -1);
+		return array(-1, -1, $buffer);
 	}
 
 	/**
@@ -783,19 +767,18 @@ class Fshl_Lexer_Cache_Texy
 	public function getPart16(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
-		$start = $textPos;
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if ('
 ' === $letter) {
 				return array(0, '
-', 1, $buffer, $textPos - $start);
+', $buffer);
 			}
 
 			$buffer .= $letter;
 			$textPos++;
 		}
-		return array(-1, -1, -1, $buffer, -1);
+		return array(-1, -1, $buffer);
 	}
 
 	/**
@@ -809,20 +792,19 @@ class Fshl_Lexer_Cache_Texy
 	public function getPart17(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
-		$start = $textPos;
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if ($textPos === strpos($text, '\\---', $textPos)) {
-				return array(0, '\\---', 4, $buffer, $textPos - $start);
+				return array(0, '\\---', $buffer);
 			}
 			if (true) {
-				return array(1, $letter, 1, $buffer, $textPos - $start);
+				return array(1, $letter, $buffer);
 			}
 
 			$buffer .= $letter;
 			$textPos++;
 		}
-		return array(-1, -1, -1, $buffer, -1);
+		return array(-1, -1, $buffer);
 	}
 
 	/**
@@ -836,17 +818,16 @@ class Fshl_Lexer_Cache_Texy
 	public function getPart18(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
-		$start = $textPos;
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if (true) {
-				return array(0, $letter, 1, $buffer, $textPos - $start);
+				return array(0, $letter, $buffer);
 			}
 
 			$buffer .= $letter;
 			$textPos++;
 		}
-		return array(-1, -1, -1, $buffer, -1);
+		return array(-1, -1, $buffer);
 	}
 
 	/**
@@ -860,19 +841,18 @@ class Fshl_Lexer_Cache_Texy
 	public function getPart19(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
-		$start = $textPos;
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if ('
 ' === $letter) {
 				return array(0, '
-', 1, $buffer, $textPos - $start);
+', $buffer);
 			}
 
 			$buffer .= $letter;
 			$textPos++;
 		}
-		return array(-1, -1, -1, $buffer, -1);
+		return array(-1, -1, $buffer);
 	}
 
 	/**
@@ -886,19 +866,18 @@ class Fshl_Lexer_Cache_Texy
 	public function getPart20(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
-		$start = $textPos;
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if ('
 ' === $letter) {
 				return array(0, '
-', 1, $buffer, $textPos - $start);
+', $buffer);
 			}
 
 			$buffer .= $letter;
 			$textPos++;
 		}
-		return array(-1, -1, -1, $buffer, -1);
+		return array(-1, -1, $buffer);
 	}
 
 	/**
@@ -912,20 +891,19 @@ class Fshl_Lexer_Cache_Texy
 	public function getPart21(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
-		$start = $textPos;
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if ($textPos === strpos($text, '\\---', $textPos)) {
-				return array(0, '\\---', 4, $buffer, $textPos - $start);
+				return array(0, '\\---', $buffer);
 			}
 			if (true) {
-				return array(1, $letter, 1, $buffer, $textPos - $start);
+				return array(1, $letter, $buffer);
 			}
 
 			$buffer .= $letter;
 			$textPos++;
 		}
-		return array(-1, -1, -1, $buffer, -1);
+		return array(-1, -1, $buffer);
 	}
 
 	/**
@@ -939,17 +917,16 @@ class Fshl_Lexer_Cache_Texy
 	public function getPart22(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
-		$start = $textPos;
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if (true) {
-				return array(0, $letter, 1, $buffer, $textPos - $start);
+				return array(0, $letter, $buffer);
 			}
 
 			$buffer .= $letter;
 			$textPos++;
 		}
-		return array(-1, -1, -1, $buffer, -1);
+		return array(-1, -1, $buffer);
 	}
 
 }

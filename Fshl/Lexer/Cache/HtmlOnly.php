@@ -186,26 +186,25 @@ class Fshl_Lexer_Cache_HtmlOnly
 	public function getPart0(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
-		$start = $textPos;
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if ($textPos === strpos($text, '<!--', $textPos)) {
-				return array(0, '<!--', 4, $buffer, $textPos - $start);
+				return array(0, '<!--', $buffer);
 			}
 			if ('<' === $letter) {
-				return array(1, '<', 1, $buffer, $textPos - $start);
+				return array(1, '<', $buffer);
 			}
 			if ('&' === $letter) {
-				return array(2, '&', 1, $buffer, $textPos - $start);
+				return array(2, '&', $buffer);
 			}
 			if ("\t" === $letter || "\n" === $letter) {
-				return array(3, $letter, 1, $buffer, $textPos - $start);
+				return array(3, $letter, $buffer);
 			}
 
 			$buffer .= $letter;
 			$textPos++;
 		}
-		return array(-1, -1, -1, $buffer, -1);
+		return array(-1, -1, $buffer);
 	}
 
 	/**
@@ -219,23 +218,22 @@ class Fshl_Lexer_Cache_HtmlOnly
 	public function getPart1(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
-		$start = $textPos;
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if (';' === $letter) {
-				return array(0, ';', 1, $buffer, $textPos - $start);
+				return array(0, ';', $buffer);
 			}
 			if ('&' === $letter) {
-				return array(1, '&', 1, $buffer, $textPos - $start);
+				return array(1, '&', $buffer);
 			}
 			if (preg_match('~^\\s$~', $letter)) {
-				return array(2, $letter, 1, $buffer, $textPos - $start);
+				return array(2, $letter, $buffer);
 			}
 
 			$buffer .= $letter;
 			$textPos++;
 		}
-		return array(-1, -1, -1, $buffer, -1);
+		return array(-1, -1, $buffer);
 	}
 
 	/**
@@ -249,20 +247,19 @@ class Fshl_Lexer_Cache_HtmlOnly
 	public function getPart2(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
-		$start = $textPos;
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if ('>' === $letter) {
-				return array(0, '>', 1, $buffer, $textPos - $start);
+				return array(0, '>', $buffer);
 			}
 			if (preg_match('~^\\s$~', $letter)) {
-				return array(1, $letter, 1, $buffer, $textPos - $start);
+				return array(1, $letter, $buffer);
 			}
 
 			$buffer .= $letter;
 			$textPos++;
 		}
-		return array(-1, -1, -1, $buffer, -1);
+		return array(-1, -1, $buffer);
 	}
 
 	/**
@@ -276,26 +273,25 @@ class Fshl_Lexer_Cache_HtmlOnly
 	public function getPart3(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
-		$start = $textPos;
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if ('"' === $letter) {
-				return array(0, '"', 1, $buffer, $textPos - $start);
+				return array(0, '"', $buffer);
 			}
 			if ('>' === $letter) {
-				return array(1, '>', 1, $buffer, $textPos - $start);
+				return array(1, '>', $buffer);
 			}
 			if ("\t" === $letter || "\n" === $letter) {
-				return array(2, $letter, 1, $buffer, $textPos - $start);
+				return array(2, $letter, $buffer);
 			}
 			if ('\'' === $letter) {
-				return array(3, '\'', 1, $buffer, $textPos - $start);
+				return array(3, '\'', $buffer);
 			}
 
 			$buffer .= $letter;
 			$textPos++;
 		}
-		return array(-1, -1, -1, $buffer, -1);
+		return array(-1, -1, $buffer);
 	}
 
 	/**
@@ -309,17 +305,16 @@ class Fshl_Lexer_Cache_HtmlOnly
 	public function getPart4(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
-		$start = $textPos;
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if ('"' === $letter) {
-				return array(0, '"', 1, $buffer, $textPos - $start);
+				return array(0, '"', $buffer);
 			}
 
 			$buffer .= $letter;
 			$textPos++;
 		}
-		return array(-1, -1, -1, $buffer, -1);
+		return array(-1, -1, $buffer);
 	}
 
 	/**
@@ -333,17 +328,16 @@ class Fshl_Lexer_Cache_HtmlOnly
 	public function getPart5(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
-		$start = $textPos;
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if ('\'' === $letter) {
-				return array(0, '\'', 1, $buffer, $textPos - $start);
+				return array(0, '\'', $buffer);
 			}
 
 			$buffer .= $letter;
 			$textPos++;
 		}
-		return array(-1, -1, -1, $buffer, -1);
+		return array(-1, -1, $buffer);
 	}
 
 	/**
@@ -357,20 +351,19 @@ class Fshl_Lexer_Cache_HtmlOnly
 	public function getPart6(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
-		$start = $textPos;
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if ($textPos === strpos($text, '-->', $textPos)) {
-				return array(0, '-->', 3, $buffer, $textPos - $start);
+				return array(0, '-->', $buffer);
 			}
 			if ("\t" === $letter || "\n" === $letter) {
-				return array(1, $letter, 1, $buffer, $textPos - $start);
+				return array(1, $letter, $buffer);
 			}
 
 			$buffer .= $letter;
 			$textPos++;
 		}
-		return array(-1, -1, -1, $buffer, -1);
+		return array(-1, -1, $buffer);
 	}
 
 }

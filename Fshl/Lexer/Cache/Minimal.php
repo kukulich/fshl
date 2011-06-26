@@ -142,17 +142,16 @@ class Fshl_Lexer_Cache_Minimal
 	public function getPart0(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
-		$start = $textPos;
 		while ($textPos < $textLength) {
 			$letter = $text[$textPos];
 			if ("\t" === $letter || "\n" === $letter) {
-				return array(0, $letter, 1, $buffer, $textPos - $start);
+				return array(0, $letter, $buffer);
 			}
 
 			$buffer .= $letter;
 			$textPos++;
 		}
-		return array(-1, -1, -1, $buffer, -1);
+		return array(-1, -1, $buffer);
 	}
 
 }

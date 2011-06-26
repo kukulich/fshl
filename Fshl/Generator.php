@@ -412,37 +412,36 @@ SOURCE;
 	 */
 	private function generateState($state)
 	{
-		// Delimiter name => Required length for compare
+		// Delimiter => Condition
 		static $commonDelimiters = array(
-			'_ALL' => 1,
-			'_COUNTAB' => 1, // Line counter & tab indent
-			'SPACE' => 1,
-			'!SPACE' => 1,
-			'ALPHA' => 1,
-			'!ALPHA' => 1,
-			'ALNUM' => 1,
-			'!ALNUM' => 1,
-			'NUMBER' => 1,
-			'!NUMBER' => 1,
-			'HEXNUM' => 1,
-			'!HEXNUM' => 1,
-			'DOT_NUMBER' => 2,	// '.N' where N is number
-			'!DOT_NUMBER' => 2,
-			'SAFECHAR' => 1,
-			'!SAFECHAR' => 1
+			'_ALL' => 'true',
+			// Line counter & tab indent
+			'_COUNTAB' => '"\\t" === $letter || "\\n" === $letter',
+			'SPACE' => 'preg_match(\'~^\\\\s$~\', $letter)',
+			'!SPACE' => 'preg_match(\'~^\\\\S$~\', $letter)',
+			'ALPHA' => 'preg_match(\'~^[a-z]$~i\', $letter)',
+			'!ALPHA' => 'preg_match(\'~^[^a-z]$~i\', $letter)',
+			'ALNUM' => 'preg_match(\'~^[a-z\\\\d]$~i\', $letter)',
+			'!ALNUM' => 'preg_match(\'~^[^a-z\\\\d]$~i\', $letter)',
+			'NUMBER' => 'preg_match(\'~^\\\\d$~\', $letter)',
+			'!NUMBER' => 'preg_match(\'~^\\\\D$~\', $letter)',
+			'HEXNUM' => 'preg_match(\'~^[a-f\\\\d]$~i\', $letter)',
+			'!HEXNUM' => 'preg_match(\'~^[^a-f\\\\d]$~i\', $letter)',
+			// '.N' where N is number
+			'DOT_NUMBER' => '\'.\' === $letter && preg_match(\'~^\\\\d$~\', $text[$textPos + 1])',
+			'!DOT_NUMBER' => '\'.\' !== $letter || preg_match(\'~^\\\\D$~\', $text[$textPos + 1])',
+			'SAFECHAR' => 'preg_match(\'~^\\\\w$~i\', $letter)',
+			'!SAFECHAR' => 'preg_match(\'~^\\\\W$~i\', $letter)'
 		);
 
 		$conditions = '';
-		foreach ($this->delimiters[$state] as $no => $delimiter)
-		{
+		foreach ($this->delimiters[$state] as $no => $delimiter) {
 			if (isset($commonDelimiters[$delimiter])) {
-				$delimiterLength = $commonDelimiters[$delimiter];
 				$delimiterSource = '$letter';
-				$condition = $this->getDelimiterCondition($delimiter);
+				$condition = $commonDelimiters[$delimiter];
 			} else {
-				$delimiterLength = strlen($delimiter);
 				$delimiterSource = $this->getVarValueSource($delimiter);
-				if (1 === $delimiterLength) {
+				if (1 === strlen($delimiter)) {
 					$condition = sprintf('%s === $letter', $delimiterSource);
 				} else {
 					$condition = sprintf('$textPos === strpos($text, %s, $textPos)', $delimiterSource);
@@ -451,7 +450,7 @@ SOURCE;
 
 			$conditions .= <<<CONDITION
 			if ($condition) {
-				return array({$no}, {$delimiterSource}, {$delimiterLength}, \$buffer, \$textPos - \$start);
+				return array({$no}, {$delimiterSource}, \$buffer);
 			}
 
 CONDITION;
@@ -471,57 +470,16 @@ CONDITION;
 	public function getPart{$state}(&\$text, \$textLength, \$textPos)
 	{
 		\$buffer = false;
-		\$start = \$textPos;
 		while (\$textPos < \$textLength) {
 			\$letter = \$text[\$textPos];
 {$conditions}
 			\$buffer .= \$letter;
 			\$textPos++;
 		}
-		return array(-1, -1, -1, \$buffer, -1);
+		return array(-1, -1, \$buffer);
 	}
 
 STATE;
-	}
-
-	/**
-	 * Returns delimiter condition.
-	 *
-	 * @param mixed $del
-	 * @return string
-	 */
-	private function getDelimiterCondition($delimiter)
-	{
-		switch ($delimiter) {
-			case '_ALL':
-				return 'true';
-			case '_COUNTAB':
-				return '"\\t" === $letter || "\\n" === $letter';
-			case 'SPACE':
-				return 'preg_match(\'~^\\\\s$~\', $letter)';
-			case 'ALPHA':
-				return 'preg_match(\'~^[a-z]$~i\', $letter)';
-			case 'ALNUM':
-				return 'preg_match(\'~^[a-z\\\\d]$~i\', $letter)';
-			case 'NUMBER':
-				return 'preg_match(\'~^\\\\d$~\', $letter)';
-			case 'HEXNUM':
-				return 'preg_match(\'~^[a-f]\\\\d$~i\', $letter)';
-			case 'DOT_NUMBER':
-				return '\'.\' === $letter && preg_match(\'~^\\\\d$~\', $text[$textPos + 1])';
-			case 'SAFECHAR':
-				return 'preg_match(\'~^\\\\w$~i\', $letter)';
-			case '!SPACE':
-			case '!ALPHA':
-			case '!ALNUM':
-			case '!NUMBER':
-			case '!HEXNUM':
-			case '!DOT_NUMBER':
-			case '!SAFECHAR':
-				return '!' . $this->getDelimiterCondition(substr($delimiter, 1));
-			default:
-				throw new InvalidArgumentException(sprintf('Group delimiter "%s" is not implemented', $delimiter));
-		}
 	}
 
 	/**

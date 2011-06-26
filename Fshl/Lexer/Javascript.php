@@ -177,7 +177,7 @@ class Javascript implements Fshl\Lexer
 				null,
 				Fshl\Generator::STATE_FLAG_NEWLEXER,
 				'html-tag',
-				null,
+				null
 			)
 		);
 	}

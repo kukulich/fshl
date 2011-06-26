@@ -252,7 +252,8 @@ class Generator
 	/**
 	 * Saves generated source to lexer cache file.
 	 *
-	 * @throws Exception If the file has not been saved.
+	 * @return \Fshl\Generator
+	 * @throws Exception If the file could not be saved.
 	 */
 	public function saveToCache()
 	{
@@ -260,6 +261,7 @@ class Generator
 		if (false === file_put_contents($file, $this->source)) {
 			throw new RuntimeException(sprintf('Cannot save source to "%s"', $file));
 		}
+		return $this;
 	}
 
 	/**

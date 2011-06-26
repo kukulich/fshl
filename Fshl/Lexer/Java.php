@@ -129,7 +129,7 @@ class Java implements Fshl\Lexer
 			'QUOTE2' => array(
 				array(
 					'\\\\' => array('QUOTE2', 0),
-					'\\\''  => array('QUOTE2', 0),
+					'\\\'' => array('QUOTE2', 0),
 					'_COUNTAB' => array('QUOTE2', 0),
 					'\'' => array(Fshl\Generator::STATE_RETURN, 0)
 				),

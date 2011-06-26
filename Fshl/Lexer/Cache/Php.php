@@ -136,6 +136,8 @@ class Fshl_Lexer_Cache_Php
 					0 => 12, 1 => 0
 				), 1 => array(
 					0 => 12, 1 => 0
+				), 2 => array(
+					0 => 12, 1 => 0
 				)
 			), 2 => array(
 				0 => array(
@@ -432,8 +434,11 @@ class Fshl_Lexer_Cache_Php
 			if ($textPos === strpos($text, '<?php', $textPos)) {
 				return array(0, '<?php', 5, $buffer, $textPos - $start);
 			}
+			if ($textPos === strpos($text, '<?=', $textPos)) {
+				return array(1, '<?=', 3, $buffer, $textPos - $start);
+			}
 			if ($textPos === strpos($text, '<?', $textPos)) {
-				return array(1, '<?', 2, $buffer, $textPos - $start);
+				return array(2, '<?', 2, $buffer, $textPos - $start);
 			}
 
 			$buffer .= $letter;

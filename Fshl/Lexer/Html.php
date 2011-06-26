@@ -65,6 +65,7 @@ class Fshl_Lexer_Html implements Fshl_Lexer
 				array(
 					'<!--' => array('COMMENT', 0),
 					'<?php' => array('TO_PHP', 0),
+					'<?=' => array('TO_PHP', 0),
 					'<?' => array('TO_PHP', 0),
 					'<' => array('TAG', 0),
 					'&' => array('ENTITY', 0),
@@ -93,6 +94,7 @@ class Fshl_Lexer_Html implements Fshl_Lexer
 					'script' => array('JAVASCRIPT', 1),
 					'SCRIPT' => array('JAVASCRIPT', 1),
 					'<?php' => array('TO_PHP', 0),
+					'<?=' => array('TO_PHP', 0),
 					'<?' => array('TO_PHP', 0)
 				),
 				Fshl_Generator::STATE_FLAG_NONE,
@@ -105,6 +107,7 @@ class Fshl_Lexer_Html implements Fshl_Lexer
 					'>' => array(Fshl_Generator::STATE_RETURN, 1),
 					'\'' => array('QUOTE2', 0),
 					'<?php' => array('TO_PHP', 0),
+					'<?=' => array('TO_PHP', 0),
 					'<?' => array('TO_PHP', 0),
 					'_COUNTAB' => array('inTAG', 0)
 				),
@@ -118,6 +121,7 @@ class Fshl_Lexer_Html implements Fshl_Lexer
 					'\'' => array('QUOTE2', 0),
 					'>' => array('TO_CSS', 0),
 					'<?php' => array('TO_PHP', 0),
+					'<?=' => array('TO_PHP', 0),
 					'<?' => array('TO_PHP', 0),
 					'_COUNTAB' => array('inTAG', 0)
 				),
@@ -139,6 +143,7 @@ class Fshl_Lexer_Html implements Fshl_Lexer
 					'\'' => array('QUOTE2', 0),
 					'>' => array('TO_JAVASCRIPT', 0),
 					'<?php' => array('TO_PHP', 0),
+					'<?=' => array('TO_PHP', 0),
 					'<?' => array('TO_PHP', 0),
 					'_COUNTAB' => array('inTAG', 0)
 				),
@@ -158,6 +163,7 @@ class Fshl_Lexer_Html implements Fshl_Lexer
 				array(
 					'"' => array(Fshl_Generator::STATE_RETURN, 0),
 					'<?php' => array('TO_PHP', 0),
+					'<?=' => array('TO_PHP', 0),
 					'<?' => array('TO_PHP', 0),
 					'_COUNTAB' => array('QUOTE1', 0)
 				),
@@ -169,6 +175,7 @@ class Fshl_Lexer_Html implements Fshl_Lexer
 				array(
 					'\'' => array(Fshl_Generator::STATE_RETURN, 0),
 					'<?php' => array('TO_PHP', 0),
+					'<?=' => array('TO_PHP', 0),
 					'<?' => array('TO_PHP', 0),
 					'_COUNTAB' => array('QUOTE2', 0)
 				),
@@ -180,6 +187,7 @@ class Fshl_Lexer_Html implements Fshl_Lexer
 				array(
 					'-->' => array('OUT', 1),
 					'<?php' => array('TO_PHP', 0),
+					'<?=' => array('TO_PHP', 0),
 					'<?' => array('TO_PHP', 0),
 					'_COUNTAB' => array('COMMENT', 0)
 				),

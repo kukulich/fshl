@@ -69,6 +69,7 @@ class Fshl_Lexer_Css implements Fshl_Lexer
 					'/*' => array('COMMENT', 0),
 					'</' => array(Fshl_Generator::STATE_QUIT, 0),
 					'<?php' => array('TO_PHP', 0),
+					'<?=' => array('TO_PHP', 0),
 					'<?' => array('TO_PHP', 0)
 				),
 				Fshl_Generator::STATE_FLAG_NONE,

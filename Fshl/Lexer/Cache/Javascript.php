@@ -129,6 +129,8 @@ class Fshl_Lexer_Cache_Javascript
 				), 9 => array(
 					0 => 9, 1 => 0
 				), 10 => array(
+					0 => 9, 1 => 0
+				), 11 => array(
 					0 => 11, 1 => 0
 				)
 			), 1 => array(
@@ -162,6 +164,8 @@ class Fshl_Lexer_Cache_Javascript
 					0 => 9, 1 => 0
 				), 2 => array(
 					0 => 9, 1 => 0
+				), 3 => array(
+					0 => 9, 1 => 0
 				)
 			), 6 => array(
 				0 => array(
@@ -169,6 +173,8 @@ class Fshl_Lexer_Cache_Javascript
 				), 1 => array(
 					0 => 9, 1 => 0
 				), 2 => array(
+					0 => 9, 1 => 0
+				), 3 => array(
 					0 => 9, 1 => 0
 				)
 			), 7 => array(
@@ -180,6 +186,8 @@ class Fshl_Lexer_Cache_Javascript
 					0 => 9, 1 => 0
 				), 3 => array(
 					0 => 9, 1 => 0
+				), 4 => array(
+					0 => 9, 1 => 0
 				)
 			), 8 => array(
 				0 => array(
@@ -189,6 +197,8 @@ class Fshl_Lexer_Cache_Javascript
 				), 2 => array(
 					0 => 9, 1 => 0
 				), 3 => array(
+					0 => 9, 1 => 0
+				), 4 => array(
 					0 => 9, 1 => 0
 				)
 			), 9 => NULL, 11 => NULL
@@ -256,11 +266,14 @@ class Fshl_Lexer_Cache_Javascript
 			if ($textPos === strpos($text, '<?php', $textPos)) {
 				return array(8, '<?php', 5, $buffer, $textPos - $start);
 			}
+			if ($textPos === strpos($text, '<?=', $textPos)) {
+				return array(9, '<?=', 3, $buffer, $textPos - $start);
+			}
 			if ($textPos === strpos($text, '<?', $textPos)) {
-				return array(9, '<?', 2, $buffer, $textPos - $start);
+				return array(10, '<?', 2, $buffer, $textPos - $start);
 			}
 			if ($textPos === strpos($text, '</', $textPos)) {
-				return array(10, '</', 2, $buffer, $textPos - $start);
+				return array(11, '</', 2, $buffer, $textPos - $start);
 			}
 
 			$buffer .= $letter;
@@ -397,8 +410,11 @@ class Fshl_Lexer_Cache_Javascript
 			if ($textPos === strpos($text, '<?php', $textPos)) {
 				return array(1, '<?php', 5, $buffer, $textPos - $start);
 			}
+			if ($textPos === strpos($text, '<?=', $textPos)) {
+				return array(2, '<?=', 3, $buffer, $textPos - $start);
+			}
 			if ($textPos === strpos($text, '<?', $textPos)) {
-				return array(2, '<?', 2, $buffer, $textPos - $start);
+				return array(3, '<?', 2, $buffer, $textPos - $start);
 			}
 
 			$buffer .= $letter;
@@ -427,8 +443,11 @@ class Fshl_Lexer_Cache_Javascript
 			if ($textPos === strpos($text, '<?php', $textPos)) {
 				return array(1, '<?php', 5, $buffer, $textPos - $start);
 			}
+			if ($textPos === strpos($text, '<?=', $textPos)) {
+				return array(2, '<?=', 3, $buffer, $textPos - $start);
+			}
 			if ($textPos === strpos($text, '<?', $textPos)) {
-				return array(2, '<?', 2, $buffer, $textPos - $start);
+				return array(3, '<?', 2, $buffer, $textPos - $start);
 			}
 
 			$buffer .= $letter;
@@ -460,8 +479,11 @@ class Fshl_Lexer_Cache_Javascript
 			if ($textPos === strpos($text, '<?php', $textPos)) {
 				return array(2, '<?php', 5, $buffer, $textPos - $start);
 			}
+			if ($textPos === strpos($text, '<?=', $textPos)) {
+				return array(3, '<?=', 3, $buffer, $textPos - $start);
+			}
 			if ($textPos === strpos($text, '<?', $textPos)) {
-				return array(3, '<?', 2, $buffer, $textPos - $start);
+				return array(4, '<?', 2, $buffer, $textPos - $start);
 			}
 
 			$buffer .= $letter;
@@ -495,8 +517,11 @@ class Fshl_Lexer_Cache_Javascript
 			if ($textPos === strpos($text, '<?php', $textPos)) {
 				return array(2, '<?php', 5, $buffer, $textPos - $start);
 			}
+			if ($textPos === strpos($text, '<?=', $textPos)) {
+				return array(3, '<?=', 3, $buffer, $textPos - $start);
+			}
 			if ($textPos === strpos($text, '<?', $textPos)) {
-				return array(3, '<?', 2, $buffer, $textPos - $start);
+				return array(4, '<?', 2, $buffer, $textPos - $start);
 			}
 
 			$buffer .= $letter;

@@ -72,7 +72,7 @@ class Fshl_Lexer_Php implements Fshl_Lexer
 					'NUMBER' => array('NUM', 0),
 					'?>' => array(Fshl_Generator::STATE_QUIT, 0),
 					'/*' => array('COMMENT', 0) ,
-					'<?' => array('DUMMY_PHP',-1),
+					'<?' => array('DUMMY_PHP', -1),
 					'#' => array('COMMENT1', 0)
 				),
 				Fshl_Generator::STATE_FLAG_NONE,
@@ -82,6 +82,7 @@ class Fshl_Lexer_Php implements Fshl_Lexer
 			'DUMMY_PHP' => array(
 				array(
 					'<?php' => array(Fshl_Generator::STATE_RETURN, 0),
+					'<?=' => array(Fshl_Generator::STATE_RETURN, 0),
 					'<?' => array(Fshl_Generator::STATE_RETURN, 0)
 				),
 				Fshl_Generator::STATE_FLAG_RECURSION,
@@ -146,7 +147,8 @@ class Fshl_Lexer_Php implements Fshl_Lexer
 				),
 				Fshl_Generator::STATE_FLAG_RECURSION,
 				'php-quote',
-				null),
+				null
+			),
 			'QUOTE1' => array(
 				array(
 					'\'' => array(Fshl_Generator::STATE_RETURN, 0),

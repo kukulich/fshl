@@ -72,6 +72,7 @@ class Fshl_Lexer_Javascript implements Fshl_Lexer
 					'/*' => array('COMMENT1', 0),
 					'//' => array('COMMENT2', 0),
 					'<?php' => array('TO_PHP', 0),
+					'<?=' => array('TO_PHP', 0),
 					'<?' => array('TO_PHP', 0),
 					'</' => array(Fshl_Generator::STATE_QUIT, 0)
 				),
@@ -122,6 +123,7 @@ class Fshl_Lexer_Javascript implements Fshl_Lexer
 				array(
 					'"' => array(Fshl_Generator::STATE_RETURN, 0),
 					'<?php' => array('TO_PHP', 0),
+					'<?=' => array('TO_PHP', 0),
 					'<?' => array('TO_PHP', 0)
 				),
 				Fshl_Generator::STATE_FLAG_RECURSION,
@@ -132,6 +134,7 @@ class Fshl_Lexer_Javascript implements Fshl_Lexer
 				array(
 					'\'' => array(Fshl_Generator::STATE_RETURN, 0),
 					'<?php' => array('TO_PHP', 0),
+					'<?=' => array('TO_PHP', 0),
 					'<?' => array('TO_PHP', 0)
 				),
 				Fshl_Generator::STATE_FLAG_RECURSION,
@@ -144,6 +147,7 @@ class Fshl_Lexer_Javascript implements Fshl_Lexer
 					'_COUNTAB' => array('COMMENT1', 0),
 					'*/' => array(Fshl_Generator::STATE_RETURN, 0),
 					'<?php' => array('TO_PHP', 0),
+					'<?=' => array('TO_PHP', 0),
 					'<?' => array('TO_PHP', 0)
 				),
 				Fshl_Generator::STATE_FLAG_RECURSION,
@@ -155,6 +159,7 @@ class Fshl_Lexer_Javascript implements Fshl_Lexer
 					"\n" => array(Fshl_Generator::STATE_RETURN, 0),
 					'_COUNTAB' => array('COMMENT2', 0),
 					'<?php' => array('TO_PHP', 0),
+					'<?=' => array('TO_PHP', 0),
 					'<?' => array('TO_PHP', 0)
 				),
 				Fshl_Generator::STATE_FLAG_RECURSION,

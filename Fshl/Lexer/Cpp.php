@@ -35,6 +35,16 @@ use Fshl;
 class Cpp implements Fshl\Lexer
 {
 	/**
+	 * Returns language.
+	 *
+	 * @return string
+	 */
+	public function getLanguage()
+	{
+		return 'Cpp';
+	}
+
+	/**
 	 * Returns version.
 	 *
 	 * @return string

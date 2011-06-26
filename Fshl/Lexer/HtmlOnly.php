@@ -35,6 +35,16 @@ use Fshl;
 class HtmlOnly implements Fshl\Lexer
 {
 	/**
+	 * Returns language.
+	 *
+	 * @return string
+	 */
+	public function getLanguage()
+	{
+		return 'HtmlOnly';
+	}
+
+	/**
 	 * Returns version.
 	 *
 	 * @return string

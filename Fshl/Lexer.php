@@ -34,6 +34,13 @@ namespace Fshl;
 interface Lexer
 {
 	/**
+	 * Returns language.
+	 *
+	 * @return string
+	 */
+	public function getLanguage();
+
+	/**
 	 * Returns version.
 	 *
 	 * @return string

@@ -35,6 +35,16 @@ use Fshl;
 class Java implements Fshl\Lexer
 {
 	/**
+	 * Returns language.
+	 *
+	 * @return string
+	 */
+	public function getLanguage()
+	{
+		return 'Java';
+	}
+
+	/**
 	 * Returns version.
 	 *
 	 * @return string

@@ -159,11 +159,11 @@ class Generator
 	const CASE_INSENSITIVE = false;
 
 	/**
-	 * Generated source for given lexer.
+	 * Actual lexer.
 	 *
-	 * @var string
+	 * @var \Fshl\Lexer
 	 */
-	private $source;
+	private $lexer = null;
 
 	/**
 	 * Actual lexer name.
@@ -173,11 +173,11 @@ class Generator
 	private $lexerName;
 
 	/**
-	 * Actual lexer.
+	 * Generated source for given lexer.
 	 *
-	 * @var \Fshl\Lexer
+	 * @var string
 	 */
-	private $lexer = null;
+	private $source;
 
 	/**
 	 * List of CSS classes of actual lexer.
@@ -224,18 +224,13 @@ class Generator
 	/**
 	 * Initializes generator for given lexer.
 	 *
-	 * @param string $lexerName
+	 * @param \Fshl\Lexer $lexerName
 	 * @throws InvalidArgumentException If the class for given lexer doesn't exist.
 	 */
-	public function __construct($lexerName)
+	public function __construct(\Fshl\Lexer $lexer)
 	{
-		$this->lexerName = (string) $lexerName;
-		$lexerClass = 'Fshl\\Lexer\\' . $this->lexerName;
-		if (!class_exists($lexerClass)) {
-			throw new InvalidArgumentException(sprintf('Missing class for lexer %s', $this->lexerName));
-		}
-
-		$this->lexer = new $lexerClass();
+		$this->lexer = $lexer;
+		$this->lexerName = $lexer->getLanguage();
 		$this->source = $this->generate();
 	}
 

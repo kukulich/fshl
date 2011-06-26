@@ -40,83 +40,6 @@ class Highlighter
 	const VERSION = '2.0';
 
 	/**
-	 * CPP lexer.
-	 *
-	 * @var string
-	 */
-	const LEXER_CPP = 'Cpp';
-
-	/**
-	 * CSS lexer.
-	 *
-	 * @var string
-	 */
-	const LEXER_CSS = 'Css';
-
-	/**
-	 * HTML lexer.
-	 *
-	 * @var string
-	 */
-	const LEXER_HTML = 'Html';
-
-	/**
-	 * HTML lexer without other languages.
-	 *
-	 * @var string
-	 */
-	const LEXER_HTML_ONLY = 'HtmlOnly';
-
-	/**
-	 * Java lexer.
-	 *
-	 * @var string
-	 */
-	const LEXER_JAVA = 'Java';
-
-	/**
-	 * Javascript lexer.
-	 *
-	 * @var string
-	 */
-	const LEXER_JAVASCRIPT = 'Javascript';
-
-	/**
-	 * Minimal lexer.
-	 *
-	 * @var string
-	 */
-	const LEXER_MINIMAL = 'Minimal';
-
-	/**
-	 * PHP lexer.
-	 *
-	 * @var string
-	 */
-	const LEXER_PHP = 'Php';
-
-	/**
-	 * Python lexer.
-	 *
-	 * @var string
-	 */
-	const LEXER_PYTHON = 'Python';
-
-	/**
-	 * SQL lexer.
-	 *
-	 * @var string
-	 */
-	const LEXER_SQL = 'Sql';
-
-	/**
-	 * Texy lexer.
-	 *
-	 * @var string
-	 */
-	const LEXER_TEXY = 'Texy';
-
-	/**
 	 * No options.
 	 *
 	 * @var integer
@@ -216,14 +139,14 @@ class Highlighter
 	/**
 	 * Highlightes string.
 	 *
-	 * @param string $lexer
+	 * @param \Fshl\Lexer $lexer
 	 * @param string $text
 	 * @return string
 	 */
-	public function highlight($lexer, $text)
+	public function highlight(\Fshl\Lexer $lexer, $text)
 	{
 		// Sets lexer
-		$this->setLexer((string) $lexer);
+		$this->setLexer($lexer);
 
 		// Prepares text
 		$text = str_replace(array("\r\n", "\r"), "\n", (string) $text);
@@ -379,32 +302,41 @@ class Highlighter
 	/**
 	 * Sets actual lexer.
 	 *
-	 * @param string $lexerName
+	 * @param \Fshl\Lexer|string $lexer
 	 * @return \Fshl\Highlighter
 	 */
-	private function setLexer($lexerName)
+	private function setLexer($lexer)
 	{
-		if (!isset($this->lexers[$lexerName])) {
-			// Load new lexer
-			$lexerClass = 'Fshl\\Lexer\Cache\\' . $lexerName;
-			if (!class_exists($lexerClass)) {
-				$lexerDefinitionClass = 'Fshl\\Lexer\\' . $lexerName;
-				if (class_exists($lexerDefinitionClass) && class_exists('Fshl\\Generator')) {
-					// Generate lexer on fly
-					$generator = new Generator($lexerName);
-					$file = tempnam(sys_get_temp_dir(), 'fshl');
-					file_put_contents($file, $generator->getSource());
-					require_once $file;
-					unlink($file);
-				} else {
-					// Use minimal lexer with line counter
-					$lexerName = self::LEXER_MINIMAL;
-					$lexerClass = 'Fshl\\Lexer\\Cache\\' . $lexerName;
-				}
-			}
-			$this->lexers[$lexerName] = new $lexerClass();
+		$lexerName = is_object($lexer) ? $lexer->getLanguage() : $lexer;
+
+		// Lexer has been used before
+		if (isset($this->lexers[$lexerName])) {
+			$this->lexer = $this->lexers[$lexerName];
+			return $this;
 		}
 
+		// Loads lexer cache
+		$lexerCacheClass = 'Fshl\\Lexer\Cache\\' . $lexerName;
+		if (class_exists($lexerCacheClass)) {
+			$this->lexers[$lexerName] = new $lexerCacheClass();
+			$this->lexer = $this->lexers[$lexerName];
+			return $this;
+		}
+
+		// Finds lexer
+		if (!is_object($lexer)) {
+			$lexerClass = 'Fshl\\Lexer\\' . $lexerName;
+			$lexer = new $lexerClass();
+		}
+
+		// Generates lexer on fly
+		$generator = new Generator($lexer);
+		$file = tempnam(sys_get_temp_dir(), 'fshl');
+		file_put_contents($file, $generator->getSource());
+		require_once $file;
+		unlink($file);
+
+		$this->lexers[$lexerName] = new $lexerCacheClass();
 		$this->lexer = $this->lexers[$lexerName];
 
 		return $this;

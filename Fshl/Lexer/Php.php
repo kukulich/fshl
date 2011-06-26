@@ -35,6 +35,16 @@ use Fshl;
 class Php implements Fshl\Lexer
 {
 	/**
+	 * Returns language.
+	 *
+	 * @return string
+	 */
+	public function getLanguage()
+	{
+		return 'Php';
+	}
+
+	/**
 	 * Returns version.
 	 *
 	 * @return string

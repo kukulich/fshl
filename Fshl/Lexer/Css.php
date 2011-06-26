@@ -35,6 +35,16 @@ use Fshl;
 class Css implements Fshl\Lexer
 {
 	/**
+	 * Returns language.
+	 *
+	 * @return string
+	 */
+	public function getLanguage()
+	{
+		return 'Css';
+	}
+
+	/**
 	 * Returns version.
 	 *
 	 * @return string
@@ -144,7 +154,7 @@ class Css implements Fshl\Lexer
 				null,
 				Fshl\Generator::STATE_FLAG_NEWLEXER,
 				'xlang',
-				Fshl\Highlighter::LEXER_PHP
+				'Php'
 			),
 			Fshl\Generator::STATE_QUIT => array(
 				null,

@@ -35,6 +35,16 @@ use Fshl;
 class Html implements Fshl\Lexer
 {
 	/**
+	 * Returns language.
+	 *
+	 * @return string
+	 */
+	public function getLanguage()
+	{
+		return 'Html';
+	}
+
+	/**
 	 * Returns version.
 	 *
 	 * @return string
@@ -136,7 +146,7 @@ class Html implements Fshl\Lexer
 				),
 				Fshl\Generator::STATE_FLAG_NEWLEXER,
 				'html-tag',
-				Fshl\Highlighter::LEXER_CSS
+				'Css'
 			),
 			'JAVASCRIPT' => array(
 				array(
@@ -158,7 +168,7 @@ class Html implements Fshl\Lexer
 				),
 				Fshl\Generator::STATE_FLAG_NEWLEXER,
 				'html-tag',
-				Fshl\Highlighter::LEXER_JAVASCRIPT
+				'Javascript'
 			),
 			'QUOTE1' => array(
 				array(
@@ -200,7 +210,7 @@ class Html implements Fshl\Lexer
 				null,
 				Fshl\Generator::STATE_FLAG_NEWLEXER,
 				'xlang',
-				Fshl\Highlighter::LEXER_PHP
+				'Php'
 			)
 		);
 	}

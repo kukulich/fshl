@@ -36,6 +36,16 @@ use Fshl;
 class Sql implements Fshl\Lexer
 {
 	/**
+	 * Returns language.
+	 *
+	 * @return string
+	 */
+	public function getLanguage()
+	{
+		return 'Sql';
+	}
+
+	/**
 	 * Returns version.
 	 *
 	 * @return string

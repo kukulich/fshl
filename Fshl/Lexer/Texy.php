@@ -35,6 +35,16 @@ use Fshl;
 class Texy implements Fshl\Lexer
 {
 	/**
+	 * Returns language.
+	 *
+	 * @return string
+	 */
+	public function getLanguage()
+	{
+		return 'Texy';
+	}
+
+	/**
 	 * Returns version.
 	 *
 	 * @return string

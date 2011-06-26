@@ -36,6 +36,16 @@ use Fshl;
 class Python implements Fshl\Lexer
 {
 	/**
+	 * Returns language.
+	 *
+	 * @return string
+	 */
+	public function getLanguage()
+	{
+		return 'Python';
+	}
+
+	/**
 	 * Returns version.
 	 *
 	 * @return string

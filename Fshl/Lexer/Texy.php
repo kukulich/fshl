@@ -113,7 +113,6 @@ class Fshl_Lexer_Texy implements Fshl_Lexer
 					'#' => array('HeaderIN', 0),
 					'-' => array('HeaderIN', 0),
 					'*' => array('HeaderIN', 0),
-					"\r" => array('HeaderIN', 0),
 					"\n" => array('DoubleNewLine', 0),
 					'_ALL' => array('HeaderBody', -1)
 				),

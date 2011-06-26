@@ -110,7 +110,7 @@ class Fshl_Lexer_Php implements Fshl_Lexer
 			),
 			'COMMENT1' => array(
 				array(
-					"\n" => array(Fshl_Generator::STATE_RETURN, 0),
+					"\n" => array(Fshl_Generator::STATE_RETURN, 1),
 					'_COUNTAB' => array('COMMENT1', 0),
 					'?>' => array(Fshl_Generator::STATE_RETURN, -1)
 				),
@@ -132,7 +132,7 @@ class Fshl_Lexer_Php implements Fshl_Lexer
 			'VAR_STR' => array(
 				array(
 					'}' => array(Fshl_Generator::STATE_RETURN, 0),
-					'SPACE' => array(Fshl_Generator::STATE_RETURN, 0)
+					'SPACE' => array(Fshl_Generator::STATE_RETURN, 1)
 				),
 				Fshl_Generator::STATE_FLAG_RECURSION,
 				'php-var',
@@ -153,11 +153,11 @@ class Fshl_Lexer_Php implements Fshl_Lexer
 			),
 			'HEREDOC' => array(
 				array(
+					'_COUNTAB' => array('HEREDOC', 0),
 					'HEREDOC_END' => array(Fshl_Generator::STATE_RETURN, 0),
 					'\\$' => array('HEREDOC', 0),
 					'$' => array('VAR', 0),
 					'{$' => array('VAR_STR', 0),
-					'_COUNTAB' => array('HEREDOC', 0)
 				),
 				Fshl_Generator::STATE_FLAG_NONE,
 				'php-quote',
@@ -176,8 +176,8 @@ class Fshl_Lexer_Php implements Fshl_Lexer
 			),
 			'NOWDOC' => array(
 				array(
+					'_COUNTAB' => array('NOWDOC', 0),
 					'NOWDOC_END' => array(Fshl_Generator::STATE_RETURN, 0),
-					'_COUNTAB' => array('NOWDOC', 0)
 				),
 				Fshl_Generator::STATE_FLAG_NONE,
 				'php-quote',
@@ -226,10 +226,10 @@ class Fshl_Lexer_Php implements Fshl_Lexer
 	public function getDelimiters()
 	{
 		return array(
-			'NOWDOC' => 'preg_match(\'~^<<<\\\'\\\\w+\\\'\\\\n~\', substr($text, $textPos), $matches)',
-			'NOWDOC_END' => 'preg_match(\'~^\\\\n\\\\w+;\\\\n~\', substr($text, $textPos), $matches)',
-			'HEREDOC' => 'preg_match(\'~^<<<(?:\\\\w+|"\\\\w+")\\\\n~\', substr($text, $textPos), $matches)',
-			'HEREDOC_END' => 'preg_match(\'~^\\\\n\\\\w+;\\\\n~\', substr($text, $textPos), $matches)'
+			'NOWDOC' => 'preg_match(\'~^<<<\\\'\\\\w+\\\'\\\\n~\', $part, $matches)',
+			'NOWDOC_END' => 'preg_match(\'~^\\\\n\\\\w+;\\\\n~\', $part, $matches)',
+			'HEREDOC' => 'preg_match(\'~^<<<(?:\\\\w+|"\\\\w+")\\\\n~\', $part, $matches)',
+			'HEREDOC_END' => 'preg_match(\'~^\\\\n\\\\w+;\\\\n~\', $part, $matches)'
 		);
 	}
 

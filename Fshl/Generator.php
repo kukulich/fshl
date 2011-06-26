@@ -417,21 +417,20 @@ SOURCE;
 			'_ALL' => 'true',
 			// Line counter & tab indent
 			'_COUNTAB' => '"\\t" === $letter || "\\n" === $letter',
-			'SPACE' => 'preg_match(\'~^\\\\s$~\', $letter)',
-			'!SPACE' => 'preg_match(\'~^\\\\S$~\', $letter)',
-			'ALPHA' => 'preg_match(\'~^[a-z]$~i\', $letter)',
-			'!ALPHA' => 'preg_match(\'~^[^a-z]$~i\', $letter)',
-			'ALNUM' => 'preg_match(\'~^[a-z\\\\d]$~i\', $letter)',
-			'!ALNUM' => 'preg_match(\'~^[^a-z\\\\d]$~i\', $letter)',
-			'NUMBER' => 'preg_match(\'~^\\\\d$~\', $letter)',
-			'!NUMBER' => 'preg_match(\'~^\\\\D$~\', $letter)',
-			'HEXNUM' => 'preg_match(\'~^[a-f\\\\d]$~i\', $letter)',
-			'!HEXNUM' => 'preg_match(\'~^[^a-f\\\\d]$~i\', $letter)',
-			// '.N' where N is number
-			'DOT_NUMBER' => '\'.\' === $letter && preg_match(\'~^\\\\d$~\', $text[$textPos + 1])',
-			'!DOT_NUMBER' => '\'.\' !== $letter || preg_match(\'~^\\\\D$~\', $text[$textPos + 1])',
-			'SAFECHAR' => 'preg_match(\'~^\\\\w$~i\', $letter)',
-			'!SAFECHAR' => 'preg_match(\'~^\\\\W$~i\', $letter)'
+			'SPACE' => 'preg_match(\'~^\s+~\', $part, $matches)',
+			'!SPACE' => 'preg_match(\'~^\\\\S+~\', $part, $matches)',
+			'ALPHA' => 'preg_match(\'~^[a-z]+~i\', $part, $matches)',
+			'!ALPHA' => 'preg_match(\'~^[^a-z]+~i\', $part, $matches)',
+			'ALNUM' => 'preg_match(\'~^[a-z\\\\d]+~i\', $part, $matches)',
+			'!ALNUM' => 'preg_match(\'~^[^a-z\\\\d]+~i\', $part, $matches)',
+			'NUMBER' => 'preg_match(\'~^\\\\d+~\', $part, $matches)',
+			'!NUMBER' => 'preg_match(\'~^\\\\D+~\', $part, $matches)',
+			'HEXNUM' => 'preg_match(\'~^[a-f\\\\d]+~i\', $part, $matches)',
+			'!HEXNUM' => 'preg_match(\'~^[^a-f\\\\d]+~i\', $part, $matches)',
+			'DOT_NUMBER' => 'preg_match(\'~^\\.\\\\d+~\', $part, $matches)',
+			'!DOT_NUMBER' => '!preg_match(\'~^\\.\\\\d+~\', $part, $matches)',
+			'SAFECHAR' => 'preg_match(\'~^\\\\w+~\', $part, $matches)',
+			'!SAFECHAR' => 'preg_match(\'~^\\\\W+~\', $part, $matches)'
 		);
 
 		$lexerDelimiters = $this->lexer->getDelimiters();
@@ -439,7 +438,7 @@ SOURCE;
 		$conditions = '';
 		foreach ($this->delimiters[$state] as $no => $delimiter) {
 			if (isset($commonDelimiters[$delimiter])) {
-				$delimiterSource = '$letter';
+				$delimiterSource = '_ALL' === $delimiter || '_COUNTAB' === $delimiter ? '$letter' : '$matches[0]';
 				$condition = $commonDelimiters[$delimiter];
 			} elseif (isset($lexerDelimiters[$delimiter])) {
 				$delimiterSource = '$matches[0]';
@@ -449,7 +448,7 @@ SOURCE;
 				if (1 === strlen($delimiter)) {
 					$condition = sprintf('%s === $letter', $delimiterSource);
 				} else {
-					$condition = sprintf('$textPos === strpos($text, %s, $textPos)', $delimiterSource);
+					$condition = sprintf('0 === strpos($part, %s)', $delimiterSource);
 				}
 			}
 
@@ -476,7 +475,8 @@ CONDITION;
 	{
 		\$buffer = false;
 		while (\$textPos < \$textLength) {
-			\$letter = \$text[\$textPos];
+			\$part = substr(\$text, \$textPos, 10);
+			\$letter = \$part[0];
 {$conditions}
 			\$buffer .= \$letter;
 			\$textPos++;

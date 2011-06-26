@@ -78,7 +78,7 @@ class Fshl_Lexer_Java implements Fshl_Lexer
 			// Keyword
 			'KEYWORD' => array(
 				array(
-					'!SAFECHAR' => array(Fshl_Generator::STATE_RETURN, 0)
+					'!SAFECHAR' => array(Fshl_Generator::STATE_RETURN, 1)
 				),
 				Fshl_Generator::STATE_FLAG_KEYWORD | Fshl_Generator::STATE_FLAG_RECURSION,
 				null,
@@ -148,7 +148,7 @@ class Fshl_Lexer_Java implements Fshl_Lexer
 			),
 			'COMMENT2' => array(
 				array(
-					"\n" => array(Fshl_Generator::STATE_RETURN, 0),
+					"\n" => array(Fshl_Generator::STATE_RETURN, 1),
 					"\t" => array('COMMENT2', 0)
 				),
 				Fshl_Generator::STATE_FLAG_RECURSION,

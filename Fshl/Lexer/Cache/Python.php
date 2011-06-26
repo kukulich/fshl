@@ -135,7 +135,7 @@ class Fshl_Lexer_Cache_Python
 				)
 			), 1 => array(
 				0 => array(
-					0 => 11, 1 => 0
+					0 => 11, 1 => 1
 				)
 			), 2 => array(
 				0 => array(
@@ -277,20 +277,21 @@ class Fshl_Lexer_Cache_Python
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$letter = $text[$textPos];
+			$part = substr($text, $textPos, 10);
+			$letter = $part[0];
 			if ("\t" === $letter || "\n" === $letter) {
 				return array(0, $letter, $buffer);
 			}
-			if (preg_match('~^[a-z]$~i', $letter)) {
-				return array(1, $letter, $buffer);
+			if (preg_match('~^[a-z]+~i', $part, $matches)) {
+				return array(1, $matches[0], $buffer);
 			}
 			if ('_' === $letter) {
 				return array(2, '_', $buffer);
 			}
-			if ($textPos === strpos($text, '\'\'\'', $textPos)) {
+			if (0 === strpos($part, '\'\'\'')) {
 				return array(3, '\'\'\'', $buffer);
 			}
-			if ($textPos === strpos($text, '"""', $textPos)) {
+			if (0 === strpos($part, '"""')) {
 				return array(4, '"""', $buffer);
 			}
 			if ('\'' === $letter) {
@@ -302,17 +303,17 @@ class Fshl_Lexer_Cache_Python
 			if ('#' === $letter) {
 				return array(7, '#', $buffer);
 			}
-			if ($textPos === strpos($text, '0x', $textPos)) {
+			if (0 === strpos($part, '0x')) {
 				return array(8, '0x', $buffer);
 			}
-			if ($textPos === strpos($text, '0X', $textPos)) {
+			if (0 === strpos($part, '0X')) {
 				return array(9, '0X', $buffer);
 			}
-			if ('.' === $letter && preg_match('~^\\d$~', $text[$textPos + 1])) {
-				return array(10, $letter, $buffer);
+			if (preg_match('~^\.\\d+~', $part, $matches)) {
+				return array(10, $matches[0], $buffer);
 			}
-			if (preg_match('~^\\d$~', $letter)) {
-				return array(11, $letter, $buffer);
+			if (preg_match('~^\\d+~', $part, $matches)) {
+				return array(11, $matches[0], $buffer);
 			}
 
 			$buffer .= $letter;
@@ -333,9 +334,10 @@ class Fshl_Lexer_Cache_Python
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$letter = $text[$textPos];
-			if (preg_match('~^\\W$~i', $letter)) {
-				return array(0, $letter, $buffer);
+			$part = substr($text, $textPos, 10);
+			$letter = $part[0];
+			if (preg_match('~^\\W+~', $part, $matches)) {
+				return array(0, $matches[0], $buffer);
 			}
 
 			$buffer .= $letter;
@@ -356,14 +358,15 @@ class Fshl_Lexer_Cache_Python
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$letter = $text[$textPos];
-			if ($textPos === strpos($text, '\'\'\'', $textPos)) {
+			$part = substr($text, $textPos, 10);
+			$letter = $part[0];
+			if (0 === strpos($part, '\'\'\'')) {
 				return array(0, '\'\'\'', $buffer);
 			}
-			if ($textPos === strpos($text, '\\\\', $textPos)) {
+			if (0 === strpos($part, '\\\\')) {
 				return array(1, '\\\\', $buffer);
 			}
-			if ($textPos === strpos($text, '\\\'\'\'', $textPos)) {
+			if (0 === strpos($part, '\\\'\'\'')) {
 				return array(2, '\\\'\'\'', $buffer);
 			}
 			if ("\t" === $letter || "\n" === $letter) {
@@ -388,14 +391,15 @@ class Fshl_Lexer_Cache_Python
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$letter = $text[$textPos];
-			if ($textPos === strpos($text, '"""', $textPos)) {
+			$part = substr($text, $textPos, 10);
+			$letter = $part[0];
+			if (0 === strpos($part, '"""')) {
 				return array(0, '"""', $buffer);
 			}
-			if ($textPos === strpos($text, '\\\\', $textPos)) {
+			if (0 === strpos($part, '\\\\')) {
 				return array(1, '\\\\', $buffer);
 			}
-			if ($textPos === strpos($text, '\\"""', $textPos)) {
+			if (0 === strpos($part, '\\"""')) {
 				return array(2, '\\"""', $buffer);
 			}
 			if ("\t" === $letter || "\n" === $letter) {
@@ -420,14 +424,15 @@ class Fshl_Lexer_Cache_Python
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$letter = $text[$textPos];
+			$part = substr($text, $textPos, 10);
+			$letter = $part[0];
 			if ('\'' === $letter) {
 				return array(0, '\'', $buffer);
 			}
-			if ($textPos === strpos($text, '\\\\', $textPos)) {
+			if (0 === strpos($part, '\\\\')) {
 				return array(1, '\\\\', $buffer);
 			}
-			if ($textPos === strpos($text, '\\\'', $textPos)) {
+			if (0 === strpos($part, '\\\'')) {
 				return array(2, '\\\'', $buffer);
 			}
 			if ("\t" === $letter || "\n" === $letter) {
@@ -452,14 +457,15 @@ class Fshl_Lexer_Cache_Python
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$letter = $text[$textPos];
+			$part = substr($text, $textPos, 10);
+			$letter = $part[0];
 			if ('"' === $letter) {
 				return array(0, '"', $buffer);
 			}
-			if ($textPos === strpos($text, '\\\\', $textPos)) {
+			if (0 === strpos($part, '\\\\')) {
 				return array(1, '\\\\', $buffer);
 			}
-			if ($textPos === strpos($text, '\\"', $textPos)) {
+			if (0 === strpos($part, '\\"')) {
 				return array(2, '\\"', $buffer);
 			}
 			if ("\t" === $letter || "\n" === $letter) {
@@ -484,7 +490,8 @@ class Fshl_Lexer_Cache_Python
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$letter = $text[$textPos];
+			$part = substr($text, $textPos, 10);
+			$letter = $part[0];
 			if ('
 ' === $letter) {
 				return array(0, '
@@ -512,15 +519,16 @@ class Fshl_Lexer_Cache_Python
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$letter = $text[$textPos];
+			$part = substr($text, $textPos, 10);
+			$letter = $part[0];
 			if ('L' === $letter) {
 				return array(0, 'L', $buffer);
 			}
 			if ('l' === $letter) {
 				return array(1, 'l', $buffer);
 			}
-			if (preg_match('~^[^a-f\\d]$~i', $letter)) {
-				return array(2, $letter, $buffer);
+			if (preg_match('~^[^a-f\\d]+~i', $part, $matches)) {
+				return array(2, $matches[0], $buffer);
 			}
 
 			$buffer .= $letter;
@@ -541,7 +549,8 @@ class Fshl_Lexer_Cache_Python
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$letter = $text[$textPos];
+			$part = substr($text, $textPos, 10);
+			$letter = $part[0];
 			if ('.' === $letter) {
 				return array(0, '.', $buffer);
 			}
@@ -557,17 +566,17 @@ class Fshl_Lexer_Cache_Python
 			if ('J' === $letter) {
 				return array(4, 'J', $buffer);
 			}
-			if ($textPos === strpos($text, 'e-', $textPos)) {
+			if (0 === strpos($part, 'e-')) {
 				return array(5, 'e-', $buffer);
 			}
-			if ($textPos === strpos($text, 'e+', $textPos)) {
+			if (0 === strpos($part, 'e+')) {
 				return array(6, 'e+', $buffer);
 			}
 			if ('e' === $letter) {
 				return array(7, 'e', $buffer);
 			}
-			if (preg_match('~^\\D$~', $letter)) {
-				return array(8, $letter, $buffer);
+			if (preg_match('~^\\D+~', $part, $matches)) {
+				return array(8, $matches[0], $buffer);
 			}
 
 			$buffer .= $letter;
@@ -588,24 +597,25 @@ class Fshl_Lexer_Cache_Python
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$letter = $text[$textPos];
+			$part = substr($text, $textPos, 10);
+			$letter = $part[0];
 			if ('j' === $letter) {
 				return array(0, 'j', $buffer);
 			}
 			if ('J' === $letter) {
 				return array(1, 'J', $buffer);
 			}
-			if ($textPos === strpos($text, 'e-', $textPos)) {
+			if (0 === strpos($part, 'e-')) {
 				return array(2, 'e-', $buffer);
 			}
-			if ($textPos === strpos($text, 'e+', $textPos)) {
+			if (0 === strpos($part, 'e+')) {
 				return array(3, 'e+', $buffer);
 			}
 			if ('e' === $letter) {
 				return array(4, 'e', $buffer);
 			}
-			if (preg_match('~^\\D$~', $letter)) {
-				return array(5, $letter, $buffer);
+			if (preg_match('~^\\D+~', $part, $matches)) {
+				return array(5, $matches[0], $buffer);
 			}
 
 			$buffer .= $letter;
@@ -626,15 +636,16 @@ class Fshl_Lexer_Cache_Python
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$letter = $text[$textPos];
+			$part = substr($text, $textPos, 10);
+			$letter = $part[0];
 			if ('j' === $letter) {
 				return array(0, 'j', $buffer);
 			}
 			if ('J' === $letter) {
 				return array(1, 'J', $buffer);
 			}
-			if (preg_match('~^\\D$~', $letter)) {
-				return array(2, $letter, $buffer);
+			if (preg_match('~^\\D+~', $part, $matches)) {
+				return array(2, $matches[0], $buffer);
 			}
 
 			$buffer .= $letter;

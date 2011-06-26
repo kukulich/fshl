@@ -83,7 +83,7 @@ class Fshl_Lexer_Python implements Fshl_Lexer
 			),
 			'KEYWORD' => array(
 				array(
-					'!SAFECHAR' => array(Fshl_Generator::STATE_RETURN, 0)
+					'!SAFECHAR' => array(Fshl_Generator::STATE_RETURN, 1)
 				),
 				Fshl_Generator::STATE_FLAG_KEYWORD | Fshl_Generator::STATE_FLAG_RECURSION,
 				null,

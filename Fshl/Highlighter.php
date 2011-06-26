@@ -246,14 +246,14 @@ class Fshl_Highlighter
 		$textPos = 0;
 
 		// Parses text
-		$output = array();
+		$output = '';
 		$maxLineWidth = 0;
 		$line = 1;
 		$char = 0;
 		if ($this->options & self::OPTION_LINE_COUNTER) {
 			// Right aligment of line counter
 			$maxLineWidth = strlen(substr_count($text, "\n") + 1);
-			$output[] = $this->line($line, $maxLineWidth);
+			$output .= $this->line($line, $maxLineWidth);
 		}
 		$newLexer = $lexer;
 		$newState = $state = $this->lexer->initialState;
@@ -267,7 +267,7 @@ class Fshl_Highlighter
 				$bufferLength = strlen($buffer);
 				$textPos += $bufferLength;
 				$char += $bufferLength;
-				$output[] = $this->template($buffer, $state);
+				$output .= $this->template($buffer, $state);
 			}
 
 			if (-1 === $transitionId) {
@@ -313,9 +313,9 @@ class Fshl_Highlighter
 					$char = $prevChar;
 					$textPos = $prevTextPos;
 				} else {
-					$output[] = $this->template($delimiter, $state);
+					$output .= $this->template($delimiter, $state);
 					if ($addLine) {
-						$output[] = $this->line($actualLine, $maxLineWidth);
+						$output .= $this->line($actualLine, $maxLineWidth);
 					}
 				}
 
@@ -345,9 +345,9 @@ class Fshl_Highlighter
 				$char = $prevChar;
 				$textPos = $prevTextPos;
 			} else {
-				$output[] = $this->template($delimiter, $type > 0 ? $state : $newState);
+				$output .= $this->template($delimiter, $type > 0 ? $state : $newState);
 				if ($addLine) {
-					$output[] = $this->line($actualLine, $maxLineWidth);
+					$output .= $this->line($actualLine, $maxLineWidth);
 				}
 			}
 
@@ -386,9 +386,9 @@ class Fshl_Highlighter
 		}
 
 		// Adds template end
-		$output[] = $this->output->template('', null);
+		$output .= $this->output->template('', null);
 
-		return implode('', $output);
+		return $output;
 	}
 
 	/**

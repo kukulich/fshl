@@ -211,7 +211,8 @@ class Fshl_Lexer_Cache_Css
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$letter = $text[$textPos];
+			$part = substr($text, $textPos, 10);
+			$letter = $part[0];
 			if ("\t" === $letter || "\n" === $letter) {
 				return array(0, $letter, $buffer);
 			}
@@ -221,19 +222,19 @@ class Fshl_Lexer_Cache_Css
 			if ('.' === $letter) {
 				return array(2, '.', $buffer);
 			}
-			if ($textPos === strpos($text, '/*', $textPos)) {
+			if (0 === strpos($part, '/*')) {
 				return array(3, '/*', $buffer);
 			}
-			if ($textPos === strpos($text, '</', $textPos)) {
+			if (0 === strpos($part, '</')) {
 				return array(4, '</', $buffer);
 			}
-			if ($textPos === strpos($text, '<?php', $textPos)) {
+			if (0 === strpos($part, '<?php')) {
 				return array(5, '<?php', $buffer);
 			}
-			if ($textPos === strpos($text, '<?=', $textPos)) {
+			if (0 === strpos($part, '<?=')) {
 				return array(6, '<?=', $buffer);
 			}
-			if ($textPos === strpos($text, '<?', $textPos)) {
+			if (0 === strpos($part, '<?')) {
 				return array(7, '<?', $buffer);
 			}
 
@@ -255,11 +256,12 @@ class Fshl_Lexer_Cache_Css
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$letter = $text[$textPos];
-			if (preg_match('~^\\s$~', $letter)) {
-				return array(0, $letter, $buffer);
+			$part = substr($text, $textPos, 10);
+			$letter = $part[0];
+			if (preg_match('~^\s+~', $part, $matches)) {
+				return array(0, $matches[0], $buffer);
 			}
-			if ($textPos === strpos($text, '/*', $textPos)) {
+			if (0 === strpos($part, '/*')) {
 				return array(1, '/*', $buffer);
 			}
 			if ('{' === $letter) {
@@ -284,7 +286,8 @@ class Fshl_Lexer_Cache_Css
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$letter = $text[$textPos];
+			$part = substr($text, $textPos, 10);
+			$letter = $part[0];
 			if (':' === $letter) {
 				return array(0, ':', $buffer);
 			}
@@ -297,11 +300,11 @@ class Fshl_Lexer_Cache_Css
 			if ('}' === $letter) {
 				return array(3, '}', $buffer);
 			}
-			if ($textPos === strpos($text, '/*', $textPos)) {
+			if (0 === strpos($part, '/*')) {
 				return array(4, '/*', $buffer);
 			}
-			if (preg_match('~^\\S$~', $letter)) {
-				return array(5, $letter, $buffer);
+			if (preg_match('~^\\S+~', $part, $matches)) {
+				return array(5, $matches[0], $buffer);
 			}
 
 			$buffer .= $letter;
@@ -322,7 +325,8 @@ class Fshl_Lexer_Cache_Css
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$letter = $text[$textPos];
+			$part = substr($text, $textPos, 10);
+			$letter = $part[0];
 			if ("\t" === $letter || "\n" === $letter) {
 				return array(0, $letter, $buffer);
 			}
@@ -332,7 +336,7 @@ class Fshl_Lexer_Cache_Css
 			if ('}' === $letter) {
 				return array(2, '}', $buffer);
 			}
-			if ($textPos === strpos($text, '/*', $textPos)) {
+			if (0 === strpos($part, '/*')) {
 				return array(3, '/*', $buffer);
 			}
 
@@ -354,7 +358,8 @@ class Fshl_Lexer_Cache_Css
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$letter = $text[$textPos];
+			$part = substr($text, $textPos, 10);
+			$letter = $part[0];
 			if (';' === $letter) {
 				return array(0, ';', $buffer);
 			}
@@ -367,7 +372,7 @@ class Fshl_Lexer_Cache_Css
 			if ("\t" === $letter || "\n" === $letter) {
 				return array(3, $letter, $buffer);
 			}
-			if ($textPos === strpos($text, '/*', $textPos)) {
+			if (0 === strpos($part, '/*')) {
 				return array(4, '/*', $buffer);
 			}
 
@@ -389,9 +394,10 @@ class Fshl_Lexer_Cache_Css
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$letter = $text[$textPos];
-			if (preg_match('~^[^a-f\\d]$~i', $letter)) {
-				return array(0, $letter, $buffer);
+			$part = substr($text, $textPos, 10);
+			$letter = $part[0];
+			if (preg_match('~^[^a-f\\d]+~i', $part, $matches)) {
+				return array(0, $matches[0], $buffer);
 			}
 
 			$buffer .= $letter;
@@ -412,11 +418,12 @@ class Fshl_Lexer_Cache_Css
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$letter = $text[$textPos];
+			$part = substr($text, $textPos, 10);
+			$letter = $part[0];
 			if ("\t" === $letter || "\n" === $letter) {
 				return array(0, $letter, $buffer);
 			}
-			if ($textPos === strpos($text, '*/', $textPos)) {
+			if (0 === strpos($part, '*/')) {
 				return array(1, '*/', $buffer);
 			}
 

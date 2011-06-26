@@ -81,7 +81,7 @@ class Fshl_Lexer_Cpp implements Fshl_Lexer
 			// Keyword
 			'KEYWORD' => array(
 				array(
-					'!SAFECHAR' => array(Fshl_Generator::STATE_RETURN, 0)
+					'!SAFECHAR' => array(Fshl_Generator::STATE_RETURN, 1)
 				),
 				Fshl_Generator::STATE_FLAG_KEYWORD | Fshl_Generator::STATE_FLAG_RECURSION,
 				null,
@@ -133,7 +133,7 @@ class Fshl_Lexer_Cpp implements Fshl_Lexer
 					"\\\n" => array('PREPROC', 0), // Backslash in preprocessor
 					"\t" => array('PREPROC', 0),
 					"\\\xd\xa" => array('PREPROC', 0), // Backslash in preprocessor
-					"\n" => array(Fshl_Generator::STATE_RETURN, 0)
+					"\n" => array(Fshl_Generator::STATE_RETURN, 1)
 				),
 				Fshl_Generator::STATE_FLAG_RECURSION,
 				'cpp-preproc',
@@ -173,7 +173,7 @@ class Fshl_Lexer_Cpp implements Fshl_Lexer
 			),
 			'COMMENT2' => array(
 				array(
-					"\n" => array(Fshl_Generator::STATE_RETURN, 0),
+					"\n" => array(Fshl_Generator::STATE_RETURN, 1),
 					"\t" => array('COMMENT2', 0)
 				),
 				Fshl_Generator::STATE_FLAG_RECURSION,

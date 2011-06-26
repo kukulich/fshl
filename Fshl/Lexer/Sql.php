@@ -98,7 +98,7 @@ class Fshl_Lexer_Sql implements Fshl_Lexer
 			),
 			'COMMENT1' => array(
 				array(
-					"\n" => array(Fshl_Generator::STATE_RETURN, 0),
+					"\n" => array(Fshl_Generator::STATE_RETURN, 1),
 					'_COUNTAB' => array('COMMENT1', 0)
 				),
 				Fshl_Generator::STATE_FLAG_RECURSION,

@@ -83,7 +83,7 @@ class Fshl_Lexer_Javascript implements Fshl_Lexer
 			// Keyword
 			'KEYWORD' => array(
 				array(
-					'!SAFECHAR' => array(Fshl_Generator::STATE_RETURN, 0)
+					'!SAFECHAR' => array(Fshl_Generator::STATE_RETURN, 1)
 				),
 				Fshl_Generator::STATE_FLAG_KEYWORD | Fshl_Generator::STATE_FLAG_RECURSION,
 				'js-out',
@@ -156,7 +156,7 @@ class Fshl_Lexer_Javascript implements Fshl_Lexer
 			),
 			'COMMENT2' => array(
 				array(
-					"\n" => array(Fshl_Generator::STATE_RETURN, 0),
+					"\n" => array(Fshl_Generator::STATE_RETURN, 1),
 					'_COUNTAB' => array('COMMENT2', 0),
 					'<?php' => array('TO_PHP', 0),
 					'<?=' => array('TO_PHP', 0),

@@ -55,6 +55,13 @@ interface Fshl_Lexer
 	public function getStates();
 
 	/**
+	 * Returns special delimiters.
+	 *
+	 * @return array
+	 */
+	public function getDelimiters();
+
+	/**
 	 * Returns keywords.
 	 *
 	 * @return array

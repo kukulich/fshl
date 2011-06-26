@@ -434,11 +434,16 @@ SOURCE;
 			'!SAFECHAR' => 'preg_match(\'~^\\\\W$~i\', $letter)'
 		);
 
+		$lexerDelimiters = $this->lexer->getDelimiters();
+
 		$conditions = '';
 		foreach ($this->delimiters[$state] as $no => $delimiter) {
 			if (isset($commonDelimiters[$delimiter])) {
 				$delimiterSource = '$letter';
 				$condition = $commonDelimiters[$delimiter];
+			} elseif (isset($lexerDelimiters[$delimiter])) {
+				$delimiterSource = '$matches[0]';
+				$condition = $lexerDelimiters[$delimiter];
 			} else {
 				$delimiterSource = $this->getVarValueSource($delimiter);
 				if (1 === strlen($delimiter)) {

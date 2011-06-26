@@ -283,6 +283,16 @@ class Fshl_Lexer_Texy implements Fshl_Lexer
 	}
 
 	/**
+	 * Returns special delimiters.
+	 *
+	 * @return array
+	 */
+	public function getDelimiters()
+	{
+		return array();
+	}
+
+	/**
 	 * Returns keywords.
 	 *
 	 * @return array

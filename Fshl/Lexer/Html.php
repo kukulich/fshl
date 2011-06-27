@@ -35,7 +35,7 @@ use Fshl;
 class Html implements Fshl\Lexer
 {
 	/**
-	 * Returns language.
+	 * Returns language name.
 	 *
 	 * @return string
 	 */
@@ -45,7 +45,7 @@ class Html implements Fshl\Lexer
 	}
 
 	/**
-	 * Returns version.
+	 * Returns lexer version.
 	 *
 	 * @return string
 	 */

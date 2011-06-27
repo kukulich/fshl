@@ -63,7 +63,7 @@ class HtmlManual implements Fshl\Output
 	);
 
 	/**
-	 * Writes template.
+	 * Outputs a template part.
 	 *
 	 * @param string $part
 	 * @param string $class
@@ -92,7 +92,7 @@ class HtmlManual implements Fshl\Output
 	}
 
 	/**
-	 * Writes keyword.
+	 * Outputs a keyword.
 	 *
 	 * @param string $part
 	 * @param string $class

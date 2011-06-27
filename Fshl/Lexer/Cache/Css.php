@@ -51,21 +51,21 @@ class Css
 	public $trans;
 
 	/**
-	 * Id of initial state.
+	 * Id of the initial state.
 	 *
 	 * @var integer
 	 */
 	public $initialState;
 
 	/**
-	 * Id of return state.
+	 * Id of the return state.
 	 *
 	 * @var integer
 	 */
 	public $returnState;
 
 	/**
-	 * Id of quit state.
+	 * Id of the quit state.
 	 *
 	 * @var integer
 	 */
@@ -100,7 +100,7 @@ class Css
 	public $keywords;
 
 	/**
-	 * Initializes lexer.
+	 * Initializes the lexer.
 	 */
 	public function __construct()
 	{
@@ -199,7 +199,7 @@ class Css
 	}
 
 	/**
-	 * Finds delimiter for state OUT.
+	 * Finds a delimiter for state OUT.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -244,7 +244,7 @@ class Css
 	}
 
 	/**
-	 * Finds delimiter for state CLASS.
+	 * Finds a delimiter for state CLASS.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -274,7 +274,7 @@ class Css
 	}
 
 	/**
-	 * Finds delimiter for state DEF.
+	 * Finds a delimiter for state DEF.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -313,7 +313,7 @@ class Css
 	}
 
 	/**
-	 * Finds delimiter for state PROPERTY.
+	 * Finds a delimiter for state PROPERTY.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -346,7 +346,7 @@ class Css
 	}
 
 	/**
-	 * Finds delimiter for state VALUE.
+	 * Finds a delimiter for state VALUE.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -382,7 +382,7 @@ class Css
 	}
 
 	/**
-	 * Finds delimiter for state COLOR.
+	 * Finds a delimiter for state COLOR.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -406,7 +406,7 @@ class Css
 	}
 
 	/**
-	 * Finds delimiter for state COMMENT.
+	 * Finds a delimiter for state COMMENT.
 	 *
 	 * @param string $text
 	 * @param string $textLength

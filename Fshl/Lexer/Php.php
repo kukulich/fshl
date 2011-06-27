@@ -35,7 +35,7 @@ use Fshl;
 class Php implements Fshl\Lexer
 {
 	/**
-	 * Returns language.
+	 * Returns language name.
 	 *
 	 * @return string
 	 */
@@ -45,7 +45,7 @@ class Php implements Fshl\Lexer
 	}
 
 	/**
-	 * Returns version.
+	 * Returns lexer version.
 	 *
 	 * @return string
 	 */
@@ -333,7 +333,7 @@ class Php implements Fshl\Lexer
 				'false' => 1,
 				'null' => 1,
 
-				// Function list
+				// Functions list
 				'abs' => 2,
 				'acos' => 2,
 				'acosh' => 2,

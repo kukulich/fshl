@@ -35,7 +35,7 @@ use Fshl;
 class Javascript implements Fshl\Lexer
 {
 	/**
-	 * Returns language.
+	 * Returns language name.
 	 *
 	 * @return string
 	 */
@@ -45,7 +45,7 @@ class Javascript implements Fshl\Lexer
 	}
 
 	/**
-	 * Returns version.
+	 * Returns lexer version.
 	 *
 	 * @return string
 	 */
@@ -91,7 +91,7 @@ class Javascript implements Fshl\Lexer
 				'js-out',
 				null
 			),
-			// Keyword
+			// Keywords
 			'KEYWORD' => array(
 				array(
 					'!SAFECHAR' => array(Fshl\Generator::STATE_RETURN, 1)

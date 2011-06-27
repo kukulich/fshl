@@ -51,21 +51,21 @@ class Html
 	public $trans;
 
 	/**
-	 * Id of initial state.
+	 * Id of the initial state.
 	 *
 	 * @var integer
 	 */
 	public $initialState;
 
 	/**
-	 * Id of return state.
+	 * Id of the return state.
 	 *
 	 * @var integer
 	 */
 	public $returnState;
 
 	/**
-	 * Id of quit state.
+	 * Id of the quit state.
 	 *
 	 * @var integer
 	 */
@@ -100,7 +100,7 @@ class Html
 	public $keywords;
 
 	/**
-	 * Initializes lexer.
+	 * Initializes the lexer.
 	 */
 	public function __construct()
 	{
@@ -263,7 +263,7 @@ class Html
 	}
 
 	/**
-	 * Finds delimiter for state OUT.
+	 * Finds a delimiter for state OUT.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -305,7 +305,7 @@ class Html
 	}
 
 	/**
-	 * Finds delimiter for state ENTITY.
+	 * Finds a delimiter for state ENTITY.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -335,7 +335,7 @@ class Html
 	}
 
 	/**
-	 * Finds delimiter for state TAG.
+	 * Finds a delimiter for state TAG.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -383,7 +383,7 @@ class Html
 	}
 
 	/**
-	 * Finds delimiter for state inTAG.
+	 * Finds a delimiter for state inTAG.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -425,7 +425,7 @@ class Html
 	}
 
 	/**
-	 * Finds delimiter for state CSS.
+	 * Finds a delimiter for state CSS.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -467,7 +467,7 @@ class Html
 	}
 
 	/**
-	 * Finds delimiter for state TO_CSS.
+	 * Finds a delimiter for state TO_CSS.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -491,7 +491,7 @@ class Html
 	}
 
 	/**
-	 * Finds delimiter for state JAVASCRIPT.
+	 * Finds a delimiter for state JAVASCRIPT.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -533,7 +533,7 @@ class Html
 	}
 
 	/**
-	 * Finds delimiter for state TO_JAVASCRIPT.
+	 * Finds a delimiter for state TO_JAVASCRIPT.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -557,7 +557,7 @@ class Html
 	}
 
 	/**
-	 * Finds delimiter for state QUOTE1.
+	 * Finds a delimiter for state QUOTE1.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -593,7 +593,7 @@ class Html
 	}
 
 	/**
-	 * Finds delimiter for state QUOTE2.
+	 * Finds a delimiter for state QUOTE2.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -629,7 +629,7 @@ class Html
 	}
 
 	/**
-	 * Finds delimiter for state COMMENT.
+	 * Finds a delimiter for state COMMENT.
 	 *
 	 * @param string $text
 	 * @param string $textLength

@@ -33,7 +33,7 @@ namespace Fshl;
 interface Output
 {
 	/**
-	 * Writes template.
+	 * Outputs a template part.
 	 *
 	 * @param string $word
 	 * @param string $class
@@ -42,7 +42,7 @@ interface Output
 	public function template($word, $class);
 
 	/**
-	 * Writes keyword.
+	 * Outputs a keyword.
 	 *
 	 * @param string $word
 	 * @param string $class

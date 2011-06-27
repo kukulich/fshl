@@ -51,21 +51,21 @@ class Sql
 	public $trans;
 
 	/**
-	 * Id of initial state.
+	 * Id of the initial state.
 	 *
 	 * @var integer
 	 */
 	public $initialState;
 
 	/**
-	 * Id of return state.
+	 * Id of the return state.
 	 *
 	 * @var integer
 	 */
 	public $returnState;
 
 	/**
-	 * Id of quit state.
+	 * Id of the quit state.
 	 *
 	 * @var integer
 	 */
@@ -100,7 +100,7 @@ class Sql
 	public $keywords;
 
 	/**
-	 * Initializes lexer.
+	 * Initializes the lexer.
 	 */
 	public function __construct()
 	{
@@ -232,7 +232,7 @@ class Sql
 	}
 
 	/**
-	 * Finds delimiter for state OUT.
+	 * Finds a delimiter for state OUT.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -283,7 +283,7 @@ class Sql
 	}
 
 	/**
-	 * Finds delimiter for state FUNCTION.
+	 * Finds a delimiter for state FUNCTION.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -307,7 +307,7 @@ class Sql
 	}
 
 	/**
-	 * Finds delimiter for state COMMENT.
+	 * Finds a delimiter for state COMMENT.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -334,7 +334,7 @@ class Sql
 	}
 
 	/**
-	 * Finds delimiter for state COMMENT1.
+	 * Finds a delimiter for state COMMENT1.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -361,7 +361,7 @@ class Sql
 	}
 
 	/**
-	 * Finds delimiter for state QUOTE.
+	 * Finds a delimiter for state QUOTE.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -391,7 +391,7 @@ class Sql
 	}
 
 	/**
-	 * Finds delimiter for state QUOTE1.
+	 * Finds a delimiter for state QUOTE1.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -421,7 +421,7 @@ class Sql
 	}
 
 	/**
-	 * Finds delimiter for state QUOTE3.
+	 * Finds a delimiter for state QUOTE3.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -451,7 +451,7 @@ class Sql
 	}
 
 	/**
-	 * Finds delimiter for state NUM.
+	 * Finds a delimiter for state NUM.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -481,7 +481,7 @@ class Sql
 	}
 
 	/**
-	 * Finds delimiter for state DEC_NUM.
+	 * Finds a delimiter for state DEC_NUM.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -505,7 +505,7 @@ class Sql
 	}
 
 	/**
-	 * Finds delimiter for state HEX_NUM.
+	 * Finds a delimiter for state HEX_NUM.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -529,7 +529,7 @@ class Sql
 	}
 
 	/**
-	 * Finds delimiter for state OPTION.
+	 * Finds a delimiter for state OPTION.
 	 *
 	 * @param string $text
 	 * @param string $textLength

@@ -51,21 +51,21 @@ class Python
 	public $trans;
 
 	/**
-	 * Id of initial state.
+	 * Id of the initial state.
 	 *
 	 * @var integer
 	 */
 	public $initialState;
 
 	/**
-	 * Id of return state.
+	 * Id of the return state.
 	 *
 	 * @var integer
 	 */
 	public $returnState;
 
 	/**
-	 * Id of quit state.
+	 * Id of the quit state.
 	 *
 	 * @var integer
 	 */
@@ -100,7 +100,7 @@ class Python
 	public $keywords;
 
 	/**
-	 * Initializes lexer.
+	 * Initializes the lexer.
 	 */
 	public function __construct()
 	{
@@ -265,7 +265,7 @@ class Python
 	}
 
 	/**
-	 * Finds delimiter for state OUT.
+	 * Finds a delimiter for state OUT.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -322,7 +322,7 @@ class Python
 	}
 
 	/**
-	 * Finds delimiter for state KEYWORD.
+	 * Finds a delimiter for state KEYWORD.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -346,7 +346,7 @@ class Python
 	}
 
 	/**
-	 * Finds delimiter for state DOCSTRING1.
+	 * Finds a delimiter for state DOCSTRING1.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -379,7 +379,7 @@ class Python
 	}
 
 	/**
-	 * Finds delimiter for state DOCSTRING2.
+	 * Finds a delimiter for state DOCSTRING2.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -412,7 +412,7 @@ class Python
 	}
 
 	/**
-	 * Finds delimiter for state QUOTE1.
+	 * Finds a delimiter for state QUOTE1.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -445,7 +445,7 @@ class Python
 	}
 
 	/**
-	 * Finds delimiter for state QUOTE2.
+	 * Finds a delimiter for state QUOTE2.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -478,7 +478,7 @@ class Python
 	}
 
 	/**
-	 * Finds delimiter for state COMMENT.
+	 * Finds a delimiter for state COMMENT.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -505,7 +505,7 @@ class Python
 	}
 
 	/**
-	 * Finds delimiter for state NUM_HEXADECIMAL.
+	 * Finds a delimiter for state NUM_HEXADECIMAL.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -535,7 +535,7 @@ class Python
 	}
 
 	/**
-	 * Finds delimiter for state NUM_DECIMAL.
+	 * Finds a delimiter for state NUM_DECIMAL.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -583,7 +583,7 @@ class Python
 	}
 
 	/**
-	 * Finds delimiter for state NUM_FRACTION.
+	 * Finds a delimiter for state NUM_FRACTION.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -622,7 +622,7 @@ class Python
 	}
 
 	/**
-	 * Finds delimiter for state NUM_EXPONENT.
+	 * Finds a delimiter for state NUM_EXPONENT.
 	 *
 	 * @param string $text
 	 * @param string $textLength

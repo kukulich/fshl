@@ -36,7 +36,7 @@ use Fshl;
 class Python implements Fshl\Lexer
 {
 	/**
-	 * Returns language.
+	 * Returns language name.
 	 *
 	 * @return string
 	 */
@@ -46,7 +46,7 @@ class Python implements Fshl\Lexer
 	}
 
 	/**
-	 * Returns version.
+	 * Returns lexer version.
 	 *
 	 * @return string
 	 */

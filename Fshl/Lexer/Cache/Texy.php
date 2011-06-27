@@ -51,21 +51,21 @@ class Texy
 	public $trans;
 
 	/**
-	 * Id of initial state.
+	 * Id of the initial state.
 	 *
 	 * @var integer
 	 */
 	public $initialState;
 
 	/**
-	 * Id of return state.
+	 * Id of the return state.
 	 *
 	 * @var integer
 	 */
 	public $returnState;
 
 	/**
-	 * Id of quit state.
+	 * Id of the quit state.
 	 *
 	 * @var integer
 	 */
@@ -100,7 +100,7 @@ class Texy
 	public $keywords;
 
 	/**
-	 * Initializes lexer.
+	 * Initializes the lexer.
 	 */
 	public function __construct()
 	{
@@ -279,7 +279,7 @@ class Texy
 	}
 
 	/**
-	 * Finds delimiter for state LineBODY.
+	 * Finds a delimiter for state LineBODY.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -309,7 +309,7 @@ class Texy
 	}
 
 	/**
-	 * Finds delimiter for state NewLineTypeSelector.
+	 * Finds a delimiter for state NewLineTypeSelector.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -336,7 +336,7 @@ class Texy
 	}
 
 	/**
-	 * Finds delimiter for state SingleNewLine.
+	 * Finds a delimiter for state SingleNewLine.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -372,7 +372,7 @@ class Texy
 	}
 
 	/**
-	 * Finds delimiter for state DoubleNewLine.
+	 * Finds a delimiter for state DoubleNewLine.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -417,7 +417,7 @@ class Texy
 	}
 
 	/**
-	 * Finds delimiter for state HeaderIN.
+	 * Finds a delimiter for state HeaderIN.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -456,7 +456,7 @@ class Texy
 	}
 
 	/**
-	 * Finds delimiter for state HeaderBody.
+	 * Finds a delimiter for state HeaderBody.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -492,7 +492,7 @@ class Texy
 	}
 
 	/**
-	 * Finds delimiter for state HeaderOUT.
+	 * Finds a delimiter for state HeaderOUT.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -516,7 +516,7 @@ class Texy
 	}
 
 	/**
-	 * Finds delimiter for state HorizontalLine.
+	 * Finds a delimiter for state HorizontalLine.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -540,7 +540,7 @@ class Texy
 	}
 
 	/**
-	 * Finds delimiter for state BlockIN.
+	 * Finds a delimiter for state BlockIN.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -576,7 +576,7 @@ class Texy
 	}
 
 	/**
-	 * Finds delimiter for state BlockOUT.
+	 * Finds a delimiter for state BlockOUT.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -600,7 +600,7 @@ class Texy
 	}
 
 	/**
-	 * Finds delimiter for state BlockDUMMY.
+	 * Finds a delimiter for state BlockDUMMY.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -624,7 +624,7 @@ class Texy
 	}
 
 	/**
-	 * Finds delimiter for state BlockTEXT.
+	 * Finds a delimiter for state BlockTEXT.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -648,7 +648,7 @@ class Texy
 	}
 
 	/**
-	 * Finds delimiter for state BlockTEXTBody.
+	 * Finds a delimiter for state BlockTEXTBody.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -672,7 +672,7 @@ class Texy
 	}
 
 	/**
-	 * Finds delimiter for state BlockTEXTBodyNL.
+	 * Finds a delimiter for state BlockTEXTBodyNL.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -699,7 +699,7 @@ class Texy
 	}
 
 	/**
-	 * Finds delimiter for state BlockTEXTBodyOUT.
+	 * Finds a delimiter for state BlockTEXTBodyOUT.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -723,7 +723,7 @@ class Texy
 	}
 
 	/**
-	 * Finds delimiter for state BlockHTML.
+	 * Finds a delimiter for state BlockHTML.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -747,7 +747,7 @@ class Texy
 	}
 
 	/**
-	 * Finds delimiter for state BlockHTMLBody.
+	 * Finds a delimiter for state BlockHTMLBody.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -771,7 +771,7 @@ class Texy
 	}
 
 	/**
-	 * Finds delimiter for state BlockHTMLBodyNL.
+	 * Finds a delimiter for state BlockHTMLBodyNL.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -798,7 +798,7 @@ class Texy
 	}
 
 	/**
-	 * Finds delimiter for state BlockHTMLBodyOUT.
+	 * Finds a delimiter for state BlockHTMLBodyOUT.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -822,7 +822,7 @@ class Texy
 	}
 
 	/**
-	 * Finds delimiter for state BlockCODE.
+	 * Finds a delimiter for state BlockCODE.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -846,7 +846,7 @@ class Texy
 	}
 
 	/**
-	 * Finds delimiter for state BlockCODEBody.
+	 * Finds a delimiter for state BlockCODEBody.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -870,7 +870,7 @@ class Texy
 	}
 
 	/**
-	 * Finds delimiter for state BlockCODEBodyNL.
+	 * Finds a delimiter for state BlockCODEBodyNL.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -897,7 +897,7 @@ class Texy
 	}
 
 	/**
-	 * Finds delimiter for state BlockCODEBodyOUT.
+	 * Finds a delimiter for state BlockCODEBodyOUT.
 	 *
 	 * @param string $text
 	 * @param string $textLength

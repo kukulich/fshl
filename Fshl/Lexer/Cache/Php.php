@@ -51,21 +51,21 @@ class Php
 	public $trans;
 
 	/**
-	 * Id of initial state.
+	 * Id of the initial state.
 	 *
 	 * @var integer
 	 */
 	public $initialState;
 
 	/**
-	 * Id of return state.
+	 * Id of the return state.
 	 *
 	 * @var integer
 	 */
 	public $returnState;
 
 	/**
-	 * Id of quit state.
+	 * Id of the quit state.
 	 *
 	 * @var integer
 	 */
@@ -100,7 +100,7 @@ class Php
 	public $keywords;
 
 	/**
-	 * Initializes lexer.
+	 * Initializes the lexer.
 	 */
 	public function __construct()
 	{
@@ -385,7 +385,7 @@ class Php
 	}
 
 	/**
-	 * Finds delimiter for state OUT.
+	 * Finds a delimiter for state OUT.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -445,7 +445,7 @@ class Php
 	}
 
 	/**
-	 * Finds delimiter for state DUMMY_PHP.
+	 * Finds a delimiter for state DUMMY_PHP.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -475,7 +475,7 @@ class Php
 	}
 
 	/**
-	 * Finds delimiter for state FUNCTION.
+	 * Finds a delimiter for state FUNCTION.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -499,7 +499,7 @@ class Php
 	}
 
 	/**
-	 * Finds delimiter for state COMMENT.
+	 * Finds a delimiter for state COMMENT.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -526,7 +526,7 @@ class Php
 	}
 
 	/**
-	 * Finds delimiter for state COMMENT1.
+	 * Finds a delimiter for state COMMENT1.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -556,7 +556,7 @@ class Php
 	}
 
 	/**
-	 * Finds delimiter for state VAR.
+	 * Finds a delimiter for state VAR.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -589,7 +589,7 @@ class Php
 	}
 
 	/**
-	 * Finds delimiter for state VAR_STR.
+	 * Finds a delimiter for state VAR_STR.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -616,7 +616,7 @@ class Php
 	}
 
 	/**
-	 * Finds delimiter for state QUOTE.
+	 * Finds a delimiter for state QUOTE.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -655,7 +655,7 @@ class Php
 	}
 
 	/**
-	 * Finds delimiter for state HEREDOC.
+	 * Finds a delimiter for state HEREDOC.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -691,7 +691,7 @@ class Php
 	}
 
 	/**
-	 * Finds delimiter for state QUOTE1.
+	 * Finds a delimiter for state QUOTE1.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -724,7 +724,7 @@ class Php
 	}
 
 	/**
-	 * Finds delimiter for state NOWDOC.
+	 * Finds a delimiter for state NOWDOC.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -751,7 +751,7 @@ class Php
 	}
 
 	/**
-	 * Finds delimiter for state NUM.
+	 * Finds a delimiter for state NUM.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -781,7 +781,7 @@ class Php
 	}
 
 	/**
-	 * Finds delimiter for state DEC_NUM.
+	 * Finds a delimiter for state DEC_NUM.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -805,7 +805,7 @@ class Php
 	}
 
 	/**
-	 * Finds delimiter for state HEX_NUM.
+	 * Finds a delimiter for state HEX_NUM.
 	 *
 	 * @param string $text
 	 * @param string $textLength

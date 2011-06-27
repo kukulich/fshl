@@ -35,7 +35,7 @@ use Fshl;
 class Java implements Fshl\Lexer
 {
 	/**
-	 * Returns language.
+	 * Returns language name.
 	 *
 	 * @return string
 	 */
@@ -45,7 +45,7 @@ class Java implements Fshl\Lexer
 	}
 
 	/**
-	 * Returns version.
+	 * Returns lexer version.
 	 *
 	 * @return string
 	 */
@@ -86,7 +86,7 @@ class Java implements Fshl\Lexer
 				null,
 				null
 			),
-			// Keyword
+			// Keywords
 			'KEYWORD' => array(
 				array(
 					'!SAFECHAR' => array(Fshl\Generator::STATE_RETURN, 1)

@@ -42,7 +42,7 @@ class Html implements Fshl\Output
 	private $lastClass = null;
 
 	/**
-	 * Writes template.
+	 * Outputs a template part.
 	 *
 	 * @param string $part
 	 * @param string $class
@@ -67,7 +67,7 @@ class Html implements Fshl\Output
 	}
 
 	/**
-	 * Writes keyword.
+	 * Outputs a keyword.
 	 *
 	 * @param string $part
 	 * @param string $class

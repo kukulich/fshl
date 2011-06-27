@@ -51,21 +51,21 @@ class Java
 	public $trans;
 
 	/**
-	 * Id of initial state.
+	 * Id of the initial state.
 	 *
 	 * @var integer
 	 */
 	public $initialState;
 
 	/**
-	 * Id of return state.
+	 * Id of the return state.
 	 *
 	 * @var integer
 	 */
 	public $returnState;
 
 	/**
-	 * Id of quit state.
+	 * Id of the quit state.
 	 *
 	 * @var integer
 	 */
@@ -100,7 +100,7 @@ class Java
 	public $keywords;
 
 	/**
-	 * Initializes lexer.
+	 * Initializes the lexer.
 	 */
 	public function __construct()
 	{
@@ -202,7 +202,7 @@ class Java
 	}
 
 	/**
-	 * Finds delimiter for state OUT.
+	 * Finds a delimiter for state OUT.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -244,7 +244,7 @@ class Java
 	}
 
 	/**
-	 * Finds delimiter for state KEYWORD.
+	 * Finds a delimiter for state KEYWORD.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -268,7 +268,7 @@ class Java
 	}
 
 	/**
-	 * Finds delimiter for state NUM.
+	 * Finds a delimiter for state NUM.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -301,7 +301,7 @@ class Java
 	}
 
 	/**
-	 * Finds delimiter for state DEC_NUM.
+	 * Finds a delimiter for state DEC_NUM.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -328,7 +328,7 @@ class Java
 	}
 
 	/**
-	 * Finds delimiter for state HEX_NUM.
+	 * Finds a delimiter for state HEX_NUM.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -352,7 +352,7 @@ class Java
 	}
 
 	/**
-	 * Finds delimiter for state QUOTE1.
+	 * Finds a delimiter for state QUOTE1.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -385,7 +385,7 @@ class Java
 	}
 
 	/**
-	 * Finds delimiter for state QUOTE2.
+	 * Finds a delimiter for state QUOTE2.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -418,7 +418,7 @@ class Java
 	}
 
 	/**
-	 * Finds delimiter for state COMMENT1.
+	 * Finds a delimiter for state COMMENT1.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -445,7 +445,7 @@ class Java
 	}
 
 	/**
-	 * Finds delimiter for state COMMENT2.
+	 * Finds a delimiter for state COMMENT2.
 	 *
 	 * @param string $text
 	 * @param string $textLength

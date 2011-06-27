@@ -33,7 +33,7 @@ namespace Fshl;
 class Generator
 {
 	/**
-	 * Version.
+	 * Library version.
 	 *
 	 * @var string
 	 */
@@ -47,7 +47,7 @@ class Generator
 	const STATE_RETURN = '_RETURN';
 
 	/**
-	 * State to quit current state.
+	 * State to quit the current state.
 	 *
 	 * @var string
 	 */
@@ -159,14 +159,14 @@ class Generator
 	const CASE_INSENSITIVE = false;
 
 	/**
-	 * Actual lexer.
+	 * Current lexer.
 	 *
 	 * @var \Fshl\Lexer
 	 */
 	private $lexer = null;
 
 	/**
-	 * Actual lexer name.
+	 * Current lexer name.
 	 *
 	 * @var string
 	 */
@@ -180,7 +180,7 @@ class Generator
 	private $source;
 
 	/**
-	 * List of CSS classes of actual lexer.
+	 * List of CSS classes of current lexer.
 	 *
 	 * @var array
 	 */
@@ -222,7 +222,7 @@ class Generator
 	private $trans = array();
 
 	/**
-	 * Initializes generator for given lexer.
+	 * Initializes the generator for a given lexer.
 	 *
 	 * @param \Fshl\Lexer $lexerName
 	 * @throws InvalidArgumentException If the class for given lexer doesn't exist.
@@ -235,7 +235,7 @@ class Generator
 	}
 
 	/**
-	 * Returns generated source.
+	 * Returns the generated source.
 	 *
 	 * @return string
 	 */
@@ -245,7 +245,7 @@ class Generator
 	}
 
 	/**
-	 * Saves generated source to lexer cache file.
+	 * Saves the generated source to a lexer cache file.
 	 *
 	 * @return \Fshl\Generator
 	 * @throws Exception If the file could not be saved.
@@ -260,7 +260,7 @@ class Generator
 	}
 
 	/**
-	 * Generates source.
+	 * Generates the source.
 	 *
 	 * @return string
 	 */
@@ -340,21 +340,21 @@ class {$this->lexerName}
 	public \$trans;
 
 	/**
-	 * Id of initial state.
+	 * Id of the initial state.
 	 *
 	 * @var integer
 	 */
 	public \$initialState;
 
 	/**
-	 * Id of return state.
+	 * Id of the return state.
 	 *
 	 * @var integer
 	 */
 	public \$returnState;
 
 	/**
-	 * Id of quit state.
+	 * Id of the quit state.
 	 *
 	 * @var integer
 	 */
@@ -389,7 +389,7 @@ class {$this->lexerName}
 	public \$keywords;
 
 	/**
-	 * Initializes lexer.
+	 * Initializes the lexer.
 	 */
 	public function __construct()
 	{
@@ -401,7 +401,7 @@ SOURCE;
 	}
 
 	/**
-	 * Generates state code.
+	 * Generates a state code.
 	 *
 	 * @param integer $state
 	 * @return string
@@ -460,7 +460,7 @@ CONDITION;
 		return <<<STATE
 
 	/**
-	 * Finds delimiter for state {$stateName}.
+	 * Finds a delimiter for state {$stateName}.
 	 *
 	 * @param string \$text
 	 * @param string \$textLength
@@ -484,7 +484,7 @@ STATE;
 	}
 
 	/**
-	 * Optimizes lexer definition.
+	 * Optimizes the lexer definition.
 	 *
 	 * @return Generator
 	 * @throws RuntimeException If the lexer definition is wrong.
@@ -535,7 +535,7 @@ STATE;
 	}
 
 	/**
-	 * Returns variable source.
+	 * Returns a variable source.
 	 *
 	 * @param string $name
 	 * @param mixed $value
@@ -547,7 +547,7 @@ STATE;
 	}
 
 	/**
-	 * Returns variable value source.
+	 * Returns a variable value source.
 	 *
 	 * @param mixed $value
 	 * @param integer $level

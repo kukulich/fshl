@@ -1,8 +1,8 @@
 <?php
 
 /**
- * FSHL                              | Universal Syntax HighLighter |
- * ---------------------------------------------------------------------
+ * FSHL 2.0 RC                            | Universal Syntax HighLighter |
+ * -----------------------------------------------------------------------
  *
  * LICENSE
  *
@@ -290,8 +290,8 @@ class Generator
 <?php
 
 /**
- * FSHL                              | Universal Syntax HighLighter |
- * ---------------------------------------------------------------------
+ * FSHL 2.0 RC                            | Universal Syntax HighLighter |
+ * -----------------------------------------------------------------------
  *
  * LICENSE
  *

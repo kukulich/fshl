@@ -29,7 +29,7 @@
 <notes>-</notes>
 <contents>
 	<dir name="/">
-		<dir name="Fshl">
+		<dir name="FSHL">
 			<dir name="Lexer">
 				<dir name="Cache">
 					<file name="Cpp.php" role="php" />

@@ -75,6 +75,7 @@ class HtmlOnly implements FSHL\Lexer
 			'OUT' => array(
 				array(
 					'<!--' => array('COMMENT', 0),
+					'<?' => array('OUT', 1),
 					'<' => array('TAG', 0),
 					'&' => array('ENTITY', 0),
 					'_COUNTAB' => array('OUT', 0)
@@ -96,36 +97,99 @@ class HtmlOnly implements FSHL\Lexer
 			'TAG' => array(
 				array(
 					'>' => array('OUT', 1),
-					'SPACE' => array('inTAG', 0)
+					'style' => array('STYLE', 1),
+					'STYLE' => array('STYLE', 1),
+					'script' => array('SCRIPT', 1),
+					'SCRIPT' => array('SCRIPT', 1),
+					'SPACE' => array('TAGIN', 0)
 				),
 				FSHL\Generator::STATE_FLAG_NONE,
 				'html-tag',
 				null
 			),
-			'inTAG' => array(
+			'TAGIN' => array(
 				array(
 					'"' => array('QUOTE1', 0),
-					'>' => array('OUT', 1),
-					'_COUNTAB' => array('inTAG', 0),
-					'\'' => array('QUOTE2', 0)
+					'\'' => array('QUOTE2', 0),
+					'/>' => array('TAG', -1),
+					'>' => array('TAG', -1),
+					'_COUNTAB' => array('TAGIN', 0)
 				),
 				FSHL\Generator::STATE_FLAG_NONE,
 				'html-tagin',
 				null
 			),
-			'QUOTE1' => array(
+			'STYLE' => array(
 				array(
-					'"' => array('inTAG', 0)
+					'"' => array('QUOTE1', 0),
+					'\'' => array('QUOTE2', 0),
+					'>' => array('STYLE_END', -1),
+					'_COUNTAB' => array('STYLE', 0)
 				),
 				FSHL\Generator::STATE_FLAG_NONE,
+				'html-tagin',
+				null
+			),
+			'STYLE_END' => array(
+				array(
+					'>' => array('CSS', 1)
+				),
+				FSHL\Generator::STATE_FLAG_NONE,
+				'html-tag',
+				null
+			),
+			'CSS' => array(
+				array(
+					'_COUNTAB' => array('CSS', 0),
+					'</style' => array('TAG', 0),
+					'</STYLE' => array('TAG', 0),
+				),
+				FSHL\Generator::STATE_FLAG_NONE,
+				null,
+				null
+			),
+			'SCRIPT' => array(
+				array(
+					'"' => array('QUOTE1', 0),
+					'\'' => array('QUOTE2', 0),
+					'>' => array('SCRIPT_END', -1),
+					'_COUNTAB' => array('SCRIPT', 0)
+				),
+				FSHL\Generator::STATE_FLAG_NONE,
+				'html-tagin',
+				null
+			),
+			'SCRIPT_END' => array(
+				array(
+					'>' => array('JAVASCRIPT', 1)
+				),
+				FSHL\Generator::STATE_FLAG_NONE,
+				'html-tag',
+				null
+			),
+			'JAVASCRIPT' => array(
+				array(
+					'_COUNTAB' => array('JAVASCRIPT', 0),
+					'</script' => array('TAG', 0),
+					'</SCRIPT' => array('TAG', 0)
+				),
+				FSHL\Generator::STATE_FLAG_NONE,
+				null,
+				null
+			),
+			'QUOTE1' => array(
+				array(
+					'"' => array(FSHL\Generator::STATE_RETURN, 0)
+				),
+				FSHL\Generator::STATE_FLAG_RECURSION,
 				'html-quote',
 				null
 			),
 			'QUOTE2' => array(
 				array(
-					'\'' => array('inTAG', 0)
+					'\'' => array(FSHL\Generator::STATE_RETURN, 0)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				FSHL\Generator::STATE_FLAG_RECURSION,
 				'html-quote',
 				null
 			),

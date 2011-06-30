@@ -154,16 +154,18 @@ class Html
 				0 => array(
 					0 => 8, 1 => 0
 				), 1 => array(
-					0 => 12, 1 => 1
-				), 2 => array(
 					0 => 9, 1 => 0
+				), 2 => array(
+					0 => 2, 1 => -1
 				), 3 => array(
-					0 => 11, 1 => 0
+					0 => 2, 1 => -1
 				), 4 => array(
 					0 => 11, 1 => 0
 				), 5 => array(
 					0 => 11, 1 => 0
 				), 6 => array(
+					0 => 11, 1 => 0
+				), 7 => array(
 					0 => 3, 1 => 0
 				)
 			), 4 => array(
@@ -184,7 +186,7 @@ class Html
 				)
 			), 5 => array(
 				0 => array(
-					0 => 12, 1 => 1
+					0 => 12, 1 => 0
 				)
 			), 6 => array(
 				0 => array(
@@ -204,7 +206,7 @@ class Html
 				)
 			), 7 => array(
 				0 => array(
-					0 => 12, 1 => 1
+					0 => 12, 1 => 0
 				)
 			), 8 => array(
 				0 => array(
@@ -248,7 +250,7 @@ class Html
 		$this->returnState = 12;
 		$this->quitState = 13;
 		$this->flags = array(
-			0 => 0, 1 => 0, 2 => 0, 3 => 4, 4 => 4, 5 => 8, 6 => 4, 7 => 8, 8 => 4, 9 => 4, 10 => 0, 11 => 8
+			0 => 0, 1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 8, 6 => 0, 7 => 8, 8 => 4, 9 => 4, 10 => 0, 11 => 8
 		);
 		$this->data = array(
 			0 => NULL, 1 => NULL, 2 => NULL, 3 => NULL, 4 => NULL, 5 => 'Css', 6 => NULL, 7 => 'Javascript', 8 => NULL, 9 => NULL, 10 => NULL, 11 => 'Php'
@@ -383,7 +385,7 @@ class Html
 	}
 
 	/**
-	 * Finds a delimiter for state inTAG.
+	 * Finds a delimiter for state TAGIN.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -399,23 +401,26 @@ class Html
 			if ('"' === $letter) {
 				return array(0, '"', $buffer);
 			}
-			if ('>' === $letter) {
-				return array(1, '>', $buffer);
-			}
 			if ('\'' === $letter) {
-				return array(2, '\'', $buffer);
+				return array(1, '\'', $buffer);
+			}
+			if (0 === strpos($part, '/>')) {
+				return array(2, '/>', $buffer);
+			}
+			if ('>' === $letter) {
+				return array(3, '>', $buffer);
 			}
 			if (0 === strpos($part, '<?php')) {
-				return array(3, '<?php', $buffer);
+				return array(4, '<?php', $buffer);
 			}
 			if (0 === strpos($part, '<?=')) {
-				return array(4, '<?=', $buffer);
+				return array(5, '<?=', $buffer);
 			}
 			if (0 === strpos($part, '<?')) {
-				return array(5, '<?', $buffer);
+				return array(6, '<?', $buffer);
 			}
 			if ("\t" === $letter || "\n" === $letter) {
-				return array(6, $letter, $buffer);
+				return array(7, $letter, $buffer);
 			}
 
 			$buffer .= $letter;
@@ -425,7 +430,7 @@ class Html
 	}
 
 	/**
-	 * Finds a delimiter for state CSS.
+	 * Finds a delimiter for state STYLE.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -467,7 +472,7 @@ class Html
 	}
 
 	/**
-	 * Finds a delimiter for state TO_CSS.
+	 * Finds a delimiter for state CSS.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -491,7 +496,7 @@ class Html
 	}
 
 	/**
-	 * Finds a delimiter for state JAVASCRIPT.
+	 * Finds a delimiter for state SCRIPT.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -533,7 +538,7 @@ class Html
 	}
 
 	/**
-	 * Finds a delimiter for state TO_JAVASCRIPT.
+	 * Finds a delimiter for state JAVASCRIPT.
 	 *
 	 * @param string $text
 	 * @param string $textLength

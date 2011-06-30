@@ -75,9 +75,9 @@ class Html implements FSHL\Lexer
 			'OUT' => array(
 				array(
 					'<!--' => array('COMMENT', 0),
-					'<?php' => array('TO_PHP', 0),
-					'<?=' => array('TO_PHP', 0),
-					'<?' => array('TO_PHP', 0),
+					'<?php' => array('PHP', 0),
+					'<?=' => array('PHP', 0),
+					'<?' => array('PHP', 0),
 					'<' => array('TAG', 0),
 					'&' => array('ENTITY', 0),
 					'_COUNTAB' => array('OUT', 0)
@@ -99,72 +99,73 @@ class Html implements FSHL\Lexer
 			'TAG' => array(
 				array(
 					'>' => array('OUT', 1),
-					'SPACE' => array('inTAG', 0),
-					'style' => array('CSS', 1),
-					'STYLE' => array('CSS', 1),
-					'script' => array('JAVASCRIPT', 1),
-					'SCRIPT' => array('JAVASCRIPT', 1),
-					'<?php' => array('TO_PHP', 0),
-					'<?=' => array('TO_PHP', 0),
-					'<?' => array('TO_PHP', 0)
+					'SPACE' => array('TAGIN', 0),
+					'style' => array('STYLE', 1),
+					'STYLE' => array('STYLE', 1),
+					'script' => array('SCRIPT', 1),
+					'SCRIPT' => array('SCRIPT', 1),
+					'<?php' => array('PHP', 0),
+					'<?=' => array('PHP', 0),
+					'<?' => array('PHP', 0)
 				),
 				FSHL\Generator::STATE_FLAG_NONE,
 				'html-tag',
 				null
 			),
-			'inTAG' => array(
+			'TAGIN' => array(
 				array(
 					'"' => array('QUOTE1', 0),
-					'>' => array(FSHL\Generator::STATE_RETURN, 1),
 					'\'' => array('QUOTE2', 0),
-					'<?php' => array('TO_PHP', 0),
-					'<?=' => array('TO_PHP', 0),
-					'<?' => array('TO_PHP', 0),
-					'_COUNTAB' => array('inTAG', 0)
+					'/>' => array('TAG', -1),
+					'>' => array('TAG', -1),
+					'<?php' => array('PHP', 0),
+					'<?=' => array('PHP', 0),
+					'<?' => array('PHP', 0),
+					'_COUNTAB' => array('TAGIN', 0)
 				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
+				FSHL\Generator::STATE_FLAG_NONE,
+				'html-tagin',
+				null
+			),
+			'STYLE' => array(
+				array(
+					'"' => array('QUOTE1', 0),
+					'\'' => array('QUOTE2', 0),
+					'>' => array('CSS', 0),
+					'<?php' => array('PHP', 0),
+					'<?=' => array('PHP', 0),
+					'<?' => array('PHP', 0),
+					'_COUNTAB' => array('TAGIN', 0)
+				),
+				FSHL\Generator::STATE_FLAG_NONE,
 				'html-tagin',
 				null
 			),
 			'CSS' => array(
 				array(
-					'"' => array('QUOTE1', 0),
-					'\'' => array('QUOTE2', 0),
-					'>' => array('TO_CSS', 0),
-					'<?php' => array('TO_PHP', 0),
-					'<?=' => array('TO_PHP', 0),
-					'<?' => array('TO_PHP', 0),
-					'_COUNTAB' => array('inTAG', 0)
-				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
-				'html-tagin',
-				null
-			),
-			'TO_CSS' => array(
-				array(
-					'>' => array(FSHL\Generator::STATE_RETURN, 1)
+					'>' => array(FSHL\Generator::STATE_RETURN, 0)
 				),
 				FSHL\Generator::STATE_FLAG_NEWLEXER,
 				'html-tag',
 				'Css'
 			),
-			'JAVASCRIPT' => array(
+			'SCRIPT' => array(
 				array(
 					'"' => array('QUOTE1', 0),
 					'\'' => array('QUOTE2', 0),
-					'>' => array('TO_JAVASCRIPT', 0),
-					'<?php' => array('TO_PHP', 0),
-					'<?=' => array('TO_PHP', 0),
-					'<?' => array('TO_PHP', 0),
-					'_COUNTAB' => array('inTAG', 0)
+					'>' => array('JAVASCRIPT', 0),
+					'<?php' => array('PHP', 0),
+					'<?=' => array('PHP', 0),
+					'<?' => array('PHP', 0),
+					'_COUNTAB' => array('TAGIN', 0)
 				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
+				FSHL\Generator::STATE_FLAG_NONE,
 				'html-tagin',
 				null
 			),
-			'TO_JAVASCRIPT' => array(
+			'JAVASCRIPT' => array(
 				array(
-					'>' => array(FSHL\Generator::STATE_RETURN, 1)
+					'>' => array(FSHL\Generator::STATE_RETURN, 0)
 				),
 				FSHL\Generator::STATE_FLAG_NEWLEXER,
 				'html-tag',
@@ -173,9 +174,9 @@ class Html implements FSHL\Lexer
 			'QUOTE1' => array(
 				array(
 					'"' => array(FSHL\Generator::STATE_RETURN, 0),
-					'<?php' => array('TO_PHP', 0),
-					'<?=' => array('TO_PHP', 0),
-					'<?' => array('TO_PHP', 0),
+					'<?php' => array('PHP', 0),
+					'<?=' => array('PHP', 0),
+					'<?' => array('PHP', 0),
 					'_COUNTAB' => array('QUOTE1', 0)
 				),
 				FSHL\Generator::STATE_FLAG_RECURSION,
@@ -185,9 +186,9 @@ class Html implements FSHL\Lexer
 			'QUOTE2' => array(
 				array(
 					'\'' => array(FSHL\Generator::STATE_RETURN, 0),
-					'<?php' => array('TO_PHP', 0),
-					'<?=' => array('TO_PHP', 0),
-					'<?' => array('TO_PHP', 0),
+					'<?php' => array('PHP', 0),
+					'<?=' => array('PHP', 0),
+					'<?' => array('PHP', 0),
 					'_COUNTAB' => array('QUOTE2', 0)
 				),
 				FSHL\Generator::STATE_FLAG_RECURSION,
@@ -197,16 +198,16 @@ class Html implements FSHL\Lexer
 			'COMMENT' => array(
 				array(
 					'-->' => array('OUT', 1),
-					'<?php' => array('TO_PHP', 0),
-					'<?=' => array('TO_PHP', 0),
-					'<?' => array('TO_PHP', 0),
+					'<?php' => array('PHP', 0),
+					'<?=' => array('PHP', 0),
+					'<?' => array('PHP', 0),
 					'_COUNTAB' => array('COMMENT', 0)
 				),
 				FSHL\Generator::STATE_FLAG_NONE,
 				'html-comment',
 				null
 			),
-			'TO_PHP' => array(
+			'PHP' => array(
 				null,
 				FSHL\Generator::STATE_FLAG_NEWLEXER,
 				'xlang',

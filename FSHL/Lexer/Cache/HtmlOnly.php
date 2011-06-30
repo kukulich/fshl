@@ -108,12 +108,14 @@ class HtmlOnly
 		$this->trans = array(
 			0 => array(
 				0 => array(
-					0 => 6, 1 => 0
+					0 => 12, 1 => 0
 				), 1 => array(
-					0 => 2, 1 => 0
+					0 => 0, 1 => 1
 				), 2 => array(
-					0 => 1, 1 => 0
+					0 => 2, 1 => 0
 				), 3 => array(
+					0 => 1, 1 => 0
+				), 4 => array(
 					0 => 0, 1 => 0
 				)
 			), 1 => array(
@@ -128,45 +130,99 @@ class HtmlOnly
 				0 => array(
 					0 => 0, 1 => 1
 				), 1 => array(
+					0 => 4, 1 => 1
+				), 2 => array(
+					0 => 4, 1 => 1
+				), 3 => array(
+					0 => 7, 1 => 1
+				), 4 => array(
+					0 => 7, 1 => 1
+				), 5 => array(
 					0 => 3, 1 => 0
 				)
 			), 3 => array(
 				0 => array(
-					0 => 4, 1 => 0
+					0 => 10, 1 => 0
 				), 1 => array(
-					0 => 0, 1 => 1
+					0 => 11, 1 => 0
 				), 2 => array(
-					0 => 3, 1 => 0
+					0 => 2, 1 => -1
 				), 3 => array(
-					0 => 5, 1 => 0
+					0 => 2, 1 => -1
+				), 4 => array(
+					0 => 3, 1 => 0
 				)
 			), 4 => array(
 				0 => array(
-					0 => 3, 1 => 0
+					0 => 10, 1 => 0
+				), 1 => array(
+					0 => 11, 1 => 0
+				), 2 => array(
+					0 => 5, 1 => -1
+				), 3 => array(
+					0 => 4, 1 => 0
 				)
 			), 5 => array(
 				0 => array(
-					0 => 3, 1 => 0
+					0 => 6, 1 => 1
 				)
 			), 6 => array(
 				0 => array(
+					0 => 6, 1 => 0
+				), 1 => array(
+					0 => 2, 1 => 0
+				), 2 => array(
+					0 => 2, 1 => 0
+				)
+			), 7 => array(
+				0 => array(
+					0 => 10, 1 => 0
+				), 1 => array(
+					0 => 11, 1 => 0
+				), 2 => array(
+					0 => 8, 1 => -1
+				), 3 => array(
+					0 => 7, 1 => 0
+				)
+			), 8 => array(
+				0 => array(
+					0 => 9, 1 => 1
+				)
+			), 9 => array(
+				0 => array(
+					0 => 9, 1 => 0
+				), 1 => array(
+					0 => 2, 1 => 0
+				), 2 => array(
+					0 => 2, 1 => 0
+				)
+			), 10 => array(
+				0 => array(
+					0 => 13, 1 => 0
+				)
+			), 11 => array(
+				0 => array(
+					0 => 13, 1 => 0
+				)
+			), 12 => array(
+				0 => array(
 					0 => 0, 1 => 1
 				), 1 => array(
-					0 => 6, 1 => 0
+					0 => 12, 1 => 0
 				)
 			)
 		);
 		$this->initialState = 0;
-		$this->returnState = 7;
-		$this->quitState = 8;
+		$this->returnState = 13;
+		$this->quitState = 14;
 		$this->flags = array(
-			0 => 0, 1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0, 6 => 0
+			0 => 0, 1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0, 6 => 0, 7 => 0, 8 => 0, 9 => 0, 10 => 4, 11 => 4, 12 => 0
 		);
 		$this->data = array(
-			0 => NULL, 1 => NULL, 2 => NULL, 3 => NULL, 4 => NULL, 5 => NULL, 6 => NULL
+			0 => NULL, 1 => NULL, 2 => NULL, 3 => NULL, 4 => NULL, 5 => NULL, 6 => NULL, 7 => NULL, 8 => NULL, 9 => NULL, 10 => NULL, 11 => NULL, 12 => NULL
 		);
 		$this->classes = array(
-			0 => NULL, 1 => 'html-entity', 2 => 'html-tag', 3 => 'html-tagin', 4 => 'html-quote', 5 => 'html-quote', 6 => 'html-comment'
+			0 => NULL, 1 => 'html-entity', 2 => 'html-tag', 3 => 'html-tagin', 4 => 'html-tagin', 5 => 'html-tag', 6 => NULL, 7 => 'html-tagin', 8 => 'html-tag', 9 => NULL, 10 => 'html-quote', 11 => 'html-quote', 12 => 'html-comment'
 		);
 		$this->keywords = array(
 			
@@ -191,14 +247,17 @@ class HtmlOnly
 			if (0 === strpos($part, '<!--')) {
 				return array(0, '<!--', $buffer);
 			}
+			if (0 === strpos($part, '<?')) {
+				return array(1, '<?', $buffer);
+			}
 			if ('<' === $letter) {
-				return array(1, '<', $buffer);
+				return array(2, '<', $buffer);
 			}
 			if ('&' === $letter) {
-				return array(2, '&', $buffer);
+				return array(3, '&', $buffer);
 			}
 			if ("\t" === $letter || "\n" === $letter) {
-				return array(3, $letter, $buffer);
+				return array(4, $letter, $buffer);
 			}
 
 			$buffer .= $letter;
@@ -254,8 +313,20 @@ class HtmlOnly
 			if ('>' === $letter) {
 				return array(0, '>', $buffer);
 			}
+			if (0 === strpos($part, 'style')) {
+				return array(1, 'style', $buffer);
+			}
+			if (0 === strpos($part, 'STYLE')) {
+				return array(2, 'STYLE', $buffer);
+			}
+			if (0 === strpos($part, 'script')) {
+				return array(3, 'script', $buffer);
+			}
+			if (0 === strpos($part, 'SCRIPT')) {
+				return array(4, 'SCRIPT', $buffer);
+			}
 			if (preg_match('~^\s+~', $part, $matches)) {
-				return array(1, $matches[0], $buffer);
+				return array(5, $matches[0], $buffer);
 			}
 
 			$buffer .= $letter;
@@ -265,7 +336,7 @@ class HtmlOnly
 	}
 
 	/**
-	 * Finds a delimiter for state inTAG.
+	 * Finds a delimiter for state TAGIN.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -281,14 +352,191 @@ class HtmlOnly
 			if ('"' === $letter) {
 				return array(0, '"', $buffer);
 			}
+			if ('\'' === $letter) {
+				return array(1, '\'', $buffer);
+			}
+			if (0 === strpos($part, '/>')) {
+				return array(2, '/>', $buffer);
+			}
 			if ('>' === $letter) {
-				return array(1, '>', $buffer);
+				return array(3, '>', $buffer);
 			}
 			if ("\t" === $letter || "\n" === $letter) {
-				return array(2, $letter, $buffer);
+				return array(4, $letter, $buffer);
+			}
+
+			$buffer .= $letter;
+			$textPos++;
+		}
+		return array(-1, -1, $buffer);
+	}
+
+	/**
+	 * Finds a delimiter for state STYLE.
+	 *
+	 * @param string $text
+	 * @param string $textLength
+	 * @param string $textPos
+	 * @return array
+	 */
+	public function findDelimiter4(&$text, $textLength, $textPos)
+	{
+		$buffer = false;
+		while ($textPos < $textLength) {
+			$part = substr($text, $textPos, 10);
+			$letter = $part[0];
+			if ('"' === $letter) {
+				return array(0, '"', $buffer);
 			}
 			if ('\'' === $letter) {
-				return array(3, '\'', $buffer);
+				return array(1, '\'', $buffer);
+			}
+			if ('>' === $letter) {
+				return array(2, '>', $buffer);
+			}
+			if ("\t" === $letter || "\n" === $letter) {
+				return array(3, $letter, $buffer);
+			}
+
+			$buffer .= $letter;
+			$textPos++;
+		}
+		return array(-1, -1, $buffer);
+	}
+
+	/**
+	 * Finds a delimiter for state STYLE_END.
+	 *
+	 * @param string $text
+	 * @param string $textLength
+	 * @param string $textPos
+	 * @return array
+	 */
+	public function findDelimiter5(&$text, $textLength, $textPos)
+	{
+		$buffer = false;
+		while ($textPos < $textLength) {
+			$part = substr($text, $textPos, 10);
+			$letter = $part[0];
+			if ('>' === $letter) {
+				return array(0, '>', $buffer);
+			}
+
+			$buffer .= $letter;
+			$textPos++;
+		}
+		return array(-1, -1, $buffer);
+	}
+
+	/**
+	 * Finds a delimiter for state CSS.
+	 *
+	 * @param string $text
+	 * @param string $textLength
+	 * @param string $textPos
+	 * @return array
+	 */
+	public function findDelimiter6(&$text, $textLength, $textPos)
+	{
+		$buffer = false;
+		while ($textPos < $textLength) {
+			$part = substr($text, $textPos, 10);
+			$letter = $part[0];
+			if ("\t" === $letter || "\n" === $letter) {
+				return array(0, $letter, $buffer);
+			}
+			if (0 === strpos($part, '</style')) {
+				return array(1, '</style', $buffer);
+			}
+			if (0 === strpos($part, '</STYLE')) {
+				return array(2, '</STYLE', $buffer);
+			}
+
+			$buffer .= $letter;
+			$textPos++;
+		}
+		return array(-1, -1, $buffer);
+	}
+
+	/**
+	 * Finds a delimiter for state SCRIPT.
+	 *
+	 * @param string $text
+	 * @param string $textLength
+	 * @param string $textPos
+	 * @return array
+	 */
+	public function findDelimiter7(&$text, $textLength, $textPos)
+	{
+		$buffer = false;
+		while ($textPos < $textLength) {
+			$part = substr($text, $textPos, 10);
+			$letter = $part[0];
+			if ('"' === $letter) {
+				return array(0, '"', $buffer);
+			}
+			if ('\'' === $letter) {
+				return array(1, '\'', $buffer);
+			}
+			if ('>' === $letter) {
+				return array(2, '>', $buffer);
+			}
+			if ("\t" === $letter || "\n" === $letter) {
+				return array(3, $letter, $buffer);
+			}
+
+			$buffer .= $letter;
+			$textPos++;
+		}
+		return array(-1, -1, $buffer);
+	}
+
+	/**
+	 * Finds a delimiter for state SCRIPT_END.
+	 *
+	 * @param string $text
+	 * @param string $textLength
+	 * @param string $textPos
+	 * @return array
+	 */
+	public function findDelimiter8(&$text, $textLength, $textPos)
+	{
+		$buffer = false;
+		while ($textPos < $textLength) {
+			$part = substr($text, $textPos, 10);
+			$letter = $part[0];
+			if ('>' === $letter) {
+				return array(0, '>', $buffer);
+			}
+
+			$buffer .= $letter;
+			$textPos++;
+		}
+		return array(-1, -1, $buffer);
+	}
+
+	/**
+	 * Finds a delimiter for state JAVASCRIPT.
+	 *
+	 * @param string $text
+	 * @param string $textLength
+	 * @param string $textPos
+	 * @return array
+	 */
+	public function findDelimiter9(&$text, $textLength, $textPos)
+	{
+		$buffer = false;
+		while ($textPos < $textLength) {
+			$part = substr($text, $textPos, 10);
+			$letter = $part[0];
+			if ("\t" === $letter || "\n" === $letter) {
+				return array(0, $letter, $buffer);
+			}
+			if (0 === strpos($part, '</script')) {
+				return array(1, '</script', $buffer);
+			}
+			if (0 === strpos($part, '</SCRIPT')) {
+				return array(2, '</SCRIPT', $buffer);
 			}
 
 			$buffer .= $letter;
@@ -305,7 +553,7 @@ class HtmlOnly
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter4(&$text, $textLength, $textPos)
+	public function findDelimiter10(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -329,7 +577,7 @@ class HtmlOnly
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter5(&$text, $textLength, $textPos)
+	public function findDelimiter11(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -353,7 +601,7 @@ class HtmlOnly
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter6(&$text, $textLength, $textPos)
+	public function findDelimiter12(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {

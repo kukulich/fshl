@@ -27,13 +27,16 @@
 .line {color: #000000; background-color: #fffff;}
 
 /* CSS */
-.css-class {color: #004a80; }
-.css-id {color: #7da7d9; font-weight: bold; }
-.css-def {color: #5674b9;}
-.css-property {color: #003663; font-weight: bold; }
+.css-at-rule {color: #004a80; font-weight: bold;}
+.css-tag {color: #004a80;}
+.css-id {color: #7da7d9; font-weight: bold;}
+.css-class {color: #004a80;}
+.css-pseudo {color: #004a80;}
+.css-property {color: #003663; font-weight: bold;}
 .css-value {color: #448ccb;}
+.css-func {color: #448ccb; font-weight: bold;}
 .css-color {color: #0076a3;}
-.css-comment { background-color: #e5f8ff; color: #999; }
+.css-comment {background-color: #e5f8ff; color: #999999;}
 
 /* CPP */
 .cpp-keywords1 {color: #0000ff; font-weight: bold;}
@@ -46,8 +49,8 @@
 .html-tag {color: #598527; font-weight: bold;}
 .html-tagin {color: #89a315}
 .html-quote {color: #598527; font-weight: bold;}
-.html-comment {color: #999; background-color: #f1fae4;}
-.html-entity {color: #89a315}
+.html-comment {color: #999999; background-color: #f1fae4;}
+.html-entity {color: #89a315;}
 
 /* Java */
 .java-keywords1 {color: #0000ff; font-weight: bold;}

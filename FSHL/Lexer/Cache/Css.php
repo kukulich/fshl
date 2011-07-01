@@ -110,87 +110,147 @@ class Css
 				0 => array(
 					0 => 0, 1 => 0
 				), 1 => array(
-					0 => 2, 1 => 0
-				), 2 => array(
 					0 => 1, 1 => 0
+				), 2 => array(
+					0 => 9, 1 => 0
 				), 3 => array(
 					0 => 6, 1 => 0
 				), 4 => array(
-					0 => 9, 1 => 0
+					0 => 2, 1 => 0
 				), 5 => array(
-					0 => 7, 1 => 0
+					0 => 2, 1 => 0
 				), 6 => array(
-					0 => 7, 1 => 0
+					0 => 3, 1 => 0
 				), 7 => array(
-					0 => 7, 1 => 0
+					0 => 4, 1 => 0
+				), 8 => array(
+					0 => 11, 1 => 0
+				), 9 => array(
+					0 => 14, 1 => 0
+				), 10 => array(
+					0 => 12, 1 => 0
+				), 11 => array(
+					0 => 12, 1 => 0
+				), 12 => array(
+					0 => 12, 1 => 0
 				)
 			), 1 => array(
 				0 => array(
-					0 => 8, 1 => 1
+					0 => 13, 1 => 1
 				), 1 => array(
-					0 => 6, 1 => 0
-				), 2 => array(
-					0 => 8, 1 => 1
+					0 => 11, 1 => 0
 				)
 			), 2 => array(
 				0 => array(
-					0 => 4, 1 => 1
+					0 => 5, 1 => 0
 				), 1 => array(
-					0 => 2, 1 => 0
+					0 => 13, 1 => 1
 				), 2 => array(
-					0 => 2, 1 => 1
+					0 => 13, 1 => 1
 				), 3 => array(
-					0 => 8, 1 => 0
+					0 => 11, 1 => 0
 				), 4 => array(
-					0 => 6, 1 => 0
-				), 5 => array(
-					0 => 3, 1 => 0
+					0 => 13, 1 => 1
 				)
 			), 3 => array(
 				0 => array(
-					0 => 3, 1 => 0
+					0 => 5, 1 => 0
 				), 1 => array(
-					0 => 8, 1 => 1
+					0 => 13, 1 => 1
 				), 2 => array(
-					0 => 8, 1 => 1
+					0 => 13, 1 => 1
 				), 3 => array(
-					0 => 6, 1 => 0
+					0 => 11, 1 => 0
+				), 4 => array(
+					0 => 13, 1 => 1
 				)
 			), 4 => array(
 				0 => array(
-					0 => 8, 1 => 1
-				), 1 => array(
 					0 => 5, 1 => 0
+				), 1 => array(
+					0 => 13, 1 => 1
 				), 2 => array(
-					0 => 8, 1 => 1
+					0 => 13, 1 => 1
 				), 3 => array(
-					0 => 4, 1 => 0
+					0 => 11, 1 => 0
 				), 4 => array(
-					0 => 6, 1 => 0
+					0 => 13, 1 => 1
 				)
 			), 5 => array(
 				0 => array(
-					0 => 8, 1 => 1
+					0 => 13, 1 => 1
+				), 1 => array(
+					0 => 13, 1 => 1
 				)
 			), 6 => array(
 				0 => array(
+					0 => 8, 1 => 1
+				), 1 => array(
 					0 => 6, 1 => 0
+				), 2 => array(
+					0 => 6, 1 => 1
+				), 3 => array(
+					0 => 13, 1 => 0
+				), 4 => array(
+					0 => 11, 1 => 0
+				), 5 => array(
+					0 => 7, 1 => 0
+				)
+			), 7 => array(
+				0 => array(
+					0 => 7, 1 => 0
+				), 1 => array(
+					0 => 13, 1 => 1
+				), 2 => array(
+					0 => 13, 1 => 1
+				), 3 => array(
+					0 => 11, 1 => 0
+				)
+			), 8 => array(
+				0 => array(
+					0 => 9, 1 => 0
+				), 1 => array(
+					0 => 13, 1 => 1
+				), 2 => array(
+					0 => 10, 1 => 0
+				), 3 => array(
+					0 => 13, 1 => 1
+				), 4 => array(
+					0 => 13, 1 => 1
+				), 5 => array(
+					0 => 8, 1 => 0
+				), 6 => array(
+					0 => 11, 1 => 0
+				)
+			), 9 => array(
+				0 => array(
+					0 => 13, 1 => 0
 				), 1 => array(
 					0 => 8, 1 => 0
 				)
-			), 7 => NULL, 9 => NULL
+			), 10 => array(
+				0 => array(
+					0 => 13, 1 => 1
+				)
+			), 11 => array(
+				0 => array(
+					0 => 11, 1 => 0
+				), 1 => array(
+					0 => 13, 1 => 0
+				)
+			), 12 => NULL, 14 => NULL
 		);
 		$this->initialState = 0;
-		$this->returnState = 8;
-		$this->quitState = 9;
+		$this->returnState = 13;
+		$this->quitState = 14;
 		$this->flags = array(
-			0 => 0, 1 => 4, 2 => 4, 3 => 4, 4 => 4, 5 => 4, 6 => 4, 7 => 8, 9 => 8
+			0 => 0, 1 => 4, 2 => 4, 3 => 4, 4 => 4, 5 => 4, 6 => 4, 7 => 4, 8 => 4, 9 => 4, 10 => 4, 11 => 4, 12 => 8, 14 => 8
 		);
 		$this->data = array(
-			0 => NULL, 1 => NULL, 2 => NULL, 3 => NULL, 4 => NULL, 5 => NULL, 6 => NULL, 7 => 'Php', 9 => NULL
+			0 => NULL, 1 => NULL, 2 => NULL, 3 => NULL, 4 => NULL, 5 => NULL, 6 => NULL, 7 => NULL, 8 => NULL, 9 => NULL, 10 => NULL, 11 => NULL, 12 => 'Php', 14 => NULL
 		);
 		$this->classes = array(
-			0 => NULL, 1 => 'css-class', 2 => '', 3 => 'css-property', 4 => 'css-value', 5 => 'css-color', 6 => 'css-comment', 7 => 'xlang', 9 => 'html-tag'
+			0 => NULL, 1 => 'css-at-rule', 2 => 'css-tag', 3 => 'css-id', 4 => 'css-class', 5 => 'css-pseudo', 6 => NULL, 7 => 'css-property', 8 => 'css-value', 9 => 'css-func', 10 => 'css-color', 11 => 'css-comment', 12 => 'xlang', 14 => 'html-tag'
 		);
 		$this->keywords = array(
 			
@@ -215,26 +275,41 @@ class Css
 			if ("\t" === $letter || "\n" === $letter) {
 				return array(0, $letter, $buffer);
 			}
+			if ('@' === $letter) {
+				return array(1, '@', $buffer);
+			}
+			if (preg_match('~[a-z]+\s*\(~iA', $text, $matches, 0, $textPos)) {
+				return array(2, $matches[0], $buffer);
+			}
 			if ('{' === $letter) {
-				return array(1, '{', $buffer);
+				return array(3, '{', $buffer);
+			}
+			if (preg_match('~^[a-z\\d]+~i', $part, $matches)) {
+				return array(4, $matches[0], $buffer);
+			}
+			if ('*' === $letter) {
+				return array(5, '*', $buffer);
+			}
+			if ('#' === $letter) {
+				return array(6, '#', $buffer);
 			}
 			if ('.' === $letter) {
-				return array(2, '.', $buffer);
+				return array(7, '.', $buffer);
 			}
 			if (0 === strpos($part, '/*')) {
-				return array(3, '/*', $buffer);
+				return array(8, '/*', $buffer);
 			}
 			if (0 === strpos($part, '</')) {
-				return array(4, '</', $buffer);
+				return array(9, '</', $buffer);
 			}
 			if (0 === strpos($part, '<?php')) {
-				return array(5, '<?php', $buffer);
+				return array(10, '<?php', $buffer);
 			}
 			if (0 === strpos($part, '<?=')) {
-				return array(6, '<?=', $buffer);
+				return array(11, '<?=', $buffer);
 			}
 			if (0 === strpos($part, '<?')) {
-				return array(7, '<?', $buffer);
+				return array(12, '<?', $buffer);
 			}
 
 			$buffer .= $letter;
@@ -244,7 +319,7 @@ class Css
 	}
 
 	/**
-	 * Finds a delimiter for state CLASS.
+	 * Finds a delimiter for state AT_RULE.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -263,8 +338,140 @@ class Css
 			if (0 === strpos($part, '/*')) {
 				return array(1, '/*', $buffer);
 			}
+
+			$buffer .= $letter;
+			$textPos++;
+		}
+		return array(-1, -1, $buffer);
+	}
+
+	/**
+	 * Finds a delimiter for state TAG.
+	 *
+	 * @param string $text
+	 * @param string $textLength
+	 * @param string $textPos
+	 * @return array
+	 */
+	public function findDelimiter2(&$text, $textLength, $textPos)
+	{
+		$buffer = false;
+		while ($textPos < $textLength) {
+			$part = substr($text, $textPos, 10);
+			$letter = $part[0];
+			if (':' === $letter) {
+				return array(0, ':', $buffer);
+			}
+			if (',' === $letter) {
+				return array(1, ',', $buffer);
+			}
+			if (preg_match('~^\s+~', $part, $matches)) {
+				return array(2, $matches[0], $buffer);
+			}
+			if (0 === strpos($part, '/*')) {
+				return array(3, '/*', $buffer);
+			}
 			if ('{' === $letter) {
-				return array(2, '{', $buffer);
+				return array(4, '{', $buffer);
+			}
+
+			$buffer .= $letter;
+			$textPos++;
+		}
+		return array(-1, -1, $buffer);
+	}
+
+	/**
+	 * Finds a delimiter for state ID.
+	 *
+	 * @param string $text
+	 * @param string $textLength
+	 * @param string $textPos
+	 * @return array
+	 */
+	public function findDelimiter3(&$text, $textLength, $textPos)
+	{
+		$buffer = false;
+		while ($textPos < $textLength) {
+			$part = substr($text, $textPos, 10);
+			$letter = $part[0];
+			if (':' === $letter) {
+				return array(0, ':', $buffer);
+			}
+			if (',' === $letter) {
+				return array(1, ',', $buffer);
+			}
+			if (preg_match('~^\s+~', $part, $matches)) {
+				return array(2, $matches[0], $buffer);
+			}
+			if (0 === strpos($part, '/*')) {
+				return array(3, '/*', $buffer);
+			}
+			if ('{' === $letter) {
+				return array(4, '{', $buffer);
+			}
+
+			$buffer .= $letter;
+			$textPos++;
+		}
+		return array(-1, -1, $buffer);
+	}
+
+	/**
+	 * Finds a delimiter for state CLASS.
+	 *
+	 * @param string $text
+	 * @param string $textLength
+	 * @param string $textPos
+	 * @return array
+	 */
+	public function findDelimiter4(&$text, $textLength, $textPos)
+	{
+		$buffer = false;
+		while ($textPos < $textLength) {
+			$part = substr($text, $textPos, 10);
+			$letter = $part[0];
+			if (':' === $letter) {
+				return array(0, ':', $buffer);
+			}
+			if (',' === $letter) {
+				return array(1, ',', $buffer);
+			}
+			if (preg_match('~^\s+~', $part, $matches)) {
+				return array(2, $matches[0], $buffer);
+			}
+			if (0 === strpos($part, '/*')) {
+				return array(3, '/*', $buffer);
+			}
+			if ('{' === $letter) {
+				return array(4, '{', $buffer);
+			}
+
+			$buffer .= $letter;
+			$textPos++;
+		}
+		return array(-1, -1, $buffer);
+	}
+
+	/**
+	 * Finds a delimiter for state PSEUDO.
+	 *
+	 * @param string $text
+	 * @param string $textLength
+	 * @param string $textPos
+	 * @return array
+	 */
+	public function findDelimiter5(&$text, $textLength, $textPos)
+	{
+		$buffer = false;
+		while ($textPos < $textLength) {
+			$part = substr($text, $textPos, 10);
+			$letter = $part[0];
+			if (',' === $letter) {
+				return array(0, ',', $buffer);
+			}
+			if (preg_match('~^\s+~', $part, $matches)) {
+				return array(1, $matches[0], $buffer);
 			}
 
 			$buffer .= $letter;
@@ -281,7 +488,7 @@ class Css
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter2(&$text, $textLength, $textPos)
+	public function findDelimiter6(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -302,7 +509,7 @@ class Css
 			if (0 === strpos($part, '/*')) {
 				return array(4, '/*', $buffer);
 			}
-			if (preg_match('~^[-a-z]+~i', $part, $matches)) {
+			if (preg_match('~[-a-z]+~iA', $text, $matches, 0, $textPos)) {
 				return array(5, $matches[0], $buffer);
 			}
 
@@ -320,7 +527,7 @@ class Css
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter3(&$text, $textLength, $textPos)
+	public function findDelimiter7(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -353,26 +560,59 @@ class Css
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter4(&$text, $textLength, $textPos)
+	public function findDelimiter8(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
 			$part = substr($text, $textPos, 10);
 			$letter = $part[0];
+			if (preg_match('~[a-z]+\s*\(~iA', $text, $matches, 0, $textPos)) {
+				return array(0, $matches[0], $buffer);
+			}
 			if (';' === $letter) {
-				return array(0, ';', $buffer);
+				return array(1, ';', $buffer);
 			}
 			if ('#' === $letter) {
-				return array(1, '#', $buffer);
+				return array(2, '#', $buffer);
+			}
+			if (')' === $letter) {
+				return array(3, ')', $buffer);
 			}
 			if ('}' === $letter) {
-				return array(2, '}', $buffer);
+				return array(4, '}', $buffer);
 			}
 			if ("\t" === $letter || "\n" === $letter) {
-				return array(3, $letter, $buffer);
+				return array(5, $letter, $buffer);
 			}
 			if (0 === strpos($part, '/*')) {
-				return array(4, '/*', $buffer);
+				return array(6, '/*', $buffer);
+			}
+
+			$buffer .= $letter;
+			$textPos++;
+		}
+		return array(-1, -1, $buffer);
+	}
+
+	/**
+	 * Finds a delimiter for state FUNC.
+	 *
+	 * @param string $text
+	 * @param string $textLength
+	 * @param string $textPos
+	 * @return array
+	 */
+	public function findDelimiter9(&$text, $textLength, $textPos)
+	{
+		$buffer = false;
+		while ($textPos < $textLength) {
+			$part = substr($text, $textPos, 10);
+			$letter = $part[0];
+			if (')' === $letter) {
+				return array(0, ')', $buffer);
+			}
+			if (true) {
+				return array(1, $letter, $buffer);
 			}
 
 			$buffer .= $letter;
@@ -389,7 +629,7 @@ class Css
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter5(&$text, $textLength, $textPos)
+	public function findDelimiter10(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -413,7 +653,7 @@ class Css
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter6(&$text, $textLength, $textPos)
+	public function findDelimiter11(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {

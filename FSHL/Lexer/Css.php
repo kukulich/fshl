@@ -75,26 +75,75 @@ class Css implements FSHL\Lexer
 			'OUT' => array(
 				array(
 					'_COUNTAB' => array('OUT', 0),
+					'@' => array('AT_RULE', 0),
+					'FUNC' => array('FUNC', 0),
 					'{' => array('DEF', 0),
+					'ALNUM' => array('TAG', 0),
+					'*' => array('TAG', 0),
+					'#' => array('ID', 0),
 					'.' => array('CLASS', 0),
 					'/*' => array('COMMENT', 0),
 					'</' => array(FSHL\Generator::STATE_QUIT, 0),
-					'<?php' => array('TO_PHP', 0),
-					'<?=' => array('TO_PHP', 0),
-					'<?' => array('TO_PHP', 0)
+					'<?php' => array('PHP', 0),
+					'<?=' => array('PHP', 0),
+					'<?' => array('PHP', 0)
 				),
 				FSHL\Generator::STATE_FLAG_NONE,
 				null,
 				null
 			),
+			'AT_RULE' => array(
+				array(
+					'SPACE' => array(FSHL\Generator::STATE_RETURN, 1),
+					'/*' => array('COMMENT', 0)
+				),
+				FSHL\Generator::STATE_FLAG_RECURSION,
+				'css-at-rule',
+				null
+			),
+			'TAG' => array(
+				array(
+					':' => array('PSEUDO', 0),
+					',' => array(FSHL\Generator::STATE_RETURN, 1),
+					'SPACE' => array(FSHL\Generator::STATE_RETURN, 1),
+					'/*' => array('COMMENT', 0),
+					'{' => array(FSHL\Generator::STATE_RETURN, 1)
+				),
+				FSHL\Generator::STATE_FLAG_RECURSION,
+				'css-tag',
+				null
+			),
+			'ID' => array(
+				array(
+					':' => array('PSEUDO', 0),
+					',' => array(FSHL\Generator::STATE_RETURN, 1),
+					'SPACE' => array(FSHL\Generator::STATE_RETURN, 1),
+					'/*' => array('COMMENT', 0),
+					'{' => array(FSHL\Generator::STATE_RETURN, 1)
+				),
+				FSHL\Generator::STATE_FLAG_RECURSION,
+				'css-id',
+				null
+			),
 			'CLASS' => array(
 				array(
+					':' => array('PSEUDO', 0),
+					',' => array(FSHL\Generator::STATE_RETURN, 1),
 					'SPACE' => array(FSHL\Generator::STATE_RETURN, 1),
 					'/*' => array('COMMENT', 0),
 					'{' => array(FSHL\Generator::STATE_RETURN, 1)
 				),
 				FSHL\Generator::STATE_FLAG_RECURSION,
 				'css-class',
+				null
+			),
+			'PSEUDO' => array(
+				array(
+					',' => array(FSHL\Generator::STATE_RETURN, 1),
+					'SPACE' => array(FSHL\Generator::STATE_RETURN, 1),
+				),
+				FSHL\Generator::STATE_FLAG_RECURSION,
+				'css-pseudo',
 				null
 			),
 			'DEF' => array(
@@ -107,7 +156,7 @@ class Css implements FSHL\Lexer
 					'PROPERTY' => array('PROPERTY', 0)
 				),
 				FSHL\Generator::STATE_FLAG_RECURSION,
-				'',
+				null,
 				null
 			),
 			'PROPERTY' => array(
@@ -123,14 +172,25 @@ class Css implements FSHL\Lexer
 			),
 			'VALUE' => array(
 				array(
+					'FUNC' => array('FUNC', 0),
 					';' => array(FSHL\Generator::STATE_RETURN, 1),
 					'#' => array('COLOR', 0),
+					')' => array(FSHL\Generator::STATE_RETURN, 1),
 					'}' => array(FSHL\Generator::STATE_RETURN, 1),
 					'_COUNTAB' => array('VALUE', 0),
 					'/*' => array('COMMENT', 0)
 				),
 				FSHL\Generator::STATE_FLAG_RECURSION,
 				'css-value',
+				null
+			),
+			'FUNC' => array(
+				array(
+					')' => array(FSHL\Generator::STATE_RETURN, 0),
+					'_ALL' => array('VALUE', 0)
+				),
+				FSHL\Generator::STATE_FLAG_RECURSION,
+				'css-func',
 				null
 			),
 			'COLOR' => array(
@@ -150,7 +210,7 @@ class Css implements FSHL\Lexer
 				'css-comment',
 				null
 			),
-			'TO_PHP' => array(
+			'PHP' => array(
 				null,
 				FSHL\Generator::STATE_FLAG_NEWLEXER,
 				'xlang',
@@ -173,7 +233,8 @@ class Css implements FSHL\Lexer
 	public function getDelimiters()
 	{
 		return array(
-			'PROPERTY' => 'preg_match(\'~^[-a-z]+~i\', $part, $matches)'
+			'FUNC' => 'preg_match(\'~[a-z]+\\s*\\(~iA\', $text, $matches, 0, $textPos)',
+			'PROPERTY' => 'preg_match(\'~[-a-z]+~iA\', $text, $matches, 0, $textPos)'
 		);
 	}
 

@@ -80,7 +80,8 @@ class Html implements FSHL\Lexer
 					'<?' => array('PHP', 0),
 					'<' => array('TAG', 0),
 					'&' => array('ENTITY', 0),
-					'_COUNTAB' => array('OUT', 0)
+					'_LINE' => array('OUT', 0),
+					'_TAB' => array('OUT', 0)
 				),
 				FSHL\Generator::STATE_FLAG_NONE,
 				null,
@@ -121,7 +122,8 @@ class Html implements FSHL\Lexer
 					'<?php' => array('PHP', 0),
 					'<?=' => array('PHP', 0),
 					'<?' => array('PHP', 0),
-					'_COUNTAB' => array('TAGIN', 0)
+					'_LINE' => array('TAGIN', 0),
+					'_TAB' => array('TAGIN', 0)
 				),
 				FSHL\Generator::STATE_FLAG_NONE,
 				'html-tagin',
@@ -135,7 +137,8 @@ class Html implements FSHL\Lexer
 					'<?php' => array('PHP', 0),
 					'<?=' => array('PHP', 0),
 					'<?' => array('PHP', 0),
-					'_COUNTAB' => array('TAGIN', 0)
+					'_LINE' => array('TAGIN', 0),
+					'_TAB' => array('TAGIN', 0)
 				),
 				FSHL\Generator::STATE_FLAG_NONE,
 				'html-tagin',
@@ -157,7 +160,8 @@ class Html implements FSHL\Lexer
 					'<?php' => array('PHP', 0),
 					'<?=' => array('PHP', 0),
 					'<?' => array('PHP', 0),
-					'_COUNTAB' => array('TAGIN', 0)
+					'_LINE' => array('TAGIN', 0),
+					'_TAB' => array('TAGIN', 0)
 				),
 				FSHL\Generator::STATE_FLAG_NONE,
 				'html-tagin',
@@ -177,7 +181,8 @@ class Html implements FSHL\Lexer
 					'<?php' => array('PHP', 0),
 					'<?=' => array('PHP', 0),
 					'<?' => array('PHP', 0),
-					'_COUNTAB' => array('QUOTE1', 0)
+					'_LINE' => array('QUOTE1', 0),
+					'_TAB' => array('QUOTE1', 0)
 				),
 				FSHL\Generator::STATE_FLAG_RECURSION,
 				'html-quote',
@@ -189,7 +194,8 @@ class Html implements FSHL\Lexer
 					'<?php' => array('PHP', 0),
 					'<?=' => array('PHP', 0),
 					'<?' => array('PHP', 0),
-					'_COUNTAB' => array('QUOTE2', 0)
+					'_LINE' => array('QUOTE2', 0),
+					'_TAB' => array('QUOTE2', 0)
 				),
 				FSHL\Generator::STATE_FLAG_RECURSION,
 				'html-quote',
@@ -201,7 +207,8 @@ class Html implements FSHL\Lexer
 					'<?php' => array('PHP', 0),
 					'<?=' => array('PHP', 0),
 					'<?' => array('PHP', 0),
-					'_COUNTAB' => array('COMMENT', 0)
+					'_LINE' => array('COMMENT', 0),
+					'_TAB' => array('COMMENT', 0)
 				),
 				FSHL\Generator::STATE_FLAG_NONE,
 				'html-comment',

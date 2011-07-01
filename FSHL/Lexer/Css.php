@@ -74,7 +74,8 @@ class Css implements FSHL\Lexer
 		return array(
 			'OUT' => array(
 				array(
-					'_COUNTAB' => array('OUT', 0),
+					'_LINE' => array('OUT', 0),
+					'_TAB' => array('OUT', 0),
 					'@' => array('AT_RULE', 0),
 					'FUNC' => array('FUNC', 0),
 					'{' => array('DEF', 0),
@@ -149,7 +150,8 @@ class Css implements FSHL\Lexer
 			'DEF' => array(
 				array(
 					':' => array('VALUE', 1),
-					'_COUNTAB' => array('DEF', 0),
+					'_LINE' => array('DEF', 0),
+					'_TAB' => array('DEF', 0),
 					';' => array('DEF', 1),
 					'}' => array(FSHL\Generator::STATE_RETURN, 0),
 					'/*' => array('COMMENT', 0),
@@ -161,7 +163,8 @@ class Css implements FSHL\Lexer
 			),
 			'PROPERTY' => array(
 				array(
-					'_COUNTAB' => array('PROPERTY', 0),
+					'_LINE' => array('PROPERTY', 0),
+					'_TAB' => array('PROPERTY', 0),
 					':' => array(FSHL\Generator::STATE_RETURN, 1),
 					'}' => array(FSHL\Generator::STATE_RETURN, 1),
 					'/*' => array('COMMENT', 0)
@@ -177,7 +180,8 @@ class Css implements FSHL\Lexer
 					'#' => array('COLOR', 0),
 					')' => array(FSHL\Generator::STATE_RETURN, 1),
 					'}' => array(FSHL\Generator::STATE_RETURN, 1),
-					'_COUNTAB' => array('VALUE', 0),
+					'_LINE' => array('VALUE', 0),
+					'_TAB' => array('VALUE', 0),
 					'/*' => array('COMMENT', 0)
 				),
 				FSHL\Generator::STATE_FLAG_RECURSION,
@@ -203,7 +207,8 @@ class Css implements FSHL\Lexer
 			),
 			'COMMENT' => array(
 				array(
-					'_COUNTAB' => array('COMMENT', 0),
+					'_LINE' => array('COMMENT', 0),
+					'_TAB' => array('COMMENT', 0),
 					'*/' => array(FSHL\Generator::STATE_RETURN, 0)
 				),
 				FSHL\Generator::STATE_FLAG_RECURSION,

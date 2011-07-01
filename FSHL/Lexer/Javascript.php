@@ -74,7 +74,8 @@ class Javascript implements FSHL\Lexer
 		return array(
 			'OUT' => array(
 				array(
-					'_COUNTAB' => array('OUT', 0),
+					'_LINE' => array('OUT', 0),
+					'_TAB' => array('OUT', 0),
 					'ALPHA' => array('KEYWORD', -1),
 					'.' => array('KEYWORD', 1),
 					'NUMBER' => array('NUM', 0),
@@ -155,7 +156,8 @@ class Javascript implements FSHL\Lexer
 			// Comments
 			'COMMENT1' => array(
 				array(
-					'_COUNTAB' => array('COMMENT1', 0),
+					'_LINE' => array('COMMENT1', 0),
+					'_TAB' => array('COMMENT1', 0),
 					'*/' => array(FSHL\Generator::STATE_RETURN, 0),
 					'<?php' => array('TO_PHP', 0),
 					'<?=' => array('TO_PHP', 0),
@@ -168,7 +170,8 @@ class Javascript implements FSHL\Lexer
 			'COMMENT2' => array(
 				array(
 					"\n" => array(FSHL\Generator::STATE_RETURN, 1),
-					'_COUNTAB' => array('COMMENT2', 0),
+					'_LINE' => array('COMMENT2', 0),
+					'_TAB' => array('COMMENT2', 0),
 					'<?php' => array('TO_PHP', 0),
 					'<?=' => array('TO_PHP', 0),
 					'<?' => array('TO_PHP', 0)

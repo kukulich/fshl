@@ -117,6 +117,8 @@ class HtmlOnly
 					0 => 1, 1 => 0
 				), 4 => array(
 					0 => 0, 1 => 0
+				), 5 => array(
+					0 => 0, 1 => 0
 				)
 			), 1 => array(
 				0 => array(
@@ -151,6 +153,8 @@ class HtmlOnly
 					0 => 2, 1 => -1
 				), 4 => array(
 					0 => 3, 1 => 0
+				), 5 => array(
+					0 => 3, 1 => 0
 				)
 			), 4 => array(
 				0 => array(
@@ -161,6 +165,8 @@ class HtmlOnly
 					0 => 5, 1 => -1
 				), 3 => array(
 					0 => 4, 1 => 0
+				), 4 => array(
+					0 => 4, 1 => 0
 				)
 			), 5 => array(
 				0 => array(
@@ -170,8 +176,10 @@ class HtmlOnly
 				0 => array(
 					0 => 6, 1 => 0
 				), 1 => array(
-					0 => 2, 1 => 0
+					0 => 6, 1 => 0
 				), 2 => array(
+					0 => 2, 1 => 0
+				), 3 => array(
 					0 => 2, 1 => 0
 				)
 			), 7 => array(
@@ -183,6 +191,8 @@ class HtmlOnly
 					0 => 8, 1 => -1
 				), 3 => array(
 					0 => 7, 1 => 0
+				), 4 => array(
+					0 => 7, 1 => 0
 				)
 			), 8 => array(
 				0 => array(
@@ -192,8 +202,10 @@ class HtmlOnly
 				0 => array(
 					0 => 9, 1 => 0
 				), 1 => array(
-					0 => 2, 1 => 0
+					0 => 9, 1 => 0
 				), 2 => array(
+					0 => 2, 1 => 0
+				), 3 => array(
 					0 => 2, 1 => 0
 				)
 			), 10 => array(
@@ -208,6 +220,8 @@ class HtmlOnly
 				0 => array(
 					0 => 0, 1 => 1
 				), 1 => array(
+					0 => 12, 1 => 0
+				), 2 => array(
 					0 => 12, 1 => 0
 				)
 			)
@@ -238,28 +252,35 @@ class HtmlOnly
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter0(&$text, $textLength, $textPos)
+	public function findDelimiter0($text, $textLength, $textPos)
 	{
+		static $delimiters = array(
+			0 => '<!--', 1 => '<?', 2 => '<', 3 => '&', 4 => "\n", 5 => "\t"
+		);
+
 		$buffer = false;
 		while ($textPos < $textLength) {
 			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if (0 === strpos($part, '<!--')) {
-				return array(0, '<!--', $buffer);
-			}
-			if (0 === strpos($part, '<?')) {
-				return array(1, '<?', $buffer);
-			}
-			if ('<' === $letter) {
-				return array(2, '<', $buffer);
-			}
-			if ('&' === $letter) {
-				return array(3, '&', $buffer);
-			}
-			if ("\t" === $letter || "\n" === $letter) {
-				return array(4, $letter, $buffer);
-			}
+			$letter = $text[$textPos];
 
+			if (0 === strpos($part, $delimiters[0])) {
+				return array(0, $delimiters[0], $buffer);
+			}
+			if (0 === strpos($part, $delimiters[1])) {
+				return array(1, $delimiters[1], $buffer);
+			}
+			if ($delimiters[2] === $letter) {
+				return array(2, $delimiters[2], $buffer);
+			}
+			if ($delimiters[3] === $letter) {
+				return array(3, $delimiters[3], $buffer);
+			}
+			if ($delimiters[4] === $letter) {
+				return array(4, $delimiters[4], $buffer);
+			}
+			if ($delimiters[5] === $letter) {
+				return array(5, $delimiters[5], $buffer);
+			}
 			$buffer .= $letter;
 			$textPos++;
 		}
@@ -274,22 +295,26 @@ class HtmlOnly
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter1(&$text, $textLength, $textPos)
+	public function findDelimiter1($text, $textLength, $textPos)
 	{
+		static $delimiters = array(
+			0 => ';', 1 => '&'
+		);
+
 		$buffer = false;
 		while ($textPos < $textLength) {
 			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if (';' === $letter) {
-				return array(0, ';', $buffer);
+			$letter = $text[$textPos];
+
+			if ($delimiters[0] === $letter) {
+				return array(0, $delimiters[0], $buffer);
 			}
-			if ('&' === $letter) {
-				return array(1, '&', $buffer);
+			if ($delimiters[1] === $letter) {
+				return array(1, $delimiters[1], $buffer);
 			}
 			if (preg_match('~^\s+~', $part, $matches)) {
 				return array(2, $matches[0], $buffer);
 			}
-
 			$buffer .= $letter;
 			$textPos++;
 		}
@@ -304,31 +329,35 @@ class HtmlOnly
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter2(&$text, $textLength, $textPos)
+	public function findDelimiter2($text, $textLength, $textPos)
 	{
+		static $delimiters = array(
+			0 => '>', 1 => 'style', 2 => 'STYLE', 3 => 'script', 4 => 'SCRIPT'
+		);
+
 		$buffer = false;
 		while ($textPos < $textLength) {
 			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if ('>' === $letter) {
-				return array(0, '>', $buffer);
+			$letter = $text[$textPos];
+
+			if ($delimiters[0] === $letter) {
+				return array(0, $delimiters[0], $buffer);
 			}
-			if (0 === strpos($part, 'style')) {
-				return array(1, 'style', $buffer);
+			if (0 === strpos($part, $delimiters[1])) {
+				return array(1, $delimiters[1], $buffer);
 			}
-			if (0 === strpos($part, 'STYLE')) {
-				return array(2, 'STYLE', $buffer);
+			if (0 === strpos($part, $delimiters[2])) {
+				return array(2, $delimiters[2], $buffer);
 			}
-			if (0 === strpos($part, 'script')) {
-				return array(3, 'script', $buffer);
+			if (0 === strpos($part, $delimiters[3])) {
+				return array(3, $delimiters[3], $buffer);
 			}
-			if (0 === strpos($part, 'SCRIPT')) {
-				return array(4, 'SCRIPT', $buffer);
+			if (0 === strpos($part, $delimiters[4])) {
+				return array(4, $delimiters[4], $buffer);
 			}
 			if (preg_match('~^\s+~', $part, $matches)) {
 				return array(5, $matches[0], $buffer);
 			}
-
 			$buffer .= $letter;
 			$textPos++;
 		}
@@ -343,28 +372,35 @@ class HtmlOnly
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter3(&$text, $textLength, $textPos)
+	public function findDelimiter3($text, $textLength, $textPos)
 	{
+		static $delimiters = array(
+			0 => '"', 1 => '\'', 2 => '/>', 3 => '>', 4 => "\n", 5 => "\t"
+		);
+
 		$buffer = false;
 		while ($textPos < $textLength) {
 			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if ('"' === $letter) {
-				return array(0, '"', $buffer);
-			}
-			if ('\'' === $letter) {
-				return array(1, '\'', $buffer);
-			}
-			if (0 === strpos($part, '/>')) {
-				return array(2, '/>', $buffer);
-			}
-			if ('>' === $letter) {
-				return array(3, '>', $buffer);
-			}
-			if ("\t" === $letter || "\n" === $letter) {
-				return array(4, $letter, $buffer);
-			}
+			$letter = $text[$textPos];
 
+			if ($delimiters[0] === $letter) {
+				return array(0, $delimiters[0], $buffer);
+			}
+			if ($delimiters[1] === $letter) {
+				return array(1, $delimiters[1], $buffer);
+			}
+			if (0 === strpos($part, $delimiters[2])) {
+				return array(2, $delimiters[2], $buffer);
+			}
+			if ($delimiters[3] === $letter) {
+				return array(3, $delimiters[3], $buffer);
+			}
+			if ($delimiters[4] === $letter) {
+				return array(4, $delimiters[4], $buffer);
+			}
+			if ($delimiters[5] === $letter) {
+				return array(5, $delimiters[5], $buffer);
+			}
 			$buffer .= $letter;
 			$textPos++;
 		}
@@ -379,25 +415,32 @@ class HtmlOnly
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter4(&$text, $textLength, $textPos)
+	public function findDelimiter4($text, $textLength, $textPos)
 	{
+		static $delimiters = array(
+			0 => '"', 1 => '\'', 2 => '>', 3 => "\n", 4 => "\t"
+		);
+
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if ('"' === $letter) {
-				return array(0, '"', $buffer);
-			}
-			if ('\'' === $letter) {
-				return array(1, '\'', $buffer);
-			}
-			if ('>' === $letter) {
-				return array(2, '>', $buffer);
-			}
-			if ("\t" === $letter || "\n" === $letter) {
-				return array(3, $letter, $buffer);
-			}
 
+			$letter = $text[$textPos];
+
+			if ($delimiters[0] === $letter) {
+				return array(0, $delimiters[0], $buffer);
+			}
+			if ($delimiters[1] === $letter) {
+				return array(1, $delimiters[1], $buffer);
+			}
+			if ($delimiters[2] === $letter) {
+				return array(2, $delimiters[2], $buffer);
+			}
+			if ($delimiters[3] === $letter) {
+				return array(3, $delimiters[3], $buffer);
+			}
+			if ($delimiters[4] === $letter) {
+				return array(4, $delimiters[4], $buffer);
+			}
 			$buffer .= $letter;
 			$textPos++;
 		}
@@ -412,16 +455,20 @@ class HtmlOnly
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter5(&$text, $textLength, $textPos)
+	public function findDelimiter5($text, $textLength, $textPos)
 	{
+		static $delimiters = array(
+			0 => '>'
+		);
+
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if ('>' === $letter) {
-				return array(0, '>', $buffer);
-			}
 
+			$letter = $text[$textPos];
+
+			if ($delimiters[0] === $letter) {
+				return array(0, $delimiters[0], $buffer);
+			}
 			$buffer .= $letter;
 			$textPos++;
 		}
@@ -436,22 +483,29 @@ class HtmlOnly
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter6(&$text, $textLength, $textPos)
+	public function findDelimiter6($text, $textLength, $textPos)
 	{
+		static $delimiters = array(
+			0 => "\n", 1 => "\t", 2 => '</style', 3 => '</STYLE'
+		);
+
 		$buffer = false;
 		while ($textPos < $textLength) {
 			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if ("\t" === $letter || "\n" === $letter) {
-				return array(0, $letter, $buffer);
-			}
-			if (0 === strpos($part, '</style')) {
-				return array(1, '</style', $buffer);
-			}
-			if (0 === strpos($part, '</STYLE')) {
-				return array(2, '</STYLE', $buffer);
-			}
+			$letter = $text[$textPos];
 
+			if ($delimiters[0] === $letter) {
+				return array(0, $delimiters[0], $buffer);
+			}
+			if ($delimiters[1] === $letter) {
+				return array(1, $delimiters[1], $buffer);
+			}
+			if (0 === strpos($part, $delimiters[2])) {
+				return array(2, $delimiters[2], $buffer);
+			}
+			if (0 === strpos($part, $delimiters[3])) {
+				return array(3, $delimiters[3], $buffer);
+			}
 			$buffer .= $letter;
 			$textPos++;
 		}
@@ -466,25 +520,32 @@ class HtmlOnly
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter7(&$text, $textLength, $textPos)
+	public function findDelimiter7($text, $textLength, $textPos)
 	{
+		static $delimiters = array(
+			0 => '"', 1 => '\'', 2 => '>', 3 => "\n", 4 => "\t"
+		);
+
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if ('"' === $letter) {
-				return array(0, '"', $buffer);
-			}
-			if ('\'' === $letter) {
-				return array(1, '\'', $buffer);
-			}
-			if ('>' === $letter) {
-				return array(2, '>', $buffer);
-			}
-			if ("\t" === $letter || "\n" === $letter) {
-				return array(3, $letter, $buffer);
-			}
 
+			$letter = $text[$textPos];
+
+			if ($delimiters[0] === $letter) {
+				return array(0, $delimiters[0], $buffer);
+			}
+			if ($delimiters[1] === $letter) {
+				return array(1, $delimiters[1], $buffer);
+			}
+			if ($delimiters[2] === $letter) {
+				return array(2, $delimiters[2], $buffer);
+			}
+			if ($delimiters[3] === $letter) {
+				return array(3, $delimiters[3], $buffer);
+			}
+			if ($delimiters[4] === $letter) {
+				return array(4, $delimiters[4], $buffer);
+			}
 			$buffer .= $letter;
 			$textPos++;
 		}
@@ -499,16 +560,20 @@ class HtmlOnly
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter8(&$text, $textLength, $textPos)
+	public function findDelimiter8($text, $textLength, $textPos)
 	{
+		static $delimiters = array(
+			0 => '>'
+		);
+
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if ('>' === $letter) {
-				return array(0, '>', $buffer);
-			}
 
+			$letter = $text[$textPos];
+
+			if ($delimiters[0] === $letter) {
+				return array(0, $delimiters[0], $buffer);
+			}
 			$buffer .= $letter;
 			$textPos++;
 		}
@@ -523,22 +588,29 @@ class HtmlOnly
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter9(&$text, $textLength, $textPos)
+	public function findDelimiter9($text, $textLength, $textPos)
 	{
+		static $delimiters = array(
+			0 => "\n", 1 => "\t", 2 => '</script', 3 => '</SCRIPT'
+		);
+
 		$buffer = false;
 		while ($textPos < $textLength) {
 			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if ("\t" === $letter || "\n" === $letter) {
-				return array(0, $letter, $buffer);
-			}
-			if (0 === strpos($part, '</script')) {
-				return array(1, '</script', $buffer);
-			}
-			if (0 === strpos($part, '</SCRIPT')) {
-				return array(2, '</SCRIPT', $buffer);
-			}
+			$letter = $text[$textPos];
 
+			if ($delimiters[0] === $letter) {
+				return array(0, $delimiters[0], $buffer);
+			}
+			if ($delimiters[1] === $letter) {
+				return array(1, $delimiters[1], $buffer);
+			}
+			if (0 === strpos($part, $delimiters[2])) {
+				return array(2, $delimiters[2], $buffer);
+			}
+			if (0 === strpos($part, $delimiters[3])) {
+				return array(3, $delimiters[3], $buffer);
+			}
 			$buffer .= $letter;
 			$textPos++;
 		}
@@ -553,16 +625,20 @@ class HtmlOnly
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter10(&$text, $textLength, $textPos)
+	public function findDelimiter10($text, $textLength, $textPos)
 	{
+		static $delimiters = array(
+			0 => '"'
+		);
+
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if ('"' === $letter) {
-				return array(0, '"', $buffer);
-			}
 
+			$letter = $text[$textPos];
+
+			if ($delimiters[0] === $letter) {
+				return array(0, $delimiters[0], $buffer);
+			}
 			$buffer .= $letter;
 			$textPos++;
 		}
@@ -577,16 +653,20 @@ class HtmlOnly
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter11(&$text, $textLength, $textPos)
+	public function findDelimiter11($text, $textLength, $textPos)
 	{
+		static $delimiters = array(
+			0 => '\''
+		);
+
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if ('\'' === $letter) {
-				return array(0, '\'', $buffer);
-			}
 
+			$letter = $text[$textPos];
+
+			if ($delimiters[0] === $letter) {
+				return array(0, $delimiters[0], $buffer);
+			}
 			$buffer .= $letter;
 			$textPos++;
 		}
@@ -601,19 +681,26 @@ class HtmlOnly
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter12(&$text, $textLength, $textPos)
+	public function findDelimiter12($text, $textLength, $textPos)
 	{
+		static $delimiters = array(
+			0 => '-->', 1 => "\n", 2 => "\t"
+		);
+
 		$buffer = false;
 		while ($textPos < $textLength) {
 			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if (0 === strpos($part, '-->')) {
-				return array(0, '-->', $buffer);
-			}
-			if ("\t" === $letter || "\n" === $letter) {
-				return array(1, $letter, $buffer);
-			}
+			$letter = $text[$textPos];
 
+			if (0 === strpos($part, $delimiters[0])) {
+				return array(0, $delimiters[0], $buffer);
+			}
+			if ($delimiters[1] === $letter) {
+				return array(1, $delimiters[1], $buffer);
+			}
+			if ($delimiters[2] === $letter) {
+				return array(2, $delimiters[2], $buffer);
+			}
 			$buffer .= $letter;
 			$textPos++;
 		}

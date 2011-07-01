@@ -392,9 +392,9 @@ class {$this->lexerName}
 	 */
 	public function __construct()
 	{
-{$constructor}
+$constructor
 	}
-{$functions}
+$functions
 }
 SOURCE;
 	}
@@ -409,9 +409,9 @@ SOURCE;
 	{
 		// Delimiter => Condition
 		static $commonDelimiters = array(
-			'_ALL' => 'true',
-			// Line counter & tab indent
-			'_COUNTAB' => '"\\t" === $letter || "\\n" === $letter',
+			'_ALL' => true,
+			'_LINE' => "\n",
+			'_TAB' => "\t",
 			'SPACE' => 'preg_match(\'~^\s+~\', $part, $matches)',
 			'!SPACE' => 'preg_match(\'~^\\\\S+~\', $part, $matches)',
 			'ALPHA' => 'preg_match(\'~^[a-z]+~i\', $part, $matches)',
@@ -428,58 +428,80 @@ SOURCE;
 			'!SAFECHAR' => 'preg_match(\'~^\\\\W+~\', $part, $matches)'
 		);
 
-		$lexerDelimiters = $this->lexer->getDelimiters();
+		$allDelimiters = array_merge($commonDelimiters, $this->lexer->getDelimiters());
 
-		$conditions = '';
+		$conditionsSource = '';
+		$delimiters = array();
 		foreach ($this->delimiters[$state] as $no => $delimiter) {
-			if (isset($commonDelimiters[$delimiter])) {
-				$delimiterSource = '_ALL' === $delimiter || '_COUNTAB' === $delimiter ? '$letter' : '$matches[0]';
-				$condition = $commonDelimiters[$delimiter];
-			} elseif (isset($lexerDelimiters[$delimiter])) {
-				$delimiterSource = '$matches[0]';
-				$condition = $lexerDelimiters[$delimiter];
-			} else {
-				$delimiterSource = $this->getVarValueSource($delimiter);
-				if (1 === strlen($delimiter)) {
-					$condition = sprintf('%s === $letter', $delimiterSource);
-				} else {
-					$condition = sprintf('0 === strpos($part, %s)', $delimiterSource);
-				}
-			}
+			if ('_ALL' === $delimiter) {
+				$conditionSource = <<<CONDITION
 
-			$conditions .= <<<CONDITION
-			if ($condition) {
-				return array({$no}, {$delimiterSource}, \$buffer);
-			}
-
+			return array($no, \$letter, \$buffer);
 CONDITION;
+			} else {
+				if (isset($allDelimiters[$delimiter]) && 0 === strpos($allDelimiters[$delimiter], 'preg_match')) {
+					$delimiterSource = '$matches[0]';
+					$condition = $allDelimiters[$delimiter];
+				} else {
+					if (isset($allDelimiters[$delimiter])) {
+						$delimiter = $allDelimiters[$delimiter];
+					}
+
+					$delimiters[$no] = $delimiter;
+
+					$delimiterSource = sprintf('$delimiters[%d]', $no);
+					if (1 === strlen($delimiter)) {
+						$condition = sprintf('$delimiters[%d] === $letter', $no);
+					} else {
+						$condition = sprintf('0 === strpos($part, $delimiters[%d])', $no);
+					}
+				}
+
+				$conditionSource = <<<CONDITION
+
+			if ($condition) {
+				return array($no, $delimiterSource, \$buffer);
+			}
+CONDITION;
+			}
+
+			$conditionsSource .= $conditionSource;
 		}
 
-		$stateName = array_search($state, $this->states);
-		return <<<STATE
+		$partSource = preg_match('~\\$part~', $conditionsSource) ? 'substr($text, $textPos, 10)' : '';
+		if (preg_match('~\\$letter~', $conditionsSource)) {
+			$letterSource = '$text[$textPos]';
+			$bufferSource = '$letter';
+		} else {
+			$letterSource = '';
+			$bufferSource = '$text[$textPos]';
+		}
 
+		// Removes traling whitespaces and unnecessary empty lines
+		return preg_replace('~\n{3,}~', "\n\n", preg_replace('~\t+\n~', "\n", '
 	/**
-	 * Finds a delimiter for state {$stateName}.
+	 * Finds a delimiter for state ' . array_search($state, $this->states) . '.
 	 *
-	 * @param string \$text
-	 * @param string \$textLength
-	 * @param string \$textPos
+	 * @param string $text
+	 * @param string $textLength
+	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter{$state}(&\$text, \$textLength, \$textPos)
+	public function findDelimiter' . $state . '($text, $textLength, $textPos)
 	{
-		\$buffer = false;
-		while (\$textPos < \$textLength) {
-			\$part = substr(\$text, \$textPos, 10);
-			\$letter = \$part[0];
-{$conditions}
-			\$buffer .= \$letter;
-			\$textPos++;
-		}
-		return array(-1, -1, \$buffer);
-	}
+		' . (!empty($delimiters) ? sprintf('static $delimiters = %s;', $this->getVarValueSource($delimiters)) : '') . '
 
-STATE;
+		$buffer = false;
+		while ($textPos < $textLength) {
+			' . (!empty($partSource) ? sprintf('$part = %s;', $partSource) : '') . '
+			' . (!empty($letterSource) ? sprintf('$letter = %s;', $letterSource) : '') . '
+' . $conditionsSource . '
+			$buffer .= ' . $bufferSource . ';
+			$textPos++;
+		}
+		return array(-1, -1, $buffer);
+	}
+'));
 	}
 
 	/**

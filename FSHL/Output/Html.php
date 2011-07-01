@@ -57,7 +57,7 @@ class Html implements FSHL\Output
 				$output .= '</span>';
 			}
 			if (null !== $class) {
-				$output .= sprintf('<span class="%s">', $class);
+				$output .= '<span class="' . $class . '">';
 			}
 
 			$this->lastClass = $class;
@@ -82,7 +82,7 @@ class Html implements FSHL\Output
 				$output .= '</span>';
 			}
 			if (null !== $class) {
-				$output .= sprintf('<span class="%s">', $class);
+				$output .= '<span class="' . $class . '">';
 			}
 
 			$this->lastClass = $class;

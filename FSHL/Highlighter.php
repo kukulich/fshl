@@ -154,14 +154,15 @@ class Highlighter
 		$textPos = 0;
 
 		// Parses the text
-		$output = '';
+		$output = array();
+		$fragment = '';
 		$maxLineWidth = 0;
 		$line = 1;
 		$char = 0;
 		if ($this->options & self::OPTION_LINE_COUNTER) {
 			// Right aligment of line counter
 			$maxLineWidth = strlen(substr_count($text, "\n") + 1);
-			$output .= $this->line($line, $maxLineWidth);
+			$fragment .= $this->line($line, $maxLineWidth);
 		}
 		$newLexer = $lexer;
 		$newState = $state = $this->lexer->initialState;
@@ -175,7 +176,11 @@ class Highlighter
 				$bufferLength = strlen($buffer);
 				$textPos += $bufferLength;
 				$char += $bufferLength;
-				$output .= $this->template($buffer, $state);
+				$fragment .= $this->template($buffer, $state);
+				if (isset($fragment[8192])) {
+					$output[] = $fragment;
+					$fragment = '';
+				}
 			}
 
 			if (-1 === $transitionId) {
@@ -221,9 +226,13 @@ class Highlighter
 					$char = $prevChar;
 					$textPos = $prevTextPos;
 				} else {
-					$output .= $this->template($delimiter, $state);
+					$fragment .= $this->template($delimiter, $state);
 					if ($addLine) {
-						$output .= $this->line($actualLine, $maxLineWidth);
+						$fragment .= $this->line($actualLine, $maxLineWidth);
+					}
+					if (isset($fragment[8192])) {
+						$output[] = $fragment;
+						$fragment = '';
 					}
 				}
 
@@ -253,9 +262,13 @@ class Highlighter
 				$char = $prevChar;
 				$textPos = $prevTextPos;
 			} else {
-				$output .= $this->template($delimiter, $type > 0 ? $state : $newState);
+				$fragment .= $this->template($delimiter, $type > 0 ? $state : $newState);
 				if ($addLine) {
-					$output .= $this->line($actualLine, $maxLineWidth);
+					$fragment .= $this->line($actualLine, $maxLineWidth);
+				}
+				if (isset($fragment[8192])) {
+					$output[] = $fragment;
+					$fragment = '';
 				}
 			}
 
@@ -294,9 +307,10 @@ class Highlighter
 		}
 
 		// Adds template end
-		$output .= $this->output->template('', null);
+		$fragment .= $this->output->template('', null);
+		$output[] = $fragment;
 
-		return $output;
+		return implode('', $output);
 	}
 
 	/**

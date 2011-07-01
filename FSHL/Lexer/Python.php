@@ -75,7 +75,8 @@ class Python implements FSHL\Lexer
 		return array(
 			'OUT' => array(
 				array(
-					'_COUNTAB' => array('OUT', 0),
+					'_LINE' => array('OUT', 0),
+					'_TAB' => array('OUT', 0),
 					'ALPHA' => array('KEYWORD', -1),
 					'_' => array('KEYWORD', -1),
 					'\'\'\'' => array('DOCSTRING1', 0),
@@ -105,7 +106,8 @@ class Python implements FSHL\Lexer
 					'\'\'\'' => array(FSHL\Generator::STATE_RETURN, 0),
 					'\\\\' => array('DOCSTRING1', 0),
 					'\\\'\'\'' => array('DOCSTRING1', 0),
-					'_COUNTAB' => array('DOCSTRING1', 0)
+					'_LINE' => array('DOCSTRING1', 0),
+					'_TAB' => array('DOCSTRING1', 0)
 				),
 				FSHL\Generator::STATE_FLAG_RECURSION,
 				'py-docstring',
@@ -116,7 +118,8 @@ class Python implements FSHL\Lexer
 					'"""' => array(FSHL\Generator::STATE_RETURN, 0),
 					'\\\\' => array('DOCSTRING2', 0),
 					'\\"""' => array('DOCSTRING2', 0),
-					'_COUNTAB' => array('DOCSTRING2', 0)
+					'_LINE' => array('DOCSTRING2', 0),
+					'_TAB' => array('DOCSTRING2', 0)
 				),
 				FSHL\Generator::STATE_FLAG_RECURSION,
 				'py-docstring',
@@ -127,7 +130,8 @@ class Python implements FSHL\Lexer
 					'\'' => array(FSHL\Generator::STATE_RETURN, 0),
 					'\\\\' => array('QUOTE1', 0),
 					'\\\'' => array('QUOTE1', 0),
-					'_COUNTAB' => array('QUOTE1', 0)
+					'_LINE' => array('QUOTE1', 0),
+					'_TAB' => array('QUOTE1', 0)
 				),
 				FSHL\Generator::STATE_FLAG_RECURSION,
 				'py-quote',
@@ -138,7 +142,8 @@ class Python implements FSHL\Lexer
 					'"' => array(FSHL\Generator::STATE_RETURN, 0),
 					'\\\\' => array('QUOTE2', 0),
 					'\\"' => array('QUOTE2', 0),
-					'_COUNTAB' => array('QUOTE2', 0)
+					'_LINE' => array('QUOTE2', 0),
+					'_TAB' => array('QUOTE2', 0)
 				),
 				FSHL\Generator::STATE_FLAG_RECURSION,
 				'py-quote',

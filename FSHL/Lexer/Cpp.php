@@ -75,7 +75,8 @@ class Cpp implements FSHL\Lexer
 			// Initial state
 			'OUT' => array(
 				array(
-					'_COUNTAB' => array('OUT', 0),
+					'_LINE' => array('OUT', 0),
+					'_TAB' => array('OUT', 0),
 					'ALPHA' => array('KEYWORD', -1),
 					'//' => array('COMMENT2', 0),
 					'#' => array('PREPROC', 0),
@@ -155,7 +156,8 @@ class Cpp implements FSHL\Lexer
 				array(
 					'\\\\' => array('QUOTE1', 0),
 					'\\"' => array('QUOTE1', 0),
-					'_COUNTAB' => array('QUOTE1', 0),
+					'_LINE' => array('QUOTE1', 0),
+					'_TAB' => array('QUOTE1', 0),
 					'"' => array(FSHL\Generator::STATE_RETURN, 0)
 				),
 				FSHL\Generator::STATE_FLAG_RECURSION,
@@ -166,7 +168,8 @@ class Cpp implements FSHL\Lexer
 				array(
 					'\\\'' => array('QUOTE2', 0),
 					'\'' => array(FSHL\Generator::STATE_RETURN, 0),
-					'_COUNTAB' => array('QUOTE2', 0)
+					'_LINE' => array('QUOTE2', 0),
+					'_TAB' => array('QUOTE2', 0)
 				),
 				FSHL\Generator::STATE_FLAG_RECURSION,
 				'cpp-quote',
@@ -175,7 +178,8 @@ class Cpp implements FSHL\Lexer
 			// Comments
 			'COMMENT1' => array(
 				array(
-					'_COUNTAB' => array('COMMENT1', 0),
+					'_LINE' => array('COMMENT1', 0),
+					'_TAB' => array('COMMENT1', 0),
 					'*/' => array(FSHL\Generator::STATE_RETURN, 0)
 				),
 				FSHL\Generator::STATE_FLAG_RECURSION,

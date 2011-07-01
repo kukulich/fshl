@@ -74,7 +74,8 @@ class Minimal implements FSHL\Lexer
 		return array(
 			'OUT' => array(
 				array(
-					'_COUNTAB' => array('OUT', 0),
+					'_LINE' => array('OUT', 0),
+					'_TAB' => array('OUT', 0)
 				),
 				FSHL\Generator::STATE_FLAG_NONE,
 				null,

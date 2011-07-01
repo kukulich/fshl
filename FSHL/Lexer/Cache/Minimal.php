@@ -109,6 +109,8 @@ class Minimal
 			0 => array(
 				0 => array(
 					0 => 0, 1 => 0
+				), 1 => array(
+					0 => 0, 1 => 0
 				)
 			)
 		);
@@ -138,16 +140,23 @@ class Minimal
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter0(&$text, $textLength, $textPos)
+	public function findDelimiter0($text, $textLength, $textPos)
 	{
+		static $delimiters = array(
+			0 => "\n", 1 => "\t"
+		);
+
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if ("\t" === $letter || "\n" === $letter) {
-				return array(0, $letter, $buffer);
-			}
 
+			$letter = $text[$textPos];
+
+			if ($delimiters[0] === $letter) {
+				return array(0, $delimiters[0], $buffer);
+			}
+			if ($delimiters[1] === $letter) {
+				return array(1, $delimiters[1], $buffer);
+			}
 			$buffer .= $letter;
 			$textPos++;
 		}

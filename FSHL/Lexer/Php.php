@@ -74,7 +74,8 @@ class Php implements FSHL\Lexer
 		return array(
 			'OUT' => array(
 				array(
-					'_COUNTAB' => array('OUT', 0),
+					'_LINE' => array('OUT', 0),
+					'_TAB' => array('OUT', 0),
 					'$' => array('VAR', 0),
 					'ALPHA' => array('FUNCTION', -1),
 					'_' => array('FUNCTION', -1),
@@ -114,7 +115,8 @@ class Php implements FSHL\Lexer
 			),
 			'COMMENT' => array(
 				array(
-					'_COUNTAB' => array('COMMENT', 0),
+					'_LINE' => array('COMMENT', 0),
+					'_TAB' => array('COMMENT', 0),
 					'*/' => array(FSHL\Generator::STATE_RETURN, 0)
 				),
 				FSHL\Generator::STATE_FLAG_RECURSION,
@@ -124,7 +126,8 @@ class Php implements FSHL\Lexer
 			'COMMENT1' => array(
 				array(
 					"\n" => array(FSHL\Generator::STATE_RETURN, 1),
-					'_COUNTAB' => array('COMMENT1', 0),
+					'_LINE' => array('COMMENT1', 0),
+					'_TAB' => array('COMMENT1', 0),
 					'?>' => array(FSHL\Generator::STATE_RETURN, -1)
 				),
 				FSHL\Generator::STATE_FLAG_RECURSION,
@@ -158,7 +161,8 @@ class Php implements FSHL\Lexer
 					'\\"' => array('QUOTE', 0),
 					'$' => array('VAR', 0),
 					'{$' => array('VAR_STR', 0),
-					'_COUNTAB' => array('QUOTE', 0)
+					'_LINE' => array('QUOTE', 0),
+					'_TAB' => array('QUOTE', 0)
 				),
 				FSHL\Generator::STATE_FLAG_RECURSION,
 				'php-quote',
@@ -166,7 +170,8 @@ class Php implements FSHL\Lexer
 			),
 			'HEREDOC' => array(
 				array(
-					'_COUNTAB' => array('HEREDOC_END', 0),
+					'_LINE' => array('HEREDOC_END', 0),
+					'_TAB' => array('HEREDOC', 0),
 					'\\$' => array('HEREDOC', 0),
 					'$' => array('VAR', 0),
 					'{$' => array('VAR_STR', 0)
@@ -189,7 +194,8 @@ class Php implements FSHL\Lexer
 					'\'' => array(FSHL\Generator::STATE_RETURN, 0),
 					'\\\\' => array('QUOTE1', 0),
 					'\\\'' => array('QUOTE1', 0),
-					'_COUNTAB' => array('QUOTE1', 0)
+					'_LINE' => array('QUOTE1', 0),
+					'_TAB' => array('QUOTE1', 0)
 				),
 				FSHL\Generator::STATE_FLAG_RECURSION,
 				'php-quote',
@@ -197,7 +203,8 @@ class Php implements FSHL\Lexer
 			),
 			'NOWDOC' => array(
 				array(
-					'_COUNTAB' => array('NOWDOC_END', 0)
+					'_LINE' => array('NOWDOC_END', 0),
+					'_TAB' => array('NOWDOC', 0)
 				),
 				FSHL\Generator::STATE_FLAG_NONE,
 				'php-quote',

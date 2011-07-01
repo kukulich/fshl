@@ -80,7 +80,8 @@ class Java implements FSHL\Lexer
 					'\'' => array('QUOTE2', 0),
 					'/*' => array('COMMENT1', 0),
 					'//' => array('COMMENT2', 0),
-					'_COUNTAB' => array('OUT', 0)
+					'_LINE' => array('OUT', 0),
+					'_TAB' => array('OUT', 0)
 				),
 				FSHL\Generator::STATE_FLAG_NONE,
 				null,
@@ -129,7 +130,8 @@ class Java implements FSHL\Lexer
 				array(
 					'\\\\' => array('QUOTE1', 0),
 					'\\"' => array('QUOTE1', 0),
-					'_COUNTAB' => array('QUOTE1', 0),
+					'_LINE' => array('QUOTE1', 0),
+					'_TAB' => array('QUOTE1', 0),
 					'"' => array(FSHL\Generator::STATE_RETURN, 0)
 				),
 				FSHL\Generator::STATE_FLAG_RECURSION,
@@ -140,7 +142,8 @@ class Java implements FSHL\Lexer
 				array(
 					'\\\\' => array('QUOTE2', 0),
 					'\\\'' => array('QUOTE2', 0),
-					'_COUNTAB' => array('QUOTE2', 0),
+					'_LINE' => array('QUOTE2', 0),
+					'_TAB' => array('QUOTE2', 0),
 					'\'' => array(FSHL\Generator::STATE_RETURN, 0)
 				),
 				FSHL\Generator::STATE_FLAG_RECURSION,
@@ -151,7 +154,8 @@ class Java implements FSHL\Lexer
 			'COMMENT1' => array(
 				array(
 					'*/' => array(FSHL\Generator::STATE_RETURN, 0),
-					'_COUNTAB' => array('COMMENT1', 0)
+					'_LINE' => array('COMMENT1', 0),
+					'_TAB' => array('COMMENT1', 0)
 				),
 				FSHL\Generator::STATE_FLAG_RECURSION,
 				'java-comment',

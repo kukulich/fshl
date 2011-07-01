@@ -77,10 +77,12 @@ class Php implements FSHL\Lexer
 					'_COUNTAB' => array('OUT', 0),
 					'$' => array('VAR', 0),
 					'ALPHA' => array('FUNCTION', -1),
+					'_' => array('FUNCTION', -1),
 					'\'' => array('QUOTE1', 0),
 					'"' => array('QUOTE', 0),
 					'//' => array('COMMENT1', 0),
 					'NUMBER' => array('NUM', 0),
+					'DOT_NUMBER' => array('NUM', 0),
 					'?>' => array(FSHL\Generator::STATE_QUIT, 0),
 					'/*' => array('COMMENT', 0) ,
 					'<?' => array('DUMMY_PHP', -1),
@@ -164,11 +166,19 @@ class Php implements FSHL\Lexer
 			),
 			'HEREDOC' => array(
 				array(
-					'_COUNTAB' => array('HEREDOC', 0),
-					'HEREDOC_END' => array(FSHL\Generator::STATE_RETURN, 0),
+					'_COUNTAB' => array('HEREDOC_END', 0),
 					'\\$' => array('HEREDOC', 0),
 					'$' => array('VAR', 0),
-					'{$' => array('VAR_STR', 0),
+					'{$' => array('VAR_STR', 0)
+				),
+				FSHL\Generator::STATE_FLAG_NONE,
+				'php-quote',
+				null
+			),
+			'HEREDOC_END' => array(
+				array(
+					'HEREDOC_NOWDOC_END' => array('OUT', 1),
+					'_ALL' => array('HEREDOC', -1)
 				),
 				FSHL\Generator::STATE_FLAG_NONE,
 				'php-quote',
@@ -187,8 +197,16 @@ class Php implements FSHL\Lexer
 			),
 			'NOWDOC' => array(
 				array(
-					'_COUNTAB' => array('NOWDOC', 0),
-					'NOWDOC_END' => array(FSHL\Generator::STATE_RETURN, 0),
+					'_COUNTAB' => array('NOWDOC_END', 0)
+				),
+				FSHL\Generator::STATE_FLAG_NONE,
+				'php-quote',
+				null
+			),
+			'NOWDOC_END' => array(
+				array(
+					'HEREDOC_NOWDOC_END' => array('OUT', 1),
+					'_ALL' => array('NOWDOC', -1)
 				),
 				FSHL\Generator::STATE_FLAG_NONE,
 				'php-quote',
@@ -197,24 +215,16 @@ class Php implements FSHL\Lexer
 			'NUM' => array(
 				array(
 					'x' => array('HEX_NUM', 0),
-					'!NUMBER' => array(FSHL\Generator::STATE_RETURN, 1),
-					'NUMBER' => array('DEC_NUM', 0)
+					'DOT_NUMBER' => array('NUM', 0),
+					'_ALL' => array(FSHL\Generator::STATE_RETURN, 1)
 				),
 				FSHL\Generator::STATE_FLAG_RECURSION,
 				'php-num',
 				null
 			),
-			'DEC_NUM' => array(
-				array(
-					'!NUMBER' => array(FSHL\Generator::STATE_RETURN, 1)
-				),
-				FSHL\Generator::STATE_FLAG_NONE,
-				'php-num',
-				null
-			),
 			'HEX_NUM' => array(
 				array(
-					'!HEXNUM' => array(FSHL\Generator::STATE_RETURN, 1)
+					'_ALL' => array(FSHL\Generator::STATE_RETURN, 1)
 				),
 				FSHL\Generator::STATE_FLAG_NONE,
 				'php-num',
@@ -237,10 +247,10 @@ class Php implements FSHL\Lexer
 	public function getDelimiters()
 	{
 		return array(
-			'NOWDOC' => 'preg_match(\'~^<<<\\\'\\\\w+\\\'\\\\n~\', $part, $matches)',
-			'NOWDOC_END' => 'preg_match(\'~^\\\\n\\\\w+;\\\\n~\', $part, $matches)',
-			'HEREDOC' => 'preg_match(\'~^<<<(?:\\\\w+|"\\\\w+")\\\\n~\', $part, $matches)',
-			'HEREDOC_END' => 'preg_match(\'~^\\\\n\\\\w+;\\\\n~\', $part, $matches)'
+			'HEREDOC' => 'preg_match(\'~<<<(?:\\\\w+|"\\\\w+")\\\\n~A\', $text, $matches, 0, $textPos)',
+			'NOWDOC' => 'preg_match(\'~<<<\\\'\\\\w+\\\'\\\\n~A\', $text, $matches, 0, $textPos)',
+			// Starting \n is missing intentionally
+			'HEREDOC_NOWDOC_END' => 'preg_match(\'~\\\\w+;\\\\n~A\', $text, $matches, 0, $textPos)'
 		);
 	}
 

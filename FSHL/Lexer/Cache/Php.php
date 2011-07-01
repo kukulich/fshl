@@ -114,51 +114,55 @@ class Php
 				), 2 => array(
 					0 => 2, 1 => -1
 				), 3 => array(
-					0 => 9, 1 => 0
+					0 => 2, 1 => -1
 				), 4 => array(
-					0 => 7, 1 => 0
-				), 5 => array(
-					0 => 4, 1 => 0
-				), 6 => array(
-					0 => 11, 1 => 0
-				), 7 => array(
-					0 => 15, 1 => 0
-				), 8 => array(
-					0 => 3, 1 => 0
-				), 9 => array(
-					0 => 1, 1 => -1
-				), 10 => array(
-					0 => 4, 1 => 0
-				), 11 => array(
 					0 => 10, 1 => 0
+				), 5 => array(
+					0 => 7, 1 => 0
+				), 6 => array(
+					0 => 4, 1 => 0
+				), 7 => array(
+					0 => 13, 1 => 0
+				), 8 => array(
+					0 => 13, 1 => 0
+				), 9 => array(
+					0 => 16, 1 => 0
+				), 10 => array(
+					0 => 3, 1 => 0
+				), 11 => array(
+					0 => 1, 1 => -1
 				), 12 => array(
+					0 => 4, 1 => 0
+				), 13 => array(
+					0 => 11, 1 => 0
+				), 14 => array(
 					0 => 8, 1 => 0
 				)
 			), 1 => array(
 				0 => array(
-					0 => 14, 1 => 0
+					0 => 15, 1 => 0
 				), 1 => array(
-					0 => 14, 1 => 0
+					0 => 15, 1 => 0
 				), 2 => array(
-					0 => 14, 1 => 0
+					0 => 15, 1 => 0
 				)
 			), 2 => array(
 				0 => array(
-					0 => 14, 1 => 1
+					0 => 15, 1 => 1
 				)
 			), 3 => array(
 				0 => array(
 					0 => 3, 1 => 0
 				), 1 => array(
-					0 => 14, 1 => 0
+					0 => 15, 1 => 0
 				)
 			), 4 => array(
 				0 => array(
-					0 => 14, 1 => 1
+					0 => 15, 1 => 1
 				), 1 => array(
 					0 => 4, 1 => 0
 				), 2 => array(
-					0 => 14, 1 => -1
+					0 => 15, 1 => -1
 				)
 			), 5 => array(
 				0 => array(
@@ -168,17 +172,17 @@ class Php
 				), 2 => array(
 					0 => 5, 1 => 0
 				), 3 => array(
-					0 => 14, 1 => 1
+					0 => 15, 1 => 1
 				)
 			), 6 => array(
 				0 => array(
-					0 => 14, 1 => 0
+					0 => 15, 1 => 0
 				), 1 => array(
-					0 => 14, 1 => 1
+					0 => 15, 1 => 1
 				)
 			), 7 => array(
 				0 => array(
-					0 => 14, 1 => 0
+					0 => 15, 1 => 0
 				), 1 => array(
 					0 => 7, 1 => 0
 				), 2 => array(
@@ -192,61 +196,65 @@ class Php
 				)
 			), 8 => array(
 				0 => array(
-					0 => 8, 1 => 0
+					0 => 9, 1 => 0
 				), 1 => array(
-					0 => 14, 1 => 0
-				), 2 => array(
 					0 => 8, 1 => 0
-				), 3 => array(
+				), 2 => array(
 					0 => 5, 1 => 0
-				), 4 => array(
+				), 3 => array(
 					0 => 6, 1 => 0
 				)
 			), 9 => array(
 				0 => array(
-					0 => 14, 1 => 0
+					0 => 0, 1 => 1
 				), 1 => array(
-					0 => 9, 1 => 0
-				), 2 => array(
-					0 => 9, 1 => 0
-				), 3 => array(
-					0 => 9, 1 => 0
+					0 => 8, 1 => -1
 				)
 			), 10 => array(
 				0 => array(
-					0 => 10, 1 => 0
+					0 => 15, 1 => 0
 				), 1 => array(
-					0 => 14, 1 => 0
+					0 => 10, 1 => 0
+				), 2 => array(
+					0 => 10, 1 => 0
+				), 3 => array(
+					0 => 10, 1 => 0
 				)
 			), 11 => array(
 				0 => array(
-					0 => 13, 1 => 0
-				), 1 => array(
-					0 => 14, 1 => 1
-				), 2 => array(
 					0 => 12, 1 => 0
 				)
 			), 12 => array(
 				0 => array(
-					0 => 14, 1 => 1
+					0 => 0, 1 => 1
+				), 1 => array(
+					0 => 11, 1 => -1
 				)
 			), 13 => array(
 				0 => array(
-					0 => 14, 1 => 1
+					0 => 14, 1 => 0
+				), 1 => array(
+					0 => 13, 1 => 0
+				), 2 => array(
+					0 => 15, 1 => 1
 				)
-			), 15 => NULL
+			), 14 => array(
+				0 => array(
+					0 => 15, 1 => 1
+				)
+			), 16 => NULL
 		);
 		$this->initialState = 0;
-		$this->returnState = 14;
-		$this->quitState = 15;
+		$this->returnState = 15;
+		$this->quitState = 16;
 		$this->flags = array(
-			0 => 0, 1 => 4, 2 => 5, 3 => 4, 4 => 4, 5 => 4, 6 => 4, 7 => 4, 8 => 0, 9 => 4, 10 => 0, 11 => 4, 12 => 0, 13 => 0, 15 => 8
+			0 => 0, 1 => 4, 2 => 5, 3 => 4, 4 => 4, 5 => 4, 6 => 4, 7 => 4, 8 => 0, 9 => 0, 10 => 4, 11 => 0, 12 => 0, 13 => 4, 14 => 0, 16 => 8
 		);
 		$this->data = array(
-			0 => NULL, 1 => NULL, 2 => NULL, 3 => NULL, 4 => NULL, 5 => NULL, 6 => NULL, 7 => NULL, 8 => NULL, 9 => NULL, 10 => NULL, 11 => NULL, 12 => NULL, 13 => NULL, 15 => ''
+			0 => NULL, 1 => NULL, 2 => NULL, 3 => NULL, 4 => NULL, 5 => NULL, 6 => NULL, 7 => NULL, 8 => NULL, 9 => NULL, 10 => NULL, 11 => NULL, 12 => NULL, 13 => NULL, 14 => NULL, 16 => ''
 		);
 		$this->classes = array(
-			0 => NULL, 1 => 'xlang', 2 => NULL, 3 => 'php-comment', 4 => 'php-comment', 5 => 'php-var', 6 => 'php-var', 7 => 'php-quote', 8 => 'php-quote', 9 => 'php-quote', 10 => 'php-quote', 11 => 'php-num', 12 => 'php-num', 13 => 'php-num', 15 => 'xlang'
+			0 => NULL, 1 => 'xlang', 2 => NULL, 3 => 'php-comment', 4 => 'php-comment', 5 => 'php-var', 6 => 'php-var', 7 => 'php-quote', 8 => 'php-quote', 9 => 'php-quote', 10 => 'php-quote', 11 => 'php-quote', 12 => 'php-quote', 13 => 'php-num', 14 => 'php-num', 16 => 'xlang'
 		);
 		$this->keywords = array(
 			0 => 'php-keyword', 1 => array(
@@ -407,35 +415,41 @@ class Php
 			if (preg_match('~^[a-z]+~i', $part, $matches)) {
 				return array(2, $matches[0], $buffer);
 			}
+			if ('_' === $letter) {
+				return array(3, '_', $buffer);
+			}
 			if ('\'' === $letter) {
-				return array(3, '\'', $buffer);
+				return array(4, '\'', $buffer);
 			}
 			if ('"' === $letter) {
-				return array(4, '"', $buffer);
+				return array(5, '"', $buffer);
 			}
 			if (0 === strpos($part, '//')) {
-				return array(5, '//', $buffer);
+				return array(6, '//', $buffer);
 			}
 			if (preg_match('~^\\d+~', $part, $matches)) {
-				return array(6, $matches[0], $buffer);
+				return array(7, $matches[0], $buffer);
+			}
+			if (preg_match('~^\.\\d+~', $part, $matches)) {
+				return array(8, $matches[0], $buffer);
 			}
 			if (0 === strpos($part, '?>')) {
-				return array(7, '?>', $buffer);
+				return array(9, '?>', $buffer);
 			}
 			if (0 === strpos($part, '/*')) {
-				return array(8, '/*', $buffer);
+				return array(10, '/*', $buffer);
 			}
 			if (0 === strpos($part, '<?')) {
-				return array(9, '<?', $buffer);
+				return array(11, '<?', $buffer);
 			}
 			if ('#' === $letter) {
-				return array(10, '#', $buffer);
+				return array(12, '#', $buffer);
 			}
-			if (preg_match('~^<<<\'\\w+\'\\n~', $part, $matches)) {
-				return array(11, $matches[0], $buffer);
+			if (preg_match('~<<<\'\\w+\'\\n~A', $text, $matches, 0, $textPos)) {
+				return array(13, $matches[0], $buffer);
 			}
-			if (preg_match('~^<<<(?:\\w+|"\\w+")\\n~', $part, $matches)) {
-				return array(12, $matches[0], $buffer);
+			if (preg_match('~<<<(?:\\w+|"\\w+")\\n~A', $text, $matches, 0, $textPos)) {
+				return array(14, $matches[0], $buffer);
 			}
 
 			$buffer .= $letter;
@@ -671,17 +685,41 @@ class Php
 			if ("\t" === $letter || "\n" === $letter) {
 				return array(0, $letter, $buffer);
 			}
-			if (preg_match('~^\\n\\w+;\\n~', $part, $matches)) {
-				return array(1, $matches[0], $buffer);
-			}
 			if (0 === strpos($part, '\\$')) {
-				return array(2, '\\$', $buffer);
+				return array(1, '\\$', $buffer);
 			}
 			if ('$' === $letter) {
-				return array(3, '$', $buffer);
+				return array(2, '$', $buffer);
 			}
 			if (0 === strpos($part, '{$')) {
-				return array(4, '{$', $buffer);
+				return array(3, '{$', $buffer);
+			}
+
+			$buffer .= $letter;
+			$textPos++;
+		}
+		return array(-1, -1, $buffer);
+	}
+
+	/**
+	 * Finds a delimiter for state HEREDOC_END.
+	 *
+	 * @param string $text
+	 * @param string $textLength
+	 * @param string $textPos
+	 * @return array
+	 */
+	public function findDelimiter9(&$text, $textLength, $textPos)
+	{
+		$buffer = false;
+		while ($textPos < $textLength) {
+			$part = substr($text, $textPos, 10);
+			$letter = $part[0];
+			if (preg_match('~\\w+;\\n~A', $text, $matches, 0, $textPos)) {
+				return array(0, $matches[0], $buffer);
+			}
+			if (true) {
+				return array(1, $letter, $buffer);
 			}
 
 			$buffer .= $letter;
@@ -698,7 +736,7 @@ class Php
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter9(&$text, $textLength, $textPos)
+	public function findDelimiter10(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -731,7 +769,7 @@ class Php
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter10(&$text, $textLength, $textPos)
+	public function findDelimiter11(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -740,8 +778,32 @@ class Php
 			if ("\t" === $letter || "\n" === $letter) {
 				return array(0, $letter, $buffer);
 			}
-			if (preg_match('~^\\n\\w+;\\n~', $part, $matches)) {
-				return array(1, $matches[0], $buffer);
+
+			$buffer .= $letter;
+			$textPos++;
+		}
+		return array(-1, -1, $buffer);
+	}
+
+	/**
+	 * Finds a delimiter for state NOWDOC_END.
+	 *
+	 * @param string $text
+	 * @param string $textLength
+	 * @param string $textPos
+	 * @return array
+	 */
+	public function findDelimiter12(&$text, $textLength, $textPos)
+	{
+		$buffer = false;
+		while ($textPos < $textLength) {
+			$part = substr($text, $textPos, 10);
+			$letter = $part[0];
+			if (preg_match('~\\w+;\\n~A', $text, $matches, 0, $textPos)) {
+				return array(0, $matches[0], $buffer);
+			}
+			if (true) {
+				return array(1, $letter, $buffer);
 			}
 
 			$buffer .= $letter;
@@ -758,7 +820,7 @@ class Php
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter11(&$text, $textLength, $textPos)
+	public function findDelimiter13(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
@@ -767,35 +829,11 @@ class Php
 			if ('x' === $letter) {
 				return array(0, 'x', $buffer);
 			}
-			if (preg_match('~^\\D+~', $part, $matches)) {
+			if (preg_match('~^\.\\d+~', $part, $matches)) {
 				return array(1, $matches[0], $buffer);
 			}
-			if (preg_match('~^\\d+~', $part, $matches)) {
-				return array(2, $matches[0], $buffer);
-			}
-
-			$buffer .= $letter;
-			$textPos++;
-		}
-		return array(-1, -1, $buffer);
-	}
-
-	/**
-	 * Finds a delimiter for state DEC_NUM.
-	 *
-	 * @param string $text
-	 * @param string $textLength
-	 * @param string $textPos
-	 * @return array
-	 */
-	public function findDelimiter12(&$text, $textLength, $textPos)
-	{
-		$buffer = false;
-		while ($textPos < $textLength) {
-			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if (preg_match('~^\\D+~', $part, $matches)) {
-				return array(0, $matches[0], $buffer);
+			if (true) {
+				return array(2, $letter, $buffer);
 			}
 
 			$buffer .= $letter;
@@ -812,14 +850,14 @@ class Php
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter13(&$text, $textLength, $textPos)
+	public function findDelimiter14(&$text, $textLength, $textPos)
 	{
 		$buffer = false;
 		while ($textPos < $textLength) {
 			$part = substr($text, $textPos, 10);
 			$letter = $part[0];
-			if (preg_match('~^[^a-f\\d]+~i', $part, $matches)) {
-				return array(0, $matches[0], $buffer);
+			if (true) {
+				return array(0, $letter, $buffer);
 			}
 
 			$buffer .= $letter;

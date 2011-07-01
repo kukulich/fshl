@@ -225,7 +225,6 @@ class Generator
 	 * Initializes the generator for a given lexer.
 	 *
 	 * @param \FSHL\Lexer $lexerName
-	 * @throws InvalidArgumentException If the class for given lexer doesn't exist.
 	 */
 	public function __construct(\FSHL\Lexer $lexer)
 	{
@@ -248,13 +247,13 @@ class Generator
 	 * Saves the generated source to a lexer cache file.
 	 *
 	 * @return \FSHL\Generator
-	 * @throws Exception If the file could not be saved.
+	 * @throws \RuntimeException If the file could not be saved.
 	 */
 	public function saveToCache()
 	{
 		$file = __DIR__ . '/Lexer/Cache/' . $this->lexerName . '.php';
 		if (false === @file_put_contents($file, $this->source)) {
-			throw new RuntimeException(sprintf('Cannot save source to "%s"', $file));
+			throw new \RuntimeException(sprintf('Cannot save source to "%s"', $file));
 		}
 		return $this;
 	}
@@ -486,8 +485,8 @@ STATE;
 	/**
 	 * Optimizes the lexer definition.
 	 *
-	 * @return Generator
-	 * @throws RuntimeException If the lexer definition is wrong.
+	 * @return \FSHL\Generator
+	 * @throws \RuntimeException If the lexer definition is wrong.
 	 */
 	private function optimize()
 	{
@@ -514,7 +513,7 @@ STATE;
 				foreach ($state[self::STATE_INDEX_DIAGRAM] as $delimiter => $trans) {
 					$transName = $trans[self::STATE_DIAGRAM_INDEX_STATE];
 					if (!isset($this->states[$transName])) {
-						throw new RuntimeException(sprintf('Unknown state in transition %s [%s] => %s', $stateName, $delimiter, $transName));
+						throw new \RuntimeException(sprintf('Unknown state in transition %s [%s] => %s', $stateName, $delimiter, $transName));
 					}
 					$this->delimiters[$stateId][$i] = $delimiter;
 					$trans[self::STATE_DIAGRAM_INDEX_STATE] = $this->states[$transName];
@@ -528,7 +527,7 @@ STATE;
 		}
 
 		if (!isset($this->states[$this->lexer->getInitialState()])) {
-			throw new RuntimeException(sprintf('Unknown initial state "%s"', $this->lexer->getInitialState()));
+			throw new \RuntimeException(sprintf('Unknown initial state "%s"', $this->lexer->getInitialState()));
 		}
 
 		return $this;

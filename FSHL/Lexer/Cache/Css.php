@@ -37,13 +37,6 @@ namespace FSHL\Lexer\Cache;
 class Css
 {
 	/**
-	 * Generator version/lexer version.
-	 *
-	 * @var string
-	 */
-	public $version;
-
-	/**
 	 * Transitions table.
 	 *
 	 * @var array
@@ -104,7 +97,6 @@ class Css
 	 */
 	public function __construct()
 	{
-		$this->version = '2.0/2.0';
 		$this->trans = array(
 			0 => array(
 				0 => array(

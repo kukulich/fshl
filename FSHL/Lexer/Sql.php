@@ -46,16 +46,6 @@ class Sql implements FSHL\Lexer
 	}
 
 	/**
-	 * Returns lexer version.
-	 *
-	 * @return string
-	 */
-	public function getVersion()
-	{
-		return '2.0';
-	}
-
-	/**
 	 * Returns initial state.
 	 *
 	 * @return string

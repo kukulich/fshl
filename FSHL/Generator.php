@@ -33,13 +33,6 @@ namespace FSHL;
 class Generator
 {
 	/**
-	 * Library version.
-	 *
-	 * @var string
-	 */
-	const VERSION = '2.0';
-
-	/**
 	 * State to return back.
 	 *
 	 * @var string
@@ -268,7 +261,6 @@ class Generator
 		$this->optimize();
 
 		$constructor = '';
-		$constructor .= $this->getVarSource('$this->version', self::VERSION . '/' . $this->lexer->getVersion());
 		$constructor .= $this->getVarSource('$this->trans', $this->trans);
 		$constructor .= $this->getVarSource('$this->initialState', $this->states[$this->lexer->getInitialState()]);
 		$constructor .= $this->getVarSource('$this->returnState', $this->states[self::STATE_RETURN]);
@@ -324,13 +316,6 @@ namespace FSHL\\Lexer\\Cache;
  */
 class {$this->lexerName}
 {
-	/**
-	 * Generator version/lexer version.
-	 *
-	 * @var string
-	 */
-	public \$version;
-
 	/**
 	 * Transitions table.
 	 *

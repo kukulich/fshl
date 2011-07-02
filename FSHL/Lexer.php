@@ -41,13 +41,6 @@ interface Lexer
 	public function getLanguage();
 
 	/**
-	 * Returns lexer version.
-	 *
-	 * @return string
-	 */
-	public function getVersion();
-
-	/**
 	 * Returns initial state.
 	 *
 	 * @return string

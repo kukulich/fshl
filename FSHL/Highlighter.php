@@ -33,13 +33,6 @@ namespace FSHL;
 class Highlighter
 {
 	/**
-	 * Library version.
-	 *
-	 * @var string
-	 */
-	const VERSION = '2.0';
-
-	/**
 	 * No options.
 	 *
 	 * @var integer

@@ -33,7 +33,35 @@ namespace FSHL;
 class Generator
 {
 	/**
-	 * State to return back.
+	 * Delimiter will be returned to the stream (back to the previous position).
+	 *
+	 * @var integer
+	 */
+	const BACK = -1;
+
+	/**
+	 * Style from current state will be applied on the received delimiter.
+	 *
+	 * @var integer
+	 */
+	const CURRENT = 0;
+
+	/**
+	 * Style from the new state will be applied on the received delimiter.
+	 *
+	 * @var integer
+	 */
+	const NEXT = 1;
+
+	/**
+	 * State leading to the current state.
+	 *
+	 * @var string
+	 */
+	const STATE_SELF = '_SELF';
+
+	/**
+	 * State to return to previous state.
 	 *
 	 * @var string
 	 */
@@ -103,18 +131,18 @@ class Generator
 	const STATE_INDEX_DATA = 3;
 
 	/**
-	 * Array index for state in state diagram.
+	 * Array index for new state in state diagram.
 	 *
 	 * @var integer
 	 */
 	const STATE_DIAGRAM_INDEX_STATE = 0;
 
 	/**
-	 * Array index for type in state diagram.
+	 * Array index for mode in state diagram.
 	 *
 	 * @var integer
 	 */
-	const STATE_DIAGRAM_INDEX_TYPE = 1;
+	const STATE_DIAGRAM_INDEX_MODE = 1;
 
 	/**
 	 * Array index for keyword class.
@@ -394,23 +422,23 @@ SOURCE;
 	{
 		// Delimiter => Condition
 		static $commonDelimiters = array(
-			'_ALL' => true,
-			'_LINE' => "\n",
-			'_TAB' => "\t",
-			'SPACE' => 'preg_match(\'~^\s+~\', $part, $matches)',
+			'ALL' => true,
+			'LINE' => "\n",
+			'TAB' => "\t",
+			'SPACE' => 'preg_match(\'~^\\s+~\', $part, $matches)',
 			'!SPACE' => 'preg_match(\'~^\\\\S+~\', $part, $matches)',
 			'ALPHA' => 'preg_match(\'~^[a-z]+~i\', $part, $matches)',
 			'!ALPHA' => 'preg_match(\'~^[^a-z]+~i\', $part, $matches)',
 			'ALNUM' => 'preg_match(\'~^[a-z\\\\d]+~i\', $part, $matches)',
 			'!ALNUM' => 'preg_match(\'~^[^a-z\\\\d]+~i\', $part, $matches)',
-			'NUMBER' => 'preg_match(\'~^\\\\d+~\', $part, $matches)',
-			'!NUMBER' => 'preg_match(\'~^\\\\D+~\', $part, $matches)',
+			'ALNUM_' => 'preg_match(\'~^\\\\w+~\', $part, $matches)',
+			'!ALNUM_' => 'preg_match(\'~^\\\\W+~\', $part, $matches)',
+			'NUM' => 'preg_match(\'~^\\\\d+~\', $part, $matches)',
+			'!NUM' => 'preg_match(\'~^\\\\D+~\', $part, $matches)',
 			'HEXNUM' => 'preg_match(\'~^[a-f\\\\d]+~i\', $part, $matches)',
 			'!HEXNUM' => 'preg_match(\'~^[^a-f\\\\d]+~i\', $part, $matches)',
-			'DOT_NUMBER' => 'preg_match(\'~^\\.\\\\d+~\', $part, $matches)',
-			'!DOT_NUMBER' => '!preg_match(\'~^\\.\\\\d+~\', $part, $matches)',
-			'SAFECHAR' => 'preg_match(\'~^\\\\w+~\', $part, $matches)',
-			'!SAFECHAR' => 'preg_match(\'~^\\\\W+~\', $part, $matches)'
+			'DOTNUM' => 'preg_match(\'~^\\.\\\\d+~\', $part, $matches)',
+			'!DOTNUM' => 'preg_match(\'~^(?:[^\\.]|\\.\\\\D)~\', $part, $matches)'
 		);
 
 		$allDelimiters = array_merge($commonDelimiters, $this->lexer->getDelimiters());
@@ -418,7 +446,7 @@ SOURCE;
 		$conditionsSource = '';
 		$delimiters = array();
 		foreach ($this->delimiters[$state] as $no => $delimiter) {
-			if ('_ALL' === $delimiter) {
+			if ('ALL' === $delimiter) {
 				$conditionSource = <<<CONDITION
 
 			return array($no, \$letter, \$buffer);
@@ -519,6 +547,9 @@ CONDITION;
 				$i = 0;
 				foreach ($state[self::STATE_INDEX_DIAGRAM] as $delimiter => $trans) {
 					$transName = $trans[self::STATE_DIAGRAM_INDEX_STATE];
+					if (self::STATE_SELF === $transName) {
+						$transName = array_search($stateId, $this->states);
+					}
 					if (!isset($this->states[$transName])) {
 						throw new \RuntimeException(sprintf('Unknown state in transition %s [%s] => %s', $stateName, $delimiter, $transName));
 					}

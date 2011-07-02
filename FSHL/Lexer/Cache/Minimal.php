@@ -100,9 +100,9 @@ class Minimal
 		$this->trans = array(
 			0 => array(
 				0 => array(
-					0 => 0, 1 => 0
+					0 => 0, 1 => 1
 				), 1 => array(
-					0 => 0, 1 => 0
+					0 => 0, 1 => 1
 				)
 			)
 		);

@@ -100,37 +100,37 @@ class Php
 		$this->trans = array(
 			0 => array(
 				0 => array(
-					0 => 0, 1 => 0
+					0 => 5, 1 => 1
 				), 1 => array(
-					0 => 0, 1 => 0
+					0 => 10, 1 => 1
 				), 2 => array(
-					0 => 5, 1 => 0
+					0 => 7, 1 => 1
 				), 3 => array(
 					0 => 2, 1 => -1
 				), 4 => array(
 					0 => 2, 1 => -1
 				), 5 => array(
-					0 => 10, 1 => 0
+					0 => 13, 1 => 1
 				), 6 => array(
-					0 => 7, 1 => 0
+					0 => 13, 1 => 1
 				), 7 => array(
-					0 => 4, 1 => 0
+					0 => 0, 1 => 1
 				), 8 => array(
-					0 => 13, 1 => 0
+					0 => 0, 1 => 1
 				), 9 => array(
-					0 => 13, 1 => 0
+					0 => 4, 1 => 1
 				), 10 => array(
-					0 => 16, 1 => 0
+					0 => 3, 1 => 1
 				), 11 => array(
-					0 => 3, 1 => 0
+					0 => 4, 1 => 1
 				), 12 => array(
-					0 => 1, 1 => -1
+					0 => 16, 1 => 1
 				), 13 => array(
-					0 => 4, 1 => 0
+					0 => 1, 1 => -1
 				), 14 => array(
-					0 => 11, 1 => 0
+					0 => 11, 1 => 1
 				), 15 => array(
-					0 => 8, 1 => 0
+					0 => 8, 1 => 1
 				)
 			), 1 => array(
 				0 => array(
@@ -142,73 +142,71 @@ class Php
 				)
 			), 2 => array(
 				0 => array(
-					0 => 15, 1 => 1
+					0 => 15, 1 => -1
 				)
 			), 3 => array(
 				0 => array(
-					0 => 3, 1 => 0
+					0 => 3, 1 => 1
 				), 1 => array(
-					0 => 3, 1 => 0
+					0 => 3, 1 => 1
 				), 2 => array(
 					0 => 15, 1 => 0
 				)
 			), 4 => array(
 				0 => array(
-					0 => 15, 1 => 1
-				), 1 => array(
-					0 => 4, 1 => 0
-				), 2 => array(
-					0 => 4, 1 => 0
-				), 3 => array(
 					0 => 15, 1 => -1
+				), 1 => array(
+					0 => 4, 1 => 1
+				), 2 => array(
+					0 => 15, 1 => 0
 				)
 			), 5 => array(
 				0 => array(
-					0 => 5, 1 => 0
+					0 => 15, 1 => -1
 				), 1 => array(
-					0 => 5, 1 => 0
+					0 => 5, 1 => 1
 				), 2 => array(
-					0 => 5, 1 => 0
+					0 => 5, 1 => 1
 				), 3 => array(
-					0 => 15, 1 => 1
+					0 => 5, 1 => 1
 				)
 			), 6 => array(
 				0 => array(
 					0 => 15, 1 => 0
 				), 1 => array(
-					0 => 15, 1 => 1
+					0 => 15, 1 => -1
 				)
 			), 7 => array(
 				0 => array(
 					0 => 15, 1 => 0
 				), 1 => array(
-					0 => 7, 1 => 0
+					0 => 7, 1 => 1
 				), 2 => array(
-					0 => 7, 1 => 0
+					0 => 7, 1 => 1
 				), 3 => array(
-					0 => 5, 1 => 0
+					0 => 5, 1 => 1
 				), 4 => array(
-					0 => 6, 1 => 0
+					0 => 6, 1 => 1
 				), 5 => array(
-					0 => 7, 1 => 0
+					0 => 7, 1 => 1
 				), 6 => array(
-					0 => 7, 1 => 0
+					0 => 7, 1 => 1
 				)
 			), 8 => array(
 				0 => array(
-					0 => 9, 1 => 0
+					0 => 9, 1 => 1
 				), 1 => array(
-					0 => 8, 1 => 0
+					0 => 8, 1 => 1
 				), 2 => array(
-					0 => 8, 1 => 0
+					0 => 8, 1 => 1
 				), 3 => array(
-					0 => 5, 1 => 0
+					0 => 5, 1 => 1
 				), 4 => array(
-					0 => 6, 1 => 0
+					0 => 6, 1 => 1
 				)
 			), 9 => array(
 				0 => array(
-					0 => 0, 1 => 1
+					0 => 0, 1 => 0
 				), 1 => array(
 					0 => 8, 1 => -1
 				)
@@ -216,37 +214,37 @@ class Php
 				0 => array(
 					0 => 15, 1 => 0
 				), 1 => array(
-					0 => 10, 1 => 0
+					0 => 10, 1 => 1
 				), 2 => array(
-					0 => 10, 1 => 0
+					0 => 10, 1 => 1
 				), 3 => array(
-					0 => 10, 1 => 0
+					0 => 10, 1 => 1
 				), 4 => array(
-					0 => 10, 1 => 0
+					0 => 10, 1 => 1
 				)
 			), 11 => array(
 				0 => array(
-					0 => 12, 1 => 0
+					0 => 12, 1 => 1
 				), 1 => array(
-					0 => 11, 1 => 0
+					0 => 11, 1 => 1
 				)
 			), 12 => array(
 				0 => array(
-					0 => 0, 1 => 1
+					0 => 0, 1 => 0
 				), 1 => array(
 					0 => 11, 1 => -1
 				)
 			), 13 => array(
 				0 => array(
-					0 => 14, 1 => 0
+					0 => 14, 1 => 1
 				), 1 => array(
-					0 => 13, 1 => 0
+					0 => 13, 1 => 1
 				), 2 => array(
-					0 => 15, 1 => 1
+					0 => 15, 1 => -1
 				)
 			), 14 => array(
 				0 => array(
-					0 => 15, 1 => 1
+					0 => 15, 1 => -1
 				)
 			), 16 => NULL
 		);
@@ -257,7 +255,7 @@ class Php
 			0 => 0, 1 => 4, 2 => 5, 3 => 4, 4 => 4, 5 => 4, 6 => 4, 7 => 4, 8 => 0, 9 => 0, 10 => 4, 11 => 0, 12 => 0, 13 => 4, 14 => 0, 16 => 8
 		);
 		$this->data = array(
-			0 => NULL, 1 => NULL, 2 => NULL, 3 => NULL, 4 => NULL, 5 => NULL, 6 => NULL, 7 => NULL, 8 => NULL, 9 => NULL, 10 => NULL, 11 => NULL, 12 => NULL, 13 => NULL, 14 => NULL, 16 => ''
+			0 => NULL, 1 => NULL, 2 => NULL, 3 => NULL, 4 => NULL, 5 => NULL, 6 => NULL, 7 => NULL, 8 => NULL, 9 => NULL, 10 => NULL, 11 => NULL, 12 => NULL, 13 => NULL, 14 => NULL, 16 => NULL
 		);
 		$this->classes = array(
 			0 => NULL, 1 => 'xlang', 2 => NULL, 3 => 'php-comment', 4 => 'php-comment', 5 => 'php-var', 6 => 'php-var', 7 => 'php-quote', 8 => 'php-quote', 9 => 'php-quote', 10 => 'php-quote', 11 => 'php-quote', 12 => 'php-quote', 13 => 'php-num', 14 => 'php-num', 16 => 'xlang'
@@ -409,7 +407,7 @@ class Php
 	public function findDelimiter0($text, $textLength, $textPos)
 	{
 		static $delimiters = array(
-			0 => "\n", 1 => "\t", 2 => '$', 4 => '_', 5 => '\'', 6 => '"', 7 => '//', 10 => '?>', 11 => '/*', 12 => '<?', 13 => '#'
+			0 => '$', 1 => '\'', 2 => '"', 4 => '_', 7 => "\n", 8 => "\t", 9 => '//', 10 => '/*', 11 => '#', 12 => '?>', 13 => '<?'
 		);
 
 		$buffer = false;
@@ -432,31 +430,31 @@ class Php
 			if ($delimiters[4] === $letter) {
 				return array(4, $delimiters[4], $buffer);
 			}
-			if ($delimiters[5] === $letter) {
-				return array(5, $delimiters[5], $buffer);
-			}
-			if ($delimiters[6] === $letter) {
-				return array(6, $delimiters[6], $buffer);
-			}
-			if (0 === strpos($part, $delimiters[7])) {
-				return array(7, $delimiters[7], $buffer);
-			}
 			if (preg_match('~^\\d+~', $part, $matches)) {
-				return array(8, $matches[0], $buffer);
+				return array(5, $matches[0], $buffer);
 			}
 			if (preg_match('~^\.\\d+~', $part, $matches)) {
-				return array(9, $matches[0], $buffer);
+				return array(6, $matches[0], $buffer);
+			}
+			if ($delimiters[7] === $letter) {
+				return array(7, $delimiters[7], $buffer);
+			}
+			if ($delimiters[8] === $letter) {
+				return array(8, $delimiters[8], $buffer);
+			}
+			if (0 === strpos($part, $delimiters[9])) {
+				return array(9, $delimiters[9], $buffer);
 			}
 			if (0 === strpos($part, $delimiters[10])) {
 				return array(10, $delimiters[10], $buffer);
 			}
-			if (0 === strpos($part, $delimiters[11])) {
+			if ($delimiters[11] === $letter) {
 				return array(11, $delimiters[11], $buffer);
 			}
 			if (0 === strpos($part, $delimiters[12])) {
 				return array(12, $delimiters[12], $buffer);
 			}
-			if ($delimiters[13] === $letter) {
+			if (0 === strpos($part, $delimiters[13])) {
 				return array(13, $delimiters[13], $buffer);
 			}
 			if (preg_match('~<<<\'\\w+\'\\n~A', $text, $matches, 0, $textPos)) {
@@ -529,7 +527,7 @@ class Php
 	}
 
 	/**
-	 * Finds a delimiter for state COMMENT.
+	 * Finds a delimiter for state COMMENT_BLOCK.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -563,7 +561,7 @@ class Php
 	}
 
 	/**
-	 * Finds a delimiter for state COMMENT1.
+	 * Finds a delimiter for state COMMENT_LINE.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -573,7 +571,7 @@ class Php
 	public function findDelimiter4($text, $textLength, $textPos)
 	{
 		static $delimiters = array(
-			0 => "\n", 1 => "\n", 2 => "\t", 3 => '?>'
+			0 => "\n", 1 => "\t", 2 => '?>'
 		);
 
 		$buffer = false;
@@ -587,11 +585,8 @@ class Php
 			if ($delimiters[1] === $letter) {
 				return array(1, $delimiters[1], $buffer);
 			}
-			if ($delimiters[2] === $letter) {
+			if (0 === strpos($part, $delimiters[2])) {
 				return array(2, $delimiters[2], $buffer);
-			}
-			if (0 === strpos($part, $delimiters[3])) {
-				return array(3, $delimiters[3], $buffer);
 			}
 			$buffer .= $letter;
 			$textPos++;
@@ -610,7 +605,7 @@ class Php
 	public function findDelimiter5($text, $textLength, $textPos)
 	{
 		static $delimiters = array(
-			0 => '$', 1 => '{', 2 => '}'
+			1 => '$', 2 => '{', 3 => '}'
 		);
 
 		$buffer = false;
@@ -618,8 +613,8 @@ class Php
 			$part = substr($text, $textPos, 10);
 			$letter = $text[$textPos];
 
-			if ($delimiters[0] === $letter) {
-				return array(0, $delimiters[0], $buffer);
+			if (preg_match('~^\\W+~', $part, $matches)) {
+				return array(0, $matches[0], $buffer);
 			}
 			if ($delimiters[1] === $letter) {
 				return array(1, $delimiters[1], $buffer);
@@ -627,8 +622,8 @@ class Php
 			if ($delimiters[2] === $letter) {
 				return array(2, $delimiters[2], $buffer);
 			}
-			if (preg_match('~^\\W+~', $part, $matches)) {
-				return array(3, $matches[0], $buffer);
+			if ($delimiters[3] === $letter) {
+				return array(3, $delimiters[3], $buffer);
 			}
 			$buffer .= $letter;
 			$textPos++;
@@ -668,7 +663,7 @@ class Php
 	}
 
 	/**
-	 * Finds a delimiter for state QUOTE.
+	 * Finds a delimiter for state QUOTE_DOUBLE.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -780,7 +775,7 @@ class Php
 	}
 
 	/**
-	 * Finds a delimiter for state QUOTE1.
+	 * Finds a delimiter for state QUOTE_SINGLE.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -877,7 +872,7 @@ class Php
 	}
 
 	/**
-	 * Finds a delimiter for state NUM.
+	 * Finds a delimiter for state NUMBER.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -909,7 +904,7 @@ class Php
 	}
 
 	/**
-	 * Finds a delimiter for state HEX_NUM.
+	 * Finds a delimiter for state HEXA.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -921,11 +916,12 @@ class Php
 
 		$buffer = false;
 		while ($textPos < $textLength) {
+			$part = substr($text, $textPos, 10);
 
-			$letter = $text[$textPos];
-
-			return array(0, $letter, $buffer);
-			$buffer .= $letter;
+			if (preg_match('~^[^a-f\\d]+~i', $part, $matches)) {
+				return array(0, $matches[0], $buffer);
+			}
+			$buffer .= $text[$textPos];
 			$textPos++;
 		}
 		return array(-1, -1, $buffer);

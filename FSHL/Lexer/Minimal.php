@@ -23,7 +23,7 @@
 
 namespace FSHL\Lexer;
 
-use FSHL;
+use FSHL, FSHL\Generator;
 
 /**
  * Minimal lexer.
@@ -64,10 +64,10 @@ class Minimal implements FSHL\Lexer
 		return array(
 			'OUT' => array(
 				array(
-					'_LINE' => array('OUT', 0),
-					'_TAB' => array('OUT', 0)
+					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				null,
 				null
 			)

@@ -23,7 +23,7 @@
 
 namespace FSHL\Lexer;
 
-use FSHL;
+use FSHL, FSHL\Generator;
 
 /**
  * HTML lexer without other languages.
@@ -64,138 +64,138 @@ class HtmlOnly implements FSHL\Lexer
 		return array(
 			'OUT' => array(
 				array(
-					'<!--' => array('COMMENT', 0),
-					'<?' => array('OUT', 1),
-					'<' => array('TAG', 0),
-					'&' => array('ENTITY', 0),
-					'_LINE' => array('OUT', 0),
-					'_TAB' => array('OUT', 0)
+					'<!--' => array('COMMENT', Generator::NEXT),
+					'<?' => array(Generator::STATE_SELF, Generator::CURRENT),
+					'<' => array('TAG', Generator::NEXT),
+					'&' => array('ENTITY', Generator::NEXT),
+					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				null,
 				null
 			),
 			'ENTITY' => array(
 				array(
-					';' => array('OUT', 1),
-					'&' => array('OUT', 1),
-					'SPACE' => array('OUT', 1)
+					';' => array('OUT', Generator::CURRENT),
+					'&' => array('OUT', Generator::CURRENT),
+					'SPACE' => array('OUT', Generator::CURRENT)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				'html-entity',
 				null
 			),
 			'TAG' => array(
 				array(
-					'>' => array('OUT', 1),
-					'style' => array('STYLE', 1),
-					'STYLE' => array('STYLE', 1),
-					'script' => array('SCRIPT', 1),
-					'SCRIPT' => array('SCRIPT', 1),
-					'SPACE' => array('TAGIN', 0)
+					'>' => array('OUT', Generator::CURRENT),
+					'SPACE' => array('TAGIN', Generator::NEXT),
+					'style' => array('STYLE', Generator::CURRENT),
+					'STYLE' => array('STYLE', Generator::CURRENT),
+					'script' => array('SCRIPT', Generator::CURRENT),
+					'SCRIPT' => array('SCRIPT', Generator::CURRENT)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				'html-tag',
 				null
 			),
 			'TAGIN' => array(
 				array(
-					'"' => array('QUOTE1', 0),
-					'\'' => array('QUOTE2', 0),
-					'/>' => array('TAG', -1),
-					'>' => array('TAG', -1),
-					'_LINE' => array('TAGIN', 0),
-					'_TAB' => array('TAGIN', 0)
+					'"' => array('QUOTE_DOUBLE', Generator::NEXT),
+					'\'' => array('QUOTE_SINGLE', Generator::NEXT),
+					'/>' => array('TAG', Generator::BACK),
+					'>' => array('TAG', Generator::BACK),
+					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				'html-tagin',
 				null
 			),
 			'STYLE' => array(
 				array(
-					'"' => array('QUOTE1', 0),
-					'\'' => array('QUOTE2', 0),
-					'>' => array('STYLE_END', -1),
-					'_LINE' => array('STYLE', 0),
-					'_TAB' => array('STYLE', 0)
+					'"' => array('QUOTE_DOUBLE', Generator::NEXT),
+					'\'' => array('QUOTE_SINGLE', Generator::NEXT),
+					'>' => array('STYLE_END', Generator::BACK),
+					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				'html-tagin',
 				null
 			),
 			'STYLE_END' => array(
 				array(
-					'>' => array('CSS', 1)
+					'>' => array('CSS', Generator::CURRENT)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				'html-tag',
 				null
 			),
 			'CSS' => array(
 				array(
-					'_LINE' => array('CSS', 0),
-					'_TAB' => array('CSS', 0),
-					'</style' => array('TAG', 0),
-					'</STYLE' => array('TAG', 0),
+					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT),
+					'</style' => array('TAG', Generator::NEXT),
+					'</STYLE' => array('TAG', Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				null,
 				null
 			),
 			'SCRIPT' => array(
 				array(
-					'"' => array('QUOTE1', 0),
-					'\'' => array('QUOTE2', 0),
-					'>' => array('SCRIPT_END', -1),
-					'_LINE' => array('SCRIPT', 0),
-					'_TAB' => array('SCRIPT', 0)
+					'"' => array('QUOTE_DOUBLE', Generator::NEXT),
+					'\'' => array('QUOTE_SINGLE', Generator::NEXT),
+					'>' => array('SCRIPT_END', Generator::BACK),
+					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				'html-tagin',
 				null
 			),
 			'SCRIPT_END' => array(
 				array(
-					'>' => array('JAVASCRIPT', 1)
+					'>' => array('JAVASCRIPT', Generator::CURRENT)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				'html-tag',
 				null
 			),
 			'JAVASCRIPT' => array(
 				array(
-					'_LINE' => array('JAVASCRIPT', 0),
-					'_TAB' => array('JAVASCRIPT', 0),
-					'</script' => array('TAG', 0),
-					'</SCRIPT' => array('TAG', 0)
+					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT),
+					'</script' => array('TAG', Generator::NEXT),
+					'</SCRIPT' => array('TAG', Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				null,
 				null
 			),
-			'QUOTE1' => array(
+			'QUOTE_DOUBLE' => array(
 				array(
-					'"' => array(FSHL\Generator::STATE_RETURN, 0)
+					'"' => array(Generator::STATE_RETURN, Generator::CURRENT)
 				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_RECURSION,
 				'html-quote',
 				null
 			),
-			'QUOTE2' => array(
+			'QUOTE_SINGLE' => array(
 				array(
-					'\'' => array(FSHL\Generator::STATE_RETURN, 0)
+					'\'' => array(Generator::STATE_RETURN, Generator::CURRENT)
 				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_RECURSION,
 				'html-quote',
 				null
 			),
 			'COMMENT' => array(
 				array(
-					'-->' => array('OUT', 1),
-					'_LINE' => array('COMMENT', 0),
-					'_TAB' => array('COMMENT', 0)
+					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT),
+					'-->' => array('OUT', Generator::CURRENT)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				'html-comment',
 				null
 			)

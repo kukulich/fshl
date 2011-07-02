@@ -79,7 +79,7 @@
 .py-keyword1 {color: #0033cc; font-weight: bold;}
 .py-keyword2 {color: #ce3333; font-weight: bold;}
 .py-keyword3 {color: #660066; font-weight: bold;}
-.py-number {color: #993300;}
+.py-num {color: #993300;}
 .py-docstring {color: #e86a18;}
 .py-quote {color: #878787; font-weight: bold;}
 .py-comment {color: #009900; font-style: italic;}

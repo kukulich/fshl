@@ -100,105 +100,105 @@ class HtmlOnly
 		$this->trans = array(
 			0 => array(
 				0 => array(
-					0 => 12, 1 => 0
+					0 => 12, 1 => 1
 				), 1 => array(
-					0 => 0, 1 => 1
+					0 => 0, 1 => 0
 				), 2 => array(
-					0 => 2, 1 => 0
+					0 => 2, 1 => 1
 				), 3 => array(
-					0 => 1, 1 => 0
+					0 => 1, 1 => 1
 				), 4 => array(
-					0 => 0, 1 => 0
+					0 => 0, 1 => 1
 				), 5 => array(
-					0 => 0, 1 => 0
+					0 => 0, 1 => 1
 				)
 			), 1 => array(
 				0 => array(
-					0 => 0, 1 => 1
+					0 => 0, 1 => 0
 				), 1 => array(
-					0 => 0, 1 => 1
+					0 => 0, 1 => 0
 				), 2 => array(
-					0 => 0, 1 => 1
+					0 => 0, 1 => 0
 				)
 			), 2 => array(
 				0 => array(
-					0 => 0, 1 => 1
+					0 => 0, 1 => 0
 				), 1 => array(
-					0 => 4, 1 => 1
+					0 => 3, 1 => 1
 				), 2 => array(
-					0 => 4, 1 => 1
+					0 => 4, 1 => 0
 				), 3 => array(
-					0 => 7, 1 => 1
+					0 => 4, 1 => 0
 				), 4 => array(
-					0 => 7, 1 => 1
+					0 => 7, 1 => 0
 				), 5 => array(
-					0 => 3, 1 => 0
+					0 => 7, 1 => 0
 				)
 			), 3 => array(
 				0 => array(
-					0 => 10, 1 => 0
+					0 => 10, 1 => 1
 				), 1 => array(
-					0 => 11, 1 => 0
+					0 => 11, 1 => 1
 				), 2 => array(
 					0 => 2, 1 => -1
 				), 3 => array(
 					0 => 2, 1 => -1
 				), 4 => array(
-					0 => 3, 1 => 0
+					0 => 3, 1 => 1
 				), 5 => array(
-					0 => 3, 1 => 0
+					0 => 3, 1 => 1
 				)
 			), 4 => array(
 				0 => array(
-					0 => 10, 1 => 0
+					0 => 10, 1 => 1
 				), 1 => array(
-					0 => 11, 1 => 0
+					0 => 11, 1 => 1
 				), 2 => array(
 					0 => 5, 1 => -1
 				), 3 => array(
-					0 => 4, 1 => 0
+					0 => 4, 1 => 1
 				), 4 => array(
-					0 => 4, 1 => 0
+					0 => 4, 1 => 1
 				)
 			), 5 => array(
 				0 => array(
-					0 => 6, 1 => 1
+					0 => 6, 1 => 0
 				)
 			), 6 => array(
 				0 => array(
-					0 => 6, 1 => 0
+					0 => 6, 1 => 1
 				), 1 => array(
-					0 => 6, 1 => 0
+					0 => 6, 1 => 1
 				), 2 => array(
-					0 => 2, 1 => 0
+					0 => 2, 1 => 1
 				), 3 => array(
-					0 => 2, 1 => 0
+					0 => 2, 1 => 1
 				)
 			), 7 => array(
 				0 => array(
-					0 => 10, 1 => 0
+					0 => 10, 1 => 1
 				), 1 => array(
-					0 => 11, 1 => 0
+					0 => 11, 1 => 1
 				), 2 => array(
 					0 => 8, 1 => -1
 				), 3 => array(
-					0 => 7, 1 => 0
+					0 => 7, 1 => 1
 				), 4 => array(
-					0 => 7, 1 => 0
+					0 => 7, 1 => 1
 				)
 			), 8 => array(
 				0 => array(
-					0 => 9, 1 => 1
+					0 => 9, 1 => 0
 				)
 			), 9 => array(
 				0 => array(
-					0 => 9, 1 => 0
+					0 => 9, 1 => 1
 				), 1 => array(
-					0 => 9, 1 => 0
+					0 => 9, 1 => 1
 				), 2 => array(
-					0 => 2, 1 => 0
+					0 => 2, 1 => 1
 				), 3 => array(
-					0 => 2, 1 => 0
+					0 => 2, 1 => 1
 				)
 			), 10 => array(
 				0 => array(
@@ -210,11 +210,11 @@ class HtmlOnly
 				)
 			), 12 => array(
 				0 => array(
-					0 => 0, 1 => 1
+					0 => 12, 1 => 1
 				), 1 => array(
-					0 => 12, 1 => 0
+					0 => 12, 1 => 1
 				), 2 => array(
-					0 => 12, 1 => 0
+					0 => 0, 1 => 0
 				)
 			)
 		);
@@ -324,7 +324,7 @@ class HtmlOnly
 	public function findDelimiter2($text, $textLength, $textPos)
 	{
 		static $delimiters = array(
-			0 => '>', 1 => 'style', 2 => 'STYLE', 3 => 'script', 4 => 'SCRIPT'
+			0 => '>', 2 => 'style', 3 => 'STYLE', 4 => 'script', 5 => 'SCRIPT'
 		);
 
 		$buffer = false;
@@ -335,8 +335,8 @@ class HtmlOnly
 			if ($delimiters[0] === $letter) {
 				return array(0, $delimiters[0], $buffer);
 			}
-			if (0 === strpos($part, $delimiters[1])) {
-				return array(1, $delimiters[1], $buffer);
+			if (preg_match('~^\s+~', $part, $matches)) {
+				return array(1, $matches[0], $buffer);
 			}
 			if (0 === strpos($part, $delimiters[2])) {
 				return array(2, $delimiters[2], $buffer);
@@ -347,8 +347,8 @@ class HtmlOnly
 			if (0 === strpos($part, $delimiters[4])) {
 				return array(4, $delimiters[4], $buffer);
 			}
-			if (preg_match('~^\s+~', $part, $matches)) {
-				return array(5, $matches[0], $buffer);
+			if (0 === strpos($part, $delimiters[5])) {
+				return array(5, $delimiters[5], $buffer);
 			}
 			$buffer .= $letter;
 			$textPos++;
@@ -610,7 +610,7 @@ class HtmlOnly
 	}
 
 	/**
-	 * Finds a delimiter for state QUOTE1.
+	 * Finds a delimiter for state QUOTE_DOUBLE.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -638,7 +638,7 @@ class HtmlOnly
 	}
 
 	/**
-	 * Finds a delimiter for state QUOTE2.
+	 * Finds a delimiter for state QUOTE_SINGLE.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -676,7 +676,7 @@ class HtmlOnly
 	public function findDelimiter12($text, $textLength, $textPos)
 	{
 		static $delimiters = array(
-			0 => '-->', 1 => "\n", 2 => "\t"
+			0 => "\n", 1 => "\t", 2 => '-->'
 		);
 
 		$buffer = false;
@@ -684,13 +684,13 @@ class HtmlOnly
 			$part = substr($text, $textPos, 10);
 			$letter = $text[$textPos];
 
-			if (0 === strpos($part, $delimiters[0])) {
+			if ($delimiters[0] === $letter) {
 				return array(0, $delimiters[0], $buffer);
 			}
 			if ($delimiters[1] === $letter) {
 				return array(1, $delimiters[1], $buffer);
 			}
-			if ($delimiters[2] === $letter) {
+			if (0 === strpos($part, $delimiters[2])) {
 				return array(2, $delimiters[2], $buffer);
 			}
 			$buffer .= $letter;

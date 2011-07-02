@@ -100,77 +100,77 @@ class Texy
 		$this->trans = array(
 			0 => array(
 				0 => array(
-					0 => 8, 1 => 0
+					0 => 8, 1 => 1
 				), 1 => array(
-					0 => 9, 1 => 0
+					0 => 9, 1 => 1
 				), 2 => array(
-					0 => 1, 1 => 0
+					0 => 1, 1 => 1
 				)
 			), 1 => array(
 				0 => array(
-					0 => 3, 1 => 0
+					0 => 3, 1 => 1
 				), 1 => array(
 					0 => 2, 1 => -1
 				)
 			), 2 => array(
 				0 => array(
-					0 => 4, 1 => 0
+					0 => 4, 1 => 1
 				), 1 => array(
-					0 => 4, 1 => 0
+					0 => 4, 1 => 1
 				), 2 => array(
-					0 => 4, 1 => 0
+					0 => 4, 1 => 1
 				), 3 => array(
-					0 => 4, 1 => 0
+					0 => 4, 1 => 1
 				), 4 => array(
 					0 => 0, 1 => -1
 				)
 			), 3 => array(
 				0 => array(
-					0 => 3, 1 => 0
+					0 => 3, 1 => 1
 				), 1 => array(
-					0 => 4, 1 => 0
+					0 => 4, 1 => 1
 				), 2 => array(
-					0 => 4, 1 => 0
+					0 => 4, 1 => 1
 				), 3 => array(
-					0 => 7, 1 => 0
+					0 => 7, 1 => 1
 				), 4 => array(
-					0 => 7, 1 => 0
+					0 => 7, 1 => 1
 				), 5 => array(
-					0 => 7, 1 => 0
+					0 => 7, 1 => 1
 				), 6 => array(
-					0 => 7, 1 => 0
+					0 => 7, 1 => 1
 				), 7 => array(
 					0 => 0, 1 => -1
 				)
 			), 4 => array(
 				0 => array(
-					0 => 4, 1 => 0
+					0 => 4, 1 => 1
 				), 1 => array(
-					0 => 4, 1 => 0
+					0 => 4, 1 => 1
 				), 2 => array(
-					0 => 4, 1 => 0
+					0 => 4, 1 => 1
 				), 3 => array(
-					0 => 4, 1 => 0
+					0 => 4, 1 => 1
 				), 4 => array(
-					0 => 3, 1 => 0
+					0 => 3, 1 => 1
 				), 5 => array(
 					0 => 5, 1 => -1
 				)
 			), 5 => array(
 				0 => array(
-					0 => 6, 1 => 0
+					0 => 6, 1 => 1
 				), 1 => array(
-					0 => 6, 1 => 0
+					0 => 6, 1 => 1
 				), 2 => array(
-					0 => 6, 1 => 0
+					0 => 6, 1 => 1
 				), 3 => array(
-					0 => 6, 1 => 0
+					0 => 6, 1 => 1
 				), 4 => array(
-					0 => 3, 1 => 0
+					0 => 3, 1 => 1
 				)
 			), 6 => array(
 				0 => array(
-					0 => 3, 1 => 0
+					0 => 3, 1 => 1
 				)
 			), 7 => array(
 				0 => array(
@@ -178,13 +178,13 @@ class Texy
 				)
 			), 8 => array(
 				0 => array(
-					0 => 15, 1 => 0
+					0 => 15, 1 => 1
 				), 1 => array(
-					0 => 19, 1 => 0
+					0 => 19, 1 => 1
 				), 2 => array(
-					0 => 10, 1 => 0
+					0 => 10, 1 => 1
 				), 3 => array(
-					0 => 11, 1 => 0
+					0 => 11, 1 => 1
 				), 4 => array(
 					0 => 0, 1 => -1
 				)
@@ -202,11 +202,11 @@ class Texy
 				)
 			), 12 => array(
 				0 => array(
-					0 => 13, 1 => 0
+					0 => 13, 1 => 1
 				)
 			), 13 => array(
 				0 => array(
-					0 => 14, 1 => 0
+					0 => 14, 1 => 1
 				), 1 => array(
 					0 => 12, 1 => -1
 				)
@@ -220,11 +220,11 @@ class Texy
 				)
 			), 16 => array(
 				0 => array(
-					0 => 17, 1 => 0
+					0 => 17, 1 => 1
 				)
 			), 17 => array(
 				0 => array(
-					0 => 18, 1 => 0
+					0 => 18, 1 => 1
 				), 1 => array(
 					0 => 16, 1 => -1
 				)
@@ -238,11 +238,11 @@ class Texy
 				)
 			), 20 => array(
 				0 => array(
-					0 => 21, 1 => 0
+					0 => 21, 1 => 1
 				)
 			), 21 => array(
 				0 => array(
-					0 => 22, 1 => 0
+					0 => 22, 1 => 1
 				), 1 => array(
 					0 => 20, 1 => -1
 				)
@@ -271,7 +271,7 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state LineBODY.
+	 * Finds a delimiter for state LINE_BODY.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -305,7 +305,7 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state NewLineTypeSelector.
+	 * Finds a delimiter for state LINE.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -336,7 +336,7 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state SingleNewLine.
+	 * Finds a delimiter for state LINE_SINGLE.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -374,7 +374,7 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state DoubleNewLine.
+	 * Finds a delimiter for state LINE_DOUBLE.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -421,7 +421,7 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state HeaderIN.
+	 * Finds a delimiter for state HEADER_IN.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -462,7 +462,7 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state HeaderBody.
+	 * Finds a delimiter for state HEADER_BODY.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -502,7 +502,7 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state HeaderOUT.
+	 * Finds a delimiter for state HEADER_OUT.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -530,7 +530,7 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state HorizontalLine.
+	 * Finds a delimiter for state HORIZONTAL_LINE.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -558,7 +558,7 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state BlockIN.
+	 * Finds a delimiter for state BLOCK_IN.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -596,7 +596,7 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state BlockOUT.
+	 * Finds a delimiter for state BLOCK_OUT.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -619,7 +619,7 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state BlockDUMMY.
+	 * Finds a delimiter for state BLOCK_DUMMY.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -642,7 +642,7 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state BlockTEXT.
+	 * Finds a delimiter for state BLOCK_TEXT.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -670,7 +670,7 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state BlockTEXTBody.
+	 * Finds a delimiter for state BLOCK_TEXT_BODY.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -698,7 +698,7 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state BlockTEXTBodyNL.
+	 * Finds a delimiter for state BLOCK_TEXT_BODY_LINE.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -727,7 +727,7 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state BlockTEXTBodyOUT.
+	 * Finds a delimiter for state BLOCK_TEXT_BODY_OUT.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -750,7 +750,7 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state BlockHTML.
+	 * Finds a delimiter for state BLOCK_HTML.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -778,7 +778,7 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state BlockHTMLBody.
+	 * Finds a delimiter for state BLOCK_HTML_BODY.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -806,7 +806,7 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state BlockHTMLBodyNL.
+	 * Finds a delimiter for state BLOCK_HTML_BODY_LINE.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -835,7 +835,7 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state BlockHTMLBodyOUT.
+	 * Finds a delimiter for state BLOCK_HTML_BODY_OUT.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -858,7 +858,7 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state BlockCODE.
+	 * Finds a delimiter for state BLOCK_CODE.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -886,7 +886,7 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state BlockCODEBody.
+	 * Finds a delimiter for state BLOCK_CODE_BODY.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -914,7 +914,7 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state BlockCODEBodyNL.
+	 * Finds a delimiter for state BLOCK_CODE_BODY_LINE.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -943,7 +943,7 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state BlockCODEBodyOUT.
+	 * Finds a delimiter for state BLOCK_CODE_BODY_OUT.
 	 *
 	 * @param string $text
 	 * @param string $textLength

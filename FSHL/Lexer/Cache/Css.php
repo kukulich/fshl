@@ -100,143 +100,143 @@ class Css
 		$this->trans = array(
 			0 => array(
 				0 => array(
-					0 => 0, 1 => 0
+					0 => 9, 1 => 1
 				), 1 => array(
-					0 => 0, 1 => 0
+					0 => 2, 1 => 1
 				), 2 => array(
-					0 => 1, 1 => 0
+					0 => 2, 1 => 1
 				), 3 => array(
-					0 => 9, 1 => 0
+					0 => 3, 1 => 1
 				), 4 => array(
-					0 => 6, 1 => 0
+					0 => 4, 1 => 1
 				), 5 => array(
-					0 => 2, 1 => 0
+					0 => 6, 1 => 1
 				), 6 => array(
-					0 => 2, 1 => 0
+					0 => 11, 1 => 1
 				), 7 => array(
-					0 => 3, 1 => 0
+					0 => 1, 1 => 1
 				), 8 => array(
-					0 => 4, 1 => 0
+					0 => 0, 1 => 1
 				), 9 => array(
-					0 => 11, 1 => 0
+					0 => 0, 1 => 1
 				), 10 => array(
-					0 => 14, 1 => 0
+					0 => 14, 1 => 1
 				), 11 => array(
-					0 => 12, 1 => 0
+					0 => 12, 1 => 1
 				), 12 => array(
-					0 => 12, 1 => 0
+					0 => 12, 1 => 1
 				), 13 => array(
-					0 => 12, 1 => 0
+					0 => 12, 1 => 1
 				)
 			), 1 => array(
 				0 => array(
-					0 => 13, 1 => 1
+					0 => 13, 1 => -1
 				), 1 => array(
-					0 => 11, 1 => 0
+					0 => 11, 1 => 1
 				)
 			), 2 => array(
 				0 => array(
-					0 => 5, 1 => 0
+					0 => 13, 1 => 1
 				), 1 => array(
-					0 => 13, 1 => 1
+					0 => 13, 1 => -1
 				), 2 => array(
-					0 => 13, 1 => 1
+					0 => 13, 1 => -1
 				), 3 => array(
-					0 => 11, 1 => 0
+					0 => 5, 1 => 1
 				), 4 => array(
-					0 => 13, 1 => 1
+					0 => 11, 1 => 1
 				)
 			), 3 => array(
 				0 => array(
-					0 => 5, 1 => 0
+					0 => 13, 1 => -1
 				), 1 => array(
-					0 => 13, 1 => 1
+					0 => 13, 1 => -1
 				), 2 => array(
-					0 => 13, 1 => 1
+					0 => 13, 1 => -1
 				), 3 => array(
-					0 => 11, 1 => 0
+					0 => 5, 1 => 1
 				), 4 => array(
-					0 => 13, 1 => 1
+					0 => 11, 1 => 1
 				)
 			), 4 => array(
 				0 => array(
-					0 => 5, 1 => 0
+					0 => 13, 1 => -1
 				), 1 => array(
-					0 => 13, 1 => 1
+					0 => 13, 1 => -1
 				), 2 => array(
-					0 => 13, 1 => 1
+					0 => 13, 1 => -1
 				), 3 => array(
-					0 => 11, 1 => 0
+					0 => 5, 1 => 1
 				), 4 => array(
-					0 => 13, 1 => 1
+					0 => 11, 1 => 1
 				)
 			), 5 => array(
 				0 => array(
-					0 => 13, 1 => 1
+					0 => 13, 1 => -1
 				), 1 => array(
-					0 => 13, 1 => 1
+					0 => 13, 1 => -1
 				)
 			), 6 => array(
 				0 => array(
-					0 => 8, 1 => 1
+					0 => 7, 1 => 1
 				), 1 => array(
-					0 => 6, 1 => 0
+					0 => 8, 1 => 0
 				), 2 => array(
 					0 => 6, 1 => 0
 				), 3 => array(
 					0 => 6, 1 => 1
 				), 4 => array(
-					0 => 13, 1 => 0
+					0 => 6, 1 => 1
 				), 5 => array(
-					0 => 11, 1 => 0
+					0 => 13, 1 => 0
 				), 6 => array(
-					0 => 7, 1 => 0
+					0 => 11, 1 => 1
 				)
 			), 7 => array(
 				0 => array(
-					0 => 7, 1 => 0
+					0 => 13, 1 => -1
 				), 1 => array(
-					0 => 7, 1 => 0
+					0 => 13, 1 => -1
 				), 2 => array(
-					0 => 13, 1 => 1
+					0 => 7, 1 => 1
 				), 3 => array(
-					0 => 13, 1 => 1
+					0 => 7, 1 => 1
 				), 4 => array(
-					0 => 11, 1 => 0
+					0 => 11, 1 => 1
 				)
 			), 8 => array(
 				0 => array(
-					0 => 9, 1 => 0
+					0 => 10, 1 => 1
 				), 1 => array(
-					0 => 13, 1 => 1
+					0 => 13, 1 => -1
 				), 2 => array(
-					0 => 10, 1 => 0
+					0 => 9, 1 => 1
 				), 3 => array(
-					0 => 13, 1 => 1
+					0 => 13, 1 => -1
 				), 4 => array(
-					0 => 13, 1 => 1
+					0 => 13, 1 => -1
 				), 5 => array(
-					0 => 8, 1 => 0
+					0 => 8, 1 => 1
 				), 6 => array(
-					0 => 8, 1 => 0
+					0 => 8, 1 => 1
 				), 7 => array(
-					0 => 11, 1 => 0
+					0 => 11, 1 => 1
 				)
 			), 9 => array(
 				0 => array(
 					0 => 13, 1 => 0
 				), 1 => array(
-					0 => 8, 1 => 0
+					0 => 8, 1 => 1
 				)
 			), 10 => array(
 				0 => array(
-					0 => 13, 1 => 1
+					0 => 13, 1 => -1
 				)
 			), 11 => array(
 				0 => array(
-					0 => 11, 1 => 0
+					0 => 11, 1 => 1
 				), 1 => array(
-					0 => 11, 1 => 0
+					0 => 11, 1 => 1
 				), 2 => array(
 					0 => 13, 1 => 0
 				)
@@ -271,7 +271,7 @@ class Css
 	public function findDelimiter0($text, $textLength, $textPos)
 	{
 		static $delimiters = array(
-			0 => "\n", 1 => "\t", 2 => '@', 4 => '{', 6 => '*', 7 => '#', 8 => '.', 9 => '/*', 10 => '</', 11 => '<?php', 12 => '<?=', 13 => '<?'
+			2 => '*', 3 => '#', 4 => '.', 5 => '{', 6 => '/*', 7 => '@', 8 => "\n", 9 => "\t", 10 => '</', 11 => '<?php', 12 => '<?=', 13 => '<?'
 		);
 
 		$buffer = false;
@@ -279,25 +279,25 @@ class Css
 			$part = substr($text, $textPos, 10);
 			$letter = $text[$textPos];
 
-			if ($delimiters[0] === $letter) {
-				return array(0, $delimiters[0], $buffer);
+			if (preg_match('~[a-z]+\s*\(~iA', $text, $matches, 0, $textPos)) {
+				return array(0, $matches[0], $buffer);
 			}
-			if ($delimiters[1] === $letter) {
-				return array(1, $delimiters[1], $buffer);
+			if (preg_match('~^[a-z\\d]+~i', $part, $matches)) {
+				return array(1, $matches[0], $buffer);
 			}
 			if ($delimiters[2] === $letter) {
 				return array(2, $delimiters[2], $buffer);
 			}
-			if (preg_match('~[a-z]+\s*\(~iA', $text, $matches, 0, $textPos)) {
-				return array(3, $matches[0], $buffer);
+			if ($delimiters[3] === $letter) {
+				return array(3, $delimiters[3], $buffer);
 			}
 			if ($delimiters[4] === $letter) {
 				return array(4, $delimiters[4], $buffer);
 			}
-			if (preg_match('~^[a-z\\d]+~i', $part, $matches)) {
-				return array(5, $matches[0], $buffer);
+			if ($delimiters[5] === $letter) {
+				return array(5, $delimiters[5], $buffer);
 			}
-			if ($delimiters[6] === $letter) {
+			if (0 === strpos($part, $delimiters[6])) {
 				return array(6, $delimiters[6], $buffer);
 			}
 			if ($delimiters[7] === $letter) {
@@ -306,7 +306,7 @@ class Css
 			if ($delimiters[8] === $letter) {
 				return array(8, $delimiters[8], $buffer);
 			}
-			if (0 === strpos($part, $delimiters[9])) {
+			if ($delimiters[9] === $letter) {
 				return array(9, $delimiters[9], $buffer);
 			}
 			if (0 === strpos($part, $delimiters[10])) {
@@ -368,7 +368,7 @@ class Css
 	public function findDelimiter2($text, $textLength, $textPos)
 	{
 		static $delimiters = array(
-			0 => ':', 1 => ',', 3 => '/*', 4 => '{'
+			0 => '{', 1 => ',', 3 => ':', 4 => '/*'
 		);
 
 		$buffer = false;
@@ -385,10 +385,10 @@ class Css
 			if (preg_match('~^\s+~', $part, $matches)) {
 				return array(2, $matches[0], $buffer);
 			}
-			if (0 === strpos($part, $delimiters[3])) {
+			if ($delimiters[3] === $letter) {
 				return array(3, $delimiters[3], $buffer);
 			}
-			if ($delimiters[4] === $letter) {
+			if (0 === strpos($part, $delimiters[4])) {
 				return array(4, $delimiters[4], $buffer);
 			}
 			$buffer .= $letter;
@@ -408,7 +408,7 @@ class Css
 	public function findDelimiter3($text, $textLength, $textPos)
 	{
 		static $delimiters = array(
-			0 => ':', 1 => ',', 3 => '/*', 4 => '{'
+			0 => '{', 1 => ',', 3 => ':', 4 => '/*'
 		);
 
 		$buffer = false;
@@ -425,10 +425,10 @@ class Css
 			if (preg_match('~^\s+~', $part, $matches)) {
 				return array(2, $matches[0], $buffer);
 			}
-			if (0 === strpos($part, $delimiters[3])) {
+			if ($delimiters[3] === $letter) {
 				return array(3, $delimiters[3], $buffer);
 			}
-			if ($delimiters[4] === $letter) {
+			if (0 === strpos($part, $delimiters[4])) {
 				return array(4, $delimiters[4], $buffer);
 			}
 			$buffer .= $letter;
@@ -448,7 +448,7 @@ class Css
 	public function findDelimiter4($text, $textLength, $textPos)
 	{
 		static $delimiters = array(
-			0 => ':', 1 => ',', 3 => '/*', 4 => '{'
+			0 => '{', 2 => ',', 3 => ':', 4 => '/*'
 		);
 
 		$buffer = false;
@@ -459,16 +459,16 @@ class Css
 			if ($delimiters[0] === $letter) {
 				return array(0, $delimiters[0], $buffer);
 			}
-			if ($delimiters[1] === $letter) {
-				return array(1, $delimiters[1], $buffer);
-			}
 			if (preg_match('~^\s+~', $part, $matches)) {
-				return array(2, $matches[0], $buffer);
+				return array(1, $matches[0], $buffer);
 			}
-			if (0 === strpos($part, $delimiters[3])) {
+			if ($delimiters[2] === $letter) {
+				return array(2, $delimiters[2], $buffer);
+			}
+			if ($delimiters[3] === $letter) {
 				return array(3, $delimiters[3], $buffer);
 			}
-			if ($delimiters[4] === $letter) {
+			if (0 === strpos($part, $delimiters[4])) {
 				return array(4, $delimiters[4], $buffer);
 			}
 			$buffer .= $letter;
@@ -488,7 +488,7 @@ class Css
 	public function findDelimiter5($text, $textLength, $textPos)
 	{
 		static $delimiters = array(
-			0 => ','
+			1 => ','
 		);
 
 		$buffer = false;
@@ -496,11 +496,11 @@ class Css
 			$part = substr($text, $textPos, 10);
 			$letter = $text[$textPos];
 
-			if ($delimiters[0] === $letter) {
-				return array(0, $delimiters[0], $buffer);
-			}
 			if (preg_match('~^\s+~', $part, $matches)) {
-				return array(1, $matches[0], $buffer);
+				return array(0, $matches[0], $buffer);
+			}
+			if ($delimiters[1] === $letter) {
+				return array(1, $delimiters[1], $buffer);
 			}
 			$buffer .= $letter;
 			$textPos++;
@@ -519,7 +519,7 @@ class Css
 	public function findDelimiter6($text, $textLength, $textPos)
 	{
 		static $delimiters = array(
-			0 => ':', 1 => "\n", 2 => "\t", 3 => ';', 4 => '}', 5 => '/*'
+			1 => ':', 2 => ';', 3 => "\n", 4 => "\t", 5 => '}', 6 => '/*'
 		);
 
 		$buffer = false;
@@ -527,8 +527,8 @@ class Css
 			$part = substr($text, $textPos, 10);
 			$letter = $text[$textPos];
 
-			if ($delimiters[0] === $letter) {
-				return array(0, $delimiters[0], $buffer);
+			if (preg_match('~[-a-z]+~iA', $text, $matches, 0, $textPos)) {
+				return array(0, $matches[0], $buffer);
 			}
 			if ($delimiters[1] === $letter) {
 				return array(1, $delimiters[1], $buffer);
@@ -542,11 +542,11 @@ class Css
 			if ($delimiters[4] === $letter) {
 				return array(4, $delimiters[4], $buffer);
 			}
-			if (0 === strpos($part, $delimiters[5])) {
+			if ($delimiters[5] === $letter) {
 				return array(5, $delimiters[5], $buffer);
 			}
-			if (preg_match('~[-a-z]+~iA', $text, $matches, 0, $textPos)) {
-				return array(6, $matches[0], $buffer);
+			if (0 === strpos($part, $delimiters[6])) {
+				return array(6, $delimiters[6], $buffer);
 			}
 			$buffer .= $letter;
 			$textPos++;
@@ -565,7 +565,7 @@ class Css
 	public function findDelimiter7($text, $textLength, $textPos)
 	{
 		static $delimiters = array(
-			0 => "\n", 1 => "\t", 2 => ':', 3 => '}', 4 => '/*'
+			0 => ':', 1 => '}', 2 => "\n", 3 => "\t", 4 => '/*'
 		);
 
 		$buffer = false;
@@ -605,7 +605,7 @@ class Css
 	public function findDelimiter8($text, $textLength, $textPos)
 	{
 		static $delimiters = array(
-			1 => ';', 2 => '#', 3 => ')', 4 => '}', 5 => "\n", 6 => "\t", 7 => '/*'
+			0 => '#', 1 => ';', 3 => ')', 4 => '}', 5 => "\n", 6 => "\t", 7 => '/*'
 		);
 
 		$buffer = false;
@@ -613,14 +613,14 @@ class Css
 			$part = substr($text, $textPos, 10);
 			$letter = $text[$textPos];
 
-			if (preg_match('~[a-z]+\s*\(~iA', $text, $matches, 0, $textPos)) {
-				return array(0, $matches[0], $buffer);
+			if ($delimiters[0] === $letter) {
+				return array(0, $delimiters[0], $buffer);
 			}
 			if ($delimiters[1] === $letter) {
 				return array(1, $delimiters[1], $buffer);
 			}
-			if ($delimiters[2] === $letter) {
-				return array(2, $delimiters[2], $buffer);
+			if (preg_match('~[a-z]+\s*\(~iA', $text, $matches, 0, $textPos)) {
+				return array(2, $matches[0], $buffer);
 			}
 			if ($delimiters[3] === $letter) {
 				return array(3, $delimiters[3], $buffer);

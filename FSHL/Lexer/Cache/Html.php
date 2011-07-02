@@ -100,87 +100,87 @@ class Html
 		$this->trans = array(
 			0 => array(
 				0 => array(
-					0 => 10, 1 => 0
+					0 => 10, 1 => 1
 				), 1 => array(
-					0 => 11, 1 => 0
+					0 => 11, 1 => 1
 				), 2 => array(
-					0 => 11, 1 => 0
+					0 => 11, 1 => 1
 				), 3 => array(
-					0 => 11, 1 => 0
+					0 => 11, 1 => 1
 				), 4 => array(
-					0 => 2, 1 => 0
+					0 => 2, 1 => 1
 				), 5 => array(
-					0 => 1, 1 => 0
+					0 => 1, 1 => 1
 				), 6 => array(
-					0 => 0, 1 => 0
+					0 => 0, 1 => 1
 				), 7 => array(
-					0 => 0, 1 => 0
+					0 => 0, 1 => 1
 				)
 			), 1 => array(
 				0 => array(
-					0 => 0, 1 => 1
+					0 => 0, 1 => 0
 				), 1 => array(
-					0 => 0, 1 => 1
+					0 => 0, 1 => 0
 				), 2 => array(
-					0 => 0, 1 => 1
+					0 => 0, 1 => 0
 				)
 			), 2 => array(
 				0 => array(
-					0 => 0, 1 => 1
+					0 => 0, 1 => 0
 				), 1 => array(
-					0 => 3, 1 => 0
+					0 => 3, 1 => 1
 				), 2 => array(
-					0 => 4, 1 => 1
+					0 => 4, 1 => 0
 				), 3 => array(
-					0 => 4, 1 => 1
+					0 => 4, 1 => 0
 				), 4 => array(
-					0 => 6, 1 => 1
+					0 => 6, 1 => 0
 				), 5 => array(
-					0 => 6, 1 => 1
+					0 => 6, 1 => 0
 				), 6 => array(
-					0 => 11, 1 => 0
+					0 => 11, 1 => 1
 				), 7 => array(
-					0 => 11, 1 => 0
+					0 => 11, 1 => 1
 				), 8 => array(
-					0 => 11, 1 => 0
+					0 => 11, 1 => 1
 				)
 			), 3 => array(
 				0 => array(
-					0 => 8, 1 => 0
+					0 => 8, 1 => 1
 				), 1 => array(
-					0 => 9, 1 => 0
+					0 => 9, 1 => 1
 				), 2 => array(
 					0 => 2, 1 => -1
 				), 3 => array(
 					0 => 2, 1 => -1
 				), 4 => array(
-					0 => 11, 1 => 0
+					0 => 11, 1 => 1
 				), 5 => array(
-					0 => 11, 1 => 0
+					0 => 11, 1 => 1
 				), 6 => array(
-					0 => 11, 1 => 0
+					0 => 11, 1 => 1
 				), 7 => array(
-					0 => 3, 1 => 0
+					0 => 3, 1 => 1
 				), 8 => array(
-					0 => 3, 1 => 0
+					0 => 3, 1 => 1
 				)
 			), 4 => array(
 				0 => array(
-					0 => 8, 1 => 0
+					0 => 8, 1 => 1
 				), 1 => array(
-					0 => 9, 1 => 0
+					0 => 9, 1 => 1
 				), 2 => array(
-					0 => 5, 1 => 0
+					0 => 5, 1 => 1
 				), 3 => array(
-					0 => 11, 1 => 0
+					0 => 11, 1 => 1
 				), 4 => array(
-					0 => 11, 1 => 0
+					0 => 11, 1 => 1
 				), 5 => array(
-					0 => 11, 1 => 0
+					0 => 11, 1 => 1
 				), 6 => array(
-					0 => 3, 1 => 0
+					0 => 3, 1 => 1
 				), 7 => array(
-					0 => 3, 1 => 0
+					0 => 3, 1 => 1
 				)
 			), 5 => array(
 				0 => array(
@@ -188,21 +188,21 @@ class Html
 				)
 			), 6 => array(
 				0 => array(
-					0 => 8, 1 => 0
+					0 => 8, 1 => 1
 				), 1 => array(
-					0 => 9, 1 => 0
+					0 => 9, 1 => 1
 				), 2 => array(
-					0 => 7, 1 => 0
+					0 => 7, 1 => 1
 				), 3 => array(
-					0 => 11, 1 => 0
+					0 => 11, 1 => 1
 				), 4 => array(
-					0 => 11, 1 => 0
+					0 => 11, 1 => 1
 				), 5 => array(
-					0 => 11, 1 => 0
+					0 => 11, 1 => 1
 				), 6 => array(
-					0 => 3, 1 => 0
+					0 => 3, 1 => 1
 				), 7 => array(
-					0 => 3, 1 => 0
+					0 => 3, 1 => 1
 				)
 			), 7 => array(
 				0 => array(
@@ -212,43 +212,43 @@ class Html
 				0 => array(
 					0 => 12, 1 => 0
 				), 1 => array(
-					0 => 11, 1 => 0
+					0 => 11, 1 => 1
 				), 2 => array(
-					0 => 11, 1 => 0
+					0 => 11, 1 => 1
 				), 3 => array(
-					0 => 11, 1 => 0
+					0 => 11, 1 => 1
 				), 4 => array(
-					0 => 8, 1 => 0
+					0 => 8, 1 => 1
 				), 5 => array(
-					0 => 8, 1 => 0
+					0 => 8, 1 => 1
 				)
 			), 9 => array(
 				0 => array(
 					0 => 12, 1 => 0
 				), 1 => array(
-					0 => 11, 1 => 0
+					0 => 11, 1 => 1
 				), 2 => array(
-					0 => 11, 1 => 0
+					0 => 11, 1 => 1
 				), 3 => array(
-					0 => 11, 1 => 0
+					0 => 11, 1 => 1
 				), 4 => array(
-					0 => 9, 1 => 0
+					0 => 9, 1 => 1
 				), 5 => array(
-					0 => 9, 1 => 0
+					0 => 9, 1 => 1
 				)
 			), 10 => array(
 				0 => array(
-					0 => 0, 1 => 1
+					0 => 10, 1 => 1
 				), 1 => array(
-					0 => 11, 1 => 0
+					0 => 10, 1 => 1
 				), 2 => array(
-					0 => 11, 1 => 0
+					0 => 0, 1 => 0
 				), 3 => array(
-					0 => 11, 1 => 0
+					0 => 11, 1 => 1
 				), 4 => array(
-					0 => 10, 1 => 0
+					0 => 11, 1 => 1
 				), 5 => array(
-					0 => 10, 1 => 0
+					0 => 11, 1 => 1
 				)
 			), 11 => NULL
 		);
@@ -612,7 +612,7 @@ class Html
 	}
 
 	/**
-	 * Finds a delimiter for state QUOTE1.
+	 * Finds a delimiter for state QUOTE_DOUBLE.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -655,7 +655,7 @@ class Html
 	}
 
 	/**
-	 * Finds a delimiter for state QUOTE2.
+	 * Finds a delimiter for state QUOTE_SINGLE.
 	 *
 	 * @param string $text
 	 * @param string $textLength
@@ -708,7 +708,7 @@ class Html
 	public function findDelimiter10($text, $textLength, $textPos)
 	{
 		static $delimiters = array(
-			0 => '-->', 1 => '<?php', 2 => '<?=', 3 => '<?', 4 => "\n", 5 => "\t"
+			0 => "\n", 1 => "\t", 2 => '-->', 3 => '<?php', 4 => '<?=', 5 => '<?'
 		);
 
 		$buffer = false;
@@ -716,10 +716,10 @@ class Html
 			$part = substr($text, $textPos, 10);
 			$letter = $text[$textPos];
 
-			if (0 === strpos($part, $delimiters[0])) {
+			if ($delimiters[0] === $letter) {
 				return array(0, $delimiters[0], $buffer);
 			}
-			if (0 === strpos($part, $delimiters[1])) {
+			if ($delimiters[1] === $letter) {
 				return array(1, $delimiters[1], $buffer);
 			}
 			if (0 === strpos($part, $delimiters[2])) {
@@ -728,10 +728,10 @@ class Html
 			if (0 === strpos($part, $delimiters[3])) {
 				return array(3, $delimiters[3], $buffer);
 			}
-			if ($delimiters[4] === $letter) {
+			if (0 === strpos($part, $delimiters[4])) {
 				return array(4, $delimiters[4], $buffer);
 			}
-			if ($delimiters[5] === $letter) {
+			if (0 === strpos($part, $delimiters[5])) {
 				return array(5, $delimiters[5], $buffer);
 			}
 			$buffer .= $letter;

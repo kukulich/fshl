@@ -210,11 +210,8 @@ class Highlighter
 			// Gets new state from the transitions table
 			$newState = $this->lexer->trans[$state][$transitionId][Generator::STATE_DIAGRAM_INDEX_STATE];
 			if ($newState === $this->lexer->returnState) {
-				// Returns to the previous context
-				// Chooses delimiter processing (second value in destination array)
-				//  0 - style from current state will be applied on the received delimiter
-				//  1 - delimiter will be returned to the input stream
-				if ($this->lexer->trans[$state][$transitionId][Generator::STATE_DIAGRAM_INDEX_TYPE] > 0) {
+				// Chooses mode of delimiter processing
+				if (Generator::BACK === $this->lexer->trans[$state][$transitionId][Generator::STATE_DIAGRAM_INDEX_MODE]) {
 					$line = $prevLine;
 					$char = $prevChar;
 					$textPos = $prevTextPos;
@@ -245,17 +242,13 @@ class Highlighter
 			}
 
 			// Chooses mode of delimiter processing
-			//  0 - style from the new state will be applied on the received delimiter
-			//  1 - style from the current state will be applied
-			// -1 - delimiter must be returned to the stream (back to the previous position)
-			$type = $this->lexer->trans[$state][$transitionId][Generator::STATE_DIAGRAM_INDEX_TYPE];
-			if ($type < 0) {
-				// Back to the stream
+			$type = $this->lexer->trans[$state][$transitionId][Generator::STATE_DIAGRAM_INDEX_MODE];
+			if (Generator::BACK === $type) {
 				$line = $prevLine;
 				$char = $prevChar;
 				$textPos = $prevTextPos;
 			} else {
-				$fragment .= $this->template($delimiter, $type > 0 ? $state : $newState);
+				$fragment .= $this->template($delimiter, Generator::NEXT === $type ? $newState : $state);
 				if ($addLine) {
 					$fragment .= $this->line($actualLine, $maxLineWidth);
 				}

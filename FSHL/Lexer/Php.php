@@ -23,7 +23,7 @@
 
 namespace FSHL\Lexer;
 
-use FSHL;
+use FSHL, FSHL\Generator;
 
 /**
  * PHP lexer.
@@ -64,174 +64,173 @@ class Php implements FSHL\Lexer
 		return array(
 			'OUT' => array(
 				array(
-					'_LINE' => array('OUT', 0),
-					'_TAB' => array('OUT', 0),
-					'$' => array('VAR', 0),
-					'ALPHA' => array('FUNCTION', -1),
-					'_' => array('FUNCTION', -1),
-					'\'' => array('QUOTE1', 0),
-					'"' => array('QUOTE', 0),
-					'//' => array('COMMENT1', 0),
-					'NUMBER' => array('NUM', 0),
-					'DOT_NUMBER' => array('NUM', 0),
-					'?>' => array(FSHL\Generator::STATE_QUIT, 0),
-					'/*' => array('COMMENT', 0) ,
-					'<?' => array('DUMMY_PHP', -1),
-					'#' => array('COMMENT1', 0),
-					'NOWDOC' => array('NOWDOC', 0),
-					'HEREDOC' => array('HEREDOC', 0)
+					'$' => array('VAR', Generator::NEXT),
+					'\'' => array('QUOTE_SINGLE', Generator::NEXT),
+					'"' => array('QUOTE_DOUBLE', Generator::NEXT),
+					'ALPHA' => array('FUNCTION', Generator::BACK),
+					'_' => array('FUNCTION', Generator::BACK),
+					'NUM' => array('NUMBER', Generator::NEXT),
+					'DOTNUM' => array('NUMBER', Generator::NEXT),
+					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT),
+					'//' => array('COMMENT_LINE', Generator::NEXT),
+					'/*' => array('COMMENT_BLOCK', Generator::NEXT),
+					'#' => array('COMMENT_LINE', Generator::NEXT),
+					'?>' => array(Generator::STATE_QUIT, Generator::NEXT),
+					'<?' => array('DUMMY_PHP', Generator::BACK),
+					'NOWDOC' => array('NOWDOC', Generator::NEXT),
+					'HEREDOC' => array('HEREDOC', Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				null,
 				null
 			),
 			'DUMMY_PHP' => array(
 				array(
-					'<?php' => array(FSHL\Generator::STATE_RETURN, 0),
-					'<?=' => array(FSHL\Generator::STATE_RETURN, 0),
-					'<?' => array(FSHL\Generator::STATE_RETURN, 0)
+					'<?php' => array(Generator::STATE_RETURN, Generator::CURRENT),
+					'<?=' => array(Generator::STATE_RETURN, Generator::CURRENT),
+					'<?' => array(Generator::STATE_RETURN, Generator::CURRENT)
 				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_RECURSION,
 				'xlang',
 				null
 			),
 			'FUNCTION' => array(
 				array(
-					'!SAFECHAR' => array(FSHL\Generator::STATE_RETURN, 1)
+					'!ALNUM_' => array(Generator::STATE_RETURN, Generator::BACK)
 				),
-				FSHL\Generator::STATE_FLAG_KEYWORD | FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_KEYWORD | Generator::STATE_FLAG_RECURSION,
 				null,
 				null
 			),
-			'COMMENT' => array(
+			'COMMENT_BLOCK' => array(
 				array(
-					'_LINE' => array('COMMENT', 0),
-					'_TAB' => array('COMMENT', 0),
-					'*/' => array(FSHL\Generator::STATE_RETURN, 0)
+					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT),
+					'*/' => array(Generator::STATE_RETURN, Generator::CURRENT)
 				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_RECURSION,
 				'php-comment',
 				null
 			),
-			'COMMENT1' => array(
+			'COMMENT_LINE' => array(
 				array(
-					"\n" => array(FSHL\Generator::STATE_RETURN, 1),
-					'_LINE' => array('COMMENT1', 0),
-					'_TAB' => array('COMMENT1', 0),
-					'?>' => array(FSHL\Generator::STATE_RETURN, -1)
+					'LINE' => array(Generator::STATE_RETURN, Generator::BACK),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT),
+					'?>' => array(Generator::STATE_RETURN, Generator::CURRENT)
 				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_RECURSION,
 				'php-comment',
 				null
 			),
 			'VAR' => array(
 				array(
-					'$' => array('VAR', 0),
-					'{' => array('VAR', 0),
-					'}' => array('VAR', 0),
-					'!SAFECHAR' => array(FSHL\Generator::STATE_RETURN, 1)
+					'!ALNUM_' => array(Generator::STATE_RETURN, Generator::BACK),
+					'$' => array(Generator::STATE_SELF, Generator::NEXT),
+					'{' => array(Generator::STATE_SELF, Generator::NEXT),
+					'}' => array(Generator::STATE_SELF, Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_RECURSION,
 				'php-var',
 				null
 			),
 			'VAR_STR' => array(
 				array(
-					'}' => array(FSHL\Generator::STATE_RETURN, 0),
-					'SPACE' => array(FSHL\Generator::STATE_RETURN, 1)
+					'}' => array(Generator::STATE_RETURN, Generator::CURRENT),
+					'SPACE' => array(Generator::STATE_RETURN, Generator::BACK)
 				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_RECURSION,
 				'php-var',
 				null
 			),
-			'QUOTE' => array(
+			'QUOTE_DOUBLE' => array(
 				array(
-					'"' => array(FSHL\Generator::STATE_RETURN, 0),
-					'\\\\' => array('QUOTE', 0),
-					'\\"' => array('QUOTE', 0),
-					'$' => array('VAR', 0),
-					'{$' => array('VAR_STR', 0),
-					'_LINE' => array('QUOTE', 0),
-					'_TAB' => array('QUOTE', 0)
+					'"' => array(Generator::STATE_RETURN, Generator::CURRENT),
+					'\\\\' => array(Generator::STATE_SELF, Generator::NEXT),
+					'\\"' => array(Generator::STATE_SELF, Generator::NEXT),
+					'$' => array('VAR', Generator::NEXT),
+					'{$' => array('VAR_STR', Generator::NEXT),
+					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_RECURSION,
 				'php-quote',
 				null
 			),
 			'HEREDOC' => array(
 				array(
-					'_LINE' => array('HEREDOC_END', 0),
-					'_TAB' => array('HEREDOC', 0),
-					'\\$' => array('HEREDOC', 0),
-					'$' => array('VAR', 0),
-					'{$' => array('VAR_STR', 0)
+					'LINE' => array('HEREDOC_END', Generator::NEXT),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT),
+					'\\$' => array(Generator::STATE_SELF, Generator::NEXT),
+					'$' => array('VAR', Generator::NEXT),
+					'{$' => array('VAR_STR', Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				'php-quote',
 				null
 			),
 			'HEREDOC_END' => array(
 				array(
-					'HEREDOC_NOWDOC_END' => array('OUT', 1),
-					'_ALL' => array('HEREDOC', -1)
+					'HEREDOC_NOWDOC_END' => array('OUT', Generator::CURRENT),
+					'ALL' => array('HEREDOC', Generator::BACK)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				'php-quote',
 				null
 			),
-			'QUOTE1' => array(
+			'QUOTE_SINGLE' => array(
 				array(
-					'\'' => array(FSHL\Generator::STATE_RETURN, 0),
-					'\\\\' => array('QUOTE1', 0),
-					'\\\'' => array('QUOTE1', 0),
-					'_LINE' => array('QUOTE1', 0),
-					'_TAB' => array('QUOTE1', 0)
+					'\'' => array(Generator::STATE_RETURN, Generator::CURRENT),
+					'\\\\' => array(Generator::STATE_SELF, Generator::NEXT),
+					'\\\'' => array(Generator::STATE_SELF, Generator::NEXT),
+					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_RECURSION,
 				'php-quote',
 				null
 			),
 			'NOWDOC' => array(
 				array(
-					'_LINE' => array('NOWDOC_END', 0),
-					'_TAB' => array('NOWDOC', 0)
+					'LINE' => array('NOWDOC_END', Generator::NEXT),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				'php-quote',
 				null
 			),
 			'NOWDOC_END' => array(
 				array(
-					'HEREDOC_NOWDOC_END' => array('OUT', 1),
-					'_ALL' => array('NOWDOC', -1)
+					'HEREDOC_NOWDOC_END' => array('OUT', Generator::CURRENT),
+					'ALL' => array('NOWDOC', Generator::BACK)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				'php-quote',
 				null
 			),
-			'NUM' => array(
+			'NUMBER' => array(
 				array(
-					'x' => array('HEX_NUM', 0),
-					'DOT_NUMBER' => array('NUM', 0),
-					'_ALL' => array(FSHL\Generator::STATE_RETURN, 1)
+					'x' => array('HEXA', Generator::NEXT),
+					'DOTNUM' => array(Generator::STATE_SELF, Generator::NEXT),
+					'ALL' => array(Generator::STATE_RETURN, Generator::BACK)
 				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_RECURSION,
 				'php-num',
 				null
 			),
-			'HEX_NUM' => array(
+			'HEXA' => array(
 				array(
-					'_ALL' => array(FSHL\Generator::STATE_RETURN, 1)
+					'!HEXNUM' => array(Generator::STATE_RETURN, Generator::BACK)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				'php-num',
 				null
 			),
-			FSHL\Generator::STATE_QUIT => array(
+			Generator::STATE_QUIT => array(
 				null,
-				FSHL\Generator::STATE_FLAG_NEWLEXER,
+				Generator::STATE_FLAG_NEWLEXER,
 				'xlang',
-				''
+				null
 			)
 		);
 	}
@@ -3628,7 +3627,7 @@ class Php implements FSHL\Lexer
 				'zip_read' => 2,
 				'zlib_get_coding_type' => 2
 			),
-			FSHL\Generator::CASE_INSENSITIVE
+			Generator::CASE_INSENSITIVE
 		);
 	}
 }

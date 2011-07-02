@@ -23,7 +23,7 @@
 
 namespace FSHL\Lexer;
 
-use FSHL;
+use FSHL, FSHL\Generator;
 
 /**
  * Python lexer.
@@ -65,136 +65,136 @@ class Python implements FSHL\Lexer
 		return array(
 			'OUT' => array(
 				array(
-					'_LINE' => array('OUT', 0),
-					'_TAB' => array('OUT', 0),
-					'ALPHA' => array('KEYWORD', -1),
-					'_' => array('KEYWORD', -1),
-					'\'\'\'' => array('DOCSTRING1', 0),
-					'"""' => array('DOCSTRING2', 0),
-					'\'' => array('QUOTE1', 0),
-					'"' => array('QUOTE2', 0),
-					'#' => array('COMMENT', 0),
-					'0x' => array('NUM_HEXADECIMAL', 0),
-					'0X' => array('NUM_HEXADECIMAL', 0),
-					'DOT_NUMBER' => array('NUM_DECIMAL', 0),
-					'NUMBER' => array('NUM_DECIMAL', 0)
+					'ALPHA' => array('KEYWORD', Generator::BACK),
+					'_' => array('KEYWORD', Generator::BACK),
+					'\'\'\'' => array('DOCSTRING1', Generator::NEXT),
+					'"""' => array('DOCSTRING2', Generator::NEXT),
+					'\'' => array('QUOTE_SINGLE', Generator::NEXT),
+					'"' => array('QUOTE_DOUBLE', Generator::NEXT),
+					'#' => array('COMMENT_LINE', Generator::NEXT),
+					'NUM' => array('NUMBER', Generator::NEXT),
+					'DOTNUM' => array('NUMBER', Generator::NEXT),
+					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				null,
 				null
 			),
 			'KEYWORD' => array(
 				array(
-					'!SAFECHAR' => array(FSHL\Generator::STATE_RETURN, 1)
+					'!ALNUM_' => array(Generator::STATE_RETURN, Generator::BACK)
 				),
-				FSHL\Generator::STATE_FLAG_KEYWORD | FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_KEYWORD | Generator::STATE_FLAG_RECURSION,
 				null,
 				null
 			),
 			'DOCSTRING1' => array(
 				array(
-					'\'\'\'' => array(FSHL\Generator::STATE_RETURN, 0),
-					'\\\\' => array('DOCSTRING1', 0),
-					'\\\'\'\'' => array('DOCSTRING1', 0),
-					'_LINE' => array('DOCSTRING1', 0),
-					'_TAB' => array('DOCSTRING1', 0)
+					'\'\'\'' => array(Generator::STATE_RETURN, Generator::CURRENT),
+					'\\\\' => array(Generator::STATE_SELF, Generator::NEXT),
+					'\\\'\'\'' => array(Generator::STATE_SELF, Generator::NEXT),
+					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_RECURSION,
 				'py-docstring',
 				null
 			),
 			'DOCSTRING2' => array(
 				array(
-					'"""' => array(FSHL\Generator::STATE_RETURN, 0),
-					'\\\\' => array('DOCSTRING2', 0),
-					'\\"""' => array('DOCSTRING2', 0),
-					'_LINE' => array('DOCSTRING2', 0),
-					'_TAB' => array('DOCSTRING2', 0)
+					'"""' => array(Generator::STATE_RETURN, Generator::CURRENT),
+					'\\\\' => array(Generator::STATE_SELF, Generator::NEXT),
+					'\\"""' => array(Generator::STATE_SELF, Generator::NEXT),
+					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_RECURSION,
 				'py-docstring',
 				null
 			),
-			'QUOTE1' => array(
+			'QUOTE_SINGLE' => array(
 				array(
-					'\'' => array(FSHL\Generator::STATE_RETURN, 0),
-					'\\\\' => array('QUOTE1', 0),
-					'\\\'' => array('QUOTE1', 0),
-					'_LINE' => array('QUOTE1', 0),
-					'_TAB' => array('QUOTE1', 0)
+					'\'' => array(Generator::STATE_RETURN, Generator::CURRENT),
+					'\\\\' => array(Generator::STATE_SELF, Generator::NEXT),
+					'\\\'' => array(Generator::STATE_SELF, Generator::NEXT),
+					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_RECURSION,
 				'py-quote',
 				null
 			),
-			'QUOTE2' => array(
+			'QUOTE_DOUBLE' => array(
 				array(
-					'"' => array(FSHL\Generator::STATE_RETURN, 0),
-					'\\\\' => array('QUOTE2', 0),
-					'\\"' => array('QUOTE2', 0),
-					'_LINE' => array('QUOTE2', 0),
-					'_TAB' => array('QUOTE2', 0)
+					'"' => array(Generator::STATE_RETURN, Generator::CURRENT),
+					'\\\\' => array(Generator::STATE_SELF, Generator::NEXT),
+					'\\"' => array(Generator::STATE_SELF, Generator::NEXT),
+					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_RECURSION,
 				'py-quote',
 				null
 			),
-			'COMMENT' => array(
+			'COMMENT_LINE' => array(
 				array(
-					"\n" => array(FSHL\Generator::STATE_RETURN, 1),
-					"\t" => array('COMMENT', 0)
+					'LINE' => array(Generator::STATE_RETURN, Generator::BACK),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_RECURSION,
 				'py-comment',
 				null
 			),
-			'NUM_HEXADECIMAL' => array(
+			'NUMBER' => array(
 				array(
-					'L' => array(FSHL\Generator::STATE_RETURN, 0),
-					'l' => array(FSHL\Generator::STATE_RETURN, 0),
-					'!HEXNUM' => array(FSHL\Generator::STATE_RETURN, 1)
+					'DOTNUM' => array('FRACTION', Generator::NEXT),
+					'l' => array(Generator::STATE_RETURN, Generator::CURRENT),
+					'L' => array(Generator::STATE_RETURN, Generator::CURRENT),
+					'j' => array(Generator::STATE_RETURN, Generator::CURRENT),
+					'J' => array(Generator::STATE_RETURN, Generator::CURRENT),
+					'e-' => array('EXPONENT', Generator::NEXT),
+					'e+' => array('EXPONENT', Generator::NEXT),
+					'e' => array('EXPONENT', Generator::NEXT),
+					'x' => array('HEXA', Generator::NEXT),
+					'X' => array('HEXA', Generator::NEXT),
+					'ALL' => array(Generator::STATE_RETURN, Generator::BACK)
 				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
-				'py-number',
+				Generator::STATE_FLAG_RECURSION,
+				'py-num',
 				null
 			),
-			'NUM_DECIMAL' => array(
+			'FRACTION' => array(
 				array(
-					'.' => array('NUM_FRACTION', 0),
-					'L' => array(FSHL\Generator::STATE_RETURN, 0),
-					'l' => array(FSHL\Generator::STATE_RETURN, 0),
-					'j' => array(FSHL\Generator::STATE_RETURN, 0),
-					'J' => array(FSHL\Generator::STATE_RETURN, 0),
-					'e-' => array('NUM_EXPONENT', 0),
-					'e+' => array('NUM_EXPONENT', 0),
-					'e' => array('NUM_EXPONENT', 0),
-					'!NUMBER' => array(FSHL\Generator::STATE_RETURN, 1)
+					'j' => array(Generator::STATE_RETURN, Generator::CURRENT),
+					'J' => array(Generator::STATE_RETURN, Generator::CURRENT),
+					'e-' => array('EXPONENT', Generator::NEXT),
+					'e+' => array('EXPONENT', Generator::NEXT),
+					'e' => array('EXPONENT', Generator::NEXT),
+					'ALL' => array(Generator::STATE_RETURN, Generator::BACK)
 				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
-				'py-number',
+				Generator::STATE_FLAG_NONE,
+				'py-num',
 				null
 			),
-			'NUM_FRACTION' => array(
+			'EXPONENT' => array(
 				array(
-					'j' => array(FSHL\Generator::STATE_RETURN, 0),
-					'J' => array(FSHL\Generator::STATE_RETURN, 0),
-					'e-' => array('NUM_EXPONENT', 0),
-					'e+' => array('NUM_EXPONENT', 0),
-					'e' => array('NUM_EXPONENT', 0),
-					'!NUMBER' => array(FSHL\Generator::STATE_RETURN, 1)
+					'j' => array(Generator::STATE_RETURN, Generator::CURRENT),
+					'J' => array(Generator::STATE_RETURN, Generator::CURRENT),
+					'!NUM' => array(Generator::STATE_RETURN, Generator::BACK)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
-				'py-number',
+				Generator::STATE_FLAG_NONE,
+				'py-num',
 				null
 			),
-			'NUM_EXPONENT' => array(
+			'HEXA' => array(
 				array(
-					'j' => array(FSHL\Generator::STATE_RETURN, 0),
-					'J' => array(FSHL\Generator::STATE_RETURN, 0),
-					'!NUMBER' => array(FSHL\Generator::STATE_RETURN, 1)
+					'L' => array(Generator::STATE_RETURN, Generator::CURRENT),
+					'l' => array(Generator::STATE_RETURN, Generator::CURRENT),
+					'!HEXNUM' => array(Generator::STATE_RETURN, Generator::BACK)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
-				'py-number',
+				Generator::STATE_FLAG_RECURSION,
+				'py-num',
 				null
 			)
 		);
@@ -500,7 +500,7 @@ class Python implements FSHL\Lexer
 				'__version__' => 3,
 				'__xor__' => 3
 			),
-			FSHL\Generator::CASE_SENSITIVE
+			Generator::CASE_SENSITIVE
 		);
 	}
 }

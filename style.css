@@ -56,7 +56,7 @@
 .java-keywords1 {color: #0000ff; font-weight: bold;}
 .java-num {color: #ff0000;}
 .java-quote {color: #a52a2a; font-weight: bold;}
-.java-comment {color: #00ff00;}
+.java-comment {color: #009900;}
 .java-preproc {color: #c0c0c0;}
 
 /* Javascript */
@@ -72,7 +72,6 @@
 .php-var {color: #ffaa00; font-weight: bold;}
 .php-num {color: #ff0000;}
 .php-quote {color: #884433; font-weight: bold;}
-.php-vquote {color: #ffaa00;}
 .php-comment {color: #999999; background-color: #ffffee;}
 
 /* Python */

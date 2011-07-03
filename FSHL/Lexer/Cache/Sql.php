@@ -37,6 +37,13 @@ namespace FSHL\Lexer\Cache;
 class Sql
 {
 	/**
+	 * Language name.
+	 *
+	 * @var array
+	 */
+	public $language;
+
+	/**
 	 * Transitions table.
 	 *
 	 * @var array
@@ -97,6 +104,7 @@ class Sql
 	 */
 	public function __construct()
 	{
+		$this->language = 'Sql';
 		$this->trans = array(
 			0 => array(
 				0 => array(

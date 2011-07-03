@@ -37,6 +37,13 @@ namespace FSHL\Lexer\Cache;
 class HtmlOnly
 {
 	/**
+	 * Language name.
+	 *
+	 * @var array
+	 */
+	public $language;
+
+	/**
 	 * Transitions table.
 	 *
 	 * @var array
@@ -97,6 +104,7 @@ class HtmlOnly
 	 */
 	public function __construct()
 	{
+		$this->language = 'HtmlOnly';
 		$this->trans = array(
 			0 => array(
 				0 => array(

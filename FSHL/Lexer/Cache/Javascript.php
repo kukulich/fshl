@@ -37,6 +37,13 @@ namespace FSHL\Lexer\Cache;
 class Javascript
 {
 	/**
+	 * Language name.
+	 *
+	 * @var array
+	 */
+	public $language;
+
+	/**
 	 * Transitions table.
 	 *
 	 * @var array
@@ -97,6 +104,7 @@ class Javascript
 	 */
 	public function __construct()
 	{
+		$this->language = 'Javascript';
 		$this->trans = array(
 			0 => array(
 				0 => array(

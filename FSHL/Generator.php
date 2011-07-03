@@ -247,7 +247,7 @@ class Generator
 	 *
 	 * @param \FSHL\Lexer $lexerName
 	 */
-	public function __construct(\FSHL\Lexer $lexer)
+	public function __construct(Lexer $lexer)
 	{
 		$this->lexer = $lexer;
 		$this->lexerName = $lexer->getLanguage();
@@ -289,6 +289,7 @@ class Generator
 		$this->optimize();
 
 		$constructor = '';
+		$constructor .= $this->getVarSource('$this->language', $this->lexer->getLanguage());
 		$constructor .= $this->getVarSource('$this->trans', $this->trans);
 		$constructor .= $this->getVarSource('$this->initialState', $this->states[$this->lexer->getInitialState()]);
 		$constructor .= $this->getVarSource('$this->returnState', $this->states[self::STATE_RETURN]);
@@ -344,6 +345,13 @@ namespace FSHL\\Lexer\\Cache;
  */
 class {$this->lexerName}
 {
+	/**
+	 * Language name.
+	 *
+	 * @var array
+	 */
+	public \$language;
+
 	/**
 	 * Transitions table.
 	 *

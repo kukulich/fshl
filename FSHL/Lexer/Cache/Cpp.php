@@ -37,6 +37,13 @@ namespace FSHL\Lexer\Cache;
 class Cpp
 {
 	/**
+	 * Language name.
+	 *
+	 * @var array
+	 */
+	public $language;
+
+	/**
 	 * Transitions table.
 	 *
 	 * @var array
@@ -97,6 +104,7 @@ class Cpp
 	 */
 	public function __construct()
 	{
+		$this->language = 'Cpp';
 		$this->trans = array(
 			0 => array(
 				0 => array(

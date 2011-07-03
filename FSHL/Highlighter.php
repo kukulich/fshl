@@ -132,14 +132,23 @@ class Highlighter
 	/**
 	 * Highlightes a string.
 	 *
-	 * @param \FSHL\Lexer $lexer
 	 * @param string $text
+	 * @param \FSHL\Lexer $lexer
 	 * @return string
+	 * @throws \RuntimeException If no lexer is set.
 	 */
-	public function highlight(\FSHL\Lexer $lexer, $text)
+	public function highlight($text, Lexer $lexer = null)
 	{
 		// Sets the lexer
-		$this->setLexer($lexer);
+		$initialLexer = $this->lexer;
+		if (null !== $lexer) {
+			$this->setLexer($lexer);
+		}
+
+		// No lexer
+		if (null === $this->lexer) {
+			throw new \RuntimeException('No lexer set');
+		}
 
 		// Prepares the text
 		$text = str_replace(array("\r\n", "\r"), "\n", (string) $text);
@@ -157,7 +166,7 @@ class Highlighter
 			$maxLineWidth = strlen(substr_count($text, "\n") + 1);
 			$fragment .= $this->line($line, $maxLineWidth);
 		}
-		$newLexerName = $lexerName = $lexer->getLanguage();
+		$newLexerName = $lexerName = $this->lexer->language;
 		$newState = $state = $this->lexer->initialState;
 		$this->stack = array();
 
@@ -231,7 +240,7 @@ class Highlighter
 					list($newLexerName, $state) = $item;
 					// If previous context was in a different lexer, switch the lexer too
 					if ($newLexerName !== $lexerName) {
-						$this->setLexer($newLexerName);
+						$this->setLexerByName($newLexerName);
 						$lexerName = $newLexerName;
 					}
 				} else {
@@ -265,7 +274,7 @@ class Highlighter
 					if ($item = $this->popState()) {
 						list($newLexerName, $state) = $item;
 						if ($newLexerName !== $lexerName) {
-							$this->setLexer($newLexerName);
+							$this->setLexerByName($newLexerName);
 							$lexerName = $newLexerName;
 						}
 					} else {
@@ -275,7 +284,7 @@ class Highlighter
 					// Switches to the embedded language
 					$newLexerName = $this->lexer->data[$newState];
 					$this->pushState($lexerName, $this->lexer->trans[$newState] ? $newState : $state);
-					$this->setLexer($newLexerName);
+					$this->setLexerByName($newLexerName);
 					$lexerName = $newLexerName;
 					$state = $this->lexer->initialState;
 				}
@@ -296,44 +305,90 @@ class Highlighter
 		$fragment .= $this->output->template('', null);
 		$output[] = $fragment;
 
+		// Restore lexer
+		$this->lexer = $initialLexer;
+
 		return implode('', $output);
 	}
 
 	/**
-	 * Sets the current lexer.
+	 * Sets the default lexer.
 	 *
-	 * @param \FSHL\Lexer|string $lexer
+	 * @param \FSHL\Lexer $lexer
 	 * @return \FSHL\Highlighter
 	 */
-	private function setLexer($lexer)
+	public function setLexer(Lexer $lexer)
 	{
-		$lexerName = is_object($lexer) ? $lexer->getLanguage() : $lexer;
+		// Generates the lexer cache on fly, if the lexer cache doesn't exist
+		if (!$this->findCache($lexer->getLanguage())) {
+			$this->generateCache($lexer);
+		}
 
+		return $this;
+	}
+
+	/**
+	 * Sets the current lexer by name.
+	 *
+	 * @param string $lexerName
+	 * @return \FSHL\Highlighter
+	 * @throws \InvalidArgumentException If the class for given lexer doesn't exist.
+	 */
+	private function setLexerByName($lexerName)
+	{
+		// Generates the lexer cache on fly, if the lexer cache doesn't exist
+		if (!$this->findCache($lexerName)) {
+			// Finds the lexer
+			$lexerClass = 'FSHL\\Lexer\\' . $lexerName;
+			if (!class_exists($lexerClass)) {
+				throw new \InvalidArgumentException(sprintf('The class for "%s" lexer doesn\'t exist', $lexerName));
+			}
+			$lexer = new $lexerClass();
+
+			// Generates the lexer cache on fly
+			$this->generateCache($lexer);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Tries to find the lexer cache.
+	 *
+	 * @param string $lexerName
+	 * @return boolean
+	 */
+	private function findCache($lexerName)
+	{
 		// Lexer has been used before
 		if (isset($this->lexers[$lexerName])) {
 			$this->lexer = $this->lexers[$lexerName];
-			return $this;
+			return true;
 		}
 
 		// Loads lexer cache
-		$lexerCacheClass = 'FSHL\\Lexer\Cache\\' . $lexerName;
+		$lexerCacheClass = 'FSHL\\Lexer\\Cache\\' . $lexerName;
 		if (class_exists($lexerCacheClass)) {
 			$this->lexers[$lexerName] = new $lexerCacheClass();
 			$this->lexer = $this->lexers[$lexerName];
-			return $this;
+			return true;
 		}
 
-		// Finds the lexer
-		if (!is_object($lexer)) {
-			$lexerClass = 'FSHL\\Lexer\\' . $lexerName;
-			$lexer = new $lexerClass();
-		}
+		return false;
+	}
 
-		// Generates the lexer cache on fly
+	/**
+	 * Generates the lexer cache on fly.
+	 *
+	 * @param \FSHL\Lexer $lexer
+	 * @return \FSHL\Highlighter
+	 */
+	private function generateCache(Lexer $lexer)
+	{
 		$generator = new Generator($lexer);
 		try {
 			$generator->saveToCache();
-		} catch (RuntimeException $e) {
+		} catch (\RuntimeException $e) {
 			$file = tempnam(sys_get_temp_dir(), 'fshl');
 			file_put_contents($file, $generator->getSource());
 			require_once $file;

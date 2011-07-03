@@ -157,7 +157,7 @@ class Highlighter
 			$maxLineWidth = strlen(substr_count($text, "\n") + 1);
 			$fragment .= $this->line($line, $maxLineWidth);
 		}
-		$newLexer = $lexer;
+		$newLexerName = $lexerName = $lexer->getLanguage();
 		$newState = $state = $this->lexer->initialState;
 		$this->stack = array();
 
@@ -228,11 +228,11 @@ class Highlighter
 
 				// Get state from the context stack
 				if ($item = $this->popState()) {
-					list($newLexer, $state) = $item;
+					list($newLexerName, $state) = $item;
 					// If previous context was in a different lexer, switch the lexer too
-					if ($newLexer !== $lexer) {
-						$this->setLexer($newLexer);
-						$lexer = $newLexer;
+					if ($newLexerName !== $lexerName) {
+						$this->setLexer($newLexerName);
+						$lexerName = $newLexerName;
 					}
 				} else {
 					$state = $this->lexer->initialState;
@@ -263,20 +263,20 @@ class Highlighter
 				if ($newState === $this->lexer->quitState) {
 					// Returns to the previous lexer
 					if ($item = $this->popState()) {
-						list($newLexer, $state) = $item;
-						if ($newLexer !== $lexer) {
-							$this->setLexer($newLexer);
-							$lexer = $newLexer;
+						list($newLexerName, $state) = $item;
+						if ($newLexerName !== $lexerName) {
+							$this->setLexer($newLexerName);
+							$lexerName = $newLexerName;
 						}
 					} else {
 						$state = $this->lexer->initialState;
 					}
 				} else {
 					// Switches to the embedded language
-					$newLexer = $this->lexer->data[$newState];
-					$this->pushState($lexer, $this->lexer->trans[$newState] ? $newState : $state);
-					$this->setLexer($newLexer);
-					$lexer = $newLexer;
+					$newLexerName = $this->lexer->data[$newState];
+					$this->pushState($lexerName, $this->lexer->trans[$newState] ? $newState : $state);
+					$this->setLexer($newLexerName);
+					$lexerName = $newLexerName;
 					$state = $this->lexer->initialState;
 				}
 
@@ -285,7 +285,7 @@ class Highlighter
 
 			// If newState is marked with recursion flag (alias call), push current state to the context stack
 			if (($this->lexer->flags[$newState] & Generator::STATE_FLAG_RECURSION) && $state !== $newState) {
-				$this->pushState($lexer, $state);
+				$this->pushState($lexerName, $state);
 			}
 
 			// Change the state
@@ -381,13 +381,13 @@ class Highlighter
 	/**
 	 * Pushes a state to the context stack.
 	 *
-	 * @param string $lexer
+	 * @param string $lexerName
 	 * @param string $state
 	 * @return \FSHL\Highlighter
 	 */
-	private function pushState($lexer, $state)
+	private function pushState($lexerName, $state)
 	{
-		array_unshift($this->stack, array($lexer, $state));
+		array_unshift($this->stack, array($lexerName, $state));
 		return $this;
 	}
 

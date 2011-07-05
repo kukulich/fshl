@@ -2,7 +2,7 @@
 
 FSHL is a free, open source universal syntax highlighter written in PHP. A very fast parser performs syntax highlighting for few languages and produces a HTML output.
 
-FSHL library is a simple, easy to use syntax highlighter. Its API provides only two methods that are really need to highlight sources.
+FSHL library is a simple, easy to use syntax highlighter. Its API provides only one method that is really need to highlight sources and three auxiliary methods to sets lexer and output mode.
 
 FSHL core is very flexible and it is very easy to add new languages. Feel free to do so and do not forget to share them with the rest of the world.
 

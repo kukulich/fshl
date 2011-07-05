@@ -111,22 +111,8 @@ class Highlighter
 	 */
 	public function __construct(Output $output, $options = self::OPTION_DEFAULT, $tabIndentWidth = 4)
 	{
-		$this->output = new $output();
-
-		$this->options = $options;
-
-		if (($this->options & self::OPTION_TAB_INDENT) && $tabIndentWidth > 0) {
-			// Precalculate a table for tab indentation
-			$t = ' ';
-			$ti = 0;
-			for ($i = $tabIndentWidth; $i; $i--) {
-				$this->tabs[$i % $tabIndentWidth] = array($t, $ti++);
-				$t .= ' ';
-			}
-			$this->tabIndentWidth = $tabIndentWidth;
-		} else {
-			$this->options &= ~self::OPTION_TAB_INDENT;
-		}
+		$this->setOutput($output)
+			->setOptions($options, $tabIndentWidth);
 	}
 
 	/**
@@ -309,6 +295,46 @@ class Highlighter
 		$this->lexer = $initialLexer;
 
 		return implode('', $output);
+	}
+
+	/**
+	 * Sets the output mode.
+	 *
+	 * @param \FSHL\Output $output
+	 * @return \FSHL\Highlighter
+	 */
+	public function setOutput(Output $output)
+	{
+		$this->output = $output;
+
+		return $this;
+	}
+
+	/**
+	 * Sets options.
+	 *
+	 * @param integer $options
+	 * @param integer $tabIndentWidth
+	 * @return \FSHL\Highlighter
+	 */
+	public function setOptions($options = self::OPTION_DEFAULT, $tabIndentWidth = 4)
+	{
+		$this->options = $options;
+
+		if (($this->options & self::OPTION_TAB_INDENT) && $tabIndentWidth > 0) {
+			// Precalculate a table for tab indentation
+			$t = ' ';
+			$ti = 0;
+			for ($i = $tabIndentWidth; $i; $i--) {
+				$this->tabs[$i % $tabIndentWidth] = array($t, $ti++);
+				$t .= ' ';
+			}
+			$this->tabIndentWidth = $tabIndentWidth;
+		} else {
+			$this->options &= ~self::OPTION_TAB_INDENT;
+		}
+
+		return $this;
 	}
 
 	/**

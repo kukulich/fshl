@@ -30,11 +30,11 @@ After the installation you can find the FSHL source files inside your local PEAR
 
 ```php
 	<?php
-		$highlighter = new \FSHL\Highlighter(new \FSHL\Output\Html());
-		$highlighter->setLexer(new \FSHL\Lexer\Php());
-		echo '<pre>';
-		echo $highlighter->highlight('<?php echo "Hello world!"; ?>');
-		echo '</pre>';
+	$highlighter = new \FSHL\Highlighter(new \FSHL\Output\Html());
+	$highlighter->setLexer(new \FSHL\Lexer\Php());
+	echo '<pre>';
+	echo $highlighter->highlight('<?php echo "Hello world!"; ?>');
+	echo '</pre>';
 	?>
 ```
 
@@ -42,10 +42,10 @@ Or
 
 ```php
 	<?php
-		$highlighter = new \FSHL\Highlighter(new \FSHL\Output\Html(), \FSHL\Highlighter::OPTION_TAB_INDENT | \FSHL\Highlighter::OPTION_LINE_COUNTER);
-		echo '<pre>';
-		echo $highlighter->highlight('<?php echo "Hello world!"; ?>', new \FSHL\Lexer\Php());
-		echo '</pre>';
+	$highlighter = new \FSHL\Highlighter(new \FSHL\Output\Html(), \FSHL\Highlighter::OPTION_TAB_INDENT | \FSHL\Highlighter::OPTION_LINE_COUNTER);
+	echo '<pre>';
+	echo $highlighter->highlight('<?php echo "Hello world!"; ?>', new \FSHL\Lexer\Php());
+	echo '</pre>';
 	?>
 ```
 

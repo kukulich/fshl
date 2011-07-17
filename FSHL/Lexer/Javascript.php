@@ -1,7 +1,7 @@
 <?php
 
 /**
- * FSHL 2.0 RC                            | Universal Syntax HighLighter |
+ * FSHL 2.0 RC 2                          | Universal Syntax HighLighter |
  * -----------------------------------------------------------------------
  *
  * LICENSE
@@ -23,7 +23,7 @@
 
 namespace FSHL\Lexer;
 
-use FSHL;
+use FSHL, FSHL\Generator;
 
 /**
  * Javascript lexer.
@@ -42,16 +42,6 @@ class Javascript implements FSHL\Lexer
 	public function getLanguage()
 	{
 		return 'Javascript';
-	}
-
-	/**
-	 * Returns lexer version.
-	 *
-	 * @return string
-	 */
-	public function getVersion()
-	{
-		return '2.0';
 	}
 
 	/**
@@ -74,118 +64,106 @@ class Javascript implements FSHL\Lexer
 		return array(
 			'OUT' => array(
 				array(
-					'_COUNTAB' => array('OUT', 0),
-					'ALPHA' => array('KEYWORD', -1),
-					'.' => array('KEYWORD', 1),
-					'NUMBER' => array('NUM', 0),
-					'"' => array('QUOTE1', 0),
-					'\'' => array('QUOTE2', 0),
-					'/*' => array('COMMENT1', 0),
-					'//' => array('COMMENT2', 0),
-					'<?php' => array('TO_PHP', 0),
-					'<?=' => array('TO_PHP', 0),
-					'<?' => array('TO_PHP', 0),
-					'</' => array(FSHL\Generator::STATE_QUIT, 0)
+					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT),
+					'ALPHA' => array('KEYWORD', Generator::BACK),
+					'.' => array('KEYWORD', Generator::CURRENT),
+					'NUM' => array('NUMBER', Generator::NEXT),
+					'"' => array('QUOTE_DOUBLE', Generator::NEXT),
+					'\'' => array('QUOTE_SINGLE', Generator::NEXT),
+					'/*' => array('COMMENT_BLOCK', Generator::NEXT),
+					'//' => array('COMMENT_LINE', Generator::NEXT),
+					'<?php' => array('PHP', Generator::NEXT),
+					'<?=' => array('PHP', Generator::NEXT),
+					'<?' => array('PHP', Generator::NEXT),
+					'</' => array(Generator::STATE_QUIT, Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				'js-out',
 				null
 			),
-			// Keywords
 			'KEYWORD' => array(
 				array(
-					'!SAFECHAR' => array(FSHL\Generator::STATE_RETURN, 1)
+					'!ALNUM_' => array(Generator::STATE_RETURN, Generator::BACK)
 				),
-				FSHL\Generator::STATE_FLAG_KEYWORD | FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_KEYWORD | Generator::STATE_FLAG_RECURSION,
 				'js-out',
 				null
 			),
-			// Numbers
-			'NUM' => array(
+			'NUMBER' => array(
 				array(
-					'x' => array('HEX_NUM', 0),
-					'.' => array('DEC_NUM', 0),
-					'!NUMBER' => array(FSHL\Generator::STATE_RETURN, 1),
-					'NUMBER' => array('DEC_NUM', 0)
+					'x' => array('HEXA', Generator::NEXT),
+					'DOTNUM' => array('NUMBER', Generator::NEXT),
+					'ALL' => array(Generator::STATE_RETURN, Generator::BACK),
 				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_RECURSION,
 				'js-num',
 				null
 			),
-			'DEC_NUM' => array(
+			'HEXA' => array(
 				array(
-					'.' => array('DEC_NUM', 0),
-					'!NUMBER' => array(FSHL\Generator::STATE_RETURN, 1)
+					'!HEXNUM' => array(Generator::STATE_RETURN, Generator::BACK)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				'js-num',
 				null
 			),
-			'HEX_NUM' => array(
+			'QUOTE_DOUBLE' => array(
 				array(
-					'!HEXNUM' => array(FSHL\Generator::STATE_RETURN, 1)
+					'"' => array(Generator::STATE_RETURN, Generator::CURRENT),
+					'<?php' => array('PHP', Generator::NEXT),
+					'<?=' => array('PHP', Generator::NEXT),
+					'<?' => array('PHP', Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
-				'js-num',
-				null
-			),
-			// Quotes BF definition
-			'QUOTE1' => array(
-				array(
-					'"' => array(FSHL\Generator::STATE_RETURN, 0),
-					'<?php' => array('TO_PHP', 0),
-					'<?=' => array('TO_PHP', 0),
-					'<?' => array('TO_PHP', 0)
-				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_RECURSION,
 				'js-quote',
 				null
 			),
-			'QUOTE2' => array(
+			'QUOTE_SINGLE' => array(
 				array(
-					'\'' => array(FSHL\Generator::STATE_RETURN, 0),
-					'<?php' => array('TO_PHP', 0),
-					'<?=' => array('TO_PHP', 0),
-					'<?' => array('TO_PHP', 0)
+					'\'' => array(Generator::STATE_RETURN, Generator::CURRENT),
+					'<?php' => array('PHP', Generator::NEXT),
+					'<?=' => array('PHP', Generator::NEXT),
+					'<?' => array('PHP', Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_RECURSION,
 				'js-quote',
 				null
 			),
-			// Comments
-			'COMMENT1' => array(
+			'COMMENT_BLOCK' => array(
 				array(
-					'_COUNTAB' => array('COMMENT1', 0),
-					'*/' => array(FSHL\Generator::STATE_RETURN, 0),
-					'<?php' => array('TO_PHP', 0),
-					'<?=' => array('TO_PHP', 0),
-					'<?' => array('TO_PHP', 0)
+					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT),
+					'*/' => array(Generator::STATE_RETURN, Generator::CURRENT),
+					'<?php' => array('PHP', Generator::NEXT),
+					'<?=' => array('PHP', Generator::NEXT),
+					'<?' => array('PHP', Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_RECURSION,
 				'js-comment',
 				null
 			),
-			'COMMENT2' => array(
+			'COMMENT_LINE' => array(
 				array(
-					"\n" => array(FSHL\Generator::STATE_RETURN, 1),
-					'_COUNTAB' => array('COMMENT2', 0),
-					'<?php' => array('TO_PHP', 0),
-					'<?=' => array('TO_PHP', 0),
-					'<?' => array('TO_PHP', 0)
+					'LINE' => array(Generator::STATE_RETURN, Generator::BACK),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT),
+					'<?php' => array('PHP', Generator::NEXT),
+					'<?=' => array('PHP', Generator::NEXT),
+					'<?' => array('PHP', Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_RECURSION,
 				'js-comment',
 				null
 			),
-			'TO_PHP' => array(
+			'PHP' => array(
 				null,
-				FSHL\Generator::STATE_FLAG_NEWLEXER,
+				Generator::STATE_FLAG_NEWLEXER,
 				'xlang',
 				'Php'
 			),
-			FSHL\Generator::STATE_QUIT => array(
+			Generator::STATE_QUIT => array(
 				null,
-				FSHL\Generator::STATE_FLAG_NEWLEXER,
+				Generator::STATE_FLAG_NEWLEXER,
 				'html-tag',
 				null
 			)
@@ -277,7 +255,7 @@ class Javascript implements FSHL\Lexer
 				'getElementsByTagName' => 2,
 				'getElementById' => 2,
 			),
-			FSHL\Generator::CASE_SENSITIVE
+			Generator::CASE_SENSITIVE
 		);
 	}
 }

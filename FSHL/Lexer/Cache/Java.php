@@ -1,7 +1,7 @@
 <?php
 
 /**
- * FSHL 2.0 RC                            | Universal Syntax HighLighter |
+ * FSHL 2.0 RC 2                          | Universal Syntax HighLighter |
  * -----------------------------------------------------------------------
  *
  * LICENSE
@@ -37,11 +37,11 @@ namespace FSHL\Lexer\Cache;
 class Java
 {
 	/**
-	 * Generator version/lexer version.
+	 * Language name.
 	 *
-	 * @var string
+	 * @var array
 	 */
-	public $version;
+	public $language;
 
 	/**
 	 * Transitions table.
@@ -104,93 +104,93 @@ class Java
 	 */
 	public function __construct()
 	{
-		$this->version = '2.0/2.0';
+		$this->language = 'Java';
 		$this->trans = array(
 			0 => array(
 				0 => array(
 					0 => 1, 1 => -1
 				), 1 => array(
-					0 => 2, 1 => 0
+					0 => 2, 1 => 1
 				), 2 => array(
-					0 => 5, 1 => 0
+					0 => 4, 1 => 1
 				), 3 => array(
-					0 => 6, 1 => 0
+					0 => 5, 1 => 1
 				), 4 => array(
-					0 => 7, 1 => 0
+					0 => 6, 1 => 1
 				), 5 => array(
-					0 => 8, 1 => 0
+					0 => 7, 1 => 1
 				), 6 => array(
-					0 => 0, 1 => 0
+					0 => 0, 1 => 1
+				), 7 => array(
+					0 => 0, 1 => 1
 				)
 			), 1 => array(
 				0 => array(
-					0 => 9, 1 => 1
+					0 => 8, 1 => -1
 				)
 			), 2 => array(
 				0 => array(
-					0 => 4, 1 => 0
+					0 => 3, 1 => 1
 				), 1 => array(
-					0 => 3, 1 => 0
+					0 => 2, 1 => 1
 				), 2 => array(
-					0 => 3, 1 => 0
-				), 3 => array(
-					0 => 9, 1 => 1
+					0 => 8, 1 => -1
 				)
 			), 3 => array(
 				0 => array(
-					0 => 3, 1 => 0
-				), 1 => array(
-					0 => 9, 1 => 1
+					0 => 8, 1 => -1
 				)
 			), 4 => array(
 				0 => array(
-					0 => 9, 1 => 1
+					0 => 8, 1 => 0
+				), 1 => array(
+					0 => 4, 1 => 1
+				), 2 => array(
+					0 => 4, 1 => 1
+				), 3 => array(
+					0 => 4, 1 => 1
+				), 4 => array(
+					0 => 4, 1 => 1
 				)
 			), 5 => array(
 				0 => array(
-					0 => 5, 1 => 0
+					0 => 8, 1 => 0
 				), 1 => array(
-					0 => 5, 1 => 0
+					0 => 5, 1 => 1
 				), 2 => array(
-					0 => 5, 1 => 0
+					0 => 5, 1 => 1
 				), 3 => array(
-					0 => 9, 1 => 0
+					0 => 5, 1 => 1
+				), 4 => array(
+					0 => 5, 1 => 1
 				)
 			), 6 => array(
 				0 => array(
-					0 => 6, 1 => 0
+					0 => 6, 1 => 1
 				), 1 => array(
-					0 => 6, 1 => 0
+					0 => 6, 1 => 1
 				), 2 => array(
-					0 => 6, 1 => 0
-				), 3 => array(
-					0 => 9, 1 => 0
+					0 => 8, 1 => 0
 				)
 			), 7 => array(
 				0 => array(
-					0 => 9, 1 => 0
+					0 => 8, 1 => -1
 				), 1 => array(
-					0 => 7, 1 => 0
-				)
-			), 8 => array(
-				0 => array(
-					0 => 9, 1 => 1
-				), 1 => array(
-					0 => 8, 1 => 0
+					0 => 7, 1 => 1
 				)
 			)
 		);
 		$this->initialState = 0;
-		$this->returnState = 9;
-		$this->quitState = 10;
+		$this->returnState = 8;
+		$this->quitState = 9;
 		$this->flags = array(
-			0 => 0, 1 => 5, 2 => 4, 3 => 0, 4 => 0, 5 => 4, 6 => 4, 7 => 4, 8 => 4
+			0 => 0, 1 => 5, 2 => 4, 3 => 0, 4 => 4, 5 => 4, 6 => 4, 7 => 4
 		);
 		$this->data = array(
-			0 => NULL, 1 => NULL, 2 => NULL, 3 => NULL, 4 => NULL, 5 => NULL, 6 => NULL, 7 => NULL, 8 => NULL
+			0 => NULL, 1 => NULL, 2 => NULL, 3 => NULL, 4 => NULL, 5 => NULL, 6 => NULL, 7 => NULL
 		);
 		$this->classes = array(
-			0 => NULL, 1 => NULL, 2 => 'java-num', 3 => 'java-num', 4 => 'java-num', 5 => 'java-quote', 6 => 'java-quote', 7 => 'java-comment', 8 => 'java-comment'
+			0 => NULL, 1 => NULL, 2 => 'java-num', 3 => 'java-num', 4 => 'java-quote', 5 => 'java-quote', 6 => 'java-comment', 7 => 'java-comment'
 		);
 		$this->keywords = array(
 			0 => 'java-keywords', 1 => array(
@@ -209,34 +209,41 @@ class Java
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter0(&$text, $textLength, $textPos)
+	public function findDelimiter0($text, $textLength, $textPos)
 	{
+		static $delimiters = array(
+			2 => '"', 3 => '\'', 4 => '/*', 5 => '//', 6 => "\n", 7 => "\t"
+		);
+
 		$buffer = false;
 		while ($textPos < $textLength) {
 			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
+			$letter = $text[$textPos];
+
 			if (preg_match('~^[a-z]+~i', $part, $matches)) {
 				return array(0, $matches[0], $buffer);
 			}
 			if (preg_match('~^\\d+~', $part, $matches)) {
 				return array(1, $matches[0], $buffer);
 			}
-			if ('"' === $letter) {
-				return array(2, '"', $buffer);
+			if ($delimiters[2] === $letter) {
+				return array(2, $delimiters[2], $buffer);
 			}
-			if ('\'' === $letter) {
-				return array(3, '\'', $buffer);
+			if ($delimiters[3] === $letter) {
+				return array(3, $delimiters[3], $buffer);
 			}
-			if (0 === strpos($part, '/*')) {
-				return array(4, '/*', $buffer);
+			if (0 === strpos($part, $delimiters[4])) {
+				return array(4, $delimiters[4], $buffer);
 			}
-			if (0 === strpos($part, '//')) {
-				return array(5, '//', $buffer);
+			if (0 === strpos($part, $delimiters[5])) {
+				return array(5, $delimiters[5], $buffer);
 			}
-			if ("\t" === $letter || "\n" === $letter) {
-				return array(6, $letter, $buffer);
+			if ($delimiters[6] === $letter) {
+				return array(6, $delimiters[6], $buffer);
 			}
-
+			if ($delimiters[7] === $letter) {
+				return array(7, $delimiters[7], $buffer);
+			}
 			$buffer .= $letter;
 			$textPos++;
 		}
@@ -251,76 +258,48 @@ class Java
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter1(&$text, $textLength, $textPos)
+	public function findDelimiter1($text, $textLength, $textPos)
 	{
+
 		$buffer = false;
 		while ($textPos < $textLength) {
 			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
+
 			if (preg_match('~^\\W+~', $part, $matches)) {
 				return array(0, $matches[0], $buffer);
 			}
-
-			$buffer .= $letter;
+			$buffer .= $text[$textPos];
 			$textPos++;
 		}
 		return array(-1, -1, $buffer);
 	}
 
 	/**
-	 * Finds a delimiter for state NUM.
+	 * Finds a delimiter for state NUMBER.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter2(&$text, $textLength, $textPos)
+	public function findDelimiter2($text, $textLength, $textPos)
 	{
+		static $delimiters = array(
+			0 => 'x'
+		);
+
 		$buffer = false;
 		while ($textPos < $textLength) {
 			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if ('x' === $letter) {
-				return array(0, 'x', $buffer);
-			}
-			if ('.' === $letter) {
-				return array(1, '.', $buffer);
-			}
-			if (preg_match('~^\\d+~', $part, $matches)) {
-				return array(2, $matches[0], $buffer);
-			}
-			if (preg_match('~^\\D+~', $part, $matches)) {
-				return array(3, $matches[0], $buffer);
-			}
+			$letter = $text[$textPos];
 
-			$buffer .= $letter;
-			$textPos++;
-		}
-		return array(-1, -1, $buffer);
-	}
-
-	/**
-	 * Finds a delimiter for state DEC_NUM.
-	 *
-	 * @param string $text
-	 * @param string $textLength
-	 * @param string $textPos
-	 * @return array
-	 */
-	public function findDelimiter3(&$text, $textLength, $textPos)
-	{
-		$buffer = false;
-		while ($textPos < $textLength) {
-			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if ('.' === $letter) {
-				return array(0, '.', $buffer);
+			if ($delimiters[0] === $letter) {
+				return array(0, $delimiters[0], $buffer);
 			}
-			if (preg_match('~^\\D+~', $part, $matches)) {
+			if (preg_match('~^\.\\d+~', $part, $matches)) {
 				return array(1, $matches[0], $buffer);
 			}
-
+			return array(2, $letter, $buffer);
 			$buffer .= $letter;
 			$textPos++;
 		}
@@ -328,23 +307,63 @@ class Java
 	}
 
 	/**
-	 * Finds a delimiter for state HEX_NUM.
+	 * Finds a delimiter for state HEXA.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter4(&$text, $textLength, $textPos)
+	public function findDelimiter3($text, $textLength, $textPos)
 	{
+
 		$buffer = false;
 		while ($textPos < $textLength) {
 			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
+
 			if (preg_match('~^[^a-f\\d]+~i', $part, $matches)) {
 				return array(0, $matches[0], $buffer);
 			}
+			$buffer .= $text[$textPos];
+			$textPos++;
+		}
+		return array(-1, -1, $buffer);
+	}
 
+	/**
+	 * Finds a delimiter for state QUOTE_DOUBLE.
+	 *
+	 * @param string $text
+	 * @param string $textLength
+	 * @param string $textPos
+	 * @return array
+	 */
+	public function findDelimiter4($text, $textLength, $textPos)
+	{
+		static $delimiters = array(
+			0 => '"', 1 => '\\\\', 2 => '\\"', 3 => "\n", 4 => "\t"
+		);
+
+		$buffer = false;
+		while ($textPos < $textLength) {
+			$part = substr($text, $textPos, 10);
+			$letter = $text[$textPos];
+
+			if ($delimiters[0] === $letter) {
+				return array(0, $delimiters[0], $buffer);
+			}
+			if (0 === strpos($part, $delimiters[1])) {
+				return array(1, $delimiters[1], $buffer);
+			}
+			if (0 === strpos($part, $delimiters[2])) {
+				return array(2, $delimiters[2], $buffer);
+			}
+			if ($delimiters[3] === $letter) {
+				return array(3, $delimiters[3], $buffer);
+			}
+			if ($delimiters[4] === $letter) {
+				return array(4, $delimiters[4], $buffer);
+			}
 			$buffer .= $letter;
 			$textPos++;
 		}
@@ -352,32 +371,39 @@ class Java
 	}
 
 	/**
-	 * Finds a delimiter for state QUOTE1.
+	 * Finds a delimiter for state QUOTE_SINGLE.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter5(&$text, $textLength, $textPos)
+	public function findDelimiter5($text, $textLength, $textPos)
 	{
+		static $delimiters = array(
+			0 => '\'', 1 => '\\\\', 2 => '\\\'', 3 => "\n", 4 => "\t"
+		);
+
 		$buffer = false;
 		while ($textPos < $textLength) {
 			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if (0 === strpos($part, '\\\\')) {
-				return array(0, '\\\\', $buffer);
-			}
-			if (0 === strpos($part, '\\"')) {
-				return array(1, '\\"', $buffer);
-			}
-			if ("\t" === $letter || "\n" === $letter) {
-				return array(2, $letter, $buffer);
-			}
-			if ('"' === $letter) {
-				return array(3, '"', $buffer);
-			}
+			$letter = $text[$textPos];
 
+			if ($delimiters[0] === $letter) {
+				return array(0, $delimiters[0], $buffer);
+			}
+			if (0 === strpos($part, $delimiters[1])) {
+				return array(1, $delimiters[1], $buffer);
+			}
+			if (0 === strpos($part, $delimiters[2])) {
+				return array(2, $delimiters[2], $buffer);
+			}
+			if ($delimiters[3] === $letter) {
+				return array(3, $delimiters[3], $buffer);
+			}
+			if ($delimiters[4] === $letter) {
+				return array(4, $delimiters[4], $buffer);
+			}
 			$buffer .= $letter;
 			$textPos++;
 		}
@@ -385,32 +411,33 @@ class Java
 	}
 
 	/**
-	 * Finds a delimiter for state QUOTE2.
+	 * Finds a delimiter for state COMMENT_BLOCK.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter6(&$text, $textLength, $textPos)
+	public function findDelimiter6($text, $textLength, $textPos)
 	{
+		static $delimiters = array(
+			0 => "\n", 1 => "\t", 2 => '*/'
+		);
+
 		$buffer = false;
 		while ($textPos < $textLength) {
 			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if (0 === strpos($part, '\\\\')) {
-				return array(0, '\\\\', $buffer);
-			}
-			if (0 === strpos($part, '\\\'')) {
-				return array(1, '\\\'', $buffer);
-			}
-			if ("\t" === $letter || "\n" === $letter) {
-				return array(2, $letter, $buffer);
-			}
-			if ('\'' === $letter) {
-				return array(3, '\'', $buffer);
-			}
+			$letter = $text[$textPos];
 
+			if ($delimiters[0] === $letter) {
+				return array(0, $delimiters[0], $buffer);
+			}
+			if ($delimiters[1] === $letter) {
+				return array(1, $delimiters[1], $buffer);
+			}
+			if (0 === strpos($part, $delimiters[2])) {
+				return array(2, $delimiters[2], $buffer);
+			}
 			$buffer .= $letter;
 			$textPos++;
 		}
@@ -418,53 +445,30 @@ class Java
 	}
 
 	/**
-	 * Finds a delimiter for state COMMENT1.
+	 * Finds a delimiter for state COMMENT_LINE.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter7(&$text, $textLength, $textPos)
+	public function findDelimiter7($text, $textLength, $textPos)
 	{
+		static $delimiters = array(
+			0 => "\n", 1 => "\t"
+		);
+
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if (0 === strpos($part, '*/')) {
-				return array(0, '*/', $buffer);
-			}
-			if ("\t" === $letter || "\n" === $letter) {
-				return array(1, $letter, $buffer);
-			}
 
-			$buffer .= $letter;
-			$textPos++;
-		}
-		return array(-1, -1, $buffer);
-	}
+			$letter = $text[$textPos];
 
-	/**
-	 * Finds a delimiter for state COMMENT2.
-	 *
-	 * @param string $text
-	 * @param string $textLength
-	 * @param string $textPos
-	 * @return array
-	 */
-	public function findDelimiter8(&$text, $textLength, $textPos)
-	{
-		$buffer = false;
-		while ($textPos < $textLength) {
-			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if ("\n" === $letter) {
-				return array(0, "\n", $buffer);
+			if ($delimiters[0] === $letter) {
+				return array(0, $delimiters[0], $buffer);
 			}
-			if ("\t" === $letter) {
-				return array(1, "\t", $buffer);
+			if ($delimiters[1] === $letter) {
+				return array(1, $delimiters[1], $buffer);
 			}
-
 			$buffer .= $letter;
 			$textPos++;
 		}

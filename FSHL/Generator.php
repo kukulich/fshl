@@ -1,7 +1,7 @@
 <?php
 
 /**
- * FSHL 2.0 RC                            | Universal Syntax HighLighter |
+ * FSHL 2.0 RC 2                          | Universal Syntax HighLighter |
  * -----------------------------------------------------------------------
  *
  * LICENSE
@@ -33,14 +33,35 @@ namespace FSHL;
 class Generator
 {
 	/**
-	 * Library version.
+	 * Delimiter will be returned to the stream (back to the previous position).
+	 *
+	 * @var integer
+	 */
+	const BACK = -1;
+
+	/**
+	 * Style from current state will be applied on the received delimiter.
+	 *
+	 * @var integer
+	 */
+	const CURRENT = 0;
+
+	/**
+	 * Style from the new state will be applied on the received delimiter.
+	 *
+	 * @var integer
+	 */
+	const NEXT = 1;
+
+	/**
+	 * State leading to the current state.
 	 *
 	 * @var string
 	 */
-	const VERSION = '2.0';
+	const STATE_SELF = '_SELF';
 
 	/**
-	 * State to return back.
+	 * State to return to previous state.
 	 *
 	 * @var string
 	 */
@@ -110,18 +131,18 @@ class Generator
 	const STATE_INDEX_DATA = 3;
 
 	/**
-	 * Array index for state in state diagram.
+	 * Array index for new state in state diagram.
 	 *
 	 * @var integer
 	 */
 	const STATE_DIAGRAM_INDEX_STATE = 0;
 
 	/**
-	 * Array index for type in state diagram.
+	 * Array index for mode in state diagram.
 	 *
 	 * @var integer
 	 */
-	const STATE_DIAGRAM_INDEX_TYPE = 1;
+	const STATE_DIAGRAM_INDEX_MODE = 1;
 
 	/**
 	 * Array index for keyword class.
@@ -225,9 +246,8 @@ class Generator
 	 * Initializes the generator for a given lexer.
 	 *
 	 * @param \FSHL\Lexer $lexerName
-	 * @throws InvalidArgumentException If the class for given lexer doesn't exist.
 	 */
-	public function __construct(\FSHL\Lexer $lexer)
+	public function __construct(Lexer $lexer)
 	{
 		$this->lexer = $lexer;
 		$this->lexerName = $lexer->getLanguage();
@@ -248,13 +268,13 @@ class Generator
 	 * Saves the generated source to a lexer cache file.
 	 *
 	 * @return \FSHL\Generator
-	 * @throws Exception If the file could not be saved.
+	 * @throws \RuntimeException If the file could not be saved.
 	 */
 	public function saveToCache()
 	{
 		$file = __DIR__ . '/Lexer/Cache/' . $this->lexerName . '.php';
 		if (false === @file_put_contents($file, $this->source)) {
-			throw new RuntimeException(sprintf('Cannot save source to "%s"', $file));
+			throw new \RuntimeException(sprintf('Cannot save source to "%s"', $file));
 		}
 		return $this;
 	}
@@ -269,7 +289,7 @@ class Generator
 		$this->optimize();
 
 		$constructor = '';
-		$constructor .= $this->getVarSource('$this->version', self::VERSION . '/' . $this->lexer->getVersion());
+		$constructor .= $this->getVarSource('$this->language', $this->lexer->getLanguage());
 		$constructor .= $this->getVarSource('$this->trans', $this->trans);
 		$constructor .= $this->getVarSource('$this->initialState', $this->states[$this->lexer->getInitialState()]);
 		$constructor .= $this->getVarSource('$this->returnState', $this->states[self::STATE_RETURN]);
@@ -290,7 +310,7 @@ class Generator
 <?php
 
 /**
- * FSHL 2.0 RC                            | Universal Syntax HighLighter |
+ * FSHL 2.0 RC 2                          | Universal Syntax HighLighter |
  * -----------------------------------------------------------------------
  *
  * LICENSE
@@ -326,11 +346,11 @@ namespace FSHL\\Lexer\\Cache;
 class {$this->lexerName}
 {
 	/**
-	 * Generator version/lexer version.
+	 * Language name.
 	 *
-	 * @var string
+	 * @var array
 	 */
-	public \$version;
+	public \$language;
 
 	/**
 	 * Transitions table.
@@ -393,9 +413,9 @@ class {$this->lexerName}
 	 */
 	public function __construct()
 	{
-{$constructor}
+$constructor
 	}
-{$functions}
+$functions
 }
 SOURCE;
 	}
@@ -410,84 +430,106 @@ SOURCE;
 	{
 		// Delimiter => Condition
 		static $commonDelimiters = array(
-			'_ALL' => 'true',
-			// Line counter & tab indent
-			'_COUNTAB' => '"\\t" === $letter || "\\n" === $letter',
-			'SPACE' => 'preg_match(\'~^\s+~\', $part, $matches)',
+			'ALL' => true,
+			'LINE' => "\n",
+			'TAB' => "\t",
+			'SPACE' => 'preg_match(\'~^\\s+~\', $part, $matches)',
 			'!SPACE' => 'preg_match(\'~^\\\\S+~\', $part, $matches)',
 			'ALPHA' => 'preg_match(\'~^[a-z]+~i\', $part, $matches)',
 			'!ALPHA' => 'preg_match(\'~^[^a-z]+~i\', $part, $matches)',
 			'ALNUM' => 'preg_match(\'~^[a-z\\\\d]+~i\', $part, $matches)',
 			'!ALNUM' => 'preg_match(\'~^[^a-z\\\\d]+~i\', $part, $matches)',
-			'NUMBER' => 'preg_match(\'~^\\\\d+~\', $part, $matches)',
-			'!NUMBER' => 'preg_match(\'~^\\\\D+~\', $part, $matches)',
+			'ALNUM_' => 'preg_match(\'~^\\\\w+~\', $part, $matches)',
+			'!ALNUM_' => 'preg_match(\'~^\\\\W+~\', $part, $matches)',
+			'NUM' => 'preg_match(\'~^\\\\d+~\', $part, $matches)',
+			'!NUM' => 'preg_match(\'~^\\\\D+~\', $part, $matches)',
 			'HEXNUM' => 'preg_match(\'~^[a-f\\\\d]+~i\', $part, $matches)',
 			'!HEXNUM' => 'preg_match(\'~^[^a-f\\\\d]+~i\', $part, $matches)',
-			'DOT_NUMBER' => 'preg_match(\'~^\\.\\\\d+~\', $part, $matches)',
-			'!DOT_NUMBER' => '!preg_match(\'~^\\.\\\\d+~\', $part, $matches)',
-			'SAFECHAR' => 'preg_match(\'~^\\\\w+~\', $part, $matches)',
-			'!SAFECHAR' => 'preg_match(\'~^\\\\W+~\', $part, $matches)'
+			'DOTNUM' => 'preg_match(\'~^\\.\\\\d+~\', $part, $matches)',
+			'!DOTNUM' => 'preg_match(\'~^(?:[^\\.]|\\.\\\\D)~\', $part, $matches)'
 		);
 
-		$lexerDelimiters = $this->lexer->getDelimiters();
+		$allDelimiters = array_merge($commonDelimiters, $this->lexer->getDelimiters());
 
-		$conditions = '';
+		$conditionsSource = '';
+		$delimiters = array();
 		foreach ($this->delimiters[$state] as $no => $delimiter) {
-			if (isset($commonDelimiters[$delimiter])) {
-				$delimiterSource = '_ALL' === $delimiter || '_COUNTAB' === $delimiter ? '$letter' : '$matches[0]';
-				$condition = $commonDelimiters[$delimiter];
-			} elseif (isset($lexerDelimiters[$delimiter])) {
-				$delimiterSource = '$matches[0]';
-				$condition = $lexerDelimiters[$delimiter];
-			} else {
-				$delimiterSource = $this->getVarValueSource($delimiter);
-				if (1 === strlen($delimiter)) {
-					$condition = sprintf('%s === $letter', $delimiterSource);
-				} else {
-					$condition = sprintf('0 === strpos($part, %s)', $delimiterSource);
-				}
-			}
+			if ('ALL' === $delimiter) {
+				$conditionSource = <<<CONDITION
 
-			$conditions .= <<<CONDITION
-			if ($condition) {
-				return array({$no}, {$delimiterSource}, \$buffer);
-			}
-
+			return array($no, \$letter, \$buffer);
 CONDITION;
+			} else {
+				if (isset($allDelimiters[$delimiter]) && 0 === strpos($allDelimiters[$delimiter], 'preg_match')) {
+					$delimiterSource = '$matches[0]';
+					$condition = $allDelimiters[$delimiter];
+				} else {
+					if (isset($allDelimiters[$delimiter])) {
+						$delimiter = $allDelimiters[$delimiter];
+					}
+
+					$delimiters[$no] = $delimiter;
+
+					$delimiterSource = sprintf('$delimiters[%d]', $no);
+					if (1 === strlen($delimiter)) {
+						$condition = sprintf('$delimiters[%d] === $letter', $no);
+					} else {
+						$condition = sprintf('0 === strpos($part, $delimiters[%d])', $no);
+					}
+				}
+
+				$conditionSource = <<<CONDITION
+
+			if ($condition) {
+				return array($no, $delimiterSource, \$buffer);
+			}
+CONDITION;
+			}
+
+			$conditionsSource .= $conditionSource;
 		}
 
-		$stateName = array_search($state, $this->states);
-		return <<<STATE
+		$partSource = preg_match('~\\$part~', $conditionsSource) ? 'substr($text, $textPos, 10)' : '';
+		if (preg_match('~\\$letter~', $conditionsSource)) {
+			$letterSource = '$text[$textPos]';
+			$bufferSource = '$letter';
+		} else {
+			$letterSource = '';
+			$bufferSource = '$text[$textPos]';
+		}
 
+		// Removes traling whitespaces and unnecessary empty lines
+		return preg_replace('~\n{3,}~', "\n\n", preg_replace('~\t+\n~', "\n", '
 	/**
-	 * Finds a delimiter for state {$stateName}.
+	 * Finds a delimiter for state ' . array_search($state, $this->states) . '.
 	 *
-	 * @param string \$text
-	 * @param string \$textLength
-	 * @param string \$textPos
+	 * @param string $text
+	 * @param string $textLength
+	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter{$state}(&\$text, \$textLength, \$textPos)
+	public function findDelimiter' . $state . '($text, $textLength, $textPos)
 	{
-		\$buffer = false;
-		while (\$textPos < \$textLength) {
-			\$part = substr(\$text, \$textPos, 10);
-			\$letter = \$part[0];
-{$conditions}
-			\$buffer .= \$letter;
-			\$textPos++;
-		}
-		return array(-1, -1, \$buffer);
-	}
+		' . (!empty($delimiters) ? sprintf('static $delimiters = %s;', $this->getVarValueSource($delimiters)) : '') . '
 
-STATE;
+		$buffer = false;
+		while ($textPos < $textLength) {
+			' . (!empty($partSource) ? sprintf('$part = %s;', $partSource) : '') . '
+			' . (!empty($letterSource) ? sprintf('$letter = %s;', $letterSource) : '') . '
+' . $conditionsSource . '
+			$buffer .= ' . $bufferSource . ';
+			$textPos++;
+		}
+		return array(-1, -1, $buffer);
+	}
+'));
 	}
 
 	/**
 	 * Optimizes the lexer definition.
 	 *
-	 * @return Generator
-	 * @throws RuntimeException If the lexer definition is wrong.
+	 * @return \FSHL\Generator
+	 * @throws \RuntimeException If the lexer definition is wrong.
 	 */
 	private function optimize()
 	{
@@ -513,8 +555,11 @@ STATE;
 				$i = 0;
 				foreach ($state[self::STATE_INDEX_DIAGRAM] as $delimiter => $trans) {
 					$transName = $trans[self::STATE_DIAGRAM_INDEX_STATE];
+					if (self::STATE_SELF === $transName) {
+						$transName = array_search($stateId, $this->states);
+					}
 					if (!isset($this->states[$transName])) {
-						throw new RuntimeException(sprintf('Unknown state in transition %s [%s] => %s', $stateName, $delimiter, $transName));
+						throw new \RuntimeException(sprintf('Unknown state in transition %s [%s] => %s', $stateName, $delimiter, $transName));
 					}
 					$this->delimiters[$stateId][$i] = $delimiter;
 					$trans[self::STATE_DIAGRAM_INDEX_STATE] = $this->states[$transName];
@@ -528,7 +573,7 @@ STATE;
 		}
 
 		if (!isset($this->states[$this->lexer->getInitialState()])) {
-			throw new RuntimeException(sprintf('Unknown initial state "%s"', $this->lexer->getInitialState()));
+			throw new \RuntimeException(sprintf('Unknown initial state "%s"', $this->lexer->getInitialState()));
 		}
 
 		return $this;

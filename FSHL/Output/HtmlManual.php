@@ -1,7 +1,7 @@
 <?php
 
 /**
- * FSHL 2.0 RC                            | Universal Syntax HighLighter |
+ * FSHL 2.0 RC 2                          | Universal Syntax HighLighter |
  * -----------------------------------------------------------------------
  *
  * LICENSE
@@ -82,7 +82,7 @@ class HtmlManual implements FSHL\Output
 			$this->closeTag = '';
 
 			if (null !== $class) {
-				$output .= sprintf('<span class="%s">', $class);
+				$output .= '<span class="' . $class . '">';
 			}
 
 			$this->lastClass = $class;
@@ -112,11 +112,11 @@ class HtmlManual implements FSHL\Output
 
 			if (null !== $class) {
 				if (isset($this->manualUrl[$class])) {
-					$output .= sprintf('<a href="%s">', sprintf($this->manualUrl[$class], $part));
+					$output .= '<a href="' . sprintf($this->manualUrl[$class], $part) . '">';
 					$this->closeTag = '</a>';
 				}
 
-				$output .= sprintf('<span class="%s">', $class);
+				$output .= '<span class="' . $class . '">';
 			}
 
 			$this->lastClass = $class;

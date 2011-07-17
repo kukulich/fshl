@@ -1,7 +1,7 @@
 <?php
 
 /**
- * FSHL 2.0 RC                            | Universal Syntax HighLighter |
+ * FSHL 2.0 RC 2                          | Universal Syntax HighLighter |
  * -----------------------------------------------------------------------
  *
  * LICENSE
@@ -37,11 +37,11 @@ namespace FSHL\Lexer\Cache;
 class Texy
 {
 	/**
-	 * Generator version/lexer version.
+	 * Language name.
 	 *
-	 * @var string
+	 * @var array
 	 */
-	public $version;
+	public $language;
 
 	/**
 	 * Transitions table.
@@ -104,81 +104,81 @@ class Texy
 	 */
 	public function __construct()
 	{
-		$this->version = '2.0/2.0';
+		$this->language = 'Texy';
 		$this->trans = array(
 			0 => array(
 				0 => array(
-					0 => 8, 1 => 0
+					0 => 8, 1 => 1
 				), 1 => array(
-					0 => 9, 1 => 0
+					0 => 9, 1 => 1
 				), 2 => array(
-					0 => 1, 1 => 0
+					0 => 1, 1 => 1
 				)
 			), 1 => array(
 				0 => array(
-					0 => 3, 1 => 0
+					0 => 3, 1 => 1
 				), 1 => array(
 					0 => 2, 1 => -1
 				)
 			), 2 => array(
 				0 => array(
-					0 => 4, 1 => 0
+					0 => 4, 1 => 1
 				), 1 => array(
-					0 => 4, 1 => 0
+					0 => 4, 1 => 1
 				), 2 => array(
-					0 => 4, 1 => 0
+					0 => 4, 1 => 1
 				), 3 => array(
-					0 => 4, 1 => 0
+					0 => 4, 1 => 1
 				), 4 => array(
 					0 => 0, 1 => -1
 				)
 			), 3 => array(
 				0 => array(
-					0 => 3, 1 => 0
+					0 => 3, 1 => 1
 				), 1 => array(
-					0 => 4, 1 => 0
+					0 => 4, 1 => 1
 				), 2 => array(
-					0 => 4, 1 => 0
+					0 => 4, 1 => 1
 				), 3 => array(
-					0 => 7, 1 => 0
+					0 => 7, 1 => 1
 				), 4 => array(
-					0 => 7, 1 => 0
+					0 => 7, 1 => 1
 				), 5 => array(
-					0 => 7, 1 => 0
+					0 => 7, 1 => 1
 				), 6 => array(
-					0 => 7, 1 => 0
+					0 => 7, 1 => 1
 				), 7 => array(
 					0 => 0, 1 => -1
 				)
 			), 4 => array(
 				0 => array(
-					0 => 4, 1 => 0
+					0 => 4, 1 => 1
 				), 1 => array(
-					0 => 4, 1 => 0
+					0 => 4, 1 => 1
 				), 2 => array(
-					0 => 4, 1 => 0
+					0 => 4, 1 => 1
 				), 3 => array(
-					0 => 4, 1 => 0
+					0 => 4, 1 => 1
 				), 4 => array(
-					0 => 3, 1 => 0
+					0 => 3, 1 => 1
 				), 5 => array(
 					0 => 5, 1 => -1
 				)
 			), 5 => array(
 				0 => array(
-					0 => 6, 1 => 0
+					0 => 6, 1 => 1
 				), 1 => array(
-					0 => 6, 1 => 0
+					0 => 6, 1 => 1
 				), 2 => array(
-					0 => 6, 1 => 0
+					0 => 6, 1 => 1
 				), 3 => array(
-					0 => 6, 1 => 0
+					0 => 6, 1 => 1
 				), 4 => array(
-					0 => 3, 1 => 0
+					0 => 3, 1 => 1
 				)
 			), 6 => array(
 				0 => array(
-					0 => 3, 1 => 0
+					0 => 3, 1 => 1
 				)
 			), 7 => array(
 				0 => array(
@@ -186,13 +186,13 @@ class Texy
 				)
 			), 8 => array(
 				0 => array(
-					0 => 15, 1 => 0
+					0 => 15, 1 => 1
 				), 1 => array(
-					0 => 19, 1 => 0
+					0 => 19, 1 => 1
 				), 2 => array(
-					0 => 10, 1 => 0
+					0 => 10, 1 => 1
 				), 3 => array(
-					0 => 11, 1 => 0
+					0 => 11, 1 => 1
 				), 4 => array(
 					0 => 0, 1 => -1
 				)
@@ -210,11 +210,11 @@ class Texy
 				)
 			), 12 => array(
 				0 => array(
-					0 => 13, 1 => 0
+					0 => 13, 1 => 1
 				)
 			), 13 => array(
 				0 => array(
-					0 => 14, 1 => 0
+					0 => 14, 1 => 1
 				), 1 => array(
 					0 => 12, 1 => -1
 				)
@@ -228,11 +228,11 @@ class Texy
 				)
 			), 16 => array(
 				0 => array(
-					0 => 17, 1 => 0
+					0 => 17, 1 => 1
 				)
 			), 17 => array(
 				0 => array(
-					0 => 18, 1 => 0
+					0 => 18, 1 => 1
 				), 1 => array(
 					0 => 16, 1 => -1
 				)
@@ -246,11 +246,11 @@ class Texy
 				)
 			), 20 => array(
 				0 => array(
-					0 => 21, 1 => 0
+					0 => 21, 1 => 1
 				)
 			), 21 => array(
 				0 => array(
-					0 => 22, 1 => 0
+					0 => 22, 1 => 1
 				), 1 => array(
 					0 => 20, 1 => -1
 				)
@@ -279,29 +279,33 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state LineBODY.
+	 * Finds a delimiter for state LINE_BODY.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter0(&$text, $textLength, $textPos)
+	public function findDelimiter0($text, $textLength, $textPos)
 	{
+		static $delimiters = array(
+			0 => '/---', 1 => '\\---', 2 => "\n"
+		);
+
 		$buffer = false;
 		while ($textPos < $textLength) {
 			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if (0 === strpos($part, '/---')) {
-				return array(0, '/---', $buffer);
-			}
-			if (0 === strpos($part, '\\---')) {
-				return array(1, '\\---', $buffer);
-			}
-			if ("\n" === $letter) {
-				return array(2, "\n", $buffer);
-			}
+			$letter = $text[$textPos];
 
+			if (0 === strpos($part, $delimiters[0])) {
+				return array(0, $delimiters[0], $buffer);
+			}
+			if (0 === strpos($part, $delimiters[1])) {
+				return array(1, $delimiters[1], $buffer);
+			}
+			if ($delimiters[2] === $letter) {
+				return array(2, $delimiters[2], $buffer);
+			}
 			$buffer .= $letter;
 			$textPos++;
 		}
@@ -309,26 +313,30 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state NewLineTypeSelector.
+	 * Finds a delimiter for state LINE.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter1(&$text, $textLength, $textPos)
+	public function findDelimiter1($text, $textLength, $textPos)
 	{
+		static $delimiters = array(
+			0 => "\n"
+		);
+
 		$buffer = false;
 		while ($textPos < $textLength) {
 			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if ("\n" === $letter) {
-				return array(0, "\n", $buffer);
+			$letter = $text[$textPos];
+
+			if ($delimiters[0] === $letter) {
+				return array(0, $delimiters[0], $buffer);
 			}
 			if (preg_match('~^\\S+~', $part, $matches)) {
 				return array(1, $matches[0], $buffer);
 			}
-
 			$buffer .= $letter;
 			$textPos++;
 		}
@@ -336,35 +344,37 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state SingleNewLine.
+	 * Finds a delimiter for state LINE_SINGLE.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter2(&$text, $textLength, $textPos)
+	public function findDelimiter2($text, $textLength, $textPos)
 	{
+		static $delimiters = array(
+			0 => '##', 1 => '**', 2 => '==', 3 => '--'
+		);
+
 		$buffer = false;
 		while ($textPos < $textLength) {
 			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if (0 === strpos($part, '##')) {
-				return array(0, '##', $buffer);
-			}
-			if (0 === strpos($part, '**')) {
-				return array(1, '**', $buffer);
-			}
-			if (0 === strpos($part, '==')) {
-				return array(2, '==', $buffer);
-			}
-			if (0 === strpos($part, '--')) {
-				return array(3, '--', $buffer);
-			}
-			if (true) {
-				return array(4, $letter, $buffer);
-			}
+			$letter = $text[$textPos];
 
+			if (0 === strpos($part, $delimiters[0])) {
+				return array(0, $delimiters[0], $buffer);
+			}
+			if (0 === strpos($part, $delimiters[1])) {
+				return array(1, $delimiters[1], $buffer);
+			}
+			if (0 === strpos($part, $delimiters[2])) {
+				return array(2, $delimiters[2], $buffer);
+			}
+			if (0 === strpos($part, $delimiters[3])) {
+				return array(3, $delimiters[3], $buffer);
+			}
+			return array(4, $letter, $buffer);
 			$buffer .= $letter;
 			$textPos++;
 		}
@@ -372,44 +382,46 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state DoubleNewLine.
+	 * Finds a delimiter for state LINE_DOUBLE.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter3(&$text, $textLength, $textPos)
+	public function findDelimiter3($text, $textLength, $textPos)
 	{
+		static $delimiters = array(
+			0 => "\n", 1 => '##', 2 => '==', 3 => '--', 4 => '- -', 5 => '**', 6 => '* *'
+		);
+
 		$buffer = false;
 		while ($textPos < $textLength) {
 			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if ("\n" === $letter) {
-				return array(0, "\n", $buffer);
-			}
-			if (0 === strpos($part, '##')) {
-				return array(1, '##', $buffer);
-			}
-			if (0 === strpos($part, '==')) {
-				return array(2, '==', $buffer);
-			}
-			if (0 === strpos($part, '--')) {
-				return array(3, '--', $buffer);
-			}
-			if (0 === strpos($part, '- -')) {
-				return array(4, '- -', $buffer);
-			}
-			if (0 === strpos($part, '**')) {
-				return array(5, '**', $buffer);
-			}
-			if (0 === strpos($part, '* *')) {
-				return array(6, '* *', $buffer);
-			}
-			if (true) {
-				return array(7, $letter, $buffer);
-			}
+			$letter = $text[$textPos];
 
+			if ($delimiters[0] === $letter) {
+				return array(0, $delimiters[0], $buffer);
+			}
+			if (0 === strpos($part, $delimiters[1])) {
+				return array(1, $delimiters[1], $buffer);
+			}
+			if (0 === strpos($part, $delimiters[2])) {
+				return array(2, $delimiters[2], $buffer);
+			}
+			if (0 === strpos($part, $delimiters[3])) {
+				return array(3, $delimiters[3], $buffer);
+			}
+			if (0 === strpos($part, $delimiters[4])) {
+				return array(4, $delimiters[4], $buffer);
+			}
+			if (0 === strpos($part, $delimiters[5])) {
+				return array(5, $delimiters[5], $buffer);
+			}
+			if (0 === strpos($part, $delimiters[6])) {
+				return array(6, $delimiters[6], $buffer);
+			}
+			return array(7, $letter, $buffer);
 			$buffer .= $letter;
 			$textPos++;
 		}
@@ -417,38 +429,40 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state HeaderIN.
+	 * Finds a delimiter for state HEADER_IN.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter4(&$text, $textLength, $textPos)
+	public function findDelimiter4($text, $textLength, $textPos)
 	{
+		static $delimiters = array(
+			0 => '=', 1 => '#', 2 => '-', 3 => '*', 4 => "\n"
+		);
+
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if ('=' === $letter) {
-				return array(0, '=', $buffer);
-			}
-			if ('#' === $letter) {
-				return array(1, '#', $buffer);
-			}
-			if ('-' === $letter) {
-				return array(2, '-', $buffer);
-			}
-			if ('*' === $letter) {
-				return array(3, '*', $buffer);
-			}
-			if ("\n" === $letter) {
-				return array(4, "\n", $buffer);
-			}
-			if (true) {
-				return array(5, $letter, $buffer);
-			}
 
+			$letter = $text[$textPos];
+
+			if ($delimiters[0] === $letter) {
+				return array(0, $delimiters[0], $buffer);
+			}
+			if ($delimiters[1] === $letter) {
+				return array(1, $delimiters[1], $buffer);
+			}
+			if ($delimiters[2] === $letter) {
+				return array(2, $delimiters[2], $buffer);
+			}
+			if ($delimiters[3] === $letter) {
+				return array(3, $delimiters[3], $buffer);
+			}
+			if ($delimiters[4] === $letter) {
+				return array(4, $delimiters[4], $buffer);
+			}
+			return array(5, $letter, $buffer);
 			$buffer .= $letter;
 			$textPos++;
 		}
@@ -456,35 +470,39 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state HeaderBody.
+	 * Finds a delimiter for state HEADER_BODY.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter5(&$text, $textLength, $textPos)
+	public function findDelimiter5($text, $textLength, $textPos)
 	{
+		static $delimiters = array(
+			0 => '=', 1 => '#', 2 => '-', 3 => '*', 4 => "\n"
+		);
+
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if ('=' === $letter) {
-				return array(0, '=', $buffer);
-			}
-			if ('#' === $letter) {
-				return array(1, '#', $buffer);
-			}
-			if ('-' === $letter) {
-				return array(2, '-', $buffer);
-			}
-			if ('*' === $letter) {
-				return array(3, '*', $buffer);
-			}
-			if ("\n" === $letter) {
-				return array(4, "\n", $buffer);
-			}
 
+			$letter = $text[$textPos];
+
+			if ($delimiters[0] === $letter) {
+				return array(0, $delimiters[0], $buffer);
+			}
+			if ($delimiters[1] === $letter) {
+				return array(1, $delimiters[1], $buffer);
+			}
+			if ($delimiters[2] === $letter) {
+				return array(2, $delimiters[2], $buffer);
+			}
+			if ($delimiters[3] === $letter) {
+				return array(3, $delimiters[3], $buffer);
+			}
+			if ($delimiters[4] === $letter) {
+				return array(4, $delimiters[4], $buffer);
+			}
 			$buffer .= $letter;
 			$textPos++;
 		}
@@ -492,23 +510,27 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state HeaderOUT.
+	 * Finds a delimiter for state HEADER_OUT.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter6(&$text, $textLength, $textPos)
+	public function findDelimiter6($text, $textLength, $textPos)
 	{
+		static $delimiters = array(
+			0 => "\n"
+		);
+
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if ("\n" === $letter) {
-				return array(0, "\n", $buffer);
-			}
 
+			$letter = $text[$textPos];
+
+			if ($delimiters[0] === $letter) {
+				return array(0, $delimiters[0], $buffer);
+			}
 			$buffer .= $letter;
 			$textPos++;
 		}
@@ -516,23 +538,27 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state HorizontalLine.
+	 * Finds a delimiter for state HORIZONTAL_LINE.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter7(&$text, $textLength, $textPos)
+	public function findDelimiter7($text, $textLength, $textPos)
 	{
+		static $delimiters = array(
+			0 => "\n"
+		);
+
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if ("\n" === $letter) {
-				return array(0, "\n", $buffer);
-			}
 
+			$letter = $text[$textPos];
+
+			if ($delimiters[0] === $letter) {
+				return array(0, $delimiters[0], $buffer);
+			}
 			$buffer .= $letter;
 			$textPos++;
 		}
@@ -540,35 +566,37 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state BlockIN.
+	 * Finds a delimiter for state BLOCK_IN.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter8(&$text, $textLength, $textPos)
+	public function findDelimiter8($text, $textLength, $textPos)
 	{
+		static $delimiters = array(
+			0 => 'html', 1 => 'code', 2 => 'div', 3 => 'text'
+		);
+
 		$buffer = false;
 		while ($textPos < $textLength) {
 			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if (0 === strpos($part, 'html')) {
-				return array(0, 'html', $buffer);
-			}
-			if (0 === strpos($part, 'code')) {
-				return array(1, 'code', $buffer);
-			}
-			if (0 === strpos($part, 'div')) {
-				return array(2, 'div', $buffer);
-			}
-			if (0 === strpos($part, 'text')) {
-				return array(3, 'text', $buffer);
-			}
-			if (true) {
-				return array(4, $letter, $buffer);
-			}
+			$letter = $text[$textPos];
 
+			if (0 === strpos($part, $delimiters[0])) {
+				return array(0, $delimiters[0], $buffer);
+			}
+			if (0 === strpos($part, $delimiters[1])) {
+				return array(1, $delimiters[1], $buffer);
+			}
+			if (0 === strpos($part, $delimiters[2])) {
+				return array(2, $delimiters[2], $buffer);
+			}
+			if (0 === strpos($part, $delimiters[3])) {
+				return array(3, $delimiters[3], $buffer);
+			}
+			return array(4, $letter, $buffer);
 			$buffer .= $letter;
 			$textPos++;
 		}
@@ -576,23 +604,22 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state BlockOUT.
+	 * Finds a delimiter for state BLOCK_OUT.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter9(&$text, $textLength, $textPos)
+	public function findDelimiter9($text, $textLength, $textPos)
 	{
+
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if (true) {
-				return array(0, $letter, $buffer);
-			}
 
+			$letter = $text[$textPos];
+
+			return array(0, $letter, $buffer);
 			$buffer .= $letter;
 			$textPos++;
 		}
@@ -600,23 +627,22 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state BlockDUMMY.
+	 * Finds a delimiter for state BLOCK_DUMMY.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter10(&$text, $textLength, $textPos)
+	public function findDelimiter10($text, $textLength, $textPos)
 	{
+
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if (true) {
-				return array(0, $letter, $buffer);
-			}
 
+			$letter = $text[$textPos];
+
+			return array(0, $letter, $buffer);
 			$buffer .= $letter;
 			$textPos++;
 		}
@@ -624,23 +650,27 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state BlockTEXT.
+	 * Finds a delimiter for state BLOCK_TEXT.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter11(&$text, $textLength, $textPos)
+	public function findDelimiter11($text, $textLength, $textPos)
 	{
+		static $delimiters = array(
+			0 => "\n"
+		);
+
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if ("\n" === $letter) {
-				return array(0, "\n", $buffer);
-			}
 
+			$letter = $text[$textPos];
+
+			if ($delimiters[0] === $letter) {
+				return array(0, $delimiters[0], $buffer);
+			}
 			$buffer .= $letter;
 			$textPos++;
 		}
@@ -648,23 +678,27 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state BlockTEXTBody.
+	 * Finds a delimiter for state BLOCK_TEXT_BODY.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter12(&$text, $textLength, $textPos)
+	public function findDelimiter12($text, $textLength, $textPos)
 	{
+		static $delimiters = array(
+			0 => "\n"
+		);
+
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if ("\n" === $letter) {
-				return array(0, "\n", $buffer);
-			}
 
+			$letter = $text[$textPos];
+
+			if ($delimiters[0] === $letter) {
+				return array(0, $delimiters[0], $buffer);
+			}
 			$buffer .= $letter;
 			$textPos++;
 		}
@@ -672,26 +706,28 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state BlockTEXTBodyNL.
+	 * Finds a delimiter for state BLOCK_TEXT_BODY_LINE.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter13(&$text, $textLength, $textPos)
+	public function findDelimiter13($text, $textLength, $textPos)
 	{
+		static $delimiters = array(
+			0 => '\\---'
+		);
+
 		$buffer = false;
 		while ($textPos < $textLength) {
 			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if (0 === strpos($part, '\\---')) {
-				return array(0, '\\---', $buffer);
-			}
-			if (true) {
-				return array(1, $letter, $buffer);
-			}
+			$letter = $text[$textPos];
 
+			if (0 === strpos($part, $delimiters[0])) {
+				return array(0, $delimiters[0], $buffer);
+			}
+			return array(1, $letter, $buffer);
 			$buffer .= $letter;
 			$textPos++;
 		}
@@ -699,23 +735,22 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state BlockTEXTBodyOUT.
+	 * Finds a delimiter for state BLOCK_TEXT_BODY_OUT.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter14(&$text, $textLength, $textPos)
+	public function findDelimiter14($text, $textLength, $textPos)
 	{
+
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if (true) {
-				return array(0, $letter, $buffer);
-			}
 
+			$letter = $text[$textPos];
+
+			return array(0, $letter, $buffer);
 			$buffer .= $letter;
 			$textPos++;
 		}
@@ -723,23 +758,27 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state BlockHTML.
+	 * Finds a delimiter for state BLOCK_HTML.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter15(&$text, $textLength, $textPos)
+	public function findDelimiter15($text, $textLength, $textPos)
 	{
+		static $delimiters = array(
+			0 => "\n"
+		);
+
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if ("\n" === $letter) {
-				return array(0, "\n", $buffer);
-			}
 
+			$letter = $text[$textPos];
+
+			if ($delimiters[0] === $letter) {
+				return array(0, $delimiters[0], $buffer);
+			}
 			$buffer .= $letter;
 			$textPos++;
 		}
@@ -747,23 +786,27 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state BlockHTMLBody.
+	 * Finds a delimiter for state BLOCK_HTML_BODY.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter16(&$text, $textLength, $textPos)
+	public function findDelimiter16($text, $textLength, $textPos)
 	{
+		static $delimiters = array(
+			0 => "\n"
+		);
+
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if ("\n" === $letter) {
-				return array(0, "\n", $buffer);
-			}
 
+			$letter = $text[$textPos];
+
+			if ($delimiters[0] === $letter) {
+				return array(0, $delimiters[0], $buffer);
+			}
 			$buffer .= $letter;
 			$textPos++;
 		}
@@ -771,26 +814,28 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state BlockHTMLBodyNL.
+	 * Finds a delimiter for state BLOCK_HTML_BODY_LINE.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter17(&$text, $textLength, $textPos)
+	public function findDelimiter17($text, $textLength, $textPos)
 	{
+		static $delimiters = array(
+			0 => '\\---'
+		);
+
 		$buffer = false;
 		while ($textPos < $textLength) {
 			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if (0 === strpos($part, '\\---')) {
-				return array(0, '\\---', $buffer);
-			}
-			if (true) {
-				return array(1, $letter, $buffer);
-			}
+			$letter = $text[$textPos];
 
+			if (0 === strpos($part, $delimiters[0])) {
+				return array(0, $delimiters[0], $buffer);
+			}
+			return array(1, $letter, $buffer);
 			$buffer .= $letter;
 			$textPos++;
 		}
@@ -798,23 +843,22 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state BlockHTMLBodyOUT.
+	 * Finds a delimiter for state BLOCK_HTML_BODY_OUT.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter18(&$text, $textLength, $textPos)
+	public function findDelimiter18($text, $textLength, $textPos)
 	{
+
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if (true) {
-				return array(0, $letter, $buffer);
-			}
 
+			$letter = $text[$textPos];
+
+			return array(0, $letter, $buffer);
 			$buffer .= $letter;
 			$textPos++;
 		}
@@ -822,23 +866,27 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state BlockCODE.
+	 * Finds a delimiter for state BLOCK_CODE.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter19(&$text, $textLength, $textPos)
+	public function findDelimiter19($text, $textLength, $textPos)
 	{
+		static $delimiters = array(
+			0 => "\n"
+		);
+
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if ("\n" === $letter) {
-				return array(0, "\n", $buffer);
-			}
 
+			$letter = $text[$textPos];
+
+			if ($delimiters[0] === $letter) {
+				return array(0, $delimiters[0], $buffer);
+			}
 			$buffer .= $letter;
 			$textPos++;
 		}
@@ -846,23 +894,27 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state BlockCODEBody.
+	 * Finds a delimiter for state BLOCK_CODE_BODY.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter20(&$text, $textLength, $textPos)
+	public function findDelimiter20($text, $textLength, $textPos)
 	{
+		static $delimiters = array(
+			0 => "\n"
+		);
+
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if ("\n" === $letter) {
-				return array(0, "\n", $buffer);
-			}
 
+			$letter = $text[$textPos];
+
+			if ($delimiters[0] === $letter) {
+				return array(0, $delimiters[0], $buffer);
+			}
 			$buffer .= $letter;
 			$textPos++;
 		}
@@ -870,26 +922,28 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state BlockCODEBodyNL.
+	 * Finds a delimiter for state BLOCK_CODE_BODY_LINE.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter21(&$text, $textLength, $textPos)
+	public function findDelimiter21($text, $textLength, $textPos)
 	{
+		static $delimiters = array(
+			0 => '\\---'
+		);
+
 		$buffer = false;
 		while ($textPos < $textLength) {
 			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if (0 === strpos($part, '\\---')) {
-				return array(0, '\\---', $buffer);
-			}
-			if (true) {
-				return array(1, $letter, $buffer);
-			}
+			$letter = $text[$textPos];
 
+			if (0 === strpos($part, $delimiters[0])) {
+				return array(0, $delimiters[0], $buffer);
+			}
+			return array(1, $letter, $buffer);
 			$buffer .= $letter;
 			$textPos++;
 		}
@@ -897,23 +951,22 @@ class Texy
 	}
 
 	/**
-	 * Finds a delimiter for state BlockCODEBodyOUT.
+	 * Finds a delimiter for state BLOCK_CODE_BODY_OUT.
 	 *
 	 * @param string $text
 	 * @param string $textLength
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter22(&$text, $textLength, $textPos)
+	public function findDelimiter22($text, $textLength, $textPos)
 	{
+
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if (true) {
-				return array(0, $letter, $buffer);
-			}
 
+			$letter = $text[$textPos];
+
+			return array(0, $letter, $buffer);
 			$buffer .= $letter;
 			$textPos++;
 		}

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * FSHL 2.0 RC                            | Universal Syntax HighLighter |
+ * FSHL 2.0 RC 2                          | Universal Syntax HighLighter |
  * -----------------------------------------------------------------------
  *
  * LICENSE
@@ -23,7 +23,7 @@
 
 namespace FSHL\Lexer;
 
-use FSHL;
+use FSHL, FSHL\Generator;
 
 /**
  * CSS lexer.
@@ -42,16 +42,6 @@ class Css implements FSHL\Lexer
 	public function getLanguage()
 	{
 		return 'Css';
-	}
-
-	/**
-	 * Returns lexer version.
-	 *
-	 * @return string
-	 */
-	public function getVersion()
-	{
-		return '2.0';
 	}
 
 	/**
@@ -74,91 +64,156 @@ class Css implements FSHL\Lexer
 		return array(
 			'OUT' => array(
 				array(
-					'_COUNTAB' => array('OUT', 0),
-					'{' => array('DEF', 0),
-					'.' => array('CLASS', 0),
-					'/*' => array('COMMENT', 0),
-					'</' => array(FSHL\Generator::STATE_QUIT, 0),
-					'<?php' => array('TO_PHP', 0),
-					'<?=' => array('TO_PHP', 0),
-					'<?' => array('TO_PHP', 0)
+					'FUNC' => array('FUNC', Generator::NEXT),
+					'ALNUM' => array('TAG', Generator::NEXT),
+					'*' => array('TAG', Generator::NEXT),
+					'#' => array('ID', Generator::NEXT),
+					'.' => array('CLASS', Generator::NEXT),
+					'{' => array('DEF', Generator::NEXT),
+					'/*' => array('COMMENT', Generator::NEXT),
+					'@' => array('AT_RULE', Generator::NEXT),
+					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT),
+					'</' => array(Generator::STATE_QUIT, Generator::NEXT),
+					'<?php' => array('PHP', Generator::NEXT),
+					'<?=' => array('PHP', Generator::NEXT),
+					'<?' => array('PHP', Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				null,
+				null
+			),
+			'AT_RULE' => array(
+				array(
+					'SPACE' => array(Generator::STATE_RETURN, Generator::BACK),
+					'/*' => array('COMMENT', Generator::NEXT)
+				),
+				Generator::STATE_FLAG_RECURSION,
+				'css-at-rule',
+				null
+			),
+			'TAG' => array(
+				array(
+					'{' => array(Generator::STATE_RETURN, Generator::NEXT),
+					',' => array(Generator::STATE_RETURN, Generator::BACK),
+					'SPACE' => array(Generator::STATE_RETURN, Generator::BACK),
+					':' => array('PSEUDO', Generator::NEXT),
+					'/*' => array('COMMENT', Generator::NEXT)
+				),
+				Generator::STATE_FLAG_RECURSION,
+				'css-tag',
+				null
+			),
+			'ID' => array(
+				array(
+					'{' => array(Generator::STATE_RETURN, Generator::BACK),
+					',' => array(Generator::STATE_RETURN, Generator::BACK),
+					'SPACE' => array(Generator::STATE_RETURN, Generator::BACK),
+					':' => array('PSEUDO', Generator::NEXT),
+					'/*' => array('COMMENT', Generator::NEXT)
+				),
+				Generator::STATE_FLAG_RECURSION,
+				'css-id',
 				null
 			),
 			'CLASS' => array(
 				array(
-					'SPACE' => array(FSHL\Generator::STATE_RETURN, 1),
-					'/*' => array('COMMENT', 0),
-					'{' => array(FSHL\Generator::STATE_RETURN, 1)
+					'{' => array(Generator::STATE_RETURN, Generator::BACK),
+					'SPACE' => array(Generator::STATE_RETURN, Generator::BACK),
+					',' => array(Generator::STATE_RETURN, Generator::BACK),
+					':' => array('PSEUDO', Generator::NEXT),
+					'/*' => array('COMMENT', Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_RECURSION,
 				'css-class',
+				null
+			),
+			'PSEUDO' => array(
+				array(
+					'SPACE' => array(Generator::STATE_RETURN, Generator::BACK),
+					',' => array(Generator::STATE_RETURN, Generator::BACK)
+				),
+				Generator::STATE_FLAG_RECURSION,
+				'css-pseudo',
 				null
 			),
 			'DEF' => array(
 				array(
-					':' => array('VALUE', 1),
-					'_COUNTAB' => array('DEF', 0),
-					';' => array('DEF', 1),
-					'}' => array(FSHL\Generator::STATE_RETURN, 0),
-					'/*' => array('COMMENT', 0),
-					'PROPERTY' => array('PROPERTY', 0)
+					'PROPERTY' => array('PROPERTY', Generator::NEXT),
+					':' => array('VALUE', Generator::CURRENT),
+					';' => array(Generator::STATE_SELF, Generator::CURRENT),
+					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT),
+					'}' => array(Generator::STATE_RETURN, Generator::CURRENT),
+					'/*' => array('COMMENT', Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
-				'',
+				Generator::STATE_FLAG_RECURSION,
+				null,
 				null
 			),
 			'PROPERTY' => array(
 				array(
-					'_COUNTAB' => array('PROPERTY', 0),
-					':' => array(FSHL\Generator::STATE_RETURN, 1),
-					'}' => array(FSHL\Generator::STATE_RETURN, 1),
-					'/*' => array('COMMENT', 0)
+					':' => array(Generator::STATE_RETURN, Generator::BACK),
+					'}' => array(Generator::STATE_RETURN, Generator::BACK),
+					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT),
+					'/*' => array('COMMENT', Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_RECURSION,
 				'css-property',
 				null
 			),
 			'VALUE' => array(
 				array(
-					';' => array(FSHL\Generator::STATE_RETURN, 1),
-					'#' => array('COLOR', 0),
-					'}' => array(FSHL\Generator::STATE_RETURN, 1),
-					'_COUNTAB' => array('VALUE', 0),
-					'/*' => array('COMMENT', 0)
+					'#' => array('COLOR', Generator::NEXT),
+					';' => array(Generator::STATE_RETURN, Generator::BACK),
+					'FUNC' => array('FUNC', Generator::NEXT),
+					')' => array(Generator::STATE_RETURN, Generator::BACK),
+					'}' => array(Generator::STATE_RETURN, Generator::BACK),
+					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT),
+					'/*' => array('COMMENT', Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_RECURSION,
 				'css-value',
+				null
+			),
+			'FUNC' => array(
+				array(
+					')' => array(Generator::STATE_RETURN, Generator::CURRENT),
+					'ALL' => array('VALUE', Generator::NEXT)
+				),
+				Generator::STATE_FLAG_RECURSION,
+				'css-func',
 				null
 			),
 			'COLOR' => array(
 				array(
-					'!HEXNUM' => array(FSHL\Generator::STATE_RETURN, 1)
+					'!HEXNUM' => array(Generator::STATE_RETURN, Generator::BACK)
 				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_RECURSION,
 				'css-color',
 				null
 			),
 			'COMMENT' => array(
 				array(
-					'_COUNTAB' => array('COMMENT', 0),
-					'*/' => array(FSHL\Generator::STATE_RETURN, 0)
+					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT),
+					'*/' => array(Generator::STATE_RETURN, Generator::CURRENT)
 				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_RECURSION,
 				'css-comment',
 				null
 			),
-			'TO_PHP' => array(
+			'PHP' => array(
 				null,
-				FSHL\Generator::STATE_FLAG_NEWLEXER,
+				Generator::STATE_FLAG_NEWLEXER,
 				'xlang',
 				'Php'
 			),
-			FSHL\Generator::STATE_QUIT => array(
+			Generator::STATE_QUIT => array(
 				null,
-				FSHL\Generator::STATE_FLAG_NEWLEXER,
+				Generator::STATE_FLAG_NEWLEXER,
 				'html-tag',
 				null
 			)
@@ -173,7 +228,8 @@ class Css implements FSHL\Lexer
 	public function getDelimiters()
 	{
 		return array(
-			'PROPERTY' => 'preg_match(\'~^[-a-z]+~i\', $part, $matches)'
+			'FUNC' => 'preg_match(\'~[a-z]+\\s*\\(~iA\', $text, $matches, 0, $textPos)',
+			'PROPERTY' => 'preg_match(\'~[-a-z]+~iA\', $text, $matches, 0, $textPos)'
 		);
 	}
 

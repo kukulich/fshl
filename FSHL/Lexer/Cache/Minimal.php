@@ -1,7 +1,7 @@
 <?php
 
 /**
- * FSHL 2.0 RC                            | Universal Syntax HighLighter |
+ * FSHL 2.0 RC 2                          | Universal Syntax HighLighter |
  * -----------------------------------------------------------------------
  *
  * LICENSE
@@ -37,11 +37,11 @@ namespace FSHL\Lexer\Cache;
 class Minimal
 {
 	/**
-	 * Generator version/lexer version.
+	 * Language name.
 	 *
-	 * @var string
+	 * @var array
 	 */
-	public $version;
+	public $language;
 
 	/**
 	 * Transitions table.
@@ -104,11 +104,13 @@ class Minimal
 	 */
 	public function __construct()
 	{
-		$this->version = '2.0/2.0';
+		$this->language = 'Minimal';
 		$this->trans = array(
 			0 => array(
 				0 => array(
-					0 => 0, 1 => 0
+					0 => 0, 1 => 1
+				), 1 => array(
+					0 => 0, 1 => 1
 				)
 			)
 		);
@@ -138,16 +140,23 @@ class Minimal
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter0(&$text, $textLength, $textPos)
+	public function findDelimiter0($text, $textLength, $textPos)
 	{
+		static $delimiters = array(
+			0 => "\n", 1 => "\t"
+		);
+
 		$buffer = false;
 		while ($textPos < $textLength) {
-			$part = substr($text, $textPos, 10);
-			$letter = $part[0];
-			if ("\t" === $letter || "\n" === $letter) {
-				return array(0, $letter, $buffer);
-			}
 
+			$letter = $text[$textPos];
+
+			if ($delimiters[0] === $letter) {
+				return array(0, $delimiters[0], $buffer);
+			}
+			if ($delimiters[1] === $letter) {
+				return array(1, $delimiters[1], $buffer);
+			}
 			$buffer .= $letter;
 			$textPos++;
 		}

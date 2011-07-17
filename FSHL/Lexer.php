@@ -1,7 +1,7 @@
 <?php
 
 /**
- * FSHL 2.0 RC                            | Universal Syntax HighLighter |
+ * FSHL 2.0 RC 2                          | Universal Syntax HighLighter |
  * -----------------------------------------------------------------------
  *
  * LICENSE
@@ -39,13 +39,6 @@ interface Lexer
 	 * @return string
 	 */
 	public function getLanguage();
-
-	/**
-	 * Returns lexer version.
-	 *
-	 * @return string
-	 */
-	public function getVersion();
 
 	/**
 	 * Returns initial state.

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * FSHL 2.0 RC                            | Universal Syntax HighLighter |
+ * FSHL 2.0 RC 2                          | Universal Syntax HighLighter |
  * -----------------------------------------------------------------------
  *
  * LICENSE
@@ -23,7 +23,7 @@
 
 namespace FSHL\Lexer;
 
-use FSHL;
+use FSHL, FSHL\Generator;
 
 /**
  * Texy lexer.
@@ -45,23 +45,13 @@ class Texy implements FSHL\Lexer
 	}
 
 	/**
-	 * Returns lexer version.
-	 *
-	 * @return string
-	 */
-	public function getVersion()
-	{
-		return '2.0';
-	}
-
-	/**
 	 * Returns initial state.
 	 *
 	 * @return string
 	 */
 	public function getInitialState()
 	{
-		return 'SingleNewLine';
+		return 'LINE_SINGLE';
 	}
 
 	/**
@@ -72,220 +62,217 @@ class Texy implements FSHL\Lexer
 	public function getStates()
 	{
 		return array(
-			'LineBODY' => array(
+			'LINE_BODY' => array(
 				array(
-					'/---' => array('BlockIN', 0),
-					'\---' => array('BlockOUT', 0),
-					"\n" => array('NewLineTypeSelector', 0)
+					'/---' => array('BLOCK_IN', Generator::NEXT),
+					'\---' => array('BLOCK_OUT', Generator::NEXT),
+					'LINE' => array('LINE', Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				null,
 				null
 			),
-			'NewLineTypeSelector' => array(
+			'LINE' => array(
 				array(
-					"\n" => array('DoubleNewLine', 0),
-					'!SPACE' => array('SingleNewLine', -1)
+					'LINE' => array('LINE_DOUBLE', Generator::NEXT),
+					'!SPACE' => array('LINE_SINGLE', Generator::BACK)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				null,
 				null
 			),
-			'SingleNewLine' => array(
+			'LINE_SINGLE' => array(
 				array(
-					'##' => array('HeaderIN', 0),
-					'**' => array('HeaderIN', 0),
-					'==' => array('HeaderIN', 0),
-					'--' => array('HeaderIN', 0),
-					'_ALL' => array('LineBODY', -1)
+					'##' => array('HEADER_IN', Generator::NEXT),
+					'**' => array('HEADER_IN', Generator::NEXT),
+					'==' => array('HEADER_IN', Generator::NEXT),
+					'--' => array('HEADER_IN', Generator::NEXT),
+					'ALL' => array('LINE_BODY', Generator::BACK)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				null,
 				null
 			),
-			'DoubleNewLine' => array(
+			'LINE_DOUBLE' => array(
 				array(
-					"\n" => array('DoubleNewLine', 0),
-					'##' => array('HeaderIN', 0),
-					'==' => array('HeaderIN', 0),
-					'--' => array('HorizontalLine', 0),
-					'- -' => array('HorizontalLine', 0),
-					'**' => array('HorizontalLine', 0),
-					'* *' => array('HorizontalLine', 0),
-					'_ALL' => array('LineBODY', -1)
+					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
+					'##' => array('HEADER_IN', Generator::NEXT),
+					'==' => array('HEADER_IN', Generator::NEXT),
+					'--' => array('HORIZONTAL_LINE', Generator::NEXT),
+					'- -' => array('HORIZONTAL_LINE', Generator::NEXT),
+					'**' => array('HORIZONTAL_LINE', Generator::NEXT),
+					'* *' => array('HORIZONTAL_LINE', Generator::NEXT),
+					'ALL' => array('LINE_BODY', Generator::BACK)
 				),
 				'texy-err',
 				null,
 				null
 			),
-			'HeaderIN' => array(
+			'HEADER_IN' => array(
 				array(
-					'=' => array('HeaderIN', 0),
-					'#' => array('HeaderIN', 0),
-					'-' => array('HeaderIN', 0),
-					'*' => array('HeaderIN', 0),
-					"\n" => array('DoubleNewLine', 0),
-					'_ALL' => array('HeaderBody', -1)
+					'=' => array('HEADER_IN', Generator::NEXT),
+					'#' => array('HEADER_IN', Generator::NEXT),
+					'-' => array('HEADER_IN', Generator::NEXT),
+					'*' => array('HEADER_IN', Generator::NEXT),
+					'LINE' => array('LINE_DOUBLE', Generator::NEXT),
+					'ALL' => array('HEADER_BODY', Generator::BACK)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				'texy-hlead',
 				null
 			),
-			'HeaderBody' => array(
+			'HEADER_BODY' => array(
 				array(
-					'=' => array('HeaderOUT', 0),
-					'#' => array('HeaderOUT', 0),
-					'-' => array('HeaderOUT', 0),
-					'*' => array('HeaderOUT', 0),
-					"\n" => array('DoubleNewLine', 0)
+					'=' => array('HEADER_OUT', Generator::NEXT),
+					'#' => array('HEADER_OUT', Generator::NEXT),
+					'-' => array('HEADER_OUT', Generator::NEXT),
+					'*' => array('HEADER_OUT', Generator::NEXT),
+					'LINE' => array('LINE_DOUBLE', Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				'texy-hbody',
 				null
 			),
-			'HeaderOUT' => array(
+			'HEADER_OUT' => array(
 				array(
-					"\n" => array('DoubleNewLine', 0)
+					'LINE' => array('LINE_DOUBLE', Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				'texy-hlead',
 				null
 			),
-			'HorizontalLine' => array(
+			'HORIZONTAL_LINE' => array(
 				array(
-					"\n" => array('LineBODY', -1)
+					'LINE' => array('LINE_BODY', Generator::BACK)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				'texy-hr',
 				null
 			),
-			'BlockIN' => array(
+			'BLOCK_IN' => array(
 				array(
-					'html' => array('BlockHTML', 0),
-					'code' => array('BlockCODE', 0),
-					'div' => array('BlockDUMMY', 0),
-					'text' => array('BlockTEXT', 0),
-					'_ALL' => array('LineBODY', -1)
+					'html' => array('BLOCK_HTML', Generator::NEXT),
+					'code' => array('BLOCK_CODE', Generator::NEXT),
+					'div' => array('BLOCK_DUMMY', Generator::NEXT),
+					'text' => array('BLOCK_TEXT', Generator::NEXT),
+					'ALL' => array('LINE_BODY', Generator::BACK)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				'texy-hr',
 				null
 			),
-			'BlockOUT' => array(
+			'BLOCK_OUT' => array(
 				array(
-					'_ALL' => array('LineBODY', -1)
+					'ALL' => array('LINE_BODY', Generator::BACK)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				'texy-hr',
 				null
 			),
-			'BlockDUMMY' => array(
+			'BLOCK_DUMMY' => array(
 				array(
-					'_ALL' => array('LineBODY', -1)
+					'ALL' => array('LINE_BODY', Generator::BACK)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				'texy-hr',
 				null
 			),
-			// Text blocks
-			'BlockTEXT' => array(
+			'BLOCK_TEXT' => array(
 				array(
-					"\n" => array('BlockTEXTBody', -1)
+					'LINE' => array('BLOCK_TEXT_BODY', Generator::BACK)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				'texy-hr',
 				null
 			),
-			'BlockTEXTBody' => array(
+			'BLOCK_TEXT_BODY' => array(
 				array(
-					"\n" => array('BlockTEXTBodyNL', 0)
+					'LINE' => array('BLOCK_TEXT_BODY_LINE', Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				'texy-text',
 				null
 			),
-			'BlockTEXTBodyNL' => array(
+			'BLOCK_TEXT_BODY_LINE' => array(
 				array(
-					'\---' => array('BlockTEXTBodyOUT', 0),
-					'_ALL' => array('BlockTEXTBody', -1)
+					'\---' => array('BLOCK_TEXT_BODY_OUT', Generator::NEXT),
+					'ALL' => array('BLOCK_TEXT_BODY', Generator::BACK)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				'texy-text',
 				null
 			),
-			'BlockTEXTBodyOUT' => array(
+			'BLOCK_TEXT_BODY_OUT' => array(
 				array(
-					'_ALL' => array('LineBODY', -1)
+					'ALL' => array('LINE_BODY', Generator::BACK)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				'texy-hr',
 				null
 			),
-			// HTML blocks
-			'BlockHTML' => array(
+			'BLOCK_HTML' => array(
 				array(
-					"\n" => array('BlockHTMLBody', -1)
+					'LINE' => array('BLOCK_HTML_BODY', Generator::BACK)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				'texy-hr',
 				null
 			),
-			'BlockHTMLBody' => array(
+			'BLOCK_HTML_BODY' => array(
 				array(
-					"\n" => array('BlockHTMLBodyNL', 0)
+					'LINE' => array('BLOCK_HTML_BODY_LINE', Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				'texy-html',
 				null
 			),
-			'BlockHTMLBodyNL' => array(
+			'BLOCK_HTML_BODY_LINE' => array(
 				array(
-					'\---' => array('BlockHTMLBodyOUT', 0),
-					'_ALL' => array('BlockHTMLBody', -1)
+					'\---' => array('BLOCK_HTML_BODY_OUT', Generator::NEXT),
+					'ALL' => array('BLOCK_HTML_BODY', Generator::BACK)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				'texy-html',
 				null
 			),
-			'BlockHTMLBodyOUT' => array(
+			'BLOCK_HTML_BODY_OUT' => array(
 				array(
-					'_ALL' => array('LineBODY', -1)
+					'ALL' => array('LINE_BODY', Generator::BACK)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				'texy-hr',
 				null
 			),
-			// Code blocks
-			'BlockCODE' => array(
+			'BLOCK_CODE' => array(
 				array(
-					"\n" => array('BlockCODEBody', -1)
+					'LINE' => array('BLOCK_CODE_BODY', Generator::BACK)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				'texy-hr',
 				null
 			),
-			'BlockCODEBody' => array(
+			'BLOCK_CODE_BODY' => array(
 				array(
-					"\n" => array('BlockCODEBodyNL', 0)
+					'LINE' => array('BLOCK_CODE_BODY_LINE', Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				'texy-code',
 				null
 			),
-			'BlockCODEBodyNL' => array(
+			'BLOCK_CODE_BODY_LINE' => array(
 				array(
-					'\---' => array('BlockCODEBodyOUT', 0),
-					'_ALL' => array('BlockCODEBody', -1)
+					'\---' => array('BLOCK_CODE_BODY_OUT', Generator::NEXT),
+					'ALL' => array('BLOCK_CODE_BODY', Generator::BACK)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				'texy-code',
 				null
 			),
-			'BlockCODEBodyOUT' => array(
+			'BLOCK_CODE_BODY_OUT' => array(
 				array(
-					'_ALL' => array('LineBODY', -1)
+					'ALL' => array('LINE_BODY', Generator::BACK)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				'texy-hr',
 				null
 			)

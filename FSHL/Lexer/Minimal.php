@@ -1,7 +1,7 @@
 <?php
 
 /**
- * FSHL 2.0 RC                            | Universal Syntax HighLighter |
+ * FSHL 2.0 RC 2                          | Universal Syntax HighLighter |
  * -----------------------------------------------------------------------
  *
  * LICENSE
@@ -23,7 +23,7 @@
 
 namespace FSHL\Lexer;
 
-use FSHL;
+use FSHL, FSHL\Generator;
 
 /**
  * Minimal lexer.
@@ -42,16 +42,6 @@ class Minimal implements FSHL\Lexer
 	public function getLanguage()
 	{
 		return 'Minimal';
-	}
-
-	/**
-	 * Returns lexer version.
-	 *
-	 * @return string
-	 */
-	public function getVersion()
-	{
-		return '2.0';
 	}
 
 	/**
@@ -74,9 +64,10 @@ class Minimal implements FSHL\Lexer
 		return array(
 			'OUT' => array(
 				array(
-					'_COUNTAB' => array('OUT', 0),
+					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				null,
 				null
 			)

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * FSHL 2.0 RC                            | Universal Syntax HighLighter |
+ * FSHL 2.0 RC 2                          | Universal Syntax HighLighter |
  * -----------------------------------------------------------------------
  *
  * LICENSE
@@ -23,7 +23,7 @@
 
 namespace FSHL\Lexer;
 
-use FSHL;
+use FSHL, FSHL\Generator;
 
 /**
  * PHP lexer.
@@ -42,16 +42,6 @@ class Php implements FSHL\Lexer
 	public function getLanguage()
 	{
 		return 'Php';
-	}
-
-	/**
-	 * Returns lexer version.
-	 *
-	 * @return string
-	 */
-	public function getVersion()
-	{
-		return '2.0';
 	}
 
 	/**
@@ -74,157 +64,173 @@ class Php implements FSHL\Lexer
 		return array(
 			'OUT' => array(
 				array(
-					'_COUNTAB' => array('OUT', 0),
-					'$' => array('VAR', 0),
-					'ALPHA' => array('FUNCTION', -1),
-					'\'' => array('QUOTE1', 0),
-					'"' => array('QUOTE', 0),
-					'//' => array('COMMENT1', 0),
-					'NUMBER' => array('NUM', 0),
-					'?>' => array(FSHL\Generator::STATE_QUIT, 0),
-					'/*' => array('COMMENT', 0) ,
-					'<?' => array('DUMMY_PHP', -1),
-					'#' => array('COMMENT1', 0),
-					'NOWDOC' => array('NOWDOC', 0),
-					'HEREDOC' => array('HEREDOC', 0)
+					'$' => array('VAR', Generator::NEXT),
+					'\'' => array('QUOTE_SINGLE', Generator::NEXT),
+					'"' => array('QUOTE_DOUBLE', Generator::NEXT),
+					'ALPHA' => array('FUNCTION', Generator::BACK),
+					'_' => array('FUNCTION', Generator::BACK),
+					'NUM' => array('NUMBER', Generator::NEXT),
+					'DOTNUM' => array('NUMBER', Generator::NEXT),
+					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT),
+					'//' => array('COMMENT_LINE', Generator::NEXT),
+					'/*' => array('COMMENT_BLOCK', Generator::NEXT),
+					'#' => array('COMMENT_LINE', Generator::NEXT),
+					'?>' => array(Generator::STATE_QUIT, Generator::NEXT),
+					'<?' => array('DUMMY_PHP', Generator::BACK),
+					'NOWDOC' => array('NOWDOC', Generator::NEXT),
+					'HEREDOC' => array('HEREDOC', Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				null,
 				null
 			),
 			'DUMMY_PHP' => array(
 				array(
-					'<?php' => array(FSHL\Generator::STATE_RETURN, 0),
-					'<?=' => array(FSHL\Generator::STATE_RETURN, 0),
-					'<?' => array(FSHL\Generator::STATE_RETURN, 0)
+					'<?php' => array(Generator::STATE_RETURN, Generator::CURRENT),
+					'<?=' => array(Generator::STATE_RETURN, Generator::CURRENT),
+					'<?' => array(Generator::STATE_RETURN, Generator::CURRENT)
 				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_RECURSION,
 				'xlang',
 				null
 			),
 			'FUNCTION' => array(
 				array(
-					'!SAFECHAR' => array(FSHL\Generator::STATE_RETURN, 1)
+					'!ALNUM_' => array(Generator::STATE_RETURN, Generator::BACK)
 				),
-				FSHL\Generator::STATE_FLAG_KEYWORD | FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_KEYWORD | Generator::STATE_FLAG_RECURSION,
 				null,
 				null
 			),
-			'COMMENT' => array(
+			'COMMENT_BLOCK' => array(
 				array(
-					'_COUNTAB' => array('COMMENT', 0),
-					'*/' => array(FSHL\Generator::STATE_RETURN, 0)
+					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT),
+					'*/' => array(Generator::STATE_RETURN, Generator::CURRENT)
 				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_RECURSION,
 				'php-comment',
 				null
 			),
-			'COMMENT1' => array(
+			'COMMENT_LINE' => array(
 				array(
-					"\n" => array(FSHL\Generator::STATE_RETURN, 1),
-					'_COUNTAB' => array('COMMENT1', 0),
-					'?>' => array(FSHL\Generator::STATE_RETURN, -1)
+					'LINE' => array(Generator::STATE_RETURN, Generator::BACK),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT),
+					'?>' => array(Generator::STATE_RETURN, Generator::CURRENT)
 				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_RECURSION,
 				'php-comment',
 				null
 			),
 			'VAR' => array(
 				array(
-					'$' => array('VAR', 0),
-					'{' => array('VAR', 0),
-					'}' => array('VAR', 0),
-					'!SAFECHAR' => array(FSHL\Generator::STATE_RETURN, 1)
+					'!ALNUM_' => array(Generator::STATE_RETURN, Generator::BACK),
+					'$' => array(Generator::STATE_SELF, Generator::NEXT),
+					'{' => array(Generator::STATE_SELF, Generator::NEXT),
+					'}' => array(Generator::STATE_SELF, Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_RECURSION,
 				'php-var',
 				null
 			),
 			'VAR_STR' => array(
 				array(
-					'}' => array(FSHL\Generator::STATE_RETURN, 0),
-					'SPACE' => array(FSHL\Generator::STATE_RETURN, 1)
+					'}' => array(Generator::STATE_RETURN, Generator::CURRENT),
+					'SPACE' => array(Generator::STATE_RETURN, Generator::BACK)
 				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_RECURSION,
 				'php-var',
 				null
 			),
-			'QUOTE' => array(
+			'QUOTE_DOUBLE' => array(
 				array(
-					'"' => array(FSHL\Generator::STATE_RETURN, 0),
-					'\\\\' => array('QUOTE', 0),
-					'\\"' => array('QUOTE', 0),
-					'$' => array('VAR', 0),
-					'{$' => array('VAR_STR', 0),
-					'_COUNTAB' => array('QUOTE', 0)
+					'"' => array(Generator::STATE_RETURN, Generator::CURRENT),
+					'\\\\' => array(Generator::STATE_SELF, Generator::NEXT),
+					'\\"' => array(Generator::STATE_SELF, Generator::NEXT),
+					'$' => array('VAR', Generator::NEXT),
+					'{$' => array('VAR_STR', Generator::NEXT),
+					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_RECURSION,
 				'php-quote',
 				null
 			),
 			'HEREDOC' => array(
 				array(
-					'_COUNTAB' => array('HEREDOC', 0),
-					'HEREDOC_END' => array(FSHL\Generator::STATE_RETURN, 0),
-					'\\$' => array('HEREDOC', 0),
-					'$' => array('VAR', 0),
-					'{$' => array('VAR_STR', 0),
+					'LINE' => array('HEREDOC_END', Generator::NEXT),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT),
+					'\\$' => array(Generator::STATE_SELF, Generator::NEXT),
+					'$' => array('VAR', Generator::NEXT),
+					'{$' => array('VAR_STR', Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				'php-quote',
 				null
 			),
-			'QUOTE1' => array(
+			'HEREDOC_END' => array(
 				array(
-					'\'' => array(FSHL\Generator::STATE_RETURN, 0),
-					'\\\\' => array('QUOTE1', 0),
-					'\\\'' => array('QUOTE1', 0),
-					'_COUNTAB' => array('QUOTE1', 0)
+					'HEREDOC_NOWDOC_END' => array('OUT', Generator::CURRENT),
+					'ALL' => array('HEREDOC', Generator::BACK)
 				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_NONE,
+				'php-quote',
+				null
+			),
+			'QUOTE_SINGLE' => array(
+				array(
+					'\'' => array(Generator::STATE_RETURN, Generator::CURRENT),
+					'\\\\' => array(Generator::STATE_SELF, Generator::NEXT),
+					'\\\'' => array(Generator::STATE_SELF, Generator::NEXT),
+					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT)
+				),
+				Generator::STATE_FLAG_RECURSION,
 				'php-quote',
 				null
 			),
 			'NOWDOC' => array(
 				array(
-					'_COUNTAB' => array('NOWDOC', 0),
-					'NOWDOC_END' => array(FSHL\Generator::STATE_RETURN, 0),
+					'LINE' => array('NOWDOC_END', Generator::NEXT),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				'php-quote',
 				null
 			),
-			'NUM' => array(
+			'NOWDOC_END' => array(
 				array(
-					'x' => array('HEX_NUM', 0),
-					'!NUMBER' => array(FSHL\Generator::STATE_RETURN, 1),
-					'NUMBER' => array('DEC_NUM', 0)
+					'HEREDOC_NOWDOC_END' => array('OUT', Generator::CURRENT),
+					'ALL' => array('NOWDOC', Generator::BACK)
 				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_NONE,
+				'php-quote',
+				null
+			),
+			'NUMBER' => array(
+				array(
+					'x' => array('HEXA', Generator::NEXT),
+					'DOTNUM' => array(Generator::STATE_SELF, Generator::NEXT),
+					'ALL' => array(Generator::STATE_RETURN, Generator::BACK)
+				),
+				Generator::STATE_FLAG_RECURSION,
 				'php-num',
 				null
 			),
-			'DEC_NUM' => array(
+			'HEXA' => array(
 				array(
-					'!NUMBER' => array(FSHL\Generator::STATE_RETURN, 1)
+					'!HEXNUM' => array(Generator::STATE_RETURN, Generator::BACK)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				'php-num',
 				null
 			),
-			'HEX_NUM' => array(
-				array(
-					'!HEXNUM' => array(FSHL\Generator::STATE_RETURN, 1)
-				),
-				FSHL\Generator::STATE_FLAG_NONE,
-				'php-num',
-				null
-			),
-			FSHL\Generator::STATE_QUIT => array(
+			Generator::STATE_QUIT => array(
 				null,
-				FSHL\Generator::STATE_FLAG_NEWLEXER,
+				Generator::STATE_FLAG_NEWLEXER,
 				'xlang',
-				''
+				null
 			)
 		);
 	}
@@ -237,10 +243,10 @@ class Php implements FSHL\Lexer
 	public function getDelimiters()
 	{
 		return array(
-			'NOWDOC' => 'preg_match(\'~^<<<\\\'\\\\w+\\\'\\\\n~\', $part, $matches)',
-			'NOWDOC_END' => 'preg_match(\'~^\\\\n\\\\w+;\\\\n~\', $part, $matches)',
-			'HEREDOC' => 'preg_match(\'~^<<<(?:\\\\w+|"\\\\w+")\\\\n~\', $part, $matches)',
-			'HEREDOC_END' => 'preg_match(\'~^\\\\n\\\\w+;\\\\n~\', $part, $matches)'
+			'HEREDOC' => 'preg_match(\'~<<<(?:\\\\w+|"\\\\w+")\\\\n~A\', $text, $matches, 0, $textPos)',
+			'NOWDOC' => 'preg_match(\'~<<<\\\'\\\\w+\\\'\\\\n~A\', $text, $matches, 0, $textPos)',
+			// Starting \n is missing intentionally
+			'HEREDOC_NOWDOC_END' => 'preg_match(\'~\\\\w+;\\\\n~A\', $text, $matches, 0, $textPos)'
 		);
 	}
 
@@ -288,6 +294,7 @@ class Php implements FSHL\Lexer
 				'implements' => 1,
 				'interface' => 1,
 				'instanceof' => 1,
+				'insteadof' => 1,
 				'namespace' => 1,
 				'new' => 1,
 				'or' => 1,
@@ -297,6 +304,7 @@ class Php implements FSHL\Lexer
 				'static' => 1,
 				'switch' => 1,
 				'throw' => 1,
+				'trait' => 1,
 				'try' => 1,
 				'use' => 1,
 				'var' => 1,
@@ -391,7 +399,6 @@ class Php implements FSHL\Lexer
 				'apc_load_constants' => 2,
 				'apc_sma_info' => 2,
 				'apc_store' => 2,
-				'array' => 2,
 				'array_change_key_case' => 2,
 				'array_chunk' => 2,
 				'array_combine' => 2,
@@ -808,7 +815,6 @@ class Php implements FSHL\Lexer
 				'deg2rad' => 2,
 				'delete' => 2,
 				'dgettext' => 2,
-				'die' => 2,
 				'dio_close' => 2,
 				'dio_open' => 2,
 				'dio_read' => 2,
@@ -888,7 +894,6 @@ class Php implements FSHL\Lexer
 				'each' => 2,
 				'easter_date' => 2,
 				'easter_days' => 2,
-				'empty' => 2,
 				'end' => 2,
 				'endwhile' => 2,
 				'ereg' => 2,
@@ -918,7 +923,6 @@ class Php implements FSHL\Lexer
 				'exif_read_data' => 2,
 				'exif_tagname' => 2,
 				'exif_thumbnail' => 2,
-				'exit' => 2,
 				'exp' => 2,
 				'explode' => 2,
 				'expm1' => 2,
@@ -1125,6 +1129,7 @@ class Php implements FSHL\Lexer
 				'get_current_user' => 2,
 				'get_declared_classes' => 2,
 				'get_declared_interfaces' => 2,
+				'get_declared_traits' => 2,
 				'get_defined_constants' => 2,
 				'get_defined_functions' => 2,
 				'get_defined_vars' => 2,
@@ -1150,6 +1155,7 @@ class Php implements FSHL\Lexer
 				'gethostbynamel' => 2,
 				'gethostname' => 2,
 				'getimagesize' => 2,
+				'getimagesizefromstring' => 2,
 				'getlastmod' => 2,
 				'getmxrr' => 2,
 				'getmygid' => 2,
@@ -1223,6 +1229,7 @@ class Php implements FSHL\Lexer
 				'gregoriantojd' => 2,
 				'gzclose' => 2,
 				'gzcompress' => 2,
+				'gzdecode' => 2,
 				'gzdeflate' => 2,
 				'gzencode' => 2,
 				'gzeof' => 2,
@@ -1252,11 +1259,13 @@ class Php implements FSHL\Lexer
 				'hash_update_file' => 2,
 				'hash_update_stream' => 2,
 				'header' => 2,
+				'header_register_callback' => 2,
 				'header_remove' => 2,
 				'headers_list' => 2,
 				'headers_sent' => 2,
 				'hebrev' => 2,
 				'hebrevc' => 2,
+				'hex2bin' => 2,
 				'hexdec' => 2,
 				'highlight_file' => 2,
 				'highlight_string' => 2,
@@ -1307,6 +1316,7 @@ class Php implements FSHL\Lexer
 				'http_request_method_name' => 2,
 				'http_request_method_register' => 2,
 				'http_request_method_unregister' => 2,
+				'http_response_code' => 2,
 				'http_send_content_disposition' => 2,
 				'http_send_content_type' => 2,
 				'http_send_data' => 2,
@@ -1709,7 +1719,6 @@ class Php implements FSHL\Lexer
 				'is_uploaded_file' => 2,
 				'is_writable' => 2,
 				'is_writeable' => 2,
-				'isset' => 2,
 				'iterator_apply' => 2,
 				'iterator_count' => 2,
 				'iterator_to_array' => 2,
@@ -1784,7 +1793,6 @@ class Php implements FSHL\Lexer
 				'libxml_use_internal_errors' => 2,
 				'link' => 2,
 				'linkinfo' => 2,
-				'list' => 2,
 				'locale_accept_from_http' => 2,
 				'locale_canonicalize' => 2,
 				'locale_compose' => 2,
@@ -2800,7 +2808,6 @@ class Php implements FSHL\Lexer
 				'preg_replace_callback' => 2,
 				'preg_split' => 2,
 				'prev' => 2,
-				'print' => 2,
 				'print_r' => 2,
 				'printf' => 2,
 				'proc_close' => 2,
@@ -3246,6 +3253,7 @@ class Php implements FSHL\Lexer
 				'stream_resolve_include_path' => 2,
 				'stream_select' => 2,
 				'stream_set_blocking' => 2,
+				'stream_set_chunk_size' => 2,
 				'stream_set_read_buffer' => 2,
 				'stream_set_timeout' => 2,
 				'stream_set_write_buffer' => 2,
@@ -3410,6 +3418,7 @@ class Php implements FSHL\Lexer
 				'token_get_all' => 2,
 				'token_name' => 2,
 				'touch' => 2,
+				'trait_exists' => 2,
 				'transliterate' => 2,
 				'transliterate_filters_get' => 2,
 				'trigger_error' => 2,
@@ -3425,7 +3434,6 @@ class Php implements FSHL\Lexer
 				'unpack' => 2,
 				'unregister_tick_function' => 2,
 				'unserialize' => 2,
-				'unset' => 2,
 				'urldecode' => 2,
 				'urlencode' => 2,
 				'use_soap_error_handler' => 2,
@@ -3626,9 +3634,11 @@ class Php implements FSHL\Lexer
 				'zip_entry_read' => 2,
 				'zip_open' => 2,
 				'zip_read' => 2,
+				'zlib_decode' => 2,
+				'zlib_encode' => 2,
 				'zlib_get_coding_type' => 2
 			),
-			FSHL\Generator::CASE_INSENSITIVE
+			Generator::CASE_INSENSITIVE
 		);
 	}
 }

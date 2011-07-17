@@ -1,7 +1,7 @@
 <?php
 
 /**
- * FSHL 2.0 RC                            | Universal Syntax HighLighter |
+ * FSHL 2.0 RC 2                          | Universal Syntax HighLighter |
  * -----------------------------------------------------------------------
  *
  * LICENSE
@@ -32,13 +32,6 @@ namespace FSHL;
  */
 class Highlighter
 {
-	/**
-	 * Library version.
-	 *
-	 * @var string
-	 */
-	const VERSION = '2.0';
-
 	/**
 	 * No options.
 	 *
@@ -118,35 +111,30 @@ class Highlighter
 	 */
 	public function __construct(Output $output, $options = self::OPTION_DEFAULT, $tabIndentWidth = 4)
 	{
-		$this->output = new $output();
-
-		$this->options = $options;
-
-		if (($this->options & self::OPTION_TAB_INDENT) && $tabIndentWidth > 0) {
-			// Precalculate a table for tab indentation
-			$t = ' ';
-			$ti = 0;
-			for ($i = $tabIndentWidth; $i; $i--) {
-				$this->tabs[$i % $tabIndentWidth] = array($t, $ti++);
-				$t .= ' ';
-			}
-			$this->tabIndentWidth = $tabIndentWidth;
-		} else {
-			$this->options &= ~self::OPTION_TAB_INDENT;
-		}
+		$this->setOutput($output)
+			->setOptions($options, $tabIndentWidth);
 	}
 
 	/**
 	 * Highlightes a string.
 	 *
-	 * @param \FSHL\Lexer $lexer
 	 * @param string $text
+	 * @param \FSHL\Lexer $lexer
 	 * @return string
+	 * @throws \RuntimeException If no lexer is set.
 	 */
-	public function highlight(\FSHL\Lexer $lexer, $text)
+	public function highlight($text, Lexer $lexer = null)
 	{
 		// Sets the lexer
-		$this->setLexer($lexer);
+		$initialLexer = $this->lexer;
+		if (null !== $lexer) {
+			$this->setLexer($lexer);
+		}
+
+		// No lexer
+		if (null === $this->lexer) {
+			throw new \RuntimeException('No lexer set');
+		}
 
 		// Prepares the text
 		$text = str_replace(array("\r\n", "\r"), "\n", (string) $text);
@@ -154,16 +142,17 @@ class Highlighter
 		$textPos = 0;
 
 		// Parses the text
-		$output = '';
+		$output = array();
+		$fragment = '';
 		$maxLineWidth = 0;
 		$line = 1;
 		$char = 0;
 		if ($this->options & self::OPTION_LINE_COUNTER) {
 			// Right aligment of line counter
 			$maxLineWidth = strlen(substr_count($text, "\n") + 1);
-			$output .= $this->line($line, $maxLineWidth);
+			$fragment .= $this->line($line, $maxLineWidth);
 		}
-		$newLexer = $lexer;
+		$newLexerName = $lexerName = $this->lexer->language;
 		$newState = $state = $this->lexer->initialState;
 		$this->stack = array();
 
@@ -175,7 +164,11 @@ class Highlighter
 				$bufferLength = strlen($buffer);
 				$textPos += $bufferLength;
 				$char += $bufferLength;
-				$output .= $this->template($buffer, $state);
+				$fragment .= $this->template($buffer, $state);
+				if (isset($fragment[8192])) {
+					$output[] = $fragment;
+					$fragment = '';
+				}
 			}
 
 			if (-1 === $transitionId) {
@@ -212,28 +205,29 @@ class Highlighter
 			// Gets new state from the transitions table
 			$newState = $this->lexer->trans[$state][$transitionId][Generator::STATE_DIAGRAM_INDEX_STATE];
 			if ($newState === $this->lexer->returnState) {
-				// Returns to the previous context
-				// Chooses delimiter processing (second value in destination array)
-				//  0 - style from current state will be applied on the received delimiter
-				//  1 - delimiter will be returned to the input stream
-				if ($this->lexer->trans[$state][$transitionId][Generator::STATE_DIAGRAM_INDEX_TYPE] > 0) {
+				// Chooses mode of delimiter processing
+				if (Generator::BACK === $this->lexer->trans[$state][$transitionId][Generator::STATE_DIAGRAM_INDEX_MODE]) {
 					$line = $prevLine;
 					$char = $prevChar;
 					$textPos = $prevTextPos;
 				} else {
-					$output .= $this->template($delimiter, $state);
+					$fragment .= $this->template($delimiter, $state);
 					if ($addLine) {
-						$output .= $this->line($actualLine, $maxLineWidth);
+						$fragment .= $this->line($actualLine, $maxLineWidth);
+					}
+					if (isset($fragment[8192])) {
+						$output[] = $fragment;
+						$fragment = '';
 					}
 				}
 
 				// Get state from the context stack
 				if ($item = $this->popState()) {
-					list($newLexer, $state) = $item;
+					list($newLexerName, $state) = $item;
 					// If previous context was in a different lexer, switch the lexer too
-					if ($newLexer !== $lexer) {
-						$this->setLexer($newLexer);
-						$lexer = $newLexer;
+					if ($newLexerName !== $lexerName) {
+						$this->setLexerByName($newLexerName);
+						$lexerName = $newLexerName;
 					}
 				} else {
 					$state = $this->lexer->initialState;
@@ -243,19 +237,19 @@ class Highlighter
 			}
 
 			// Chooses mode of delimiter processing
-			//  0 - style from the new state will be applied on the received delimiter
-			//  1 - style from the current state will be applied
-			// -1 - delimiter must be returned to the stream (back to the previous position)
-			$type = $this->lexer->trans[$state][$transitionId][Generator::STATE_DIAGRAM_INDEX_TYPE];
-			if ($type < 0) {
-				// Back to the stream
+			$type = $this->lexer->trans[$state][$transitionId][Generator::STATE_DIAGRAM_INDEX_MODE];
+			if (Generator::BACK === $type) {
 				$line = $prevLine;
 				$char = $prevChar;
 				$textPos = $prevTextPos;
 			} else {
-				$output .= $this->template($delimiter, $type > 0 ? $state : $newState);
+				$fragment .= $this->template($delimiter, Generator::NEXT === $type ? $newState : $state);
 				if ($addLine) {
-					$output .= $this->line($actualLine, $maxLineWidth);
+					$fragment .= $this->line($actualLine, $maxLineWidth);
+				}
+				if (isset($fragment[8192])) {
+					$output[] = $fragment;
+					$fragment = '';
 				}
 			}
 
@@ -264,20 +258,20 @@ class Highlighter
 				if ($newState === $this->lexer->quitState) {
 					// Returns to the previous lexer
 					if ($item = $this->popState()) {
-						list($newLexer, $state) = $item;
-						if ($newLexer !== $lexer) {
-							$this->setLexer($newLexer);
-							$lexer = $newLexer;
+						list($newLexerName, $state) = $item;
+						if ($newLexerName !== $lexerName) {
+							$this->setLexerByName($newLexerName);
+							$lexerName = $newLexerName;
 						}
 					} else {
 						$state = $this->lexer->initialState;
 					}
 				} else {
 					// Switches to the embedded language
-					$newLexer = $this->lexer->data[$newState];
-					$this->pushState($lexer, $this->lexer->trans[$newState] ? $newState : $state);
-					$this->setLexer($newLexer);
-					$lexer = $newLexer;
+					$newLexerName = $this->lexer->data[$newState];
+					$this->pushState($lexerName, $this->lexer->trans[$newState] ? $newState : $state);
+					$this->setLexerByName($newLexerName);
+					$lexerName = $newLexerName;
 					$state = $this->lexer->initialState;
 				}
 
@@ -286,7 +280,7 @@ class Highlighter
 
 			// If newState is marked with recursion flag (alias call), push current state to the context stack
 			if (($this->lexer->flags[$newState] & Generator::STATE_FLAG_RECURSION) && $state !== $newState) {
-				$this->pushState($lexer, $state);
+				$this->pushState($lexerName, $state);
 			}
 
 			// Change the state
@@ -294,46 +288,133 @@ class Highlighter
 		}
 
 		// Adds template end
-		$output .= $this->output->template('', null);
+		$fragment .= $this->output->template('', null);
+		$output[] = $fragment;
 
-		return $output;
+		// Restore lexer
+		$this->lexer = $initialLexer;
+
+		return implode('', $output);
 	}
 
 	/**
-	 * Sets the current lexer.
+	 * Sets the output mode.
 	 *
-	 * @param \FSHL\Lexer|string $lexer
+	 * @param \FSHL\Output $output
 	 * @return \FSHL\Highlighter
 	 */
-	private function setLexer($lexer)
+	public function setOutput(Output $output)
 	{
-		$lexerName = is_object($lexer) ? $lexer->getLanguage() : $lexer;
+		$this->output = $output;
 
+		return $this;
+	}
+
+	/**
+	 * Sets options.
+	 *
+	 * @param integer $options
+	 * @param integer $tabIndentWidth
+	 * @return \FSHL\Highlighter
+	 */
+	public function setOptions($options = self::OPTION_DEFAULT, $tabIndentWidth = 4)
+	{
+		$this->options = $options;
+
+		if (($this->options & self::OPTION_TAB_INDENT) && $tabIndentWidth > 0) {
+			// Precalculate a table for tab indentation
+			$t = ' ';
+			$ti = 0;
+			for ($i = $tabIndentWidth; $i; $i--) {
+				$this->tabs[$i % $tabIndentWidth] = array($t, $ti++);
+				$t .= ' ';
+			}
+			$this->tabIndentWidth = $tabIndentWidth;
+		} else {
+			$this->options &= ~self::OPTION_TAB_INDENT;
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Sets the default lexer.
+	 *
+	 * @param \FSHL\Lexer $lexer
+	 * @return \FSHL\Highlighter
+	 */
+	public function setLexer(Lexer $lexer)
+	{
+		// Generates the lexer cache on fly, if the lexer cache doesn't exist
+		if (!$this->findCache($lexer->getLanguage())) {
+			$this->generateCache($lexer);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Sets the current lexer by name.
+	 *
+	 * @param string $lexerName
+	 * @return \FSHL\Highlighter
+	 * @throws \InvalidArgumentException If the class for given lexer doesn't exist.
+	 */
+	private function setLexerByName($lexerName)
+	{
+		// Generates the lexer cache on fly, if the lexer cache doesn't exist
+		if (!$this->findCache($lexerName)) {
+			// Finds the lexer
+			$lexerClass = 'FSHL\\Lexer\\' . $lexerName;
+			if (!class_exists($lexerClass)) {
+				throw new \InvalidArgumentException(sprintf('The class for "%s" lexer doesn\'t exist', $lexerName));
+			}
+			$lexer = new $lexerClass();
+
+			// Generates the lexer cache on fly
+			$this->generateCache($lexer);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Tries to find the lexer cache.
+	 *
+	 * @param string $lexerName
+	 * @return boolean
+	 */
+	private function findCache($lexerName)
+	{
 		// Lexer has been used before
 		if (isset($this->lexers[$lexerName])) {
 			$this->lexer = $this->lexers[$lexerName];
-			return $this;
+			return true;
 		}
 
 		// Loads lexer cache
-		$lexerCacheClass = 'FSHL\\Lexer\Cache\\' . $lexerName;
+		$lexerCacheClass = 'FSHL\\Lexer\\Cache\\' . $lexerName;
 		if (class_exists($lexerCacheClass)) {
 			$this->lexers[$lexerName] = new $lexerCacheClass();
 			$this->lexer = $this->lexers[$lexerName];
-			return $this;
+			return true;
 		}
 
-		// Finds the lexer
-		if (!is_object($lexer)) {
-			$lexerClass = 'FSHL\\Lexer\\' . $lexerName;
-			$lexer = new $lexerClass();
-		}
+		return false;
+	}
 
-		// Generates the lexer cache on fly
+	/**
+	 * Generates the lexer cache on fly.
+	 *
+	 * @param \FSHL\Lexer $lexer
+	 * @return \FSHL\Highlighter
+	 */
+	private function generateCache(Lexer $lexer)
+	{
 		$generator = new Generator($lexer);
 		try {
 			$generator->saveToCache();
-		} catch (RuntimeException $e) {
+		} catch (\RuntimeException $e) {
 			$file = tempnam(sys_get_temp_dir(), 'fshl');
 			file_put_contents($file, $generator->getSource());
 			require_once $file;
@@ -381,13 +462,13 @@ class Highlighter
 	/**
 	 * Pushes a state to the context stack.
 	 *
-	 * @param string $lexer
+	 * @param string $lexerName
 	 * @param string $state
 	 * @return \FSHL\Highlighter
 	 */
-	private function pushState($lexer, $state)
+	private function pushState($lexerName, $state)
 	{
-		array_unshift($this->stack, array($lexer, $state));
+		array_unshift($this->stack, array($lexerName, $state));
 		return $this;
 	}
 

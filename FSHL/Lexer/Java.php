@@ -1,7 +1,7 @@
 <?php
 
 /**
- * FSHL 2.0 RC                            | Universal Syntax HighLighter |
+ * FSHL 2.0 RC 2                          | Universal Syntax HighLighter |
  * -----------------------------------------------------------------------
  *
  * LICENSE
@@ -23,7 +23,7 @@
 
 namespace FSHL\Lexer;
 
-use FSHL;
+use FSHL, FSHL\Generator;
 
 /**
  * Java lexer.
@@ -42,16 +42,6 @@ class Java implements FSHL\Lexer
 	public function getLanguage()
 	{
 		return 'Java';
-	}
-
-	/**
-	 * Returns lexer version.
-	 *
-	 * @return string
-	 */
-	public function getVersion()
-	{
-		return '2.0';
 	}
 
 	/**
@@ -74,95 +64,85 @@ class Java implements FSHL\Lexer
 		return array(
 			'OUT' => array(
 				array(
-					'ALPHA' => array('KEYWORD', -1),
-					'NUMBER' => array('NUM', 0),
-					'"' => array('QUOTE1', 0),
-					'\'' => array('QUOTE2', 0),
-					'/*' => array('COMMENT1', 0),
-					'//' => array('COMMENT2', 0),
-					'_COUNTAB' => array('OUT', 0)
+					'ALPHA' => array('KEYWORD', Generator::BACK),
+					'NUM' => array('NUMBER', Generator::NEXT),
+					'"' => array('QUOTE_DOUBLE', Generator::NEXT),
+					'\'' => array('QUOTE_SINGLE', Generator::NEXT),
+					'/*' => array('COMMENT_BLOCK', Generator::NEXT),
+					'//' => array('COMMENT_LINE', Generator::NEXT),
+					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				null,
 				null
 			),
-			// Keywords
 			'KEYWORD' => array(
 				array(
-					'!SAFECHAR' => array(FSHL\Generator::STATE_RETURN, 1)
+					'!ALNUM_' => array(Generator::STATE_RETURN, Generator::BACK)
 				),
-				FSHL\Generator::STATE_FLAG_KEYWORD | FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_KEYWORD | Generator::STATE_FLAG_RECURSION,
 				null,
 				null
 			),
-			// Numbers
-			'NUM' => array(
+			'NUMBER' => array(
 				array(
-					'x' => array('HEX_NUM', 0),
-					'.' => array('DEC_NUM', 0),
-					'NUMBER' => array('DEC_NUM', 0),
-					'!NUMBER' => array(FSHL\Generator::STATE_RETURN, 1)
+					'x' => array('HEXA', Generator::NEXT),
+					'DOTNUM' => array('NUMBER', Generator::NEXT),
+					'ALL' => array(Generator::STATE_RETURN, Generator::BACK)
 				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_RECURSION,
 				'java-num',
 				null
 			),
-			'DEC_NUM' => array(
+			'HEXA' => array(
 				array(
-					'.' => array('DEC_NUM', 0),
-					'!NUMBER' => array(FSHL\Generator::STATE_RETURN, 1)
+					'!HEXNUM' => array(Generator::STATE_RETURN, Generator::BACK)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
+				Generator::STATE_FLAG_NONE,
 				'java-num',
 				null
 			),
-			'HEX_NUM' => array(
+			'QUOTE_DOUBLE' => array(
 				array(
-					'!HEXNUM' => array(FSHL\Generator::STATE_RETURN, 1)
+					'"' => array(Generator::STATE_RETURN, Generator::CURRENT),
+					'\\\\' => array(Generator::STATE_SELF, Generator::NEXT),
+					'\\"' => array(Generator::STATE_SELF, Generator::NEXT),
+					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_NONE,
-				'java-num',
-				null
-			),
-			// Quotes BF definition
-			'QUOTE1' => array(
-				array(
-					'\\\\' => array('QUOTE1', 0),
-					'\\"' => array('QUOTE1', 0),
-					'_COUNTAB' => array('QUOTE1', 0),
-					'"' => array(FSHL\Generator::STATE_RETURN, 0)
-				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_RECURSION,
 				'java-quote',
 				null
 			),
-			'QUOTE2' => array(
+			'QUOTE_SINGLE' => array(
 				array(
-					'\\\\' => array('QUOTE2', 0),
-					'\\\'' => array('QUOTE2', 0),
-					'_COUNTAB' => array('QUOTE2', 0),
-					'\'' => array(FSHL\Generator::STATE_RETURN, 0)
+					'\'' => array(Generator::STATE_RETURN, Generator::CURRENT),
+					'\\\\' => array(Generator::STATE_SELF, Generator::NEXT),
+					'\\\'' => array(Generator::STATE_SELF, Generator::NEXT),
+					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_RECURSION,
 				'java-quote',
 				null
 			),
-			// Comments
-			'COMMENT1' => array(
+			'COMMENT_BLOCK' => array(
 				array(
-					'*/' => array(FSHL\Generator::STATE_RETURN, 0),
-					'_COUNTAB' => array('COMMENT1', 0)
+					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT),
+					'*/' => array(Generator::STATE_RETURN, Generator::CURRENT)
 				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_RECURSION,
 				'java-comment',
 				null
 			),
-			'COMMENT2' => array(
+			'COMMENT_LINE' => array(
 				array(
-					"\n" => array(FSHL\Generator::STATE_RETURN, 1),
-					"\t" => array('COMMENT2', 0)
+					'LINE' => array(Generator::STATE_RETURN, Generator::BACK),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT)
 				),
-				FSHL\Generator::STATE_FLAG_RECURSION,
+				Generator::STATE_FLAG_RECURSION,
 				'java-comment',
 				null
 			)
@@ -238,7 +218,7 @@ class Java implements FSHL\Lexer
 				'static' => 1,
 				'while' => 1
 			),
-			FSHL\Generator::CASE_SENSITIVE
+			Generator::CASE_SENSITIVE
 		);
 	}
 }

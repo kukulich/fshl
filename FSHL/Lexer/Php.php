@@ -319,6 +319,7 @@ class Php implements FSHL\Lexer
 				'__FUNCTION__' => 1,
 				'__METHOD__' => 1,
 				'__NAMESPACE__' => 1,
+				'__TRAIT__' => 1,
 
 				// Language constructs
 				'die' => 1,

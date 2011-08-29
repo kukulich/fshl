@@ -25,7 +25,7 @@
 	<release>stable</release>
 	<api>stable</api>
 </stability>
-<license uri="https://github.com/kukulich/fshl/blob/master/LICENSE">GPL v2, GPL v3</license>
+<license uri="http://fshl.kukulich.cz/#license">GPL v2+</license>
 <notes>-</notes>
 <contents>
 	<dir name="/">

@@ -15,10 +15,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 namespace FSHL\Lexer\Cache;
@@ -30,7 +26,7 @@ namespace FSHL\Lexer\Cache;
  *
  * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
  * @copyright Copyright (c) 2011 Jaroslav Hanslík
- * @license https://github.com/kukulich/fshl/blob/master/LICENSE
+ * @license http://fshl.kukulich.cz/#license
  * @see \FSHL\Generator
  * @see \FSHL\Lexer\HtmlOnly
  */
@@ -239,7 +235,7 @@ class HtmlOnly
 			0 => NULL, 1 => 'html-entity', 2 => 'html-tag', 3 => 'html-tagin', 4 => 'html-tagin', 5 => 'html-tag', 6 => NULL, 7 => 'html-tagin', 8 => 'html-tag', 9 => NULL, 10 => 'html-quote', 11 => 'html-quote', 12 => 'html-comment'
 		);
 		$this->keywords = array(
-			
+
 		);
 
 	}

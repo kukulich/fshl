@@ -15,10 +15,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 namespace FSHL\Lexer;
@@ -30,7 +26,7 @@ use FSHL, FSHL\Generator;
  *
  * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
  * @copyright Copyright (c) 2011 Jaroslav Hanslík
- * @license https://github.com/kukulich/fshl/blob/master/LICENSE
+ * @license http://fshl.kukulich.cz/#license
  */
 class Minimal implements FSHL\Lexer
 {

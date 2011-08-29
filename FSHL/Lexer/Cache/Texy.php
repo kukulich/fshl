@@ -15,10 +15,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 namespace FSHL\Lexer\Cache;
@@ -30,7 +26,7 @@ namespace FSHL\Lexer\Cache;
  *
  * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
  * @copyright Copyright (c) 2011 Jaroslav Hanslík
- * @license https://github.com/kukulich/fshl/blob/master/LICENSE
+ * @license http://fshl.kukulich.cz/#license
  * @see \FSHL\Generator
  * @see \FSHL\Lexer\Texy
  */
@@ -273,7 +269,7 @@ class Texy
 			0 => NULL, 1 => NULL, 2 => NULL, 3 => NULL, 4 => 'texy-hlead', 5 => 'texy-hbody', 6 => 'texy-hlead', 7 => 'texy-hr', 8 => 'texy-hr', 9 => 'texy-hr', 10 => 'texy-hr', 11 => 'texy-hr', 12 => 'texy-text', 13 => 'texy-text', 14 => 'texy-hr', 15 => 'texy-hr', 16 => 'texy-html', 17 => 'texy-html', 18 => 'texy-hr', 19 => 'texy-hr', 20 => 'texy-code', 21 => 'texy-code', 22 => 'texy-hr'
 		);
 		$this->keywords = array(
-			
+
 		);
 
 	}

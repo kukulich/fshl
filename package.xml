@@ -6,9 +6,9 @@
 		http://pear.php.net/dtd/package-2.0.xsd">
 <name>FSHL</name>
 <channel>pear.kukulich.cz</channel>
-<summary>Universal Syntax HighLighter.</summary>
+<summary>Fast Syntax HighLighter.</summary>
 <description>
-	FSHL is a free, open source universal syntax highlighter written in PHP. Very fast FSHL parser performs syntax highlighting for few languages and produces HTML output.
+	FSHL is a free, open source, universal, fast syntax highlighter written in PHP. A very fast parser performs syntax highlighting for few languages and produces a HTML output.
 </description>
 <lead>
 	<name>Jaroslav Hanslík</name>
@@ -16,16 +16,16 @@
 	<email>kontakt@kukulich.cz</email>
 	<active>yes</active>
 </lead>
-<date>2011-07-17</date>
+<date>2011-08-29</date>
 <version>
-	<release>2.0.0RC2</release>
+	<release>2.0.0</release>
 	<api>2.0.0</api>
 </version>
 <stability>
-	<release>beta</release>
+	<release>stable</release>
 	<api>stable</api>
 </stability>
-<license uri="https://github.com/kukulich/fshl/blob/master/LICENSE">GPL v2, GPL v3</license>
+<license uri="http://fshl.kukulich.cz/#license">GPL v2+</license>
 <notes>-</notes>
 <contents>
 	<dir name="/">

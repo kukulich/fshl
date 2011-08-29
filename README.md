@@ -1,6 +1,6 @@
 # Welcome to FSHL #
 
-FSHL is a free, open source universal syntax highlighter written in PHP. A very fast parser performs syntax highlighting for few languages and produces a HTML output.
+FSHL is a free, open source, universal, fast syntax highlighter written in PHP. A very fast parser performs syntax highlighting for few languages and produces a HTML output.
 
 FSHL library is a simple, easy to use syntax highlighter. Its API provides only one method that is really need to highlight sources and three auxiliary methods to sets lexer and output mode.
 
@@ -11,7 +11,7 @@ FSHL core is very flexible and it is very easy to add new languages. Feel free t
 
 FSHL should be installed using the [PEAR Installer](http://pear.php.net/). This installer is the backbone of PEAR, which provides a distribution system for PHP packages, and is shipped with every release of PHP since version 4.3.0.
 
-The PEAR channel (`pear.kukulich.cz`) that is used to distribute FSHL needs to be registered with the local PEAR environment.
+[The PEAR channel](http://pear.kukulich.cz/) that is used to distribute FSHL needs to be registered with the local PEAR environment.
 
 ```
 	pear channel-discover pear.kukulich.cz
@@ -49,7 +49,7 @@ Or
 	?>
 ```
 
-## Stylesheet example ##
+### Stylesheet ###
 
 A nice default stylesheet is located in the `style.css` file.
 
@@ -61,8 +61,5 @@ FSHL requires PHP 5.3 or later.
 
 ## Authors ##
 
-### Original FSHL ###
-* Juraj 'hvge' Durech
-
-### New FSHL ###
 * [Jaroslav Hanslík](https://github.com/kukulich)
+* Juraj 'hvge' Durech

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * FSHL 2.0 RC 2                               | Fast Syntax HighLighter |
+ * FSHL 2.0.0                                  | Fast Syntax HighLighter |
  * -----------------------------------------------------------------------
  *
  * LICENSE
@@ -15,10 +15,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 namespace FSHL\Lexer\Cache;
@@ -30,7 +26,7 @@ namespace FSHL\Lexer\Cache;
  *
  * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
  * @copyright Copyright (c) 2011 Jaroslav Hanslík
- * @license https://github.com/kukulich/fshl/blob/master/LICENSE
+ * @license http://fshl.kukulich.cz/#license
  * @see \FSHL\Generator
  * @see \FSHL\Lexer\Css
  */
@@ -263,7 +259,7 @@ class Css
 			0 => NULL, 1 => 'css-at-rule', 2 => 'css-tag', 3 => 'css-id', 4 => 'css-class', 5 => 'css-pseudo', 6 => NULL, 7 => 'css-property', 8 => 'css-value', 9 => 'css-func', 10 => 'css-color', 11 => 'css-comment', 12 => 'xlang', 14 => 'html-tag'
 		);
 		$this->keywords = array(
-			
+
 		);
 
 	}

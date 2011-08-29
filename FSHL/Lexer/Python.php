@@ -1,7 +1,7 @@
 <?php
 
 /**
- * FSHL 2.0 RC 2                               | Fast Syntax HighLighter |
+ * FSHL 2.0.0                                  | Fast Syntax HighLighter |
  * -----------------------------------------------------------------------
  *
  * LICENSE

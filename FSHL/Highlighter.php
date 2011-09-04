@@ -417,6 +417,8 @@ class Highlighter
 			unlink($file);
 		}
 
+		$lexerName = $lexer->getLanguage();
+		$lexerCacheClass = 'FSHL\\Lexer\\Cache\\' . $lexerName;
 		$this->lexers[$lexerName] = new $lexerCacheClass();
 		$this->lexer = $this->lexers[$lexerName];
 

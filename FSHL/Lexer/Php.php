@@ -209,6 +209,7 @@ class Php implements FSHL\Lexer
 					'e' => array('EXPONENT', Generator::NEXT),
 					'E' => array('EXPONENT', Generator::NEXT),
 					'x' => array('HEXA', Generator::NEXT),
+					'b' => array(Generator::STATE_SELF, Generator::NEXT),
 					'DOTNUM' => array(Generator::STATE_SELF, Generator::NEXT),
 					'ALL' => array(Generator::STATE_RETURN, Generator::BACK)
 				),

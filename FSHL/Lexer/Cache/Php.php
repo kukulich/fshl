@@ -240,10 +240,16 @@ class Php
 				)
 			), 13 => array(
 				0 => array(
-					0 => 15, 1 => 1
+					0 => 14, 1 => 1
 				), 1 => array(
-					0 => 13, 1 => 1
+					0 => 14, 1 => 1
 				), 2 => array(
+					0 => 15, 1 => 1
+				), 3 => array(
+					0 => 13, 1 => 1
+				), 4 => array(
+					0 => 13, 1 => 1
+				), 5 => array(
 					0 => 16, 1 => -1
 				)
 			), 14 => array(
@@ -895,7 +901,7 @@ class Php
 	public function findDelimiter13($text, $textLength, $textPos)
 	{
 		static $delimiters = array(
-			0 => 'x'
+			0 => 'e', 1 => 'E', 2 => 'x', 3 => 'b'
 		);
 
 		$buffer = false;
@@ -906,10 +912,19 @@ class Php
 			if ($delimiters[0] === $letter) {
 				return array(0, $delimiters[0], $buffer);
 			}
-			if (preg_match('~^\.\\d+~', $part, $matches)) {
-				return array(1, $matches[0], $buffer);
+			if ($delimiters[1] === $letter) {
+				return array(1, $delimiters[1], $buffer);
 			}
-			return array(2, $letter, $buffer);
+			if ($delimiters[2] === $letter) {
+				return array(2, $delimiters[2], $buffer);
+			}
+			if ($delimiters[3] === $letter) {
+				return array(3, $delimiters[3], $buffer);
+			}
+			if (preg_match('~^\.\\d+~', $part, $matches)) {
+				return array(4, $matches[0], $buffer);
+			}
+			return array(5, $letter, $buffer);
 			$buffer .= $letter;
 			$textPos++;
 		}

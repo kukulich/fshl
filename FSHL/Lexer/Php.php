@@ -206,11 +206,23 @@ class Php implements FSHL\Lexer
 			),
 			'NUMBER' => array(
 				array(
+					'e' => array('EXPONENT', Generator::NEXT),
+					'E' => array('EXPONENT', Generator::NEXT),
 					'x' => array('HEXA', Generator::NEXT),
 					'DOTNUM' => array(Generator::STATE_SELF, Generator::NEXT),
 					'ALL' => array(Generator::STATE_RETURN, Generator::BACK)
 				),
 				Generator::STATE_FLAG_RECURSION,
+				'php-num',
+				null
+			),
+			'EXPONENT' => array(
+				array(
+					'+' => array(Generator::STATE_SELF, Generator::CURRENT),
+					'-' => array(Generator::STATE_SELF, Generator::CURRENT),
+					'!NUM' => array(Generator::STATE_RETURN, Generator::BACK)
+				),
+				Generator::STATE_FLAG_NONE,
 				'php-num',
 				null
 			),

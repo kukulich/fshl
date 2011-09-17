@@ -110,24 +110,26 @@ class Javascript
 				), 2 => array(
 					0 => 1, 1 => -1
 				), 3 => array(
-					0 => 1, 1 => 0
+					0 => 2, 1 => 1
 				), 4 => array(
 					0 => 2, 1 => 1
 				), 5 => array(
-					0 => 4, 1 => 1
+					0 => 1, 1 => 0
 				), 6 => array(
-					0 => 5, 1 => 1
+					0 => 4, 1 => 1
 				), 7 => array(
-					0 => 6, 1 => 1
+					0 => 5, 1 => 1
 				), 8 => array(
-					0 => 7, 1 => 1
+					0 => 6, 1 => 1
 				), 9 => array(
-					0 => 8, 1 => 1
+					0 => 7, 1 => 1
 				), 10 => array(
 					0 => 8, 1 => 1
 				), 11 => array(
 					0 => 8, 1 => 1
 				), 12 => array(
+					0 => 8, 1 => 1
+				), 13 => array(
 					0 => 10, 1 => 1
 				)
 			), 1 => array(
@@ -227,7 +229,7 @@ class Javascript
 	public function findDelimiter0($text, $textLength, $textPos)
 	{
 		static $delimiters = array(
-			0 => "\n", 1 => "\t", 3 => '.', 5 => '"', 6 => '\'', 7 => '/*', 8 => '//', 9 => '<?php', 10 => '<?=', 11 => '<?', 12 => '</'
+			0 => "\n", 1 => "\t", 5 => '.', 6 => '"', 7 => '\'', 8 => '/*', 9 => '//', 10 => '<?php', 11 => '<?=', 12 => '<?', 13 => '</'
 		);
 
 		$buffer = false;
@@ -244,10 +246,10 @@ class Javascript
 			if (preg_match('~^[a-z]+~i', $part, $matches)) {
 				return array(2, $matches[0], $buffer);
 			}
-			if ($delimiters[3] === $letter) {
-				return array(3, $delimiters[3], $buffer);
-			}
 			if (preg_match('~^\\d+~', $part, $matches)) {
+				return array(3, $matches[0], $buffer);
+			}
+			if (preg_match('~^\.\\d+~', $part, $matches)) {
 				return array(4, $matches[0], $buffer);
 			}
 			if ($delimiters[5] === $letter) {
@@ -256,7 +258,7 @@ class Javascript
 			if ($delimiters[6] === $letter) {
 				return array(6, $delimiters[6], $buffer);
 			}
-			if (0 === strpos($part, $delimiters[7])) {
+			if ($delimiters[7] === $letter) {
 				return array(7, $delimiters[7], $buffer);
 			}
 			if (0 === strpos($part, $delimiters[8])) {
@@ -273,6 +275,9 @@ class Javascript
 			}
 			if (0 === strpos($part, $delimiters[12])) {
 				return array(12, $delimiters[12], $buffer);
+			}
+			if (0 === strpos($part, $delimiters[13])) {
+				return array(13, $delimiters[13], $buffer);
 			}
 			$buffer .= $letter;
 			$textPos++;

@@ -85,7 +85,7 @@ class Highlighter
 	private $lexer = null;
 
 	/**
-	 * Table for tab indentation
+	 * Table for tab indentation.
 	 *
 	 * @var array
 	 */

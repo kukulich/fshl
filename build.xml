@@ -64,6 +64,7 @@
 			<arg value="--encoding=utf-8" />
 			<arg value="--report=checkstyle" />
 			<arg value="--report-file=${basedir}/build/logs/checkstyle.xml" />
+			<arg value="--ignore=Cache" />
 			<arg path="${source}" />
 		</exec>
 	</target>

@@ -225,7 +225,7 @@ class Generator
 	private $data = array();
 
 	/**
-	 * List of delimiters
+	 * List of delimiters.
 	 *
 	 * @var array
 	 */
@@ -241,7 +241,7 @@ class Generator
 	/**
 	 * Initializes the generator for a given lexer.
 	 *
-	 * @param \FSHL\Lexer $lexerName
+	 * @param \FSHL\Lexer $lexer
 	 */
 	public function __construct(Lexer $lexer)
 	{
@@ -490,8 +490,7 @@ CONDITION;
 			$bufferSource = '$text[$textPos]';
 		}
 
-		// Removes traling whitespaces and unnecessary empty lines
-		return preg_replace('~\n{3,}~', "\n\n", preg_replace('~\t+\n~', "\n", '
+		$source = '
 	/**
 	 * Finds a delimiter for state ' . array_search($state, $this->states) . '.
 	 *
@@ -514,7 +513,11 @@ CONDITION;
 		}
 		return array(-1, -1, $buffer);
 	}
-'));
+';
+		// Removes traling whitespaces and unnecessary empty lines
+		$source = preg_replace('~\n{3,}~', "\n\n", preg_replace('~\t+\n~', "\n", $source));
+
+		return $source;
 	}
 
 	/**

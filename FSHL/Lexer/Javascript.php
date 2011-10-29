@@ -70,6 +70,7 @@ class Javascript implements FSHL\Lexer
 					'\'' => array('QUOTE_SINGLE', Generator::NEXT),
 					'/*' => array('COMMENT_BLOCK', Generator::NEXT),
 					'//' => array('COMMENT_LINE', Generator::NEXT),
+					'REGEXP' => array('REGEXP', Generator::NEXT),
 					'<?php' => array('PHP', Generator::NEXT),
 					'<?=' => array('PHP', Generator::NEXT),
 					'<?' => array('PHP', Generator::NEXT),
@@ -152,6 +153,14 @@ class Javascript implements FSHL\Lexer
 				'js-comment',
 				null
 			),
+			'REGEXP' => array(
+				array(
+					'ALL' => array(Generator::STATE_RETURN, Generator::BACK)
+				),
+				Generator::STATE_FLAG_NONE,
+				'js-quote',
+				null
+			),
 			'PHP' => array(
 				null,
 				Generator::STATE_FLAG_NEWLEXER,
@@ -174,7 +183,9 @@ class Javascript implements FSHL\Lexer
 	 */
 	public function getDelimiters()
 	{
-		return array();
+		return array(
+			'REGEXP' => 'preg_match(\'~/.*?[^\\\\\\\\]/[gim]*~A\', $text, $matches, 0, $textPos)'
+		);
 	}
 
 	/**

@@ -1,0 +1,1540 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8" /><link rel="stylesheet" type="text/css" href="../../../style.css" media="all" /></head><body><pre>
+<span class="line">   1: </span><span class="py-comment">#!/usr/bin/python -t</span>
+<span class="line">   2: </span><span class="py-comment"># This program is free software; you can redistribute it and/or modify</span>
+<span class="line">   3: </span><span class="py-comment"># it under the terms of the GNU General Public License as published by</span>
+<span class="line">   4: </span><span class="py-comment"># the Free Software Foundation; either version 2 of the License, or</span>
+<span class="line">   5: </span><span class="py-comment"># (at your option) any later version.</span>
+<span class="line">   6: </span><span class="py-comment">#</span>
+<span class="line">   7: </span><span class="py-comment"># This program is distributed in the hope that it will be useful,</span>
+<span class="line">   8: </span><span class="py-comment"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="line">   9: </span><span class="py-comment"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="line">  10: </span><span class="py-comment"># GNU Library General Public License for more details.</span>
+<span class="line">  11: </span><span class="py-comment">#</span>
+<span class="line">  12: </span><span class="py-comment"># You should have received a copy of the GNU General Public License</span>
+<span class="line">  13: </span><span class="py-comment"># along with this program; if not, write to the Free Software</span>
+<span class="line">  14: </span><span class="py-comment"># Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.</span>
+<span class="line">  15: </span><span class="py-comment"># Copyright 2006 Duke University </span>
+<span class="line">  16: </span><span class="py-comment"># Written by Seth Vidal</span>
+<span class="line">  17: </span>
+<span class="line">  18: </span><span class="py-docstring">&quot;&quot;&quot;
+</span><span class="line">  19: </span><span class="py-docstring">Classes for subcommands of the yum command line interface.
+</span><span class="line">  20: </span><span class="py-docstring">&quot;&quot;&quot;</span>
+<span class="line">  21: </span>
+<span class="line">  22: </span><span class="py-keyword1">import</span> os
+<span class="line">  23: </span><span class="py-keyword1">import</span> cli
+<span class="line">  24: </span><span class="py-keyword1">from</span> yum <span class="py-keyword1">import</span> logginglevels
+<span class="line">  25: </span><span class="py-keyword1">from</span> yum <span class="py-keyword1">import</span> _
+<span class="line">  26: </span><span class="py-keyword1">from</span> yum <span class="py-keyword1">import</span> misc
+<span class="line">  27: </span><span class="py-keyword1">import</span> yum.Errors
+<span class="line">  28: </span><span class="py-keyword1">import</span> operator
+<span class="line">  29: </span><span class="py-keyword1">import</span> locale
+<span class="line">  30: </span><span class="py-keyword1">import</span> fnmatch
+<span class="line">  31: </span><span class="py-keyword1">import</span> time
+<span class="line">  32: </span><span class="py-keyword1">from</span> yum.i18n <span class="py-keyword1">import</span> utf8_width, utf8_width_fill, to_unicode
+<span class="line">  33: </span>
+<span class="line">  34: </span><span class="py-keyword1">import</span> yum.config
+<span class="line">  35: </span>
+<span class="line">  36: </span><span class="py-keyword1">def</span> _err_mini_usage(base, basecmd):
+<span class="line">  37: </span>    <span class="py-keyword1">if</span> basecmd <span class="py-keyword1">not</span> <span class="py-keyword1">in</span> base.yum_cli_commands:
+<span class="line">  38: </span>        base.usage()
+<span class="line">  39: </span>        <span class="py-keyword1">return</span>
+<span class="line">  40: </span>    cmd = base.yum_cli_commands[basecmd]
+<span class="line">  41: </span>    txt = base.yum_cli_commands[<span class="py-quote">&quot;help&quot;</span>]._makeOutput(cmd)
+<span class="line">  42: </span>    base.logger.critical(_(<span class="py-quote">' Mini usage:\n'</span>))
+<span class="line">  43: </span>    base.logger.critical(txt)
+<span class="line">  44: </span>
+<span class="line">  45: </span><span class="py-keyword1">def</span> checkRootUID(base):
+<span class="line">  46: </span>    <span class="py-docstring">&quot;&quot;&quot;
+</span><span class="line">  47: </span><span class="py-docstring">    Verify that the program is being run by the root user.
+</span><span class="line">  48: </span><span class="py-docstring">
+</span><span class="line">  49: </span><span class="py-docstring">    @param base: a YumBase object.
+</span><span class="line">  50: </span><span class="py-docstring">    &quot;&quot;&quot;</span>
+<span class="line">  51: </span>    <span class="py-keyword1">if</span> base.conf.uid != <span class="py-num">0</span>:
+<span class="line">  52: </span>        base.logger.critical(_(<span class="py-quote">'You need to be root to perform this command.'</span>))
+<span class="line">  53: </span>        <span class="py-keyword1">raise</span> cli.CliError
+<span class="line">  54: </span>
+<span class="line">  55: </span><span class="py-keyword1">def</span> checkGPGKey(base):
+<span class="line">  56: </span>    <span class="py-keyword1">if</span> <span class="py-keyword1">not</span> base.gpgKeyCheck():
+<span class="line">  57: </span>        <span class="py-keyword1">for</span> repo <span class="py-keyword1">in</span> base.repos.listEnabled():
+<span class="line">  58: </span>            <span class="py-keyword1">if</span> (repo.gpgcheck <span class="py-keyword1">or</span> repo.repo_gpgcheck) <span class="py-keyword1">and</span> <span class="py-keyword1">not</span> repo.gpgkey:
+<span class="line">  59: </span>                msg = _(<span class="py-docstring">&quot;&quot;&quot;
+</span><span class="line">  60: </span><span class="py-docstring">You have enabled checking of packages via GPG keys. This is a good thing. 
+</span><span class="line">  61: </span><span class="py-docstring">However, you do not have any GPG public keys installed. You need to download
+</span><span class="line">  62: </span><span class="py-docstring">the keys for packages you wish to install and install them.
+</span><span class="line">  63: </span><span class="py-docstring">You can do that by running the command:
+</span><span class="line">  64: </span><span class="py-docstring">    rpm --import public.gpg.key
+</span><span class="line">  65: </span><span class="py-docstring">
+</span><span class="line">  66: </span><span class="py-docstring">
+</span><span class="line">  67: </span><span class="py-docstring">Alternatively you can specify the url to the key you would like to use
+</span><span class="line">  68: </span><span class="py-docstring">for a repository in the 'gpgkey' option in a repository section and yum 
+</span><span class="line">  69: </span><span class="py-docstring">will install it for you.
+</span><span class="line">  70: </span><span class="py-docstring">
+</span><span class="line">  71: </span><span class="py-docstring">For more information contact your distribution or package provider.
+</span><span class="line">  72: </span><span class="py-docstring">&quot;&quot;&quot;</span>)
+<span class="line">  73: </span>                base.logger.critical(msg)
+<span class="line">  74: </span>                base.logger.critical(_(<span class="py-quote">&quot;Problem repository: %s&quot;</span>), repo)
+<span class="line">  75: </span>                <span class="py-keyword1">raise</span> cli.CliError
+<span class="line">  76: </span>
+<span class="line">  77: </span><span class="py-keyword1">def</span> checkPackageArg(base, basecmd, extcmds):
+<span class="line">  78: </span>    <span class="py-keyword1">if</span> <span class="py-keyword2">len</span>(extcmds) == <span class="py-num">0</span>:
+<span class="line">  79: </span>        base.logger.critical(
+<span class="line">  80: </span>                _(<span class="py-quote">'Error: Need to pass a list of pkgs to %s'</span>) % basecmd)
+<span class="line">  81: </span>        _err_mini_usage(base, basecmd)
+<span class="line">  82: </span>        <span class="py-keyword1">raise</span> cli.CliError
+<span class="line">  83: </span>
+<span class="line">  84: </span><span class="py-keyword1">def</span> checkItemArg(base, basecmd, extcmds):
+<span class="line">  85: </span>    <span class="py-keyword1">if</span> <span class="py-keyword2">len</span>(extcmds) == <span class="py-num">0</span>:
+<span class="line">  86: </span>        base.logger.critical(_(<span class="py-quote">'Error: Need an item to match'</span>))
+<span class="line">  87: </span>        _err_mini_usage(base, basecmd)
+<span class="line">  88: </span>        <span class="py-keyword1">raise</span> cli.CliError
+<span class="line">  89: </span>
+<span class="line">  90: </span><span class="py-keyword1">def</span> checkGroupArg(base, basecmd, extcmds):
+<span class="line">  91: </span>    <span class="py-keyword1">if</span> <span class="py-keyword2">len</span>(extcmds) == <span class="py-num">0</span>:
+<span class="line">  92: </span>        base.logger.critical(_(<span class="py-quote">'Error: Need a group or list of groups'</span>))
+<span class="line">  93: </span>        _err_mini_usage(base, basecmd)
+<span class="line">  94: </span>        <span class="py-keyword1">raise</span> cli.CliError    
+<span class="line">  95: </span>
+<span class="line">  96: </span><span class="py-keyword1">def</span> checkCleanArg(base, basecmd, extcmds):
+<span class="line">  97: </span>    VALID_ARGS = (<span class="py-quote">'headers'</span>, <span class="py-quote">'packages'</span>, <span class="py-quote">'metadata'</span>, <span class="py-quote">'dbcache'</span>, <span class="py-quote">'plugins'</span>,
+<span class="line">  98: </span>                  <span class="py-quote">'expire-cache'</span>, <span class="py-quote">'rpmdb'</span>, <span class="py-quote">'all'</span>)
+<span class="line">  99: </span>
+<span class="line"> 100: </span>    <span class="py-keyword1">if</span> <span class="py-keyword2">len</span>(extcmds) == <span class="py-num">0</span>:
+<span class="line"> 101: </span>        base.logger.critical(_(<span class="py-quote">'Error: clean requires an option: %s'</span>) % (
+<span class="line"> 102: </span>            <span class="py-quote">&quot;, &quot;</span>.join(VALID_ARGS)))
+<span class="line"> 103: </span>
+<span class="line"> 104: </span>    <span class="py-keyword1">for</span> cmd <span class="py-keyword1">in</span> extcmds:
+<span class="line"> 105: </span>        <span class="py-keyword1">if</span> cmd <span class="py-keyword1">not</span> <span class="py-keyword1">in</span> VALID_ARGS:
+<span class="line"> 106: </span>            base.logger.critical(_(<span class="py-quote">'Error: invalid clean argument: %r'</span>) % cmd)
+<span class="line"> 107: </span>            _err_mini_usage(base, basecmd)
+<span class="line"> 108: </span>            <span class="py-keyword1">raise</span> cli.CliError
+<span class="line"> 109: </span>
+<span class="line"> 110: </span><span class="py-keyword1">def</span> checkShellArg(base, basecmd, extcmds):
+<span class="line"> 111: </span>    <span class="py-docstring">&quot;&quot;&quot;
+</span><span class="line"> 112: </span><span class="py-docstring">    Verify that the arguments given to 'yum shell' are valid.
+</span><span class="line"> 113: </span><span class="py-docstring">
+</span><span class="line"> 114: </span><span class="py-docstring">    yum shell can be given either no args, or exactly one argument,
+</span><span class="line"> 115: </span><span class="py-docstring">    which is the name of a file. If these are not met,
+</span><span class="line"> 116: </span><span class="py-docstring">    raise cli.CliError.
+</span><span class="line"> 117: </span><span class="py-docstring">    &quot;&quot;&quot;</span>
+<span class="line"> 118: </span>    <span class="py-keyword1">if</span> <span class="py-keyword2">len</span>(extcmds) == <span class="py-num">0</span>:
+<span class="line"> 119: </span>        base.verbose_logger.debug(_(<span class="py-quote">&quot;No argument to shell&quot;</span>))
+<span class="line"> 120: </span>    <span class="py-keyword1">elif</span> <span class="py-keyword2">len</span>(extcmds) == <span class="py-num">1</span>:
+<span class="line"> 121: </span>        base.verbose_logger.debug(_(<span class="py-quote">&quot;Filename passed to shell: %s&quot;</span>), 
+<span class="line"> 122: </span>            extcmds[<span class="py-num">0</span>])              
+<span class="line"> 123: </span>        <span class="py-keyword1">if</span> <span class="py-keyword1">not</span> os.path.isfile(extcmds[<span class="py-num">0</span>]):
+<span class="line"> 124: </span>            base.logger.critical(
+<span class="line"> 125: </span>                _(<span class="py-quote">&quot;File %s given as argument to shell does not exist.&quot;</span>), 
+<span class="line"> 126: </span>                extcmds[<span class="py-num">0</span>])
+<span class="line"> 127: </span>            base.usage()
+<span class="line"> 128: </span>            <span class="py-keyword1">raise</span> cli.CliError
+<span class="line"> 129: </span>    <span class="py-keyword1">else</span>:
+<span class="line"> 130: </span>        base.logger.critical(
+<span class="line"> 131: </span>                _(<span class="py-quote">&quot;Error: more than one file given as argument to shell.&quot;</span>))
+<span class="line"> 132: </span>        base.usage()
+<span class="line"> 133: </span>        <span class="py-keyword1">raise</span> cli.CliError
+<span class="line"> 134: </span>
+<span class="line"> 135: </span><span class="py-keyword1">def</span> checkEnabledRepo(base, possible_local_files=[]):
+<span class="line"> 136: </span>    <span class="py-docstring">&quot;&quot;&quot;
+</span><span class="line"> 137: </span><span class="py-docstring">    Verify that there is at least one enabled repo.
+</span><span class="line"> 138: </span><span class="py-docstring">
+</span><span class="line"> 139: </span><span class="py-docstring">    @param base: a YumBase object.
+</span><span class="line"> 140: </span><span class="py-docstring">    &quot;&quot;&quot;</span>
+<span class="line"> 141: </span>    <span class="py-keyword1">if</span> base.repos.listEnabled():
+<span class="line"> 142: </span>        <span class="py-keyword1">return</span>
+<span class="line"> 143: </span>
+<span class="line"> 144: </span>    <span class="py-keyword1">for</span> lfile <span class="py-keyword1">in</span> possible_local_files:
+<span class="line"> 145: </span>        <span class="py-keyword1">if</span> lfile.endswith(<span class="py-quote">&quot;.rpm&quot;</span>) <span class="py-keyword1">and</span> os.path.exists(lfile):
+<span class="line"> 146: </span>            <span class="py-keyword1">return</span>
+<span class="line"> 147: </span>
+<span class="line"> 148: </span>    msg = _(<span class="py-quote">'There are no enabled repos.\n'</span>
+<span class="line"> 149: </span>            <span class="py-quote">' Run &quot;yum repolist all&quot; to see the repos you have.\n'</span>
+<span class="line"> 150: </span>            <span class="py-quote">' You can enable repos with yum-config-manager --enable &lt;repo&gt;'</span>)
+<span class="line"> 151: </span>    base.logger.critical(msg)
+<span class="line"> 152: </span>    <span class="py-keyword1">raise</span> cli.CliError
+<span class="line"> 153: </span>
+<span class="line"> 154: </span><span class="py-keyword1">class</span> YumCommand:
+<span class="line"> 155: </span>        
+<span class="line"> 156: </span>    <span class="py-keyword1">def</span> <span class="py-keyword3">__init__</span>(self):
+<span class="line"> 157: </span>        self.done_command_once = <span class="py-keyword3">False</span>
+<span class="line"> 158: </span>        self.hidden = <span class="py-keyword3">False</span>
+<span class="line"> 159: </span>
+<span class="line"> 160: </span>    <span class="py-keyword1">def</span> doneCommand(self, base, msg, *args):
+<span class="line"> 161: </span>        <span class="py-keyword1">if</span> <span class="py-keyword1">not</span> self.done_command_once:
+<span class="line"> 162: </span>            base.verbose_logger.info(msg, *args)
+<span class="line"> 163: </span>        self.done_command_once = <span class="py-keyword3">True</span>
+<span class="line"> 164: </span>
+<span class="line"> 165: </span>    <span class="py-keyword1">def</span> getNames(self):
+<span class="line"> 166: </span>        <span class="py-keyword1">return</span> []
+<span class="line"> 167: </span>
+<span class="line"> 168: </span>    <span class="py-keyword1">def</span> getUsage(self):
+<span class="line"> 169: </span>        <span class="py-docstring">&quot;&quot;&quot;
+</span><span class="line"> 170: </span><span class="py-docstring">        @return: A usage string for the command, including arguments.
+</span><span class="line"> 171: </span><span class="py-docstring">        &quot;&quot;&quot;</span>
+<span class="line"> 172: </span>        <span class="py-keyword1">raise</span> <span class="py-keyword3">NotImplementedError</span>
+<span class="line"> 173: </span>
+<span class="line"> 174: </span>    <span class="py-keyword1">def</span> getSummary(self):
+<span class="line"> 175: </span>        <span class="py-docstring">&quot;&quot;&quot;
+</span><span class="line"> 176: </span><span class="py-docstring">        @return: A one line summary of what the command does.
+</span><span class="line"> 177: </span><span class="py-docstring">        &quot;&quot;&quot;</span>
+<span class="line"> 178: </span>        <span class="py-keyword1">raise</span> <span class="py-keyword3">NotImplementedError</span>
+<span class="line"> 179: </span>    
+<span class="line"> 180: </span>    <span class="py-keyword1">def</span> doCheck(self, base, basecmd, extcmds):
+<span class="line"> 181: </span>        <span class="py-keyword1">pass</span>
+<span class="line"> 182: </span>
+<span class="line"> 183: </span>    <span class="py-keyword1">def</span> doCommand(self, base, basecmd, extcmds):
+<span class="line"> 184: </span>        <span class="py-docstring">&quot;&quot;&quot;
+</span><span class="line"> 185: </span><span class="py-docstring">        @return: (exit_code, [ errors ]) where exit_code is:
+</span><span class="line"> 186: </span><span class="py-docstring">           0 = we're done, exit
+</span><span class="line"> 187: </span><span class="py-docstring">           1 = we've errored, exit with error string
+</span><span class="line"> 188: </span><span class="py-docstring">           2 = we've got work yet to do, onto the next stage
+</span><span class="line"> 189: </span><span class="py-docstring">        &quot;&quot;&quot;</span>
+<span class="line"> 190: </span>        <span class="py-keyword1">return</span> <span class="py-num">0</span>, [_(<span class="py-quote">'Nothing to do'</span>)]
+<span class="line"> 191: </span>    
+<span class="line"> 192: </span>    <span class="py-keyword1">def</span> needTs(self, base, basecmd, extcmds):
+<span class="line"> 193: </span>        <span class="py-keyword1">return</span> <span class="py-keyword3">True</span>
+<span class="line"> 194: </span>        
+<span class="line"> 195: </span><span class="py-keyword1">class</span> InstallCommand(YumCommand):
+<span class="line"> 196: </span>    <span class="py-keyword1">def</span> getNames(self):
+<span class="line"> 197: </span>        <span class="py-keyword1">return</span> [<span class="py-quote">'install'</span>]
+<span class="line"> 198: </span>
+<span class="line"> 199: </span>    <span class="py-keyword1">def</span> getUsage(self):
+<span class="line"> 200: </span>        <span class="py-keyword1">return</span> _(<span class="py-quote">&quot;PACKAGE...&quot;</span>)
+<span class="line"> 201: </span>
+<span class="line"> 202: </span>    <span class="py-keyword1">def</span> getSummary(self):
+<span class="line"> 203: </span>        <span class="py-keyword1">return</span> _(<span class="py-quote">&quot;Install a package or packages on your system&quot;</span>)
+<span class="line"> 204: </span>    
+<span class="line"> 205: </span>    <span class="py-keyword1">def</span> doCheck(self, base, basecmd, extcmds):
+<span class="line"> 206: </span>        checkRootUID(base)
+<span class="line"> 207: </span>        checkGPGKey(base)
+<span class="line"> 208: </span>        checkPackageArg(base, basecmd, extcmds)
+<span class="line"> 209: </span>        checkEnabledRepo(base, extcmds)
+<span class="line"> 210: </span>
+<span class="line"> 211: </span>    <span class="py-keyword1">def</span> doCommand(self, base, basecmd, extcmds):
+<span class="line"> 212: </span>        self.doneCommand(base, _(<span class="py-quote">&quot;Setting up Install Process&quot;</span>))
+<span class="line"> 213: </span>        <span class="py-keyword1">try</span>:
+<span class="line"> 214: </span>            <span class="py-keyword1">return</span> base.installPkgs(extcmds)
+<span class="line"> 215: </span>        <span class="py-keyword1">except</span> yum.Errors.YumBaseError, e:
+<span class="line"> 216: </span>            <span class="py-keyword1">return</span> <span class="py-num">1</span>, [<span class="py-keyword2">str</span>(e)]
+<span class="line"> 217: </span>
+<span class="line"> 218: </span><span class="py-keyword1">class</span> UpdateCommand(YumCommand):
+<span class="line"> 219: </span>    <span class="py-keyword1">def</span> getNames(self):
+<span class="line"> 220: </span>        <span class="py-keyword1">return</span> [<span class="py-quote">'update'</span>, <span class="py-quote">'update-to'</span>]
+<span class="line"> 221: </span>
+<span class="line"> 222: </span>    <span class="py-keyword1">def</span> getUsage(self):
+<span class="line"> 223: </span>        <span class="py-keyword1">return</span> _(<span class="py-quote">&quot;[PACKAGE...]&quot;</span>)
+<span class="line"> 224: </span>
+<span class="line"> 225: </span>    <span class="py-keyword1">def</span> getSummary(self):
+<span class="line"> 226: </span>        <span class="py-keyword1">return</span> _(<span class="py-quote">&quot;Update a package or packages on your system&quot;</span>)
+<span class="line"> 227: </span>
+<span class="line"> 228: </span>    <span class="py-keyword1">def</span> doCheck(self, base, basecmd, extcmds):
+<span class="line"> 229: </span>        checkRootUID(base)
+<span class="line"> 230: </span>        checkGPGKey(base)
+<span class="line"> 231: </span>        checkEnabledRepo(base, extcmds)
+<span class="line"> 232: </span>
+<span class="line"> 233: </span>    <span class="py-keyword1">def</span> doCommand(self, base, basecmd, extcmds):
+<span class="line"> 234: </span>        self.doneCommand(base, _(<span class="py-quote">&quot;Setting up Update Process&quot;</span>))
+<span class="line"> 235: </span>        <span class="py-keyword1">try</span>:
+<span class="line"> 236: </span>            <span class="py-keyword1">return</span> base.updatePkgs(extcmds, update_to=(basecmd == <span class="py-quote">'update-to'</span>))
+<span class="line"> 237: </span>        <span class="py-keyword1">except</span> yum.Errors.YumBaseError, e:
+<span class="line"> 238: </span>            <span class="py-keyword1">return</span> <span class="py-num">1</span>, [<span class="py-keyword2">str</span>(e)]
+<span class="line"> 239: </span>
+<span class="line"> 240: </span><span class="py-keyword1">class</span> DistroSyncCommand(YumCommand):
+<span class="line"> 241: </span>    <span class="py-keyword1">def</span> getNames(self):
+<span class="line"> 242: </span>        <span class="py-keyword1">return</span> [<span class="py-quote">'distribution-synchronization'</span>, <span class="py-quote">'distro-sync'</span>]
+<span class="line"> 243: </span>
+<span class="line"> 244: </span>    <span class="py-keyword1">def</span> getUsage(self):
+<span class="line"> 245: </span>        <span class="py-keyword1">return</span> _(<span class="py-quote">&quot;[PACKAGE...]&quot;</span>)
+<span class="line"> 246: </span>
+<span class="line"> 247: </span>    <span class="py-keyword1">def</span> getSummary(self):
+<span class="line"> 248: </span>        <span class="py-keyword1">return</span> _(<span class="py-quote">&quot;Synchronize installed packages to the latest available versions&quot;</span>)
+<span class="line"> 249: </span>
+<span class="line"> 250: </span>    <span class="py-keyword1">def</span> doCheck(self, base, basecmd, extcmds):
+<span class="line"> 251: </span>        checkRootUID(base)
+<span class="line"> 252: </span>        checkGPGKey(base)
+<span class="line"> 253: </span>        checkEnabledRepo(base, extcmds)
+<span class="line"> 254: </span>
+<span class="line"> 255: </span>    <span class="py-keyword1">def</span> doCommand(self, base, basecmd, extcmds):
+<span class="line"> 256: </span>        self.doneCommand(base, _(<span class="py-quote">&quot;Setting up Distribution Synchronization Process&quot;</span>))
+<span class="line"> 257: </span>        <span class="py-keyword1">try</span>:
+<span class="line"> 258: </span>            base.conf.obsoletes = <span class="py-num">1</span>
+<span class="line"> 259: </span>            <span class="py-keyword1">return</span> base.distroSyncPkgs(extcmds)
+<span class="line"> 260: </span>        <span class="py-keyword1">except</span> yum.Errors.YumBaseError, e:
+<span class="line"> 261: </span>            <span class="py-keyword1">return</span> <span class="py-num">1</span>, [<span class="py-keyword2">str</span>(e)]
+<span class="line"> 262: </span>
+<span class="line"> 263: </span><span class="py-keyword1">def</span> _add_pkg_simple_list_lens(data, pkg, indent=<span class="py-quote">''</span>):
+<span class="line"> 264: </span>    <span class="py-docstring">&quot;&quot;&quot; Get the length of each pkg's column. Add that to data.
+</span><span class="line"> 265: </span><span class="py-docstring">        This &quot;knows&quot; about simpleList and printVer. &quot;&quot;&quot;</span>
+<span class="line"> 266: </span>    na  = <span class="py-keyword2">len</span>(pkg.name)    + <span class="py-num">1</span> + <span class="py-keyword2">len</span>(pkg.arch)    + <span class="py-keyword2">len</span>(indent)
+<span class="line"> 267: </span>    ver = <span class="py-keyword2">len</span>(pkg.version) + <span class="py-num">1</span> + <span class="py-keyword2">len</span>(pkg.release)
+<span class="line"> 268: </span>    rid = <span class="py-keyword2">len</span>(pkg.ui_from_repo)
+<span class="line"> 269: </span>    <span class="py-keyword1">if</span> pkg.epoch != <span class="py-quote">'0'</span>:
+<span class="line"> 270: </span>        ver += <span class="py-keyword2">len</span>(pkg.epoch) + <span class="py-num">1</span>
+<span class="line"> 271: </span>    <span class="py-keyword1">for</span> (d, v) <span class="py-keyword1">in</span> ((<span class="py-quote">'na'</span>, na), (<span class="py-quote">'ver'</span>, ver), (<span class="py-quote">'rid'</span>, rid)):
+<span class="line"> 272: </span>        data[d].setdefault(v, <span class="py-num">0</span>)
+<span class="line"> 273: </span>        data[d][v] += <span class="py-num">1</span>
+<span class="line"> 274: </span>
+<span class="line"> 275: </span><span class="py-keyword1">def</span> _list_cmd_calc_columns(base, ypl):
+<span class="line"> 276: </span>    <span class="py-docstring">&quot;&quot;&quot; Work out the dynamic size of the columns to pass to fmtColumns. &quot;&quot;&quot;</span>
+<span class="line"> 277: </span>    data = {<span class="py-quote">'na'</span> : {}, <span class="py-quote">'ver'</span> : {}, <span class="py-quote">'rid'</span> : {}}
+<span class="line"> 278: </span>    <span class="py-keyword1">for</span> lst <span class="py-keyword1">in</span> (ypl.installed, ypl.available, ypl.extras,
+<span class="line"> 279: </span>                ypl.updates, ypl.recent):
+<span class="line"> 280: </span>        <span class="py-keyword1">for</span> pkg <span class="py-keyword1">in</span> lst:
+<span class="line"> 281: </span>            _add_pkg_simple_list_lens(data, pkg)
+<span class="line"> 282: </span>    <span class="py-keyword1">if</span> <span class="py-keyword2">len</span>(ypl.obsoletes) &gt; <span class="py-num">0</span>:
+<span class="line"> 283: </span>        <span class="py-keyword1">for</span> (npkg, opkg) <span class="py-keyword1">in</span> ypl.obsoletesTuples:
+<span class="line"> 284: </span>            _add_pkg_simple_list_lens(data, npkg)
+<span class="line"> 285: </span>            _add_pkg_simple_list_lens(data, opkg, indent=<span class="py-quote">&quot; &quot;</span> * <span class="py-num">4</span>)
+<span class="line"> 286: </span>
+<span class="line"> 287: </span>    data = [data[<span class="py-quote">'na'</span>], data[<span class="py-quote">'ver'</span>], data[<span class="py-quote">'rid'</span>]]
+<span class="line"> 288: </span>    columns = base.calcColumns(data, remainder_column=<span class="py-num">1</span>)
+<span class="line"> 289: </span>    <span class="py-keyword1">return</span> (-columns[<span class="py-num">0</span>], -columns[<span class="py-num">1</span>], -columns[<span class="py-num">2</span>])
+<span class="line"> 290: </span>
+<span class="line"> 291: </span><span class="py-keyword1">class</span> InfoCommand(YumCommand):
+<span class="line"> 292: </span>    <span class="py-keyword1">def</span> getNames(self):
+<span class="line"> 293: </span>        <span class="py-keyword1">return</span> [<span class="py-quote">'info'</span>]
+<span class="line"> 294: </span>
+<span class="line"> 295: </span>    <span class="py-keyword1">def</span> getUsage(self):
+<span class="line"> 296: </span>        <span class="py-keyword1">return</span> <span class="py-quote">&quot;[PACKAGE|all|available|installed|updates|extras|obsoletes|recent]&quot;</span>
+<span class="line"> 297: </span>
+<span class="line"> 298: </span>    <span class="py-keyword1">def</span> getSummary(self):
+<span class="line"> 299: </span>        <span class="py-keyword1">return</span> _(<span class="py-quote">&quot;Display details about a package or group of packages&quot;</span>)
+<span class="line"> 300: </span>
+<span class="line"> 301: </span>    <span class="py-keyword1">def</span> doCommand(self, base, basecmd, extcmds):
+<span class="line"> 302: </span>        <span class="py-keyword1">try</span>:
+<span class="line"> 303: </span>            highlight = base.term.MODE[<span class="py-quote">'bold'</span>]
+<span class="line"> 304: </span>            ypl = base.returnPkgLists(extcmds, installed_available=highlight)
+<span class="line"> 305: </span>        <span class="py-keyword1">except</span> yum.Errors.YumBaseError, e:
+<span class="line"> 306: </span>            <span class="py-keyword1">return</span> <span class="py-num">1</span>, [<span class="py-keyword2">str</span>(e)]
+<span class="line"> 307: </span>        <span class="py-keyword1">else</span>:
+<span class="line"> 308: </span>            update_pkgs = {}
+<span class="line"> 309: </span>            inst_pkgs   = {}
+<span class="line"> 310: </span>            local_pkgs  = {}
+<span class="line"> 311: </span>
+<span class="line"> 312: </span>            columns = <span class="py-keyword3">None</span>
+<span class="line"> 313: </span>            <span class="py-keyword1">if</span> basecmd == <span class="py-quote">'list'</span>:
+<span class="line"> 314: </span>                <span class="py-comment"># Dynamically size the columns</span>
+<span class="line"> 315: </span>                columns = _list_cmd_calc_columns(base, ypl)
+<span class="line"> 316: </span>
+<span class="line"> 317: </span>            <span class="py-keyword1">if</span> highlight <span class="py-keyword1">and</span> ypl.installed:
+<span class="line"> 318: </span>                <span class="py-comment">#  If we have installed and available lists, then do the</span>
+<span class="line"> 319: </span>                <span class="py-comment"># highlighting for the installed packages so you can see what's</span>
+<span class="line"> 320: </span>                <span class="py-comment"># available to update, an extra, or newer than what we have.</span>
+<span class="line"> 321: </span>                <span class="py-keyword1">for</span> pkg <span class="py-keyword1">in</span> (ypl.hidden_available +
+<span class="line"> 322: </span>                            ypl.reinstall_available +
+<span class="line"> 323: </span>                            ypl.old_available):
+<span class="line"> 324: </span>                    key = (pkg.name, pkg.arch)
+<span class="line"> 325: </span>                    <span class="py-keyword1">if</span> key <span class="py-keyword1">not</span> <span class="py-keyword1">in</span> update_pkgs <span class="py-keyword1">or</span> pkg.verGT(update_pkgs[key]):
+<span class="line"> 326: </span>                        update_pkgs[key] = pkg
+<span class="line"> 327: </span>
+<span class="line"> 328: </span>            <span class="py-keyword1">if</span> highlight <span class="py-keyword1">and</span> ypl.available:
+<span class="line"> 329: </span>                <span class="py-comment">#  If we have installed and available lists, then do the</span>
+<span class="line"> 330: </span>                <span class="py-comment"># highlighting for the available packages so you can see what's</span>
+<span class="line"> 331: </span>                <span class="py-comment"># available to install vs. update vs. old.</span>
+<span class="line"> 332: </span>                <span class="py-keyword1">for</span> pkg <span class="py-keyword1">in</span> ypl.hidden_installed:
+<span class="line"> 333: </span>                    key = (pkg.name, pkg.arch)
+<span class="line"> 334: </span>                    <span class="py-keyword1">if</span> key <span class="py-keyword1">not</span> <span class="py-keyword1">in</span> inst_pkgs <span class="py-keyword1">or</span> pkg.verGT(inst_pkgs[key]):
+<span class="line"> 335: </span>                        inst_pkgs[key] = pkg
+<span class="line"> 336: </span>
+<span class="line"> 337: </span>            <span class="py-keyword1">if</span> highlight <span class="py-keyword1">and</span> ypl.updates:
+<span class="line"> 338: </span>                <span class="py-comment"># Do the local/remote split we get in &quot;yum updates&quot;</span>
+<span class="line"> 339: </span>                <span class="py-keyword1">for</span> po <span class="py-keyword1">in</span> <span class="py-keyword2">sorted</span>(ypl.updates):
+<span class="line"> 340: </span>                    <span class="py-keyword1">if</span> po.repo.<span class="py-keyword2">id</span> != <span class="py-quote">'installed'</span> <span class="py-keyword1">and</span> po.verifyLocalPkg():
+<span class="line"> 341: </span>                        local_pkgs[(po.name, po.arch)] = po
+<span class="line"> 342: </span>
+<span class="line"> 343: </span>            <span class="py-comment"># Output the packages:</span>
+<span class="line"> 344: </span>            clio = base.conf.color_list_installed_older
+<span class="line"> 345: </span>            clin = base.conf.color_list_installed_newer
+<span class="line"> 346: </span>            clir = base.conf.color_list_installed_reinstall
+<span class="line"> 347: </span>            clie = base.conf.color_list_installed_extra
+<span class="line"> 348: </span>            rip = base.listPkgs(ypl.installed, _(<span class="py-quote">'Installed Packages'</span>), basecmd,
+<span class="line"> 349: </span>                                highlight_na=update_pkgs, columns=columns,
+<span class="line"> 350: </span>                                highlight_modes={<span class="py-quote">'&gt;'</span> : clio, <span class="py-quote">'&lt;'</span> : clin,
+<span class="line"> 351: </span>                                                 <span class="py-quote">'='</span> : clir, <span class="py-quote">'not in'</span> : clie})
+<span class="line"> 352: </span>            clau = base.conf.color_list_available_upgrade
+<span class="line"> 353: </span>            clad = base.conf.color_list_available_downgrade
+<span class="line"> 354: </span>            clar = base.conf.color_list_available_reinstall
+<span class="line"> 355: </span>            clai = base.conf.color_list_available_install
+<span class="line"> 356: </span>            rap = base.listPkgs(ypl.available, _(<span class="py-quote">'Available Packages'</span>), basecmd,
+<span class="line"> 357: </span>                                highlight_na=inst_pkgs, columns=columns,
+<span class="line"> 358: </span>                                highlight_modes={<span class="py-quote">'&lt;'</span> : clau, <span class="py-quote">'&gt;'</span> : clad,
+<span class="line"> 359: </span>                                                 <span class="py-quote">'='</span> : clar, <span class="py-quote">'not in'</span> : clai})
+<span class="line"> 360: </span>            rep = base.listPkgs(ypl.extras, _(<span class="py-quote">'Extra Packages'</span>), basecmd,
+<span class="line"> 361: </span>                                columns=columns)
+<span class="line"> 362: </span>            cul = base.conf.color_update_local
+<span class="line"> 363: </span>            cur = base.conf.color_update_remote
+<span class="line"> 364: </span>            rup = base.listPkgs(ypl.updates, _(<span class="py-quote">'Updated Packages'</span>), basecmd,
+<span class="line"> 365: </span>                                highlight_na=local_pkgs, columns=columns,
+<span class="line"> 366: </span>                                highlight_modes={<span class="py-quote">'='</span> : cul, <span class="py-quote">'not in'</span> : cur})
+<span class="line"> 367: </span>
+<span class="line"> 368: </span>            <span class="py-comment"># XXX put this into the ListCommand at some point</span>
+<span class="line"> 369: </span>            <span class="py-keyword1">if</span> <span class="py-keyword2">len</span>(ypl.obsoletes) &gt; <span class="py-num">0</span> <span class="py-keyword1">and</span> basecmd == <span class="py-quote">'list'</span>: 
+<span class="line"> 370: </span>            <span class="py-comment"># if we've looked up obsolete lists and it's a list request</span>
+<span class="line"> 371: </span>                rop = [<span class="py-num">0</span>, <span class="py-quote">''</span>]
+<span class="line"> 372: </span>                <span class="py-keyword1">print</span> _(<span class="py-quote">'Obsoleting Packages'</span>)
+<span class="line"> 373: </span>                <span class="py-comment"># The tuple is (newPkg, oldPkg) ... so sort by new</span>
+<span class="line"> 374: </span>                <span class="py-keyword1">for</span> obtup <span class="py-keyword1">in</span> <span class="py-keyword2">sorted</span>(ypl.obsoletesTuples,
+<span class="line"> 375: </span>                                    key=operator.itemgetter(<span class="py-num">0</span>)):
+<span class="line"> 376: </span>                    base.updatesObsoletesList(obtup, <span class="py-quote">'obsoletes'</span>,
+<span class="line"> 377: </span>                                              columns=columns)
+<span class="line"> 378: </span>            <span class="py-keyword1">else</span>:
+<span class="line"> 379: </span>                rop = base.listPkgs(ypl.obsoletes, _(<span class="py-quote">'Obsoleting Packages'</span>),
+<span class="line"> 380: </span>                                    basecmd, columns=columns)
+<span class="line"> 381: </span>            rrap = base.listPkgs(ypl.recent, _(<span class="py-quote">'Recently Added Packages'</span>),
+<span class="line"> 382: </span>                                 basecmd, columns=columns)
+<span class="line"> 383: </span>            <span class="py-comment"># extcmds is pop(0)'d if they pass a &quot;special&quot; param like &quot;updates&quot;</span>
+<span class="line"> 384: </span>            <span class="py-comment"># in returnPkgLists(). This allows us to always return &quot;ok&quot; for</span>
+<span class="line"> 385: </span>            <span class="py-comment"># things like &quot;yum list updates&quot;.</span>
+<span class="line"> 386: </span>            <span class="py-keyword1">if</span> <span class="py-keyword2">len</span>(extcmds) <span class="py-keyword1">and</span> \
+<span class="line"> 387: </span>               rrap[<span class="py-num">0</span>] <span class="py-keyword1">and</span> rop[<span class="py-num">0</span>] <span class="py-keyword1">and</span> rup[<span class="py-num">0</span>] <span class="py-keyword1">and</span> rep[<span class="py-num">0</span>] <span class="py-keyword1">and</span> rap[<span class="py-num">0</span>] <span class="py-keyword1">and</span> rip[<span class="py-num">0</span>]:
+<span class="line"> 388: </span>                <span class="py-keyword1">return</span> <span class="py-num">1</span>, [_(<span class="py-quote">'No matching Packages to list'</span>)]
+<span class="line"> 389: </span>            <span class="py-keyword1">return</span> <span class="py-num">0</span>, []
+<span class="line"> 390: </span>
+<span class="line"> 391: </span>    <span class="py-keyword1">def</span> needTs(self, base, basecmd, extcmds):
+<span class="line"> 392: </span>        <span class="py-keyword1">if</span> <span class="py-keyword2">len</span>(extcmds) <span class="py-keyword1">and</span> extcmds[<span class="py-num">0</span>] == <span class="py-quote">'installed'</span>:
+<span class="line"> 393: </span>            <span class="py-keyword1">return</span> <span class="py-keyword3">False</span>
+<span class="line"> 394: </span>        
+<span class="line"> 395: </span>        <span class="py-keyword1">return</span> <span class="py-keyword3">True</span>
+<span class="line"> 396: </span>
+<span class="line"> 397: </span><span class="py-keyword1">class</span> ListCommand(InfoCommand):
+<span class="line"> 398: </span>    <span class="py-keyword1">def</span> getNames(self):
+<span class="line"> 399: </span>        <span class="py-keyword1">return</span> [<span class="py-quote">'list'</span>]
+<span class="line"> 400: </span>
+<span class="line"> 401: </span>    <span class="py-keyword1">def</span> getSummary(self):
+<span class="line"> 402: </span>        <span class="py-keyword1">return</span> _(<span class="py-quote">&quot;List a package or groups of packages&quot;</span>)
+<span class="line"> 403: </span>
+<span class="line"> 404: </span>
+<span class="line"> 405: </span><span class="py-keyword1">class</span> EraseCommand(YumCommand):
+<span class="line"> 406: </span>        
+<span class="line"> 407: </span>    <span class="py-keyword1">def</span> getNames(self):
+<span class="line"> 408: </span>        <span class="py-keyword1">return</span> [<span class="py-quote">'erase'</span>, <span class="py-quote">'remove'</span>]
+<span class="line"> 409: </span>
+<span class="line"> 410: </span>    <span class="py-keyword1">def</span> getUsage(self):
+<span class="line"> 411: </span>        <span class="py-keyword1">return</span> <span class="py-quote">&quot;PACKAGE...&quot;</span>
+<span class="line"> 412: </span>
+<span class="line"> 413: </span>    <span class="py-keyword1">def</span> getSummary(self):
+<span class="line"> 414: </span>        <span class="py-keyword1">return</span> _(<span class="py-quote">&quot;Remove a package or packages from your system&quot;</span>)
+<span class="line"> 415: </span>
+<span class="line"> 416: </span>    <span class="py-keyword1">def</span> doCheck(self, base, basecmd, extcmds):
+<span class="line"> 417: </span>        checkRootUID(base)
+<span class="line"> 418: </span>        checkPackageArg(base, basecmd, extcmds)
+<span class="line"> 419: </span>
+<span class="line"> 420: </span>    <span class="py-keyword1">def</span> doCommand(self, base, basecmd, extcmds):
+<span class="line"> 421: </span>        self.doneCommand(base, _(<span class="py-quote">&quot;Setting up Remove Process&quot;</span>))
+<span class="line"> 422: </span>        <span class="py-keyword1">try</span>:
+<span class="line"> 423: </span>            <span class="py-keyword1">return</span> base.erasePkgs(extcmds)
+<span class="line"> 424: </span>        <span class="py-keyword1">except</span> yum.Errors.YumBaseError, e:
+<span class="line"> 425: </span>            <span class="py-keyword1">return</span> <span class="py-num">1</span>, [<span class="py-keyword2">str</span>(e)]
+<span class="line"> 426: </span>
+<span class="line"> 427: </span>    <span class="py-keyword1">def</span> needTs(self, base, basecmd, extcmds):
+<span class="line"> 428: </span>        <span class="py-keyword1">return</span> <span class="py-keyword3">False</span>
+<span class="line"> 429: </span>
+<span class="line"> 430: </span>    <span class="py-keyword1">def</span> needTsRemove(self, base, basecmd, extcmds):
+<span class="line"> 431: </span>        <span class="py-keyword1">return</span> <span class="py-keyword3">True</span>
+<span class="line"> 432: </span>
+<span class="line"> 433: </span> 
+<span class="line"> 434: </span><span class="py-keyword1">class</span> GroupsCommand(YumCommand):
+<span class="line"> 435: </span>    <span class="py-docstring">&quot;&quot;&quot; Single sub-command interface for most groups interaction. &quot;&quot;&quot;</span>
+<span class="line"> 436: </span>
+<span class="line"> 437: </span>    direct_commands = {<span class="py-quote">'grouplist'</span>    : <span class="py-quote">'list'</span>,
+<span class="line"> 438: </span>                       <span class="py-quote">'groupinstall'</span> : <span class="py-quote">'install'</span>,
+<span class="line"> 439: </span>                       <span class="py-quote">'groupupdate'</span>  : <span class="py-quote">'install'</span>,
+<span class="line"> 440: </span>                       <span class="py-quote">'groupremove'</span>  : <span class="py-quote">'remove'</span>,
+<span class="line"> 441: </span>                       <span class="py-quote">'grouperase'</span>   : <span class="py-quote">'remove'</span>,
+<span class="line"> 442: </span>                       <span class="py-quote">'groupinfo'</span>    : <span class="py-quote">'info'</span>}
+<span class="line"> 443: </span>
+<span class="line"> 444: </span>    <span class="py-keyword1">def</span> getNames(self):
+<span class="line"> 445: </span>        <span class="py-keyword1">return</span> [<span class="py-quote">'groups'</span>, <span class="py-quote">'group'</span>] + self.direct_commands.keys()
+<span class="line"> 446: </span>
+<span class="line"> 447: </span>    <span class="py-keyword1">def</span> getUsage(self):
+<span class="line"> 448: </span>        <span class="py-keyword1">return</span> <span class="py-quote">&quot;[list|info|summary|install|upgrade|remove|mark] [GROUP]&quot;</span>
+<span class="line"> 449: </span>
+<span class="line"> 450: </span>    <span class="py-keyword1">def</span> getSummary(self):
+<span class="line"> 451: </span>        <span class="py-keyword1">return</span> _(<span class="py-quote">&quot;Display, or use, the groups information&quot;</span>)
+<span class="line"> 452: </span>    
+<span class="line"> 453: </span>    <span class="py-keyword1">def</span> _grp_setup_doCommand(self, base):
+<span class="line"> 454: </span>        self.doneCommand(base, _(<span class="py-quote">&quot;Setting up Group Process&quot;</span>))
+<span class="line"> 455: </span>
+<span class="line"> 456: </span>        base.doRepoSetup(dosack=<span class="py-num">0</span>)
+<span class="line"> 457: </span>        <span class="py-keyword1">try</span>:
+<span class="line"> 458: </span>            base.doGroupSetup()
+<span class="line"> 459: </span>        <span class="py-keyword1">except</span> yum.Errors.GroupsError:
+<span class="line"> 460: </span>            <span class="py-keyword1">return</span> <span class="py-num">1</span>, [_(<span class="py-quote">'No Groups on which to run command'</span>)]
+<span class="line"> 461: </span>        <span class="py-keyword1">except</span> yum.Errors.YumBaseError, e:
+<span class="line"> 462: </span>            <span class="py-keyword1">return</span> <span class="py-num">1</span>, [<span class="py-keyword2">str</span>(e)]
+<span class="line"> 463: </span>
+<span class="line"> 464: </span>    <span class="py-keyword1">def</span> _grp_cmd(self, basecmd, extcmds):
+<span class="line"> 465: </span>        <span class="py-keyword1">if</span> basecmd <span class="py-keyword1">in</span> self.direct_commands:
+<span class="line"> 466: </span>            cmd = self.direct_commands[basecmd]
+<span class="line"> 467: </span>        <span class="py-keyword1">elif</span> extcmds:
+<span class="line"> 468: </span>            cmd = extcmds[<span class="py-num">0</span>]
+<span class="line"> 469: </span>            extcmds = extcmds[<span class="py-num">1</span>:]
+<span class="line"> 470: </span>        <span class="py-keyword1">else</span>:
+<span class="line"> 471: </span>            cmd = <span class="py-quote">'summary'</span>
+<span class="line"> 472: </span>
+<span class="line"> 473: </span>        remap = {<span class="py-quote">'update'</span> : <span class="py-quote">'upgrade'</span>,
+<span class="line"> 474: </span>                 <span class="py-quote">'erase'</span> : <span class="py-quote">'remove'</span>,
+<span class="line"> 475: </span>                 <span class="py-quote">'mark-erase'</span> : <span class="py-quote">'mark-remove'</span>,
+<span class="line"> 476: </span>                 }
+<span class="line"> 477: </span>        cmd = remap.get(cmd, cmd)
+<span class="line"> 478: </span>
+<span class="line"> 479: </span>        <span class="py-keyword1">return</span> cmd, extcmds
+<span class="line"> 480: </span>
+<span class="line"> 481: </span>    <span class="py-keyword1">def</span> doCheck(self, base, basecmd, extcmds):
+<span class="line"> 482: </span>        cmd, extcmds = self._grp_cmd(basecmd, extcmds)
+<span class="line"> 483: </span>
+<span class="line"> 484: </span>        checkEnabledRepo(base)
+<span class="line"> 485: </span>
+<span class="line"> 486: </span>        <span class="py-keyword1">if</span> cmd <span class="py-keyword1">in</span> (<span class="py-quote">'install'</span>, <span class="py-quote">'remove'</span>,
+<span class="line"> 487: </span>                   <span class="py-quote">'mark-install'</span>, <span class="py-quote">'mark-remove'</span>,
+<span class="line"> 488: </span>                   <span class="py-quote">'mark-members'</span>, <span class="py-quote">'info'</span>, <span class="py-quote">'mark-members-sync'</span>):
+<span class="line"> 489: </span>            checkGroupArg(base, cmd, extcmds)
+<span class="line"> 490: </span>
+<span class="line"> 491: </span>        <span class="py-keyword1">if</span> cmd <span class="py-keyword1">in</span> (<span class="py-quote">'install'</span>, <span class="py-quote">'remove'</span>, <span class="py-quote">'upgrade'</span>,
+<span class="line"> 492: </span>                   <span class="py-quote">'mark-install'</span>, <span class="py-quote">'mark-remove'</span>,
+<span class="line"> 493: </span>                   <span class="py-quote">'mark-members'</span>, <span class="py-quote">'mark-members-sync'</span>):
+<span class="line"> 494: </span>            checkRootUID(base)
+<span class="line"> 495: </span>
+<span class="line"> 496: </span>        <span class="py-keyword1">if</span> cmd <span class="py-keyword1">in</span> (<span class="py-quote">'install'</span>, <span class="py-quote">'upgrade'</span>):
+<span class="line"> 497: </span>            checkGPGKey(base)
+<span class="line"> 498: </span>
+<span class="line"> 499: </span>        cmds = (<span class="py-quote">'list'</span>, <span class="py-quote">'info'</span>, <span class="py-quote">'remove'</span>, <span class="py-quote">'install'</span>, <span class="py-quote">'upgrade'</span>, <span class="py-quote">'summary'</span>,
+<span class="line"> 500: </span>                <span class="py-quote">'mark-install'</span>, <span class="py-quote">'mark-remove'</span>,
+<span class="line"> 501: </span>                <span class="py-quote">'mark-members'</span>, <span class="py-quote">'mark-members-sync'</span>)
+<span class="line"> 502: </span>        <span class="py-keyword1">if</span> cmd <span class="py-keyword1">not</span> <span class="py-keyword1">in</span> cmds:
+<span class="line"> 503: </span>            base.logger.critical(_(<span class="py-quote">'Invalid groups sub-command, use: %s.'</span>),
+<span class="line"> 504: </span>                                 <span class="py-quote">&quot;, &quot;</span>.join(cmds))
+<span class="line"> 505: </span>            <span class="py-keyword1">raise</span> cli.CliError
+<span class="line"> 506: </span>
+<span class="line"> 507: </span>    <span class="py-keyword1">def</span> doCommand(self, base, basecmd, extcmds):
+<span class="line"> 508: </span>        cmd, extcmds = self._grp_cmd(basecmd, extcmds)
+<span class="line"> 509: </span>
+<span class="line"> 510: </span>        self._grp_setup_doCommand(base)
+<span class="line"> 511: </span>        <span class="py-keyword1">if</span> cmd == <span class="py-quote">'summary'</span>:
+<span class="line"> 512: </span>            <span class="py-keyword1">return</span> base.returnGroupSummary(extcmds)
+<span class="line"> 513: </span>
+<span class="line"> 514: </span>        <span class="py-keyword1">if</span> cmd == <span class="py-quote">'list'</span>:
+<span class="line"> 515: </span>            <span class="py-keyword1">return</span> base.returnGroupLists(extcmds)
+<span class="line"> 516: </span>
+<span class="line"> 517: </span>        <span class="py-keyword1">try</span>:
+<span class="line"> 518: </span>            <span class="py-keyword1">if</span> cmd == <span class="py-quote">'info'</span>:
+<span class="line"> 519: </span>                <span class="py-keyword1">return</span> base.returnGroupInfo(extcmds)
+<span class="line"> 520: </span>            <span class="py-keyword1">if</span> cmd == <span class="py-quote">'install'</span>:
+<span class="line"> 521: </span>                <span class="py-keyword1">return</span> base.installGroups(extcmds)
+<span class="line"> 522: </span>            <span class="py-keyword1">if</span> cmd == <span class="py-quote">'upgrade'</span>:
+<span class="line"> 523: </span>                <span class="py-keyword1">return</span> base.installGroups(extcmds, upgrade=<span class="py-keyword3">True</span>)
+<span class="line"> 524: </span>            <span class="py-keyword1">if</span> cmd == <span class="py-quote">'remove'</span>:
+<span class="line"> 525: </span>                <span class="py-keyword1">return</span> base.removeGroups(extcmds)
+<span class="line"> 526: </span>
+<span class="line"> 527: </span>        <span class="py-keyword1">except</span> yum.Errors.YumBaseError, e:
+<span class="line"> 528: </span>            <span class="py-keyword1">return</span> <span class="py-num">1</span>, [<span class="py-keyword2">str</span>(e)]
+<span class="line"> 529: </span>
+<span class="line"> 530: </span>
+<span class="line"> 531: </span>    <span class="py-keyword1">def</span> needTs(self, base, basecmd, extcmds):
+<span class="line"> 532: </span>        cmd, extcmds = self._grp_cmd(basecmd, extcmds)
+<span class="line"> 533: </span>
+<span class="line"> 534: </span>        <span class="py-keyword1">if</span> cmd <span class="py-keyword1">in</span> (<span class="py-quote">'list'</span>, <span class="py-quote">'info'</span>, <span class="py-quote">'remove'</span>, <span class="py-quote">'summary'</span>):
+<span class="line"> 535: </span>            <span class="py-keyword1">return</span> <span class="py-keyword3">False</span>
+<span class="line"> 536: </span>        <span class="py-keyword1">return</span> <span class="py-keyword3">True</span>
+<span class="line"> 537: </span>
+<span class="line"> 538: </span>    <span class="py-keyword1">def</span> needTsRemove(self, base, basecmd, extcmds):
+<span class="line"> 539: </span>        cmd, extcmds = self._grp_cmd(basecmd, extcmds)
+<span class="line"> 540: </span>
+<span class="line"> 541: </span>        <span class="py-keyword1">if</span> cmd <span class="py-keyword1">in</span> (<span class="py-quote">'remove'</span>,):
+<span class="line"> 542: </span>           <span class="py-keyword1">return</span> <span class="py-keyword3">True</span>
+<span class="line"> 543: </span>        <span class="py-keyword1">return</span> <span class="py-keyword3">False</span>
+<span class="line"> 544: </span>
+<span class="line"> 545: </span><span class="py-keyword1">class</span> MakeCacheCommand(YumCommand):
+<span class="line"> 546: </span>
+<span class="line"> 547: </span>    <span class="py-keyword1">def</span> getNames(self):
+<span class="line"> 548: </span>        <span class="py-keyword1">return</span> [<span class="py-quote">'makecache'</span>]
+<span class="line"> 549: </span>
+<span class="line"> 550: </span>    <span class="py-keyword1">def</span> getUsage(self):
+<span class="line"> 551: </span>        <span class="py-keyword1">return</span> <span class="py-quote">&quot;&quot;</span>
+<span class="line"> 552: </span>
+<span class="line"> 553: </span>    <span class="py-keyword1">def</span> getSummary(self):
+<span class="line"> 554: </span>        <span class="py-keyword1">return</span> _(<span class="py-quote">&quot;Generate the metadata cache&quot;</span>)
+<span class="line"> 555: </span>
+<span class="line"> 556: </span>    <span class="py-keyword1">def</span> doCheck(self, base, basecmd, extcmds):
+<span class="line"> 557: </span>        checkEnabledRepo(base)
+<span class="line"> 558: </span>
+<span class="line"> 559: </span>    <span class="py-keyword1">def</span> doCommand(self, base, basecmd, extcmds):
+<span class="line"> 560: </span>        base.logger.debug(_(<span class="py-quote">&quot;Making cache files for all metadata files.&quot;</span>))
+<span class="line"> 561: </span>        base.logger.debug(_(<span class="py-quote">&quot;This may take a while depending on the speed of this computer&quot;</span>))
+<span class="line"> 562: </span>        <span class="py-keyword1">try</span>:
+<span class="line"> 563: </span>            <span class="py-keyword1">for</span> repo <span class="py-keyword1">in</span> base.repos.findRepos(<span class="py-quote">'*'</span>):
+<span class="line"> 564: </span>                repo.metadata_expire = <span class="py-num">0</span>
+<span class="line"> 565: </span>                repo.mdpolicy = <span class="py-quote">&quot;group:all&quot;</span>
+<span class="line"> 566: </span>            base.doRepoSetup(dosack=<span class="py-num">0</span>)
+<span class="line"> 567: </span>            base.repos.doSetup()
+<span class="line"> 568: </span>            <span class="py-keyword1">for</span> repo <span class="py-keyword1">in</span> base.repos.listEnabled():
+<span class="line"> 569: </span>                repo.repoXML
+<span class="line"> 570: </span>            
+<span class="line"> 571: </span>            <span class="py-comment"># These convert the downloaded data into usable data,</span>
+<span class="line"> 572: </span>            <span class="py-comment"># we can't remove them until *LoadRepo() can do:</span>
+<span class="line"> 573: </span>            <span class="py-comment"># 1. Download a .sqlite.bz2 and convert to .sqlite</span>
+<span class="line"> 574: </span>            <span class="py-comment"># 2. Download a .xml.gz and convert to .xml.gz.sqlite</span>
+<span class="line"> 575: </span>            base.repos.populateSack(mdtype=<span class="py-quote">'metadata'</span>, cacheonly=<span class="py-num">1</span>)
+<span class="line"> 576: </span>            base.repos.populateSack(mdtype=<span class="py-quote">'filelists'</span>, cacheonly=<span class="py-num">1</span>)
+<span class="line"> 577: </span>            base.repos.populateSack(mdtype=<span class="py-quote">'otherdata'</span>, cacheonly=<span class="py-num">1</span>)
+<span class="line"> 578: </span>
+<span class="line"> 579: </span>
+<span class="line"> 580: </span>        <span class="py-keyword1">except</span> yum.Errors.YumBaseError, e:
+<span class="line"> 581: </span>            <span class="py-keyword1">return</span> <span class="py-num">1</span>, [<span class="py-keyword2">str</span>(e)]
+<span class="line"> 582: </span>        <span class="py-keyword1">return</span> <span class="py-num">0</span>, [_(<span class="py-quote">'Metadata Cache Created'</span>)]
+<span class="line"> 583: </span>
+<span class="line"> 584: </span>    <span class="py-keyword1">def</span> needTs(self, base, basecmd, extcmds):
+<span class="line"> 585: </span>        <span class="py-keyword1">return</span> <span class="py-keyword3">False</span>
+<span class="line"> 586: </span>
+<span class="line"> 587: </span><span class="py-keyword1">class</span> CleanCommand(YumCommand):
+<span class="line"> 588: </span>    
+<span class="line"> 589: </span>    <span class="py-keyword1">def</span> getNames(self):
+<span class="line"> 590: </span>        <span class="py-keyword1">return</span> [<span class="py-quote">'clean'</span>]
+<span class="line"> 591: </span>
+<span class="line"> 592: </span>    <span class="py-keyword1">def</span> getUsage(self):
+<span class="line"> 593: </span>        <span class="py-keyword1">return</span> <span class="py-quote">&quot;[headers|packages|metadata|dbcache|plugins|expire-cache|all]&quot;</span>
+<span class="line"> 594: </span>
+<span class="line"> 595: </span>    <span class="py-keyword1">def</span> getSummary(self):
+<span class="line"> 596: </span>        <span class="py-keyword1">return</span> _(<span class="py-quote">&quot;Remove cached data&quot;</span>)
+<span class="line"> 597: </span>
+<span class="line"> 598: </span>    <span class="py-keyword1">def</span> doCheck(self, base, basecmd, extcmds):
+<span class="line"> 599: </span>        checkCleanArg(base, basecmd, extcmds)
+<span class="line"> 600: </span>        checkEnabledRepo(base)
+<span class="line"> 601: </span>        
+<span class="line"> 602: </span>    <span class="py-keyword1">def</span> doCommand(self, base, basecmd, extcmds):
+<span class="line"> 603: </span>        base.conf.cache = <span class="py-num">1</span>
+<span class="line"> 604: </span>        <span class="py-keyword1">return</span> base.cleanCli(extcmds)
+<span class="line"> 605: </span>
+<span class="line"> 606: </span>    <span class="py-keyword1">def</span> needTs(self, base, basecmd, extcmds):
+<span class="line"> 607: </span>        <span class="py-keyword1">return</span> <span class="py-keyword3">False</span>
+<span class="line"> 608: </span>
+<span class="line"> 609: </span><span class="py-keyword1">class</span> ProvidesCommand(YumCommand):
+<span class="line"> 610: </span>    <span class="py-keyword1">def</span> getNames(self):
+<span class="line"> 611: </span>        <span class="py-keyword1">return</span> [<span class="py-quote">'provides'</span>, <span class="py-quote">'whatprovides'</span>]
+<span class="line"> 612: </span>
+<span class="line"> 613: </span>    <span class="py-keyword1">def</span> getUsage(self):
+<span class="line"> 614: </span>        <span class="py-keyword1">return</span> <span class="py-quote">&quot;SOME_STRING&quot;</span>
+<span class="line"> 615: </span>    
+<span class="line"> 616: </span>    <span class="py-keyword1">def</span> getSummary(self):
+<span class="line"> 617: </span>        <span class="py-keyword1">return</span> _(<span class="py-quote">&quot;Find what package provides the given value&quot;</span>)
+<span class="line"> 618: </span>
+<span class="line"> 619: </span>    <span class="py-keyword1">def</span> doCheck(self, base, basecmd, extcmds):
+<span class="line"> 620: </span>        checkItemArg(base, basecmd, extcmds)
+<span class="line"> 621: </span>
+<span class="line"> 622: </span>    <span class="py-keyword1">def</span> doCommand(self, base, basecmd, extcmds):
+<span class="line"> 623: </span>        base.logger.debug(<span class="py-quote">&quot;Searching Packages: &quot;</span>)
+<span class="line"> 624: </span>        <span class="py-keyword1">try</span>:
+<span class="line"> 625: </span>            <span class="py-keyword1">return</span> base.provides(extcmds)
+<span class="line"> 626: </span>        <span class="py-keyword1">except</span> yum.Errors.YumBaseError, e:
+<span class="line"> 627: </span>            <span class="py-keyword1">return</span> <span class="py-num">1</span>, [<span class="py-keyword2">str</span>(e)]
+<span class="line"> 628: </span>
+<span class="line"> 629: </span><span class="py-keyword1">class</span> CheckUpdateCommand(YumCommand):
+<span class="line"> 630: </span>    <span class="py-keyword1">def</span> getNames(self):
+<span class="line"> 631: </span>        <span class="py-keyword1">return</span> [<span class="py-quote">'check-update'</span>]
+<span class="line"> 632: </span>
+<span class="line"> 633: </span>    <span class="py-keyword1">def</span> getUsage(self):
+<span class="line"> 634: </span>        <span class="py-keyword1">return</span> <span class="py-quote">&quot;[PACKAGE...]&quot;</span>
+<span class="line"> 635: </span>
+<span class="line"> 636: </span>    <span class="py-keyword1">def</span> getSummary(self):
+<span class="line"> 637: </span>        <span class="py-keyword1">return</span> _(<span class="py-quote">&quot;Check for available package updates&quot;</span>)
+<span class="line"> 638: </span>
+<span class="line"> 639: </span>    <span class="py-keyword1">def</span> doCheck(self, base, basecmd, extcmds):
+<span class="line"> 640: </span>        checkEnabledRepo(base)
+<span class="line"> 641: </span>
+<span class="line"> 642: </span>    <span class="py-keyword1">def</span> doCommand(self, base, basecmd, extcmds):
+<span class="line"> 643: </span>        obscmds = [<span class="py-quote">'obsoletes'</span>] + extcmds
+<span class="line"> 644: </span>        base.extcmds.insert(<span class="py-num">0</span>, <span class="py-quote">'updates'</span>)
+<span class="line"> 645: </span>        result = <span class="py-num">0</span>
+<span class="line"> 646: </span>        <span class="py-keyword1">try</span>:
+<span class="line"> 647: </span>            ypl = base.returnPkgLists(extcmds)
+<span class="line"> 648: </span>            <span class="py-keyword1">if</span> (base.conf.obsoletes <span class="py-keyword1">or</span>
+<span class="line"> 649: </span>                base.verbose_logger.isEnabledFor(logginglevels.DEBUG_3)):
+<span class="line"> 650: </span>                typl = base.returnPkgLists(obscmds)
+<span class="line"> 651: </span>                ypl.obsoletes = typl.obsoletes
+<span class="line"> 652: </span>                ypl.obsoletesTuples = typl.obsoletesTuples
+<span class="line"> 653: </span>
+<span class="line"> 654: </span>            columns = _list_cmd_calc_columns(base, ypl)
+<span class="line"> 655: </span>            <span class="py-keyword1">if</span> <span class="py-keyword2">len</span>(ypl.updates) &gt; <span class="py-num">0</span>:
+<span class="line"> 656: </span>                local_pkgs = {}
+<span class="line"> 657: </span>                highlight = base.term.MODE[<span class="py-quote">'bold'</span>]
+<span class="line"> 658: </span>                <span class="py-keyword1">if</span> highlight:
+<span class="line"> 659: </span>                    <span class="py-comment"># Do the local/remote split we get in &quot;yum updates&quot;</span>
+<span class="line"> 660: </span>                    <span class="py-keyword1">for</span> po <span class="py-keyword1">in</span> <span class="py-keyword2">sorted</span>(ypl.updates):
+<span class="line"> 661: </span>                        <span class="py-keyword1">if</span> po.repo.<span class="py-keyword2">id</span> != <span class="py-quote">'installed'</span> <span class="py-keyword1">and</span> po.verifyLocalPkg():
+<span class="line"> 662: </span>                            local_pkgs[(po.name, po.arch)] = po
+<span class="line"> 663: </span>
+<span class="line"> 664: </span>                cul = base.conf.color_update_local
+<span class="line"> 665: </span>                cur = base.conf.color_update_remote
+<span class="line"> 666: </span>                base.listPkgs(ypl.updates, <span class="py-quote">''</span>, outputType=<span class="py-quote">'list'</span>,
+<span class="line"> 667: </span>                              highlight_na=local_pkgs, columns=columns,
+<span class="line"> 668: </span>                              highlight_modes={<span class="py-quote">'='</span> : cul, <span class="py-quote">'not in'</span> : cur})
+<span class="line"> 669: </span>                result = <span class="py-num">100</span>
+<span class="line"> 670: </span>            <span class="py-keyword1">if</span> <span class="py-keyword2">len</span>(ypl.obsoletes) &gt; <span class="py-num">0</span>: <span class="py-comment"># This only happens in verbose mode</span>
+<span class="line"> 671: </span>                <span class="py-keyword1">print</span> _(<span class="py-quote">'Obsoleting Packages'</span>)
+<span class="line"> 672: </span>                <span class="py-comment"># The tuple is (newPkg, oldPkg) ... so sort by new</span>
+<span class="line"> 673: </span>                <span class="py-keyword1">for</span> obtup <span class="py-keyword1">in</span> <span class="py-keyword2">sorted</span>(ypl.obsoletesTuples,
+<span class="line"> 674: </span>                                    key=operator.itemgetter(<span class="py-num">0</span>)):
+<span class="line"> 675: </span>                    base.updatesObsoletesList(obtup, <span class="py-quote">'obsoletes'</span>,
+<span class="line"> 676: </span>                                              columns=columns)
+<span class="line"> 677: </span>                result = <span class="py-num">100</span>
+<span class="line"> 678: </span>        <span class="py-keyword1">except</span> yum.Errors.YumBaseError, e:
+<span class="line"> 679: </span>            <span class="py-keyword1">return</span> <span class="py-num">1</span>, [<span class="py-keyword2">str</span>(e)]
+<span class="line"> 680: </span>        <span class="py-keyword1">else</span>:
+<span class="line"> 681: </span>            <span class="py-keyword1">return</span> result, []
+<span class="line"> 682: </span>
+<span class="line"> 683: </span><span class="py-keyword1">class</span> SearchCommand(YumCommand):
+<span class="line"> 684: </span>    <span class="py-keyword1">def</span> getNames(self):
+<span class="line"> 685: </span>        <span class="py-keyword1">return</span> [<span class="py-quote">'search'</span>]
+<span class="line"> 686: </span>
+<span class="line"> 687: </span>    <span class="py-keyword1">def</span> getUsage(self):
+<span class="line"> 688: </span>        <span class="py-keyword1">return</span> <span class="py-quote">&quot;SOME_STRING&quot;</span>
+<span class="line"> 689: </span>
+<span class="line"> 690: </span>    <span class="py-keyword1">def</span> getSummary(self):
+<span class="line"> 691: </span>        <span class="py-keyword1">return</span> _(<span class="py-quote">&quot;Search package details for the given string&quot;</span>)
+<span class="line"> 692: </span>
+<span class="line"> 693: </span>    <span class="py-keyword1">def</span> doCheck(self, base, basecmd, extcmds):
+<span class="line"> 694: </span>        checkItemArg(base, basecmd, extcmds)
+<span class="line"> 695: </span>
+<span class="line"> 696: </span>    <span class="py-keyword1">def</span> doCommand(self, base, basecmd, extcmds):
+<span class="line"> 697: </span>        base.logger.debug(_(<span class="py-quote">&quot;Searching Packages: &quot;</span>))
+<span class="line"> 698: </span>        <span class="py-keyword1">try</span>:
+<span class="line"> 699: </span>            <span class="py-keyword1">return</span> base.search(extcmds)
+<span class="line"> 700: </span>        <span class="py-keyword1">except</span> yum.Errors.YumBaseError, e:
+<span class="line"> 701: </span>            <span class="py-keyword1">return</span> <span class="py-num">1</span>, [<span class="py-keyword2">str</span>(e)]
+<span class="line"> 702: </span>
+<span class="line"> 703: </span>    <span class="py-keyword1">def</span> needTs(self, base, basecmd, extcmds):
+<span class="line"> 704: </span>        <span class="py-keyword1">return</span> <span class="py-keyword3">False</span>
+<span class="line"> 705: </span>
+<span class="line"> 706: </span><span class="py-keyword1">class</span> UpgradeCommand(YumCommand):
+<span class="line"> 707: </span>    <span class="py-keyword1">def</span> getNames(self):
+<span class="line"> 708: </span>        <span class="py-keyword1">return</span> [<span class="py-quote">'upgrade'</span>, <span class="py-quote">'upgrade-to'</span>]
+<span class="line"> 709: </span>
+<span class="line"> 710: </span>    <span class="py-keyword1">def</span> getUsage(self):
+<span class="line"> 711: </span>        <span class="py-keyword1">return</span> <span class="py-quote">'PACKAGE...'</span>
+<span class="line"> 712: </span>
+<span class="line"> 713: </span>    <span class="py-keyword1">def</span> getSummary(self):
+<span class="line"> 714: </span>        <span class="py-keyword1">return</span> _(<span class="py-quote">&quot;Update packages taking obsoletes into account&quot;</span>)
+<span class="line"> 715: </span>
+<span class="line"> 716: </span>    <span class="py-keyword1">def</span> doCheck(self, base, basecmd, extcmds):
+<span class="line"> 717: </span>        checkRootUID(base)
+<span class="line"> 718: </span>        checkGPGKey(base)
+<span class="line"> 719: </span>        checkEnabledRepo(base, extcmds)
+<span class="line"> 720: </span>
+<span class="line"> 721: </span>    <span class="py-keyword1">def</span> doCommand(self, base, basecmd, extcmds):
+<span class="line"> 722: </span>        base.conf.obsoletes = <span class="py-num">1</span>
+<span class="line"> 723: </span>        self.doneCommand(base, _(<span class="py-quote">&quot;Setting up Upgrade Process&quot;</span>))
+<span class="line"> 724: </span>        <span class="py-keyword1">try</span>:
+<span class="line"> 725: </span>            <span class="py-keyword1">return</span> base.updatePkgs(extcmds, update_to=(basecmd == <span class="py-quote">'upgrade-to'</span>))
+<span class="line"> 726: </span>        <span class="py-keyword1">except</span> yum.Errors.YumBaseError, e:
+<span class="line"> 727: </span>            <span class="py-keyword1">return</span> <span class="py-num">1</span>, [<span class="py-keyword2">str</span>(e)]
+<span class="line"> 728: </span>
+<span class="line"> 729: </span><span class="py-keyword1">class</span> LocalInstallCommand(YumCommand):
+<span class="line"> 730: </span>    <span class="py-keyword1">def</span> <span class="py-keyword3">__init__</span>(self):
+<span class="line"> 731: </span>        YumCommand.<span class="py-keyword3">__init__</span>(self)
+<span class="line"> 732: </span>        self.hidden = <span class="py-keyword3">True</span>
+<span class="line"> 733: </span>
+<span class="line"> 734: </span>    <span class="py-keyword1">def</span> getNames(self):
+<span class="line"> 735: </span>        <span class="py-keyword1">return</span> [<span class="py-quote">'localinstall'</span>, <span class="py-quote">'localupdate'</span>]
+<span class="line"> 736: </span>
+<span class="line"> 737: </span>    <span class="py-keyword1">def</span> getUsage(self):
+<span class="line"> 738: </span>        <span class="py-keyword1">return</span> <span class="py-quote">&quot;FILE&quot;</span>
+<span class="line"> 739: </span>
+<span class="line"> 740: </span>    <span class="py-keyword1">def</span> getSummary(self):
+<span class="line"> 741: </span>        <span class="py-keyword1">return</span> _(<span class="py-quote">&quot;Install a local RPM&quot;</span>)
+<span class="line"> 742: </span>
+<span class="line"> 743: </span>    <span class="py-keyword1">def</span> doCheck(self, base, basecmd, extcmds):
+<span class="line"> 744: </span>        checkRootUID(base)
+<span class="line"> 745: </span>        checkGPGKey(base)
+<span class="line"> 746: </span>        checkPackageArg(base, basecmd, extcmds)
+<span class="line"> 747: </span>        
+<span class="line"> 748: </span>    <span class="py-keyword1">def</span> doCommand(self, base, basecmd, extcmds):
+<span class="line"> 749: </span>        self.doneCommand(base, _(<span class="py-quote">&quot;Setting up Local Package Process&quot;</span>))
+<span class="line"> 750: </span>
+<span class="line"> 751: </span>        updateonly = basecmd == <span class="py-quote">'localupdate'</span>
+<span class="line"> 752: </span>        <span class="py-keyword1">try</span>:
+<span class="line"> 753: </span>            <span class="py-keyword1">return</span> base.localInstall(filelist=extcmds, updateonly=updateonly)
+<span class="line"> 754: </span>        <span class="py-keyword1">except</span> yum.Errors.YumBaseError, e:
+<span class="line"> 755: </span>            <span class="py-keyword1">return</span> <span class="py-num">1</span>, [<span class="py-keyword2">str</span>(e)]
+<span class="line"> 756: </span>
+<span class="line"> 757: </span>    <span class="py-keyword1">def</span> needTs(self, base, basecmd, extcmds):
+<span class="line"> 758: </span>        <span class="py-keyword1">return</span> <span class="py-keyword3">False</span>
+<span class="line"> 759: </span>
+<span class="line"> 760: </span><span class="py-keyword1">class</span> ResolveDepCommand(YumCommand):
+<span class="line"> 761: </span>    <span class="py-keyword1">def</span> getNames(self):
+<span class="line"> 762: </span>        <span class="py-keyword1">return</span> [<span class="py-quote">'resolvedep'</span>]
+<span class="line"> 763: </span>
+<span class="line"> 764: </span>    <span class="py-keyword1">def</span> getUsage(self):
+<span class="line"> 765: </span>        <span class="py-keyword1">return</span> <span class="py-quote">&quot;DEPENDENCY&quot;</span>
+<span class="line"> 766: </span>
+<span class="line"> 767: </span>    <span class="py-keyword1">def</span> getSummary(self):
+<span class="line"> 768: </span>        <span class="py-keyword1">return</span> _(<span class="py-quote">&quot;Determine which package provides the given dependency&quot;</span>)
+<span class="line"> 769: </span>
+<span class="line"> 770: </span>    <span class="py-keyword1">def</span> doCommand(self, base, basecmd, extcmds):
+<span class="line"> 771: </span>        base.logger.debug(_(<span class="py-quote">&quot;Searching Packages for Dependency:&quot;</span>))
+<span class="line"> 772: </span>        <span class="py-keyword1">try</span>:
+<span class="line"> 773: </span>            <span class="py-keyword1">return</span> base.resolveDepCli(extcmds)
+<span class="line"> 774: </span>        <span class="py-keyword1">except</span> yum.Errors.YumBaseError, e:
+<span class="line"> 775: </span>            <span class="py-keyword1">return</span> <span class="py-num">1</span>, [<span class="py-keyword2">str</span>(e)]
+<span class="line"> 776: </span>
+<span class="line"> 777: </span><span class="py-keyword1">class</span> ShellCommand(YumCommand):
+<span class="line"> 778: </span>    <span class="py-keyword1">def</span> getNames(self):
+<span class="line"> 779: </span>        <span class="py-keyword1">return</span> [<span class="py-quote">'shell'</span>]
+<span class="line"> 780: </span>
+<span class="line"> 781: </span>    <span class="py-keyword1">def</span> getUsage(self):
+<span class="line"> 782: </span>        <span class="py-keyword1">return</span> <span class="py-quote">&quot;[FILENAME]&quot;</span>
+<span class="line"> 783: </span>
+<span class="line"> 784: </span>    <span class="py-keyword1">def</span> getSummary(self):
+<span class="line"> 785: </span>        <span class="py-keyword1">return</span> _(<span class="py-quote">&quot;Run an interactive yum shell&quot;</span>)
+<span class="line"> 786: </span>
+<span class="line"> 787: </span>    <span class="py-keyword1">def</span> doCheck(self, base, basecmd, extcmds):
+<span class="line"> 788: </span>        checkShellArg(base, basecmd, extcmds)
+<span class="line"> 789: </span>
+<span class="line"> 790: </span>    <span class="py-keyword1">def</span> doCommand(self, base, basecmd, extcmds):
+<span class="line"> 791: </span>        self.doneCommand(base, _(<span class="py-quote">'Setting up Yum Shell'</span>))
+<span class="line"> 792: </span>        <span class="py-keyword1">try</span>:
+<span class="line"> 793: </span>            <span class="py-keyword1">return</span> base.doShell()
+<span class="line"> 794: </span>        <span class="py-keyword1">except</span> yum.Errors.YumBaseError, e:
+<span class="line"> 795: </span>            <span class="py-keyword1">return</span> <span class="py-num">1</span>, [<span class="py-keyword2">str</span>(e)]
+<span class="line"> 796: </span>
+<span class="line"> 797: </span>    <span class="py-keyword1">def</span> needTs(self, base, basecmd, extcmds):
+<span class="line"> 798: </span>        <span class="py-keyword1">return</span> <span class="py-keyword3">False</span>
+<span class="line"> 799: </span>
+<span class="line"> 800: </span>
+<span class="line"> 801: </span><span class="py-keyword1">class</span> DepListCommand(YumCommand):
+<span class="line"> 802: </span>    <span class="py-keyword1">def</span> getNames(self):
+<span class="line"> 803: </span>        <span class="py-keyword1">return</span> [<span class="py-quote">'deplist'</span>]
+<span class="line"> 804: </span>
+<span class="line"> 805: </span>    <span class="py-keyword1">def</span> getUsage(self):
+<span class="line"> 806: </span>        <span class="py-keyword1">return</span> <span class="py-quote">'PACKAGE...'</span>
+<span class="line"> 807: </span>
+<span class="line"> 808: </span>    <span class="py-keyword1">def</span> getSummary(self):
+<span class="line"> 809: </span>        <span class="py-keyword1">return</span> _(<span class="py-quote">&quot;List a package's dependencies&quot;</span>)
+<span class="line"> 810: </span>
+<span class="line"> 811: </span>    <span class="py-keyword1">def</span> doCheck(self, base, basecmd, extcmds):
+<span class="line"> 812: </span>        checkPackageArg(base, basecmd, extcmds)
+<span class="line"> 813: </span>
+<span class="line"> 814: </span>    <span class="py-keyword1">def</span> doCommand(self, base, basecmd, extcmds):
+<span class="line"> 815: </span>        self.doneCommand(base, _(<span class="py-quote">&quot;Finding dependencies: &quot;</span>))
+<span class="line"> 816: </span>        <span class="py-keyword1">try</span>:
+<span class="line"> 817: </span>            <span class="py-keyword1">return</span> base.deplist(extcmds)
+<span class="line"> 818: </span>        <span class="py-keyword1">except</span> yum.Errors.YumBaseError, e:
+<span class="line"> 819: </span>            <span class="py-keyword1">return</span> <span class="py-num">1</span>, [<span class="py-keyword2">str</span>(e)]
+<span class="line"> 820: </span>
+<span class="line"> 821: </span>
+<span class="line"> 822: </span><span class="py-keyword1">class</span> RepoListCommand(YumCommand):
+<span class="line"> 823: </span>    
+<span class="line"> 824: </span>    <span class="py-keyword1">def</span> getNames(self):
+<span class="line"> 825: </span>        <span class="py-keyword1">return</span> (<span class="py-quote">'repolist'</span>,)
+<span class="line"> 826: </span>
+<span class="line"> 827: </span>    <span class="py-keyword1">def</span> getUsage(self):
+<span class="line"> 828: </span>        <span class="py-keyword1">return</span> <span class="py-quote">'[all|enabled|disabled]'</span>
+<span class="line"> 829: </span>
+<span class="line"> 830: </span>    <span class="py-keyword1">def</span> getSummary(self):
+<span class="line"> 831: </span>        <span class="py-keyword1">return</span> _(<span class="py-quote">'Display the configured software repositories'</span>)
+<span class="line"> 832: </span>
+<span class="line"> 833: </span>    <span class="py-keyword1">def</span> doCommand(self, base, basecmd, extcmds):
+<span class="line"> 834: </span>        <span class="py-keyword1">def</span> _repo_size(repo):
+<span class="line"> 835: </span>            ret = <span class="py-num">0</span>
+<span class="line"> 836: </span>            <span class="py-keyword1">for</span> pkg <span class="py-keyword1">in</span> repo.sack.returnPackages():
+<span class="line"> 837: </span>                ret += pkg.packagesize
+<span class="line"> 838: </span>            <span class="py-keyword1">return</span> base.format_number(ret)
+<span class="line"> 839: </span>
+<span class="line"> 840: </span>        <span class="py-keyword1">def</span> _repo_match(repo, patterns):
+<span class="line"> 841: </span>            rid = repo.<span class="py-keyword2">id</span>.lower()
+<span class="line"> 842: </span>            rnm = repo.name.lower()
+<span class="line"> 843: </span>            <span class="py-keyword1">for</span> pat <span class="py-keyword1">in</span> patterns:
+<span class="line"> 844: </span>                <span class="py-keyword1">if</span> fnmatch.fnmatch(rid, pat):
+<span class="line"> 845: </span>                    <span class="py-keyword1">return</span> <span class="py-keyword3">True</span>
+<span class="line"> 846: </span>                <span class="py-keyword1">if</span> fnmatch.fnmatch(rnm, pat):
+<span class="line"> 847: </span>                    <span class="py-keyword1">return</span> <span class="py-keyword3">True</span>
+<span class="line"> 848: </span>            <span class="py-keyword1">return</span> <span class="py-keyword3">False</span>
+<span class="line"> 849: </span>
+<span class="line"> 850: </span>        <span class="py-keyword1">def</span> _num2ui_num(num):
+<span class="line"> 851: </span>            <span class="py-keyword1">return</span> to_unicode(locale.format(<span class="py-quote">&quot;%d&quot;</span>, num, <span class="py-keyword3">True</span>))
+<span class="line"> 852: </span>
+<span class="line"> 853: </span>        <span class="py-keyword1">if</span> <span class="py-keyword2">len</span>(extcmds) &gt;= <span class="py-num">1</span> <span class="py-keyword1">and</span> extcmds[<span class="py-num">0</span>] <span class="py-keyword1">in</span> (<span class="py-quote">'all'</span>, <span class="py-quote">'disabled'</span>, <span class="py-quote">'enabled'</span>):
+<span class="line"> 854: </span>            arg = extcmds[<span class="py-num">0</span>]
+<span class="line"> 855: </span>            extcmds = extcmds[<span class="py-num">1</span>:]
+<span class="line"> 856: </span>        <span class="py-keyword1">else</span>:
+<span class="line"> 857: </span>            arg = <span class="py-quote">'enabled'</span>
+<span class="line"> 858: </span>        extcmds = <span class="py-keyword2">map</span>(<span class="py-keyword1">lambda</span> x: x.lower(), extcmds)
+<span class="line"> 859: </span>
+<span class="line"> 860: </span>        verbose = base.verbose_logger.isEnabledFor(logginglevels.DEBUG_3)
+<span class="line"> 861: </span>        <span class="py-keyword1">if</span> arg != <span class="py-quote">'disabled'</span> <span class="py-keyword1">or</span> extcmds:
+<span class="line"> 862: </span>            <span class="py-keyword1">try</span>:
+<span class="line"> 863: </span>                <span class="py-comment"># Setup so len(repo.sack) is correct</span>
+<span class="line"> 864: </span>                base.repos.populateSack()
+<span class="line"> 865: </span>                base.pkgSack <span class="py-comment"># Need to setup the pkgSack, so excludes work</span>
+<span class="line"> 866: </span>            <span class="py-keyword1">except</span> yum.Errors.RepoError:
+<span class="line"> 867: </span>                <span class="py-keyword1">if</span> verbose:
+<span class="line"> 868: </span>                    <span class="py-keyword1">raise</span>
+<span class="line"> 869: </span>
+<span class="line"> 870: </span>        repos = base.repos.repos.values()
+<span class="line"> 871: </span>        repos.sort()
+<span class="line"> 872: </span>        enabled_repos = base.repos.listEnabled()
+<span class="line"> 873: </span>        on_ehibeg = base.term.FG_COLOR[<span class="py-quote">'green'</span>] + base.term.MODE[<span class="py-quote">'bold'</span>]
+<span class="line"> 874: </span>        on_dhibeg = base.term.FG_COLOR[<span class="py-quote">'red'</span>]
+<span class="line"> 875: </span>        on_hiend  = base.term.MODE[<span class="py-quote">'normal'</span>]
+<span class="line"> 876: </span>        tot_num = <span class="py-num">0</span>
+<span class="line"> 877: </span>        cols = []
+<span class="line"> 878: </span>        <span class="py-keyword1">for</span> repo <span class="py-keyword1">in</span> repos:
+<span class="line"> 879: </span>            <span class="py-keyword1">if</span> <span class="py-keyword2">len</span>(extcmds) <span class="py-keyword1">and</span> <span class="py-keyword1">not</span> _repo_match(repo, extcmds):
+<span class="line"> 880: </span>                <span class="py-keyword1">continue</span>
+<span class="line"> 881: </span>            (ehibeg, dhibeg, hiend)  = <span class="py-quote">''</span>, <span class="py-quote">''</span>, <span class="py-quote">''</span>
+<span class="line"> 882: </span>            ui_enabled      = <span class="py-quote">''</span>
+<span class="line"> 883: </span>            ui_endis_wid    = <span class="py-num">0</span>
+<span class="line"> 884: </span>            ui_num          = <span class="py-quote">&quot;&quot;</span>
+<span class="line"> 885: </span>            ui_excludes_num = <span class="py-quote">''</span>
+<span class="line"> 886: </span>            force_show = <span class="py-keyword3">False</span>
+<span class="line"> 887: </span>            <span class="py-keyword1">if</span> arg == <span class="py-quote">'all'</span> <span class="py-keyword1">or</span> repo.<span class="py-keyword2">id</span> <span class="py-keyword1">in</span> extcmds <span class="py-keyword1">or</span> repo.name <span class="py-keyword1">in</span> extcmds:
+<span class="line"> 888: </span>                force_show = <span class="py-keyword3">True</span>
+<span class="line"> 889: </span>                (ehibeg, dhibeg, hiend) = (on_ehibeg, on_dhibeg, on_hiend)
+<span class="line"> 890: </span>            <span class="py-keyword1">if</span> repo <span class="py-keyword1">in</span> enabled_repos:
+<span class="line"> 891: </span>                enabled = <span class="py-keyword3">True</span>
+<span class="line"> 892: </span>                <span class="py-keyword1">if</span> arg == <span class="py-quote">'enabled'</span>:
+<span class="line"> 893: </span>                    force_show = <span class="py-keyword3">False</span>
+<span class="line"> 894: </span>                <span class="py-keyword1">elif</span> arg == <span class="py-quote">'disabled'</span> <span class="py-keyword1">and</span> <span class="py-keyword1">not</span> force_show:
+<span class="line"> 895: </span>                    <span class="py-keyword1">continue</span>
+<span class="line"> 896: </span>                <span class="py-keyword1">if</span> force_show <span class="py-keyword1">or</span> verbose:
+<span class="line"> 897: </span>                    ui_enabled = ehibeg + _(<span class="py-quote">'enabled'</span>) + hiend
+<span class="line"> 898: </span>                    ui_endis_wid = utf8_width(_(<span class="py-quote">'enabled'</span>))
+<span class="line"> 899: </span>                    <span class="py-keyword1">if</span> <span class="py-keyword1">not</span> verbose:
+<span class="line"> 900: </span>                        ui_enabled += <span class="py-quote">&quot;: &quot;</span>
+<span class="line"> 901: </span>                        ui_endis_wid += <span class="py-num">2</span>
+<span class="line"> 902: </span>                <span class="py-keyword1">if</span> verbose:
+<span class="line"> 903: </span>                    ui_size = _repo_size(repo)
+<span class="line"> 904: </span>                <span class="py-comment"># We don't show status for list disabled</span>
+<span class="line"> 905: </span>                <span class="py-keyword1">if</span> arg != <span class="py-quote">'disabled'</span> <span class="py-keyword1">or</span> verbose:
+<span class="line"> 906: </span>                    <span class="py-keyword1">if</span> verbose <span class="py-keyword1">or</span> base.conf.exclude <span class="py-keyword1">or</span> repo.exclude:
+<span class="line"> 907: </span>                        num        = <span class="py-keyword2">len</span>(repo.sack.simplePkgList())
+<span class="line"> 908: </span>                    <span class="py-keyword1">else</span>:
+<span class="line"> 909: </span>                        num        = <span class="py-keyword2">len</span>(repo.sack)
+<span class="line"> 910: </span>                    ui_num     = _num2ui_num(num)
+<span class="line"> 911: </span>                    excludes   = repo.sack._excludes
+<span class="line"> 912: </span>                    excludes   = <span class="py-keyword2">len</span>([pid <span class="py-keyword1">for</span> r,pid <span class="py-keyword1">in</span> excludes <span class="py-keyword1">if</span> r == repo])
+<span class="line"> 913: </span>                    <span class="py-keyword1">if</span> excludes:
+<span class="line"> 914: </span>                        ui_excludes_num = _num2ui_num(excludes)
+<span class="line"> 915: </span>                        <span class="py-keyword1">if</span> <span class="py-keyword1">not</span> verbose:
+<span class="line"> 916: </span>                            ui_num += <span class="py-quote">&quot;+%s&quot;</span> % ui_excludes_num
+<span class="line"> 917: </span>                    tot_num   += num
+<span class="line"> 918: </span>            <span class="py-keyword1">else</span>:
+<span class="line"> 919: </span>                enabled = <span class="py-keyword3">False</span>
+<span class="line"> 920: </span>                <span class="py-keyword1">if</span> arg == <span class="py-quote">'disabled'</span>:
+<span class="line"> 921: </span>                    force_show = <span class="py-keyword3">False</span>
+<span class="line"> 922: </span>                <span class="py-keyword1">elif</span> arg == <span class="py-quote">'enabled'</span> <span class="py-keyword1">and</span> <span class="py-keyword1">not</span> force_show:
+<span class="line"> 923: </span>                    <span class="py-keyword1">continue</span>
+<span class="line"> 924: </span>                ui_enabled = dhibeg + _(<span class="py-quote">'disabled'</span>) + hiend
+<span class="line"> 925: </span>                ui_endis_wid = utf8_width(_(<span class="py-quote">'disabled'</span>))
+<span class="line"> 926: </span>
+<span class="line"> 927: </span>            <span class="py-keyword1">if</span> <span class="py-keyword3">True</span>: <span class="py-comment"># Here to make patch smaller, TODO: rm</span>
+<span class="line"> 928: </span>                <span class="py-keyword1">if</span> <span class="py-keyword1">not</span> verbose:
+<span class="line"> 929: </span>                    rid = <span class="py-keyword2">str</span>(repo)
+<span class="line"> 930: </span>                    <span class="py-keyword1">if</span> enabled <span class="py-keyword1">and</span> repo.metalink:
+<span class="line"> 931: </span>                        mdts = repo.metalink_data.repomd.timestamp
+<span class="line"> 932: </span>                        <span class="py-keyword1">if</span> mdts &gt; repo.repoXML.timestamp:
+<span class="line"> 933: </span>                            rid = <span class="py-quote">'*'</span> + rid
+<span class="line"> 934: </span>                    cols.append((rid, repo.name,
+<span class="line"> 935: </span>                                 (ui_enabled, ui_endis_wid), ui_num))
+<span class="line"> 936: </span>                <span class="py-keyword1">else</span>:
+<span class="line"> 937: </span>                    <span class="py-keyword1">if</span> enabled:
+<span class="line"> 938: </span>                        md = repo.repoXML
+<span class="line"> 939: </span>                    <span class="py-keyword1">else</span>:
+<span class="line"> 940: </span>                        md = <span class="py-keyword3">None</span>
+<span class="line"> 941: </span>                    out = [base.fmtKeyValFill(_(<span class="py-quote">&quot;Repo-id      : &quot;</span>), repo),
+<span class="line"> 942: </span>                           base.fmtKeyValFill(_(<span class="py-quote">&quot;Repo-name    : &quot;</span>), repo.name)]
+<span class="line"> 943: </span>
+<span class="line"> 944: </span>                    <span class="py-keyword1">if</span> force_show <span class="py-keyword1">or</span> extcmds:
+<span class="line"> 945: </span>                        out += [base.fmtKeyValFill(_(<span class="py-quote">&quot;Repo-status  : &quot;</span>),
+<span class="line"> 946: </span>                                                   ui_enabled)]
+<span class="line"> 947: </span>                    <span class="py-keyword1">if</span> md <span class="py-keyword1">and</span> md.revision <span class="py-keyword1">is</span> <span class="py-keyword1">not</span> <span class="py-keyword3">None</span>:
+<span class="line"> 948: </span>                        out += [base.fmtKeyValFill(_(<span class="py-quote">&quot;Repo-revision: &quot;</span>),
+<span class="line"> 949: </span>                                                   md.revision)]
+<span class="line"> 950: </span>                    <span class="py-keyword1">if</span> md <span class="py-keyword1">and</span> md.tags[<span class="py-quote">'content'</span>]:
+<span class="line"> 951: </span>                        tags = md.tags[<span class="py-quote">'content'</span>]
+<span class="line"> 952: </span>                        out += [base.fmtKeyValFill(_(<span class="py-quote">&quot;Repo-tags    : &quot;</span>),
+<span class="line"> 953: </span>                                                   <span class="py-quote">&quot;, &quot;</span>.join(<span class="py-keyword2">sorted</span>(tags)))]
+<span class="line"> 954: </span>
+<span class="line"> 955: </span>                    <span class="py-keyword1">if</span> md <span class="py-keyword1">and</span> md.tags[<span class="py-quote">'distro'</span>]:
+<span class="line"> 956: </span>                        <span class="py-keyword1">for</span> distro <span class="py-keyword1">in</span> <span class="py-keyword2">sorted</span>(md.tags[<span class="py-quote">'distro'</span>]):
+<span class="line"> 957: </span>                            tags = md.tags[<span class="py-quote">'distro'</span>][distro]
+<span class="line"> 958: </span>                            out += [base.fmtKeyValFill(_(<span class="py-quote">&quot;Repo-distro-tags: &quot;</span>),
+<span class="line"> 959: </span>                                                       <span class="py-quote">&quot;[%s]: %s&quot;</span> % (distro,
+<span class="line"> 960: </span>                                                       <span class="py-quote">&quot;, &quot;</span>.join(<span class="py-keyword2">sorted</span>(tags))))]
+<span class="line"> 961: </span>
+<span class="line"> 962: </span>                    <span class="py-keyword1">if</span> md:
+<span class="line"> 963: </span>                        out += [base.fmtKeyValFill(_(<span class="py-quote">&quot;Repo-updated : &quot;</span>),
+<span class="line"> 964: </span>                                                   time.ctime(md.timestamp)),
+<span class="line"> 965: </span>                                base.fmtKeyValFill(_(<span class="py-quote">&quot;Repo-pkgs    : &quot;</span>),ui_num),
+<span class="line"> 966: </span>                                base.fmtKeyValFill(_(<span class="py-quote">&quot;Repo-size    : &quot;</span>),ui_size)]
+<span class="line"> 967: </span>
+<span class="line"> 968: </span>                    <span class="py-keyword1">if</span> <span class="py-keyword2">hasattr</span>(repo, <span class="py-quote">'_orig_baseurl'</span>):
+<span class="line"> 969: </span>                        baseurls = repo._orig_baseurl
+<span class="line"> 970: </span>                    <span class="py-keyword1">else</span>:
+<span class="line"> 971: </span>                        baseurls = repo.baseurl
+<span class="line"> 972: </span>                    <span class="py-keyword1">if</span> baseurls:
+<span class="line"> 973: </span>                        out += [base.fmtKeyValFill(_(<span class="py-quote">&quot;Repo-baseurl : &quot;</span>),
+<span class="line"> 974: </span>                                                   <span class="py-quote">&quot;, &quot;</span>.join(baseurls))]
+<span class="line"> 975: </span>
+<span class="line"> 976: </span>                    <span class="py-keyword1">if</span> enabled:
+<span class="line"> 977: </span>                        <span class="py-comment">#  This needs to be here due to the mirrorlists are</span>
+<span class="line"> 978: </span>                        <span class="py-comment"># metalinks hack.</span>
+<span class="line"> 979: </span>                        repo.urls
+<span class="line"> 980: </span>                    <span class="py-keyword1">if</span> repo.metalink:
+<span class="line"> 981: </span>                        out += [base.fmtKeyValFill(_(<span class="py-quote">&quot;Repo-metalink: &quot;</span>),
+<span class="line"> 982: </span>                                                   repo.metalink)]
+<span class="line"> 983: </span>                        <span class="py-keyword1">if</span> enabled:
+<span class="line"> 984: </span>                            ts = repo.metalink_data.repomd.timestamp
+<span class="line"> 985: </span>                            out += [base.fmtKeyValFill(_(<span class="py-quote">&quot;  Updated    : &quot;</span>),
+<span class="line"> 986: </span>                                                       time.ctime(ts))]
+<span class="line"> 987: </span>                    <span class="py-keyword1">elif</span> repo.mirrorlist:
+<span class="line"> 988: </span>                        out += [base.fmtKeyValFill(_(<span class="py-quote">&quot;Repo-mirrors : &quot;</span>),
+<span class="line"> 989: </span>                                                   repo.mirrorlist)]
+<span class="line"> 990: </span>                    <span class="py-keyword1">if</span> enabled <span class="py-keyword1">and</span> repo.urls <span class="py-keyword1">and</span> <span class="py-keyword1">not</span> baseurls:
+<span class="line"> 991: </span>                        url = repo.urls[<span class="py-num">0</span>]
+<span class="line"> 992: </span>                        <span class="py-keyword1">if</span> <span class="py-keyword2">len</span>(repo.urls) &gt; <span class="py-num">1</span>:
+<span class="line"> 993: </span>                            url += <span class="py-quote">' (%d more)'</span> % (<span class="py-keyword2">len</span>(repo.urls) - <span class="py-num">1</span>)
+<span class="line"> 994: </span>                        out += [base.fmtKeyValFill(_(<span class="py-quote">&quot;Repo-baseurl : &quot;</span>),
+<span class="line"> 995: </span>                                                   url)]
+<span class="line"> 996: </span>
+<span class="line"> 997: </span>                    <span class="py-keyword1">if</span> <span class="py-keyword1">not</span> os.path.exists(repo.metadata_cookie):
+<span class="line"> 998: </span>                        last = _(<span class="py-quote">&quot;Unknown&quot;</span>)
+<span class="line"> 999: </span>                    <span class="py-keyword1">else</span>:
+<span class="line">1000: </span>                        last = os.stat(repo.metadata_cookie).st_mtime
+<span class="line">1001: </span>                        last = time.ctime(last)
+<span class="line">1002: </span>
+<span class="line">1003: </span>                    <span class="py-keyword1">if</span> repo.metadata_expire &lt;= -<span class="py-num">1</span>:
+<span class="line">1004: </span>                        num = _(<span class="py-quote">&quot;Never (last: %s)&quot;</span>) % last
+<span class="line">1005: </span>                    <span class="py-keyword1">elif</span> <span class="py-keyword1">not</span> repo.metadata_expire:
+<span class="line">1006: </span>                        num = _(<span class="py-quote">&quot;Instant (last: %s)&quot;</span>) % last
+<span class="line">1007: </span>                    <span class="py-keyword1">else</span>:
+<span class="line">1008: </span>                        num = _num2ui_num(repo.metadata_expire)
+<span class="line">1009: </span>                        num = _(<span class="py-quote">&quot;%s second(s) (last: %s)&quot;</span>) % (num, last)
+<span class="line">1010: </span>
+<span class="line">1011: </span>                    out += [base.fmtKeyValFill(_(<span class="py-quote">&quot;Repo-expire  : &quot;</span>), num)]
+<span class="line">1012: </span>
+<span class="line">1013: </span>                    <span class="py-keyword1">if</span> repo.exclude:
+<span class="line">1014: </span>                        out += [base.fmtKeyValFill(_(<span class="py-quote">&quot;Repo-exclude : &quot;</span>),
+<span class="line">1015: </span>                                                   <span class="py-quote">&quot;, &quot;</span>.join(repo.exclude))]
+<span class="line">1016: </span>
+<span class="line">1017: </span>                    <span class="py-keyword1">if</span> repo.includepkgs:
+<span class="line">1018: </span>                        out += [base.fmtKeyValFill(_(<span class="py-quote">&quot;Repo-include : &quot;</span>),
+<span class="line">1019: </span>                                                   <span class="py-quote">&quot;, &quot;</span>.join(repo.includepkgs))]
+<span class="line">1020: </span>
+<span class="line">1021: </span>                    <span class="py-keyword1">if</span> ui_excludes_num:
+<span class="line">1022: </span>                        out += [base.fmtKeyValFill(_(<span class="py-quote">&quot;Repo-excluded: &quot;</span>),
+<span class="line">1023: </span>                                                   ui_excludes_num)]
+<span class="line">1024: </span>
+<span class="line">1025: </span>                    <span class="py-keyword1">if</span> repo.repofile:
+<span class="line">1026: </span>                        out += [base.fmtKeyValFill(_(<span class="py-quote">&quot;Repo-filename: &quot;</span>),
+<span class="line">1027: </span>                                                   repo.repofile)]
+<span class="line">1028: </span>
+<span class="line">1029: </span>                    base.verbose_logger.log(logginglevels.DEBUG_3,
+<span class="line">1030: </span>                                            <span class="py-quote">&quot;%s\n&quot;</span>,
+<span class="line">1031: </span>                                            <span class="py-quote">&quot;\n&quot;</span>.join(<span class="py-keyword2">map</span>(misc.to_unicode, out)))
+<span class="line">1032: </span>
+<span class="line">1033: </span>        <span class="py-keyword1">if</span> <span class="py-keyword1">not</span> verbose <span class="py-keyword1">and</span> cols:
+<span class="line">1034: </span>            <span class="py-comment">#  Work out the first (id) and last (enabled/disalbed/count),</span>
+<span class="line">1035: </span>            <span class="py-comment"># then chop the middle (name)...</span>
+<span class="line">1036: </span>            id_len = utf8_width(_(<span class="py-quote">'repo id'</span>))
+<span class="line">1037: </span>            nm_len = <span class="py-num">0</span>
+<span class="line">1038: </span>            st_len = <span class="py-num">0</span>
+<span class="line">1039: </span>            ui_len = <span class="py-num">0</span>
+<span class="line">1040: </span>
+<span class="line">1041: </span>            <span class="py-keyword1">for</span> (rid, rname, (ui_enabled, ui_endis_wid), ui_num) <span class="py-keyword1">in</span> cols:
+<span class="line">1042: </span>                <span class="py-keyword1">if</span> id_len &lt; utf8_width(rid):
+<span class="line">1043: </span>                    id_len = utf8_width(rid)
+<span class="line">1044: </span>                <span class="py-keyword1">if</span> nm_len &lt; utf8_width(rname):
+<span class="line">1045: </span>                    nm_len = utf8_width(rname)
+<span class="line">1046: </span>                <span class="py-keyword1">if</span> st_len &lt; (ui_endis_wid + <span class="py-keyword2">len</span>(ui_num)):
+<span class="line">1047: </span>                    st_len = (ui_endis_wid + <span class="py-keyword2">len</span>(ui_num))
+<span class="line">1048: </span>                <span class="py-comment"># Need this as well as above for: utf8_width_fill()</span>
+<span class="line">1049: </span>                <span class="py-keyword1">if</span> ui_len &lt; <span class="py-keyword2">len</span>(ui_num):
+<span class="line">1050: </span>                    ui_len = <span class="py-keyword2">len</span>(ui_num)
+<span class="line">1051: </span>            <span class="py-keyword1">if</span> arg == <span class="py-quote">'disabled'</span>: <span class="py-comment"># Don't output a status column.</span>
+<span class="line">1052: </span>                left = base.term.columns - (id_len + <span class="py-num">1</span>)
+<span class="line">1053: </span>            <span class="py-keyword1">elif</span> utf8_width(_(<span class="py-quote">'status'</span>)) &gt; st_len:
+<span class="line">1054: </span>                left = base.term.columns - (id_len + utf8_width(_(<span class="py-quote">'status'</span>)) +<span class="py-num">2</span>)
+<span class="line">1055: </span>            <span class="py-keyword1">else</span>:
+<span class="line">1056: </span>                left = base.term.columns - (id_len + st_len + <span class="py-num">2</span>)
+<span class="line">1057: </span>
+<span class="line">1058: </span>            <span class="py-keyword1">if</span> left &lt; nm_len: <span class="py-comment"># Name gets chopped</span>
+<span class="line">1059: </span>                nm_len = left
+<span class="line">1060: </span>            <span class="py-keyword1">else</span>: <span class="py-comment"># Share the extra...</span>
+<span class="line">1061: </span>                left -= nm_len
+<span class="line">1062: </span>                id_len += left / <span class="py-num">2</span>
+<span class="line">1063: </span>                nm_len += left - (left / <span class="py-num">2</span>)
+<span class="line">1064: </span>
+<span class="line">1065: </span>            txt_rid  = utf8_width_fill(_(<span class="py-quote">'repo id'</span>), id_len)
+<span class="line">1066: </span>            txt_rnam = utf8_width_fill(_(<span class="py-quote">'repo name'</span>), nm_len, nm_len)
+<span class="line">1067: </span>            <span class="py-keyword1">if</span> arg == <span class="py-quote">'disabled'</span>: <span class="py-comment"># Don't output a status column.</span>
+<span class="line">1068: </span>                base.verbose_logger.info(<span class="py-quote">&quot;%s %s&quot;</span>,
+<span class="line">1069: </span>                                        txt_rid, txt_rnam)
+<span class="line">1070: </span>            <span class="py-keyword1">else</span>:
+<span class="line">1071: </span>                base.verbose_logger.info(<span class="py-quote">&quot;%s %s %s&quot;</span>,
+<span class="line">1072: </span>                                        txt_rid, txt_rnam, _(<span class="py-quote">'status'</span>))
+<span class="line">1073: </span>            <span class="py-keyword1">for</span> (rid, rname, (ui_enabled, ui_endis_wid), ui_num) <span class="py-keyword1">in</span> cols:
+<span class="line">1074: </span>                <span class="py-keyword1">if</span> arg == <span class="py-quote">'disabled'</span>: <span class="py-comment"># Don't output a status column.</span>
+<span class="line">1075: </span>                    base.verbose_logger.info(<span class="py-quote">&quot;%s %s&quot;</span>,
+<span class="line">1076: </span>                                            utf8_width_fill(rid, id_len),
+<span class="line">1077: </span>                                            utf8_width_fill(rname, nm_len,
+<span class="line">1078: </span>                                                            nm_len))
+<span class="line">1079: </span>                    <span class="py-keyword1">continue</span>
+<span class="line">1080: </span>
+<span class="line">1081: </span>                <span class="py-keyword1">if</span> ui_num:
+<span class="line">1082: </span>                    ui_num = utf8_width_fill(ui_num, ui_len, left=<span class="py-keyword3">False</span>)
+<span class="line">1083: </span>                base.verbose_logger.info(<span class="py-quote">&quot;%s %s %s%s&quot;</span>,
+<span class="line">1084: </span>                                        utf8_width_fill(rid, id_len),
+<span class="line">1085: </span>                                        utf8_width_fill(rname, nm_len, nm_len),
+<span class="line">1086: </span>                                        ui_enabled, ui_num)
+<span class="line">1087: </span>
+<span class="line">1088: </span>        <span class="py-keyword1">return</span> <span class="py-num">0</span>, [<span class="py-quote">'repolist: '</span> +to_unicode(locale.format(<span class="py-quote">&quot;%d&quot;</span>, tot_num, <span class="py-keyword3">True</span>))]
+<span class="line">1089: </span>
+<span class="line">1090: </span>    <span class="py-keyword1">def</span> needTs(self, base, basecmd, extcmds):
+<span class="line">1091: </span>        <span class="py-keyword1">return</span> <span class="py-keyword3">False</span>
+<span class="line">1092: </span>
+<span class="line">1093: </span>
+<span class="line">1094: </span><span class="py-keyword1">class</span> HelpCommand(YumCommand):
+<span class="line">1095: </span>
+<span class="line">1096: </span>    <span class="py-keyword1">def</span> getNames(self):
+<span class="line">1097: </span>        <span class="py-keyword1">return</span> [<span class="py-quote">'help'</span>]
+<span class="line">1098: </span>
+<span class="line">1099: </span>    <span class="py-keyword1">def</span> getUsage(self):
+<span class="line">1100: </span>        <span class="py-keyword1">return</span> <span class="py-quote">&quot;COMMAND&quot;</span>
+<span class="line">1101: </span>
+<span class="line">1102: </span>    <span class="py-keyword1">def</span> getSummary(self):
+<span class="line">1103: </span>        <span class="py-keyword1">return</span> _(<span class="py-quote">&quot;Display a helpful usage message&quot;</span>)
+<span class="line">1104: </span>
+<span class="line">1105: </span>    <span class="py-keyword1">def</span> doCheck(self, base, basecmd, extcmds):
+<span class="line">1106: </span>        <span class="py-keyword1">if</span> <span class="py-keyword2">len</span>(extcmds) == <span class="py-num">0</span>:
+<span class="line">1107: </span>            base.usage()
+<span class="line">1108: </span>            <span class="py-keyword1">raise</span> cli.CliError
+<span class="line">1109: </span>        <span class="py-keyword1">elif</span> <span class="py-keyword2">len</span>(extcmds) &gt; <span class="py-num">1</span> <span class="py-keyword1">or</span> extcmds[<span class="py-num">0</span>] <span class="py-keyword1">not</span> <span class="py-keyword1">in</span> base.yum_cli_commands:
+<span class="line">1110: </span>            base.usage()
+<span class="line">1111: </span>            <span class="py-keyword1">raise</span> cli.CliError
+<span class="line">1112: </span>
+<span class="line">1113: </span>    @<span class="py-keyword2">staticmethod</span>
+<span class="line">1114: </span>    <span class="py-keyword1">def</span> _makeOutput(command):
+<span class="line">1115: </span>        canonical_name = command.getNames()[<span class="py-num">0</span>]
+<span class="line">1116: </span>
+<span class="line">1117: </span>        <span class="py-comment"># Check for the methods in case we have plugins that don't</span>
+<span class="line">1118: </span>        <span class="py-comment"># implement these.</span>
+<span class="line">1119: </span>        <span class="py-comment"># XXX Remove this once usage/summary are common enough</span>
+<span class="line">1120: </span>        <span class="py-keyword1">try</span>:
+<span class="line">1121: </span>            usage = command.getUsage()
+<span class="line">1122: </span>        <span class="py-keyword1">except</span> (<span class="py-keyword3">AttributeError</span>, <span class="py-keyword3">NotImplementedError</span>):
+<span class="line">1123: </span>            usage = <span class="py-keyword3">None</span>
+<span class="line">1124: </span>        <span class="py-keyword1">try</span>:
+<span class="line">1125: </span>            summary = command.getSummary()
+<span class="line">1126: </span>        <span class="py-keyword1">except</span> (<span class="py-keyword3">AttributeError</span>, <span class="py-keyword3">NotImplementedError</span>):
+<span class="line">1127: </span>            summary = <span class="py-keyword3">None</span>
+<span class="line">1128: </span>
+<span class="line">1129: </span>        <span class="py-comment"># XXX need detailed help here, too</span>
+<span class="line">1130: </span>        help_output = <span class="py-quote">&quot;&quot;</span>
+<span class="line">1131: </span>        <span class="py-keyword1">if</span> usage <span class="py-keyword1">is</span> <span class="py-keyword1">not</span> <span class="py-keyword3">None</span>:
+<span class="line">1132: </span>            help_output += <span class="py-quote">&quot;%s %s&quot;</span> % (canonical_name, usage)
+<span class="line">1133: </span>        <span class="py-keyword1">if</span> summary <span class="py-keyword1">is</span> <span class="py-keyword1">not</span> <span class="py-keyword3">None</span>:
+<span class="line">1134: </span>            help_output += <span class="py-quote">&quot;\n\n%s&quot;</span> % summary
+<span class="line">1135: </span>
+<span class="line">1136: </span>        <span class="py-keyword1">if</span> usage <span class="py-keyword1">is</span> <span class="py-keyword3">None</span> <span class="py-keyword1">and</span> summary <span class="py-keyword1">is</span> <span class="py-keyword3">None</span>:
+<span class="line">1137: </span>            help_output = _(<span class="py-quote">&quot;No help available for %s&quot;</span>) % canonical_name
+<span class="line">1138: </span>
+<span class="line">1139: </span>        command_names = command.getNames()
+<span class="line">1140: </span>        <span class="py-keyword1">if</span> <span class="py-keyword2">len</span>(command_names) &gt; <span class="py-num">1</span>:
+<span class="line">1141: </span>            <span class="py-keyword1">if</span> <span class="py-keyword2">len</span>(command_names) &gt; <span class="py-num">2</span>:
+<span class="line">1142: </span>                help_output += _(<span class="py-quote">&quot;\n\naliases: &quot;</span>)
+<span class="line">1143: </span>            <span class="py-keyword1">else</span>:
+<span class="line">1144: </span>                help_output += _(<span class="py-quote">&quot;\n\nalias: &quot;</span>)
+<span class="line">1145: </span>            help_output += <span class="py-quote">', '</span>.join(command.getNames()[<span class="py-num">1</span>:])
+<span class="line">1146: </span>
+<span class="line">1147: </span>        <span class="py-keyword1">return</span> help_output
+<span class="line">1148: </span>
+<span class="line">1149: </span>    <span class="py-keyword1">def</span> doCommand(self, base, basecmd, extcmds):
+<span class="line">1150: </span>        <span class="py-keyword1">if</span> extcmds[<span class="py-num">0</span>] <span class="py-keyword1">in</span> base.yum_cli_commands:
+<span class="line">1151: </span>            command = base.yum_cli_commands[extcmds[<span class="py-num">0</span>]]
+<span class="line">1152: </span>            base.verbose_logger.info(self._makeOutput(command))
+<span class="line">1153: </span>        <span class="py-keyword1">return</span> <span class="py-num">0</span>, []
+<span class="line">1154: </span>
+<span class="line">1155: </span>    <span class="py-keyword1">def</span> needTs(self, base, basecmd, extcmds):
+<span class="line">1156: </span>        <span class="py-keyword1">return</span> <span class="py-keyword3">False</span>
+<span class="line">1157: </span>
+<span class="line">1158: </span><span class="py-keyword1">class</span> ReInstallCommand(YumCommand):
+<span class="line">1159: </span>    <span class="py-keyword1">def</span> getNames(self):
+<span class="line">1160: </span>        <span class="py-keyword1">return</span> [<span class="py-quote">'reinstall'</span>]
+<span class="line">1161: </span>
+<span class="line">1162: </span>    <span class="py-keyword1">def</span> getUsage(self):
+<span class="line">1163: </span>        <span class="py-keyword1">return</span> <span class="py-quote">&quot;PACKAGE...&quot;</span>
+<span class="line">1164: </span>
+<span class="line">1165: </span>    <span class="py-keyword1">def</span> doCheck(self, base, basecmd, extcmds):
+<span class="line">1166: </span>        checkRootUID(base)
+<span class="line">1167: </span>        checkGPGKey(base)
+<span class="line">1168: </span>        checkPackageArg(base, basecmd, extcmds)
+<span class="line">1169: </span>        checkEnabledRepo(base, extcmds)
+<span class="line">1170: </span>
+<span class="line">1171: </span>    <span class="py-keyword1">def</span> doCommand(self, base, basecmd, extcmds):
+<span class="line">1172: </span>        self.doneCommand(base, _(<span class="py-quote">&quot;Setting up Reinstall Process&quot;</span>))
+<span class="line">1173: </span>        <span class="py-keyword1">try</span>:
+<span class="line">1174: </span>            <span class="py-keyword1">return</span> base.reinstallPkgs(extcmds)
+<span class="line">1175: </span>            
+<span class="line">1176: </span>        <span class="py-keyword1">except</span> yum.Errors.YumBaseError, e:
+<span class="line">1177: </span>            <span class="py-keyword1">return</span> <span class="py-num">1</span>, [to_unicode(e)]
+<span class="line">1178: </span>
+<span class="line">1179: </span>    <span class="py-keyword1">def</span> getSummary(self):
+<span class="line">1180: </span>        <span class="py-keyword1">return</span> _(<span class="py-quote">&quot;reinstall a package&quot;</span>)
+<span class="line">1181: </span>
+<span class="line">1182: </span>    <span class="py-keyword1">def</span> needTs(self, base, basecmd, extcmds):
+<span class="line">1183: </span>        <span class="py-keyword1">return</span> <span class="py-keyword3">False</span>
+<span class="line">1184: </span>        
+<span class="line">1185: </span><span class="py-keyword1">class</span> DowngradeCommand(YumCommand):
+<span class="line">1186: </span>    <span class="py-keyword1">def</span> getNames(self):
+<span class="line">1187: </span>        <span class="py-keyword1">return</span> [<span class="py-quote">'downgrade'</span>]
+<span class="line">1188: </span>
+<span class="line">1189: </span>    <span class="py-keyword1">def</span> getUsage(self):
+<span class="line">1190: </span>        <span class="py-keyword1">return</span> <span class="py-quote">&quot;PACKAGE...&quot;</span>
+<span class="line">1191: </span>
+<span class="line">1192: </span>    <span class="py-keyword1">def</span> doCheck(self, base, basecmd, extcmds):
+<span class="line">1193: </span>        checkRootUID(base)
+<span class="line">1194: </span>        checkGPGKey(base)
+<span class="line">1195: </span>        checkPackageArg(base, basecmd, extcmds)
+<span class="line">1196: </span>        checkEnabledRepo(base, extcmds)
+<span class="line">1197: </span>
+<span class="line">1198: </span>    <span class="py-keyword1">def</span> doCommand(self, base, basecmd, extcmds):
+<span class="line">1199: </span>        self.doneCommand(base, _(<span class="py-quote">&quot;Setting up Downgrade Process&quot;</span>))
+<span class="line">1200: </span>        <span class="py-keyword1">try</span>:
+<span class="line">1201: </span>            <span class="py-keyword1">return</span> base.downgradePkgs(extcmds)
+<span class="line">1202: </span>        <span class="py-keyword1">except</span> yum.Errors.YumBaseError, e:
+<span class="line">1203: </span>            <span class="py-keyword1">return</span> <span class="py-num">1</span>, [<span class="py-keyword2">str</span>(e)]
+<span class="line">1204: </span>
+<span class="line">1205: </span>    <span class="py-keyword1">def</span> getSummary(self):
+<span class="line">1206: </span>        <span class="py-keyword1">return</span> _(<span class="py-quote">&quot;downgrade a package&quot;</span>)
+<span class="line">1207: </span>
+<span class="line">1208: </span>    <span class="py-keyword1">def</span> needTs(self, base, basecmd, extcmds):
+<span class="line">1209: </span>        <span class="py-keyword1">return</span> <span class="py-keyword3">False</span>
+<span class="line">1210: </span>
+<span class="line">1211: </span>
+<span class="line">1212: </span><span class="py-keyword1">class</span> VersionCommand(YumCommand):
+<span class="line">1213: </span>    <span class="py-keyword1">def</span> getNames(self):
+<span class="line">1214: </span>        <span class="py-keyword1">return</span> [<span class="py-quote">'version'</span>]
+<span class="line">1215: </span>
+<span class="line">1216: </span>    <span class="py-keyword1">def</span> getUsage(self):
+<span class="line">1217: </span>        <span class="py-keyword1">return</span> <span class="py-quote">&quot;[all|installed|available]&quot;</span>
+<span class="line">1218: </span>
+<span class="line">1219: </span>    <span class="py-keyword1">def</span> getSummary(self):
+<span class="line">1220: </span>        <span class="py-keyword1">return</span> _(<span class="py-quote">&quot;Display a version for the machine and/or available repos.&quot;</span>)
+<span class="line">1221: </span>
+<span class="line">1222: </span>    <span class="py-keyword1">def</span> doCommand(self, base, basecmd, extcmds):
+<span class="line">1223: </span>        vcmd = <span class="py-quote">'installed'</span>
+<span class="line">1224: </span>        <span class="py-keyword1">if</span> extcmds:
+<span class="line">1225: </span>            vcmd = extcmds[<span class="py-num">0</span>]
+<span class="line">1226: </span>
+<span class="line">1227: </span>        <span class="py-keyword1">def</span> _append_repos(cols, repo_data):
+<span class="line">1228: </span>            <span class="py-keyword1">for</span> repoid <span class="py-keyword1">in</span> <span class="py-keyword2">sorted</span>(repo_data):
+<span class="line">1229: </span>                cur = repo_data[repoid]
+<span class="line">1230: </span>                ncols = []
+<span class="line">1231: </span>                last_rev = <span class="py-keyword3">None</span>
+<span class="line">1232: </span>                <span class="py-keyword1">for</span> rev <span class="py-keyword1">in</span> <span class="py-keyword2">sorted</span>(cur):
+<span class="line">1233: </span>                    <span class="py-keyword1">if</span> rev <span class="py-keyword1">is</span> <span class="py-keyword3">None</span>:
+<span class="line">1234: </span>                        <span class="py-keyword1">continue</span>
+<span class="line">1235: </span>                    last_rev = cur[rev]
+<span class="line">1236: </span>                    ncols.append((<span class="py-quote">&quot;    %s/%s&quot;</span> % (repoid, rev), <span class="py-keyword2">str</span>(cur[rev])))
+<span class="line">1237: </span>                <span class="py-keyword1">if</span> <span class="py-keyword3">None</span> <span class="py-keyword1">in</span> cur <span class="py-keyword1">and</span> (<span class="py-keyword1">not</span> last_rev <span class="py-keyword1">or</span> cur[<span class="py-keyword3">None</span>] != last_rev):
+<span class="line">1238: </span>                    cols.append((<span class="py-quote">&quot;    %s&quot;</span> % repoid, <span class="py-keyword2">str</span>(cur[<span class="py-keyword3">None</span>])))
+<span class="line">1239: </span>                cols.extend(ncols)
+<span class="line">1240: </span>
+<span class="line">1241: </span>        verbose = base.verbose_logger.isEnabledFor(logginglevels.DEBUG_3)
+<span class="line">1242: </span>        groups = {}
+<span class="line">1243: </span>        <span class="py-keyword1">if</span> vcmd <span class="py-keyword1">in</span> (<span class="py-quote">'nogroups'</span>, <span class="py-quote">'nogroups-installed'</span>, <span class="py-quote">'nogroups-available'</span>,
+<span class="line">1244: </span>                    <span class="py-quote">'nogroups-all'</span>):
+<span class="line">1245: </span>            gconf = []
+<span class="line">1246: </span>            <span class="py-keyword1">if</span> vcmd == <span class="py-quote">'nogroups'</span>:
+<span class="line">1247: </span>                vcmd = <span class="py-quote">'installed'</span>
+<span class="line">1248: </span>            <span class="py-keyword1">else</span>:
+<span class="line">1249: </span>                vcmd = vcmd[<span class="py-keyword2">len</span>(<span class="py-quote">'nogroups-'</span>):]
+<span class="line">1250: </span>        <span class="py-keyword1">else</span>:
+<span class="line">1251: </span>            gconf = yum.config.readVersionGroupsConfig()
+<span class="line">1252: </span>
+<span class="line">1253: </span>        <span class="py-keyword1">for</span> group <span class="py-keyword1">in</span> gconf:
+<span class="line">1254: </span>            groups[group] = <span class="py-keyword2">set</span>(gconf[group].pkglist)
+<span class="line">1255: </span>            <span class="py-keyword1">if</span> gconf[group].run_with_packages:
+<span class="line">1256: </span>                groups[group].update(base.run_with_package_names)
+<span class="line">1257: </span>
+<span class="line">1258: </span>        <span class="py-keyword1">if</span> vcmd == <span class="py-quote">'grouplist'</span>:
+<span class="line">1259: </span>            <span class="py-keyword1">print</span> _(<span class="py-quote">&quot; Yum version groups:&quot;</span>)
+<span class="line">1260: </span>            <span class="py-keyword1">for</span> group <span class="py-keyword1">in</span> <span class="py-keyword2">sorted</span>(groups):
+<span class="line">1261: </span>                <span class="py-keyword1">print</span> <span class="py-quote">&quot;   &quot;</span>, group
+<span class="line">1262: </span>
+<span class="line">1263: </span>            <span class="py-keyword1">return</span> <span class="py-num">0</span>, [<span class="py-quote">'version grouplist'</span>]
+<span class="line">1264: </span>
+<span class="line">1265: </span>        <span class="py-keyword1">if</span> vcmd == <span class="py-quote">'groupinfo'</span>:
+<span class="line">1266: </span>            <span class="py-keyword1">for</span> group <span class="py-keyword1">in</span> groups:
+<span class="line">1267: </span>                <span class="py-keyword1">if</span> group <span class="py-keyword1">not</span> <span class="py-keyword1">in</span> extcmds[<span class="py-num">1</span>:]:
+<span class="line">1268: </span>                    <span class="py-keyword1">continue</span>
+<span class="line">1269: </span>                <span class="py-keyword1">print</span> _(<span class="py-quote">&quot; Group   :&quot;</span>), group
+<span class="line">1270: </span>                <span class="py-keyword1">print</span> _(<span class="py-quote">&quot; Packages:&quot;</span>)
+<span class="line">1271: </span>                <span class="py-keyword1">if</span> <span class="py-keyword1">not</span> verbose:
+<span class="line">1272: </span>                    <span class="py-keyword1">for</span> pkgname <span class="py-keyword1">in</span> <span class="py-keyword2">sorted</span>(groups[group]):
+<span class="line">1273: </span>                        <span class="py-keyword1">print</span> <span class="py-quote">&quot;   &quot;</span>, pkgname
+<span class="line">1274: </span>                <span class="py-keyword1">else</span>:
+<span class="line">1275: </span>                    data = {<span class="py-quote">'envra'</span> : {}, <span class="py-quote">'rid'</span> : {}}
+<span class="line">1276: </span>                    pkg_names = groups[group]
+<span class="line">1277: </span>                    pkg_names2pkgs = base._group_names2aipkgs(pkg_names)
+<span class="line">1278: </span>                    base._calcDataPkgColumns(data, pkg_names, pkg_names2pkgs)
+<span class="line">1279: </span>                    data = [data[<span class="py-quote">'envra'</span>], data[<span class="py-quote">'rid'</span>]]
+<span class="line">1280: </span>                    columns = base.calcColumns(data)
+<span class="line">1281: </span>                    columns = (-columns[<span class="py-num">0</span>], -columns[<span class="py-num">1</span>])
+<span class="line">1282: </span>                    base._displayPkgsFromNames(pkg_names, <span class="py-keyword3">True</span>, pkg_names2pkgs,
+<span class="line">1283: </span>                                               columns=columns)
+<span class="line">1284: </span>
+<span class="line">1285: </span>            <span class="py-keyword1">return</span> <span class="py-num">0</span>, [<span class="py-quote">'version groupinfo'</span>]
+<span class="line">1286: </span>
+<span class="line">1287: </span>        rel = base.conf.yumvar[<span class="py-quote">'releasever'</span>]
+<span class="line">1288: </span>        ba  = base.conf.yumvar[<span class="py-quote">'basearch'</span>]
+<span class="line">1289: </span>        cols = []
+<span class="line">1290: </span>        <span class="py-keyword1">if</span> vcmd <span class="py-keyword1">in</span> (<span class="py-quote">'installed'</span>, <span class="py-quote">'all'</span>, <span class="py-quote">'group-installed'</span>, <span class="py-quote">'group-all'</span>):
+<span class="line">1291: </span>            <span class="py-keyword1">try</span>:
+<span class="line">1292: </span>                data = base.rpmdb.simpleVersion(<span class="py-keyword1">not</span> verbose, groups=groups)
+<span class="line">1293: </span>                lastdbv = base.history.last()
+<span class="line">1294: </span>                <span class="py-keyword1">if</span> lastdbv <span class="py-keyword1">is</span> <span class="py-keyword1">not</span> <span class="py-keyword3">None</span>:
+<span class="line">1295: </span>                    lastdbv = lastdbv.end_rpmdbversion
+<span class="line">1296: </span>                <span class="py-keyword1">if</span> lastdbv <span class="py-keyword1">is</span> <span class="py-keyword1">not</span> <span class="py-keyword3">None</span> <span class="py-keyword1">and</span> data[<span class="py-num">0</span>] != lastdbv:
+<span class="line">1297: </span>                    base._rpmdb_warn_checks(warn=lastdbv <span class="py-keyword1">is</span> <span class="py-keyword1">not</span> <span class="py-keyword3">None</span>)
+<span class="line">1298: </span>                <span class="py-keyword1">if</span> vcmd <span class="py-keyword1">not</span> <span class="py-keyword1">in</span> (<span class="py-quote">'group-installed'</span>, <span class="py-quote">'group-all'</span>):
+<span class="line">1299: </span>                    cols.append((<span class="py-quote">&quot;%s %s/%s&quot;</span> % (_(<span class="py-quote">&quot;Installed:&quot;</span>), rel, ba),
+<span class="line">1300: </span>                                 <span class="py-keyword2">str</span>(data[<span class="py-num">0</span>])))
+<span class="line">1301: </span>                    _append_repos(cols, data[<span class="py-num">1</span>])
+<span class="line">1302: </span>                <span class="py-keyword1">if</span> groups:
+<span class="line">1303: </span>                    <span class="py-keyword1">for</span> grp <span class="py-keyword1">in</span> <span class="py-keyword2">sorted</span>(data[<span class="py-num">2</span>]):
+<span class="line">1304: </span>                        <span class="py-keyword1">if</span> (vcmd.startswith(<span class="py-quote">&quot;group-&quot;</span>) <span class="py-keyword1">and</span>
+<span class="line">1305: </span>                            <span class="py-keyword2">len</span>(extcmds) &gt; <span class="py-num">1</span> <span class="py-keyword1">and</span> grp <span class="py-keyword1">not</span> <span class="py-keyword1">in</span> extcmds[<span class="py-num">1</span>:]):
+<span class="line">1306: </span>                            <span class="py-keyword1">continue</span>
+<span class="line">1307: </span>                        cols.append((<span class="py-quote">&quot;%s %s&quot;</span> % (_(<span class="py-quote">&quot;Group-Installed:&quot;</span>), grp),
+<span class="line">1308: </span>                                     <span class="py-keyword2">str</span>(data[<span class="py-num">2</span>][grp])))
+<span class="line">1309: </span>                        _append_repos(cols, data[<span class="py-num">3</span>][grp])
+<span class="line">1310: </span>            <span class="py-keyword1">except</span> yum.Errors.YumBaseError, e:
+<span class="line">1311: </span>                <span class="py-keyword1">return</span> <span class="py-num">1</span>, [<span class="py-keyword2">str</span>(e)]
+<span class="line">1312: </span>        <span class="py-keyword1">if</span> vcmd <span class="py-keyword1">in</span> (<span class="py-quote">'available'</span>, <span class="py-quote">'all'</span>, <span class="py-quote">'group-available'</span>, <span class="py-quote">'group-all'</span>):
+<span class="line">1313: </span>            <span class="py-keyword1">try</span>:
+<span class="line">1314: </span>                data = base.pkgSack.simpleVersion(<span class="py-keyword1">not</span> verbose, groups=groups)
+<span class="line">1315: </span>                <span class="py-keyword1">if</span> vcmd <span class="py-keyword1">not</span> <span class="py-keyword1">in</span> (<span class="py-quote">'group-available'</span>, <span class="py-quote">'group-all'</span>):
+<span class="line">1316: </span>                    cols.append((<span class="py-quote">&quot;%s %s/%s&quot;</span> % (_(<span class="py-quote">&quot;Available:&quot;</span>), rel, ba),
+<span class="line">1317: </span>                                 <span class="py-keyword2">str</span>(data[<span class="py-num">0</span>])))
+<span class="line">1318: </span>                    <span class="py-keyword1">if</span> verbose:
+<span class="line">1319: </span>                        _append_repos(cols, data[<span class="py-num">1</span>])
+<span class="line">1320: </span>                <span class="py-keyword1">if</span> groups:
+<span class="line">1321: </span>                    <span class="py-keyword1">for</span> grp <span class="py-keyword1">in</span> <span class="py-keyword2">sorted</span>(data[<span class="py-num">2</span>]):
+<span class="line">1322: </span>                        <span class="py-keyword1">if</span> (vcmd.startswith(<span class="py-quote">&quot;group-&quot;</span>) <span class="py-keyword1">and</span>
+<span class="line">1323: </span>                            <span class="py-keyword2">len</span>(extcmds) &gt; <span class="py-num">1</span> <span class="py-keyword1">and</span> grp <span class="py-keyword1">not</span> <span class="py-keyword1">in</span> extcmds[<span class="py-num">1</span>:]):
+<span class="line">1324: </span>                            <span class="py-keyword1">continue</span>
+<span class="line">1325: </span>                        cols.append((<span class="py-quote">&quot;%s %s&quot;</span> % (_(<span class="py-quote">&quot;Group-Available:&quot;</span>), grp),
+<span class="line">1326: </span>                                     <span class="py-keyword2">str</span>(data[<span class="py-num">2</span>][grp])))
+<span class="line">1327: </span>                        <span class="py-keyword1">if</span> verbose:
+<span class="line">1328: </span>                            _append_repos(cols, data[<span class="py-num">3</span>][grp])
+<span class="line">1329: </span>            <span class="py-keyword1">except</span> yum.Errors.YumBaseError, e:
+<span class="line">1330: </span>                <span class="py-keyword1">return</span> <span class="py-num">1</span>, [<span class="py-keyword2">str</span>(e)]
+<span class="line">1331: </span>
+<span class="line">1332: </span>        data = {<span class="py-quote">'rid'</span> : {}, <span class="py-quote">'ver'</span> : {}}
+<span class="line">1333: </span>        <span class="py-keyword1">for</span> (rid, ver) <span class="py-keyword1">in</span> cols:
+<span class="line">1334: </span>            <span class="py-keyword1">for</span> (d, v) <span class="py-keyword1">in</span> ((<span class="py-quote">'rid'</span>, <span class="py-keyword2">len</span>(rid)), (<span class="py-quote">'ver'</span>, <span class="py-keyword2">len</span>(ver))):
+<span class="line">1335: </span>                data[d].setdefault(v, <span class="py-num">0</span>)
+<span class="line">1336: </span>                data[d][v] += <span class="py-num">1</span>
+<span class="line">1337: </span>        data = [data[<span class="py-quote">'rid'</span>], data[<span class="py-quote">'ver'</span>]]
+<span class="line">1338: </span>        columns = base.calcColumns(data)
+<span class="line">1339: </span>        columns = (-columns[<span class="py-num">0</span>], columns[<span class="py-num">1</span>])
+<span class="line">1340: </span>
+<span class="line">1341: </span>        <span class="py-keyword1">for</span> line <span class="py-keyword1">in</span> cols:
+<span class="line">1342: </span>            <span class="py-keyword1">print</span> base.fmtColumns(<span class="py-keyword2">zip</span>(line, columns))
+<span class="line">1343: </span>
+<span class="line">1344: </span>        <span class="py-keyword1">return</span> <span class="py-num">0</span>, [<span class="py-quote">'version'</span>]
+<span class="line">1345: </span>
+<span class="line">1346: </span>    <span class="py-keyword1">def</span> needTs(self, base, basecmd, extcmds):
+<span class="line">1347: </span>        vcmd = <span class="py-quote">'installed'</span>
+<span class="line">1348: </span>        <span class="py-keyword1">if</span> extcmds:
+<span class="line">1349: </span>            vcmd = extcmds[<span class="py-num">0</span>]
+<span class="line">1350: </span>        verbose = base.verbose_logger.isEnabledFor(logginglevels.DEBUG_3)
+<span class="line">1351: </span>        <span class="py-keyword1">if</span> vcmd == <span class="py-quote">'groupinfo'</span> <span class="py-keyword1">and</span> verbose:
+<span class="line">1352: </span>            <span class="py-keyword1">return</span> <span class="py-keyword3">True</span>
+<span class="line">1353: </span>        <span class="py-keyword1">return</span> vcmd <span class="py-keyword1">in</span> (<span class="py-quote">'available'</span>, <span class="py-quote">'all'</span>, <span class="py-quote">'group-available'</span>, <span class="py-quote">'group-all'</span>)
+<span class="line">1354: </span>
+<span class="line">1355: </span>
+<span class="line">1356: </span><span class="py-keyword1">class</span> HistoryCommand(YumCommand):
+<span class="line">1357: </span>    <span class="py-keyword1">def</span> getNames(self):
+<span class="line">1358: </span>        <span class="py-keyword1">return</span> [<span class="py-quote">'history'</span>]
+<span class="line">1359: </span>
+<span class="line">1360: </span>    <span class="py-keyword1">def</span> getUsage(self):
+<span class="line">1361: </span>        <span class="py-keyword1">return</span> <span class="py-quote">&quot;[info|list|packages-list|summary|addon-info|redo|undo|rollback|new]&quot;</span>
+<span class="line">1362: </span>
+<span class="line">1363: </span>    <span class="py-keyword1">def</span> getSummary(self):
+<span class="line">1364: </span>        <span class="py-keyword1">return</span> _(<span class="py-quote">&quot;Display, or use, the transaction history&quot;</span>)
+<span class="line">1365: </span>
+<span class="line">1366: </span>    <span class="py-keyword1">def</span> _hcmd_redo(self, base, extcmds):
+<span class="line">1367: </span>        old = base._history_get_transaction(extcmds)
+<span class="line">1368: </span>        <span class="py-keyword1">if</span> old <span class="py-keyword1">is</span> <span class="py-keyword3">None</span>:
+<span class="line">1369: </span>            <span class="py-keyword1">return</span> <span class="py-num">1</span>, [<span class="py-quote">'Failed history redo'</span>]
+<span class="line">1370: </span>        tm = time.ctime(old.beg_timestamp)
+<span class="line">1371: </span>        <span class="py-keyword1">print</span> <span class="py-quote">&quot;Repeating transaction %u, from %s&quot;</span> % (old.tid, tm)
+<span class="line">1372: </span>        base.historyInfoCmdPkgsAltered(old)
+<span class="line">1373: </span>        <span class="py-keyword1">if</span> base.history_redo(old):
+<span class="line">1374: </span>            <span class="py-keyword1">return</span> <span class="py-num">2</span>, [<span class="py-quote">&quot;Repeating transaction %u&quot;</span> % (old.tid,)]
+<span class="line">1375: </span>
+<span class="line">1376: </span>    <span class="py-keyword1">def</span> _hcmd_undo(self, base, extcmds):
+<span class="line">1377: </span>        old = base._history_get_transaction(extcmds)
+<span class="line">1378: </span>        <span class="py-keyword1">if</span> old <span class="py-keyword1">is</span> <span class="py-keyword3">None</span>:
+<span class="line">1379: </span>            <span class="py-keyword1">return</span> <span class="py-num">1</span>, [<span class="py-quote">'Failed history undo'</span>]
+<span class="line">1380: </span>        tm = time.ctime(old.beg_timestamp)
+<span class="line">1381: </span>        <span class="py-keyword1">print</span> <span class="py-quote">&quot;Undoing transaction %u, from %s&quot;</span> % (old.tid, tm)
+<span class="line">1382: </span>        base.historyInfoCmdPkgsAltered(old)
+<span class="line">1383: </span>        <span class="py-keyword1">if</span> base.history_undo(old):
+<span class="line">1384: </span>            <span class="py-keyword1">return</span> <span class="py-num">2</span>, [<span class="py-quote">&quot;Undoing transaction %u&quot;</span> % (old.tid,)]
+<span class="line">1385: </span>
+<span class="line">1386: </span>    <span class="py-keyword1">def</span> _hcmd_rollback(self, base, extcmds):
+<span class="line">1387: </span>        force = <span class="py-keyword3">False</span>
+<span class="line">1388: </span>        <span class="py-keyword1">if</span> <span class="py-keyword2">len</span>(extcmds) &gt; <span class="py-num">1</span> <span class="py-keyword1">and</span> extcmds[<span class="py-num">1</span>] == <span class="py-quote">'force'</span>:
+<span class="line">1389: </span>            force = <span class="py-keyword3">True</span>
+<span class="line">1390: </span>            extcmds = extcmds[:]
+<span class="line">1391: </span>            extcmds.pop(<span class="py-num">0</span>)
+<span class="line">1392: </span>
+<span class="line">1393: </span>        old = base._history_get_transaction(extcmds)
+<span class="line">1394: </span>        <span class="py-keyword1">if</span> old <span class="py-keyword1">is</span> <span class="py-keyword3">None</span>:
+<span class="line">1395: </span>            <span class="py-keyword1">return</span> <span class="py-num">1</span>, [<span class="py-quote">'Failed history rollback, no transaction'</span>]
+<span class="line">1396: </span>        last = base.history.last()
+<span class="line">1397: </span>        <span class="py-keyword1">if</span> last <span class="py-keyword1">is</span> <span class="py-keyword3">None</span>:
+<span class="line">1398: </span>            <span class="py-keyword1">return</span> <span class="py-num">1</span>, [<span class="py-quote">'Failed history rollback, no last?'</span>]
+<span class="line">1399: </span>        <span class="py-keyword1">if</span> old.tid == last.tid:
+<span class="line">1400: </span>            <span class="py-keyword1">return</span> <span class="py-num">0</span>, [<span class="py-quote">'Rollback to current, nothing to do'</span>]
+<span class="line">1401: </span>
+<span class="line">1402: </span>        mobj = <span class="py-keyword3">None</span>
+<span class="line">1403: </span>        <span class="py-keyword1">for</span> tid <span class="py-keyword1">in</span> base.history.old(<span class="py-keyword2">range</span>(old.tid + <span class="py-num">1</span>, last.tid + <span class="py-num">1</span>)):
+<span class="line">1404: </span>            <span class="py-keyword1">if</span> <span class="py-keyword1">not</span> force <span class="py-keyword1">and</span> (tid.altered_lt_rpmdb <span class="py-keyword1">or</span> tid.altered_gt_rpmdb):
+<span class="line">1405: </span>                <span class="py-keyword1">if</span> tid.altered_lt_rpmdb:
+<span class="line">1406: </span>                    msg = <span class="py-quote">&quot;Transaction history is incomplete, before %u.&quot;</span>
+<span class="line">1407: </span>                <span class="py-keyword1">else</span>:
+<span class="line">1408: </span>                    msg = <span class="py-quote">&quot;Transaction history is incomplete, after %u.&quot;</span>
+<span class="line">1409: </span>                <span class="py-keyword1">print</span> msg % tid.tid
+<span class="line">1410: </span>                <span class="py-keyword1">print</span> <span class="py-quote">&quot; You can use 'history rollback force', to try anyway.&quot;</span>
+<span class="line">1411: </span>                <span class="py-keyword1">return</span> <span class="py-num">1</span>, [<span class="py-quote">'Failed history rollback, incomplete'</span>]
+<span class="line">1412: </span>
+<span class="line">1413: </span>            <span class="py-keyword1">if</span> mobj <span class="py-keyword1">is</span> <span class="py-keyword3">None</span>:
+<span class="line">1414: </span>                mobj = yum.history.YumMergedHistoryTransaction(tid)
+<span class="line">1415: </span>            <span class="py-keyword1">else</span>:
+<span class="line">1416: </span>                mobj.merge(tid)
+<span class="line">1417: </span>
+<span class="line">1418: </span>        tm = time.ctime(old.beg_timestamp)
+<span class="line">1419: </span>        <span class="py-keyword1">print</span> <span class="py-quote">&quot;Rollback to transaction %u, from %s&quot;</span> % (old.tid, tm)
+<span class="line">1420: </span>        <span class="py-keyword1">print</span> base.fmtKeyValFill(<span class="py-quote">&quot;  Undoing the following transactions: &quot;</span>,
+<span class="line">1421: </span>                                 <span class="py-quote">&quot;, &quot;</span>.join((<span class="py-keyword2">str</span>(x) <span class="py-keyword1">for</span> x <span class="py-keyword1">in</span> mobj.tid)))
+<span class="line">1422: </span>        base.historyInfoCmdPkgsAltered(mobj)
+<span class="line">1423: </span>        <span class="py-keyword1">if</span> base.history_undo(mobj):
+<span class="line">1424: </span>            <span class="py-keyword1">return</span> <span class="py-num">2</span>, [<span class="py-quote">&quot;Rollback to transaction %u&quot;</span> % (old.tid,)]
+<span class="line">1425: </span>
+<span class="line">1426: </span>    <span class="py-keyword1">def</span> _hcmd_new(self, base, extcmds):
+<span class="line">1427: </span>        base.history._create_db_file()
+<span class="line">1428: </span>
+<span class="line">1429: </span>    <span class="py-keyword1">def</span> doCheck(self, base, basecmd, extcmds):
+<span class="line">1430: </span>        cmds = (<span class="py-quote">'list'</span>, <span class="py-quote">'info'</span>, <span class="py-quote">'summary'</span>, <span class="py-quote">'repeat'</span>, <span class="py-quote">'redo'</span>, <span class="py-quote">'undo'</span>, <span class="py-quote">'new'</span>,
+<span class="line">1431: </span>                <span class="py-quote">'rollback'</span>,
+<span class="line">1432: </span>                <span class="py-quote">'addon'</span>, <span class="py-quote">'addon-info'</span>,
+<span class="line">1433: </span>                <span class="py-quote">'pkg'</span>, <span class="py-quote">'pkgs'</span>, <span class="py-quote">'pkg-list'</span>, <span class="py-quote">'pkgs-list'</span>,
+<span class="line">1434: </span>                <span class="py-quote">'package'</span>, <span class="py-quote">'package-list'</span>, <span class="py-quote">'packages'</span>, <span class="py-quote">'packages-list'</span>)
+<span class="line">1435: </span>        <span class="py-keyword1">if</span> extcmds <span class="py-keyword1">and</span> extcmds[<span class="py-num">0</span>] <span class="py-keyword1">not</span> <span class="py-keyword1">in</span> cmds:
+<span class="line">1436: </span>            base.logger.critical(_(<span class="py-quote">'Invalid history sub-command, use: %s.'</span>),
+<span class="line">1437: </span>                                 <span class="py-quote">&quot;, &quot;</span>.join(cmds))
+<span class="line">1438: </span>            <span class="py-keyword1">raise</span> cli.CliError
+<span class="line">1439: </span>        <span class="py-keyword1">if</span> extcmds <span class="py-keyword1">and</span> extcmds[<span class="py-num">0</span>] <span class="py-keyword1">in</span> (<span class="py-quote">'repeat'</span>, <span class="py-quote">'redo'</span>, <span class="py-quote">'undo'</span>, <span class="py-quote">'rollback'</span>, <span class="py-quote">'new'</span>):
+<span class="line">1440: </span>            checkRootUID(base)
+<span class="line">1441: </span>            checkGPGKey(base)
+<span class="line">1442: </span>        <span class="py-keyword1">elif</span> <span class="py-keyword1">not</span> os.access(base.history._db_file, os.R_OK):
+<span class="line">1443: </span>            base.logger.critical(_(<span class="py-quote">&quot;You don't have access to the history DB.&quot;</span>))
+<span class="line">1444: </span>            <span class="py-keyword1">raise</span> cli.CliError
+<span class="line">1445: </span>
+<span class="line">1446: </span>    <span class="py-keyword1">def</span> doCommand(self, base, basecmd, extcmds):
+<span class="line">1447: </span>        vcmd = <span class="py-quote">'list'</span>
+<span class="line">1448: </span>        <span class="py-keyword1">if</span> extcmds:
+<span class="line">1449: </span>            vcmd = extcmds[<span class="py-num">0</span>]
+<span class="line">1450: </span>
+<span class="line">1451: </span>        <span class="py-keyword1">if</span> <span class="py-keyword3">False</span>: <span class="py-keyword1">pass</span>
+<span class="line">1452: </span>        <span class="py-keyword1">elif</span> vcmd == <span class="py-quote">'list'</span>:
+<span class="line">1453: </span>            ret = base.historyListCmd(extcmds)
+<span class="line">1454: </span>        <span class="py-keyword1">elif</span> vcmd == <span class="py-quote">'info'</span>:
+<span class="line">1455: </span>            ret = base.historyInfoCmd(extcmds)
+<span class="line">1456: </span>        <span class="py-keyword1">elif</span> vcmd == <span class="py-quote">'summary'</span>:
+<span class="line">1457: </span>            ret = base.historySummaryCmd(extcmds)
+<span class="line">1458: </span>        <span class="py-keyword1">elif</span> vcmd <span class="py-keyword1">in</span> (<span class="py-quote">'addon'</span>, <span class="py-quote">'addon-info'</span>):
+<span class="line">1459: </span>            ret = base.historyAddonInfoCmd(extcmds)
+<span class="line">1460: </span>        <span class="py-keyword1">elif</span> vcmd <span class="py-keyword1">in</span> (<span class="py-quote">'pkg'</span>, <span class="py-quote">'pkgs'</span>, <span class="py-quote">'pkg-list'</span>, <span class="py-quote">'pkgs-list'</span>,
+<span class="line">1461: </span>                      <span class="py-quote">'package'</span>, <span class="py-quote">'package-list'</span>, <span class="py-quote">'packages'</span>, <span class="py-quote">'packages-list'</span>):
+<span class="line">1462: </span>            ret = base.historyPackageListCmd(extcmds)
+<span class="line">1463: </span>        <span class="py-keyword1">elif</span> vcmd == <span class="py-quote">'undo'</span>:
+<span class="line">1464: </span>            ret = self._hcmd_undo(base, extcmds)
+<span class="line">1465: </span>        <span class="py-keyword1">elif</span> vcmd <span class="py-keyword1">in</span> (<span class="py-quote">'redo'</span>, <span class="py-quote">'repeat'</span>):
+<span class="line">1466: </span>            ret = self._hcmd_redo(base, extcmds)
+<span class="line">1467: </span>        <span class="py-keyword1">elif</span> vcmd == <span class="py-quote">'rollback'</span>:
+<span class="line">1468: </span>            ret = self._hcmd_rollback(base, extcmds)
+<span class="line">1469: </span>        <span class="py-keyword1">elif</span> vcmd == <span class="py-quote">'new'</span>:
+<span class="line">1470: </span>            ret = self._hcmd_new(base, extcmds)
+<span class="line">1471: </span>
+<span class="line">1472: </span>        <span class="py-keyword1">if</span> ret <span class="py-keyword1">is</span> <span class="py-keyword3">None</span>:
+<span class="line">1473: </span>            <span class="py-keyword1">return</span> <span class="py-num">0</span>, [<span class="py-quote">'history %s'</span> % (vcmd,)]
+<span class="line">1474: </span>        <span class="py-keyword1">return</span> ret
+<span class="line">1475: </span>
+<span class="line">1476: </span>    <span class="py-keyword1">def</span> needTs(self, base, basecmd, extcmds):
+<span class="line">1477: </span>        vcmd = <span class="py-quote">'list'</span>
+<span class="line">1478: </span>        <span class="py-keyword1">if</span> extcmds:
+<span class="line">1479: </span>            vcmd = extcmds[<span class="py-num">0</span>]
+<span class="line">1480: </span>        <span class="py-keyword1">return</span> vcmd <span class="py-keyword1">in</span> (<span class="py-quote">'repeat'</span>, <span class="py-quote">'redo'</span>, <span class="py-quote">'undo'</span>, <span class="py-quote">'rollback'</span>)
+<span class="line">1481: </span>
+<span class="line">1482: </span>
+<span class="line">1483: </span><span class="py-keyword1">class</span> CheckRpmdbCommand(YumCommand):
+<span class="line">1484: </span>    <span class="py-keyword1">def</span> getNames(self):
+<span class="line">1485: </span>        <span class="py-keyword1">return</span> [<span class="py-quote">'check'</span>, <span class="py-quote">'check-rpmdb'</span>]
+<span class="line">1486: </span>
+<span class="line">1487: </span>    <span class="py-keyword1">def</span> getUsage(self):
+<span class="line">1488: </span>        <span class="py-keyword1">return</span> <span class="py-quote">&quot;[dependencies|duplicates|all]&quot;</span>
+<span class="line">1489: </span>
+<span class="line">1490: </span>    <span class="py-keyword1">def</span> getSummary(self):
+<span class="line">1491: </span>        <span class="py-keyword1">return</span> _(<span class="py-quote">&quot;Check for problems in the rpmdb&quot;</span>)
+<span class="line">1492: </span>
+<span class="line">1493: </span>    <span class="py-keyword1">def</span> doCommand(self, base, basecmd, extcmds):
+<span class="line">1494: </span>        chkcmd = <span class="py-quote">'all'</span>
+<span class="line">1495: </span>        <span class="py-keyword1">if</span> extcmds:
+<span class="line">1496: </span>            chkcmd = extcmds
+<span class="line">1497: </span>
+<span class="line">1498: </span>        <span class="py-keyword1">def</span> _out(x):
+<span class="line">1499: </span>            <span class="py-keyword1">print</span> to_unicode(x.<span class="py-keyword3">__str__</span>())
+<span class="line">1500: </span>
+<span class="line">1501: </span>        rc = <span class="py-num">0</span>
+<span class="line">1502: </span>        <span class="py-keyword1">if</span> base._rpmdb_warn_checks(out=_out, warn=<span class="py-keyword3">False</span>, chkcmd=chkcmd,
+<span class="line">1503: </span>                                   header=<span class="py-keyword1">lambda</span> x: <span class="py-keyword3">None</span>):
+<span class="line">1504: </span>            rc = <span class="py-num">1</span>
+<span class="line">1505: </span>        <span class="py-keyword1">return</span> rc, [<span class="py-quote">'%s %s'</span> % (basecmd, chkcmd)]
+<span class="line">1506: </span>
+<span class="line">1507: </span>    <span class="py-keyword1">def</span> needTs(self, base, basecmd, extcmds):
+<span class="line">1508: </span>        <span class="py-keyword1">return</span> <span class="py-keyword3">False</span>
+<span class="line">1509: </span>
+<span class="line">1510: </span><span class="py-keyword1">class</span> LoadTransactionCommand(YumCommand):
+<span class="line">1511: </span>    <span class="py-keyword1">def</span> getNames(self):
+<span class="line">1512: </span>        <span class="py-keyword1">return</span> [<span class="py-quote">'load-transaction'</span>, <span class="py-quote">'load-ts'</span>]
+<span class="line">1513: </span>
+<span class="line">1514: </span>    <span class="py-keyword1">def</span> getUsage(self):
+<span class="line">1515: </span>        <span class="py-keyword1">return</span> <span class="py-quote">&quot;filename&quot;</span>
+<span class="line">1516: </span>
+<span class="line">1517: </span>    <span class="py-keyword1">def</span> getSummary(self):
+<span class="line">1518: </span>        <span class="py-keyword1">return</span> _(<span class="py-quote">&quot;load a saved transaction from filename&quot;</span>)
+<span class="line">1519: </span>
+<span class="line">1520: </span>    <span class="py-keyword1">def</span> doCommand(self, base, basecmd, extcmds):
+<span class="line">1521: </span>        <span class="py-keyword1">if</span> <span class="py-keyword1">not</span> extcmds:
+<span class="line">1522: </span>            base.logger.critical(_(<span class="py-quote">&quot;No saved transaction file specified.&quot;</span>))
+<span class="line">1523: </span>            <span class="py-keyword1">raise</span> cli.CliError
+<span class="line">1524: </span>        
+<span class="line">1525: </span>        load_file = extcmds[<span class="py-num">0</span>]
+<span class="line">1526: </span>        self.doneCommand(base, _(<span class="py-quote">&quot;loading transaction from %s&quot;</span>) % load_file)
+<span class="line">1527: </span>        
+<span class="line">1528: </span>        <span class="py-keyword1">try</span>:
+<span class="line">1529: </span>            base.load_ts(load_file)
+<span class="line">1530: </span>        <span class="py-keyword1">except</span> yum.Errors.YumBaseError, e:
+<span class="line">1531: </span>            <span class="py-keyword1">return</span> <span class="py-num">1</span>, [to_unicode(e)]
+<span class="line">1532: </span>        <span class="py-keyword1">return</span> <span class="py-num">2</span>, [_(<span class="py-quote">'Transaction loaded from %s with %s members'</span>) % (load_file, <span class="py-keyword2">len</span>(base.tsInfo.getMembers()))]
+<span class="line">1533: </span>
+<span class="line">1534: </span>
+<span class="line">1535: </span>    <span class="py-keyword1">def</span> needTs(self, base, basecmd, extcmds):
+<span class="line">1536: </span>        <span class="py-keyword1">return</span> <span class="py-keyword3">True</span>
+<span class="line">1537: </span>
+<span class="line">1538: </span>
+</pre></body></html>

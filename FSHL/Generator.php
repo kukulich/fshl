@@ -269,9 +269,10 @@ class Generator
 	public function saveToCache()
 	{
 		$file = __DIR__ . '/Lexer/Cache/' . $this->lexerName . '.php';
-		if (false === @file_put_contents($file, $this->source)) {
+		if (false === @file_put_contents($file, $this->getSource())) {
 			throw new \RuntimeException(sprintf('Cannot save source to "%s"', $file));
 		}
+		require_once $file;
 		return $this;
 	}
 

@@ -123,7 +123,7 @@ class Minimal
 			0 => NULL
 		);
 		$this->keywords = array(
-
+			
 		);
 
 	}

@@ -1,0 +1,603 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8" /><link rel="stylesheet" type="text/css" href="../../../style.css" media="all" /></head><body><pre>
+<span class="java-comment">/*
+ * Licensed to Elastic Search and Shay Banon under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. Elastic Search licenses this
+ * file to you under the Apache License, Version 2.0 (the
+ * &quot;License&quot;); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */</span>
+
+<span class="java-keywords1">package</span> org.elasticsearch.search;
+
+<span class="java-keywords1">import</span> org.apache.lucene.search.Filter;
+<span class="java-keywords1">import</span> org.apache.lucene.search.TopDocs;
+<span class="java-keywords1">import</span> org.elasticsearch.ElasticSearchException;
+<span class="java-keywords1">import</span> org.elasticsearch.action.search.SearchType;
+<span class="java-keywords1">import</span> org.elasticsearch.cluster.ClusterService;
+<span class="java-keywords1">import</span> org.elasticsearch.common.Nullable;
+<span class="java-keywords1">import</span> org.elasticsearch.common.Unicode;
+<span class="java-keywords1">import</span> org.elasticsearch.common.collect.ImmutableMap;
+<span class="java-keywords1">import</span> org.elasticsearch.common.component.AbstractLifecycleComponent;
+<span class="java-keywords1">import</span> org.elasticsearch.common.inject.Inject;
+<span class="java-keywords1">import</span> org.elasticsearch.common.settings.Settings;
+<span class="java-keywords1">import</span> org.elasticsearch.common.unit.TimeValue;
+<span class="java-keywords1">import</span> org.elasticsearch.common.util.concurrent.ConcurrentCollections;
+<span class="java-keywords1">import</span> org.elasticsearch.common.util.concurrent.ConcurrentMapLong;
+<span class="java-keywords1">import</span> org.elasticsearch.common.xcontent.XContentFactory;
+<span class="java-keywords1">import</span> org.elasticsearch.common.xcontent.XContentParser;
+<span class="java-keywords1">import</span> org.elasticsearch.index.Index;
+<span class="java-keywords1">import</span> org.elasticsearch.index.engine.Engine;
+<span class="java-keywords1">import</span> org.elasticsearch.index.search.stats.StatsGroupsParseElement;
+<span class="java-keywords1">import</span> org.elasticsearch.index.service.IndexService;
+<span class="java-keywords1">import</span> org.elasticsearch.index.shard.ShardId;
+<span class="java-keywords1">import</span> org.elasticsearch.index.shard.service.IndexShard;
+<span class="java-keywords1">import</span> org.elasticsearch.indices.IndicesLifecycle;
+<span class="java-keywords1">import</span> org.elasticsearch.indices.IndicesService;
+<span class="java-keywords1">import</span> org.elasticsearch.script.ScriptService;
+<span class="java-keywords1">import</span> org.elasticsearch.search.dfs.CachedDfSource;
+<span class="java-keywords1">import</span> org.elasticsearch.search.dfs.DfsPhase;
+<span class="java-keywords1">import</span> org.elasticsearch.search.dfs.DfsSearchResult;
+<span class="java-keywords1">import</span> org.elasticsearch.search.fetch.FetchPhase;
+<span class="java-keywords1">import</span> org.elasticsearch.search.fetch.FetchSearchRequest;
+<span class="java-keywords1">import</span> org.elasticsearch.search.fetch.FetchSearchResult;
+<span class="java-keywords1">import</span> org.elasticsearch.search.fetch.QueryFetchSearchResult;
+<span class="java-keywords1">import</span> org.elasticsearch.search.fetch.ScrollQueryFetchSearchResult;
+<span class="java-keywords1">import</span> org.elasticsearch.search.internal.InternalScrollSearchRequest;
+<span class="java-keywords1">import</span> org.elasticsearch.search.internal.InternalSearchRequest;
+<span class="java-keywords1">import</span> org.elasticsearch.search.internal.SearchContext;
+<span class="java-keywords1">import</span> org.elasticsearch.search.query.QueryPhase;
+<span class="java-keywords1">import</span> org.elasticsearch.search.query.QueryPhaseExecutionException;
+<span class="java-keywords1">import</span> org.elasticsearch.search.query.QuerySearchRequest;
+<span class="java-keywords1">import</span> org.elasticsearch.search.query.QuerySearchResult;
+<span class="java-keywords1">import</span> org.elasticsearch.search.query.ScrollQuerySearchResult;
+<span class="java-keywords1">import</span> org.elasticsearch.threadpool.ThreadPool;
+
+<span class="java-keywords1">import</span> java.io.IOException;
+<span class="java-keywords1">import</span> java.util.HashMap;
+<span class="java-keywords1">import</span> java.util.Map;
+<span class="java-keywords1">import</span> java.util.concurrent.ScheduledFuture;
+<span class="java-keywords1">import</span> java.util.concurrent.atomic.AtomicLong;
+
+<span class="java-keywords1">import</span> <span class="java-keywords1">static</span> org.elasticsearch.common.unit.TimeValue.*;
+
+<span class="java-comment">/**
+ * @author kimchy (shay.banon)
+ */</span>
+<span class="java-keywords1">public</span> <span class="java-keywords1">class</span> SearchService <span class="java-keywords1">extends</span> AbstractLifecycleComponent&lt;SearchService&gt; {
+
+    <span class="java-keywords1">private</span> <span class="java-keywords1">final</span> ThreadPool threadPool;
+
+    <span class="java-keywords1">private</span> <span class="java-keywords1">final</span> ClusterService clusterService;
+
+    <span class="java-keywords1">private</span> <span class="java-keywords1">final</span> IndicesService indicesService;
+
+    <span class="java-keywords1">private</span> <span class="java-keywords1">final</span> ScriptService scriptService;
+
+    <span class="java-keywords1">private</span> <span class="java-keywords1">final</span> DfsPhase dfsPhase;
+
+    <span class="java-keywords1">private</span> <span class="java-keywords1">final</span> QueryPhase queryPhase;
+
+    <span class="java-keywords1">private</span> <span class="java-keywords1">final</span> FetchPhase fetchPhase;
+
+
+    <span class="java-keywords1">private</span> <span class="java-keywords1">final</span> <span class="java-keywords1">long</span> defaultKeepAlive;
+
+    <span class="java-keywords1">private</span> <span class="java-keywords1">final</span> ScheduledFuture keepAliveReaper;
+
+
+    <span class="java-keywords1">private</span> <span class="java-keywords1">final</span> AtomicLong idGenerator = <span class="java-keywords1">new</span> AtomicLong();
+
+    <span class="java-keywords1">private</span> <span class="java-keywords1">final</span> CleanContextOnIndicesLifecycleListener indicesLifecycleListener = <span class="java-keywords1">new</span> CleanContextOnIndicesLifecycleListener();
+
+    <span class="java-keywords1">private</span> <span class="java-keywords1">final</span> ConcurrentMapLong&lt;SearchContext&gt; activeContexts = ConcurrentCollections.newConcurrentMapLong();
+
+    <span class="java-keywords1">private</span> <span class="java-keywords1">final</span> ImmutableMap&lt;String, SearchParseElement&gt; elementParsers;
+
+    @Inject <span class="java-keywords1">public</span> SearchService(Settings settings, ClusterService clusterService, IndicesService indicesService, IndicesLifecycle indicesLifecycle, ThreadPool threadPool,
+                                 ScriptService scriptService, DfsPhase dfsPhase, QueryPhase queryPhase, FetchPhase fetchPhase) {
+        <span class="java-keywords1">super</span>(settings);
+        <span class="java-keywords1">this</span>.threadPool = threadPool;
+        <span class="java-keywords1">this</span>.clusterService = clusterService;
+        <span class="java-keywords1">this</span>.indicesService = indicesService;
+        <span class="java-keywords1">this</span>.scriptService = scriptService;
+        <span class="java-keywords1">this</span>.dfsPhase = dfsPhase;
+        <span class="java-keywords1">this</span>.queryPhase = queryPhase;
+        <span class="java-keywords1">this</span>.fetchPhase = fetchPhase;
+
+        TimeValue keepAliveInterval = componentSettings.getAsTime(<span class="java-quote">&quot;keep_alive_interval&quot;</span>, timeValueMinutes(<span class="java-num">1</span>));
+        <span class="java-comment">// we can have 5 minutes here, since we make sure to clean with search requests and when shard/index closes</span>
+        <span class="java-keywords1">this</span>.defaultKeepAlive = componentSettings.getAsTime(<span class="java-quote">&quot;default_keep_alive&quot;</span>, timeValueMinutes(<span class="java-num">5</span>)).millis();
+
+        Map&lt;String, SearchParseElement&gt; elementParsers = <span class="java-keywords1">new</span> HashMap&lt;String, SearchParseElement&gt;();
+        elementParsers.putAll(dfsPhase.parseElements());
+        elementParsers.putAll(queryPhase.parseElements());
+        elementParsers.putAll(fetchPhase.parseElements());
+        elementParsers.put(<span class="java-quote">&quot;stats&quot;</span>, <span class="java-keywords1">new</span> StatsGroupsParseElement());
+        <span class="java-keywords1">this</span>.elementParsers = ImmutableMap.copyOf(elementParsers);
+        indicesLifecycle.addListener(indicesLifecycleListener);
+
+        <span class="java-keywords1">this</span>.keepAliveReaper = threadPool.scheduleWithFixedDelay(<span class="java-keywords1">new</span> Reaper(), keepAliveInterval);
+    }
+
+    @Override <span class="java-keywords1">protected</span> <span class="java-keywords1">void</span> doStart() <span class="java-keywords1">throws</span> ElasticSearchException {
+    }
+
+    @Override <span class="java-keywords1">protected</span> <span class="java-keywords1">void</span> doStop() <span class="java-keywords1">throws</span> ElasticSearchException {
+        <span class="java-keywords1">for</span> (SearchContext context : activeContexts.values()) {
+            freeContext(context);
+        }
+        activeContexts.clear();
+    }
+
+    @Override <span class="java-keywords1">protected</span> <span class="java-keywords1">void</span> doClose() <span class="java-keywords1">throws</span> ElasticSearchException {
+        keepAliveReaper.cancel(false);
+        indicesService.indicesLifecycle().removeListener(indicesLifecycleListener);
+    }
+
+    <span class="java-keywords1">public</span> <span class="java-keywords1">void</span> releaseContextsForIndex(Index index) {
+        <span class="java-keywords1">for</span> (SearchContext context : activeContexts.values()) {
+            <span class="java-keywords1">if</span> (context.shardTarget().index().equals(index.name())) {
+                freeContext(context);
+            }
+        }
+    }
+
+    <span class="java-keywords1">public</span> <span class="java-keywords1">void</span> releaseContextsForShard(ShardId shardId) {
+        <span class="java-keywords1">for</span> (SearchContext context : activeContexts.values()) {
+            <span class="java-keywords1">if</span> (context.shardTarget().index().equals(shardId.index().name()) &amp;&amp; context.shardTarget().shardId() == shardId.id()) {
+                freeContext(context);
+            }
+        }
+    }
+
+    <span class="java-keywords1">public</span> DfsSearchResult executeDfsPhase(InternalSearchRequest request) <span class="java-keywords1">throws</span> ElasticSearchException {
+        SearchContext context = createContext(request);
+        activeContexts.put(context.id(), context);
+        <span class="java-keywords1">try</span> {
+            contextProcessing(context);
+            dfsPhase.execute(context);
+            contextProcessedSuccessfully(context);
+            <span class="java-keywords1">return</span> context.dfsResult();
+        } <span class="java-keywords1">catch</span> (RuntimeException e) {
+            logger.trace(<span class="java-quote">&quot;Dfs phase failed&quot;</span>, e);
+            freeContext(context);
+            <span class="java-keywords1">throw</span> e;
+        } <span class="java-keywords1">finally</span> {
+            cleanContext(context);
+        }
+    }
+
+    <span class="java-keywords1">public</span> QuerySearchResult executeScan(InternalSearchRequest request) <span class="java-keywords1">throws</span> ElasticSearchException {
+        SearchContext context = createContext(request);
+        assert context.searchType() == SearchType.SCAN;
+        context.searchType(SearchType.COUNT); <span class="java-comment">// move to COUNT, and then, when scrolling, move to SCAN</span>
+        activeContexts.put(context.id(), context);
+        assert context.searchType() == SearchType.COUNT;
+        <span class="java-keywords1">try</span> {
+            <span class="java-keywords1">if</span> (context.scroll() == null) {
+                <span class="java-keywords1">throw</span> <span class="java-keywords1">new</span> ElasticSearchException(<span class="java-quote">&quot;Scroll must be provided when scanning...&quot;</span>);
+            }
+            contextProcessing(context);
+            queryPhase.execute(context);
+            contextProcessedSuccessfully(context);
+            <span class="java-keywords1">return</span> context.queryResult();
+        } <span class="java-keywords1">catch</span> (RuntimeException e) {
+            logger.trace(<span class="java-quote">&quot;Scan phase failed&quot;</span>, e);
+            freeContext(context);
+            <span class="java-keywords1">throw</span> e;
+        } <span class="java-keywords1">finally</span> {
+            cleanContext(context);
+        }
+    }
+
+    <span class="java-keywords1">public</span> ScrollQueryFetchSearchResult executeScan(InternalScrollSearchRequest request) <span class="java-keywords1">throws</span> ElasticSearchException {
+        SearchContext context = findContext(request.id());
+        contextProcessing(context);
+        <span class="java-keywords1">try</span> {
+            processScroll(request, context);
+            <span class="java-keywords1">if</span> (context.searchType() == SearchType.COUNT) {
+                <span class="java-comment">// first scanning, reset the from to 0</span>
+                context.searchType(SearchType.SCAN);
+                context.from(<span class="java-num">0</span>);
+            }
+            queryPhase.execute(context);
+            shortcutDocIdsToLoadForScanning(context);
+            fetchPhase.execute(context);
+            <span class="java-keywords1">if</span> (context.scroll() == null || context.fetchResult().hits().hits().length &lt; context.size()) {
+                freeContext(request.id());
+            } <span class="java-keywords1">else</span> {
+                contextProcessedSuccessfully(context);
+            }
+            <span class="java-keywords1">return</span> <span class="java-keywords1">new</span> ScrollQueryFetchSearchResult(<span class="java-keywords1">new</span> QueryFetchSearchResult(context.queryResult(), context.fetchResult()), context.shardTarget());
+        } <span class="java-keywords1">catch</span> (RuntimeException e) {
+            logger.trace(<span class="java-quote">&quot;Scan phase failed&quot;</span>, e);
+            freeContext(context);
+            <span class="java-keywords1">throw</span> e;
+        } <span class="java-keywords1">finally</span> {
+            cleanContext(context);
+        }
+    }
+
+    <span class="java-keywords1">public</span> QuerySearchResult executeQueryPhase(InternalSearchRequest request) <span class="java-keywords1">throws</span> ElasticSearchException {
+        SearchContext context = createContext(request);
+        activeContexts.put(context.id(), context);
+        <span class="java-keywords1">try</span> {
+            <span class="java-keywords1">long</span> time = System.nanoTime();
+            contextProcessing(context);
+            queryPhase.execute(context);
+            <span class="java-keywords1">if</span> (context.searchType() == SearchType.COUNT) {
+                freeContext(context.id());
+            } <span class="java-keywords1">else</span> {
+                contextProcessedSuccessfully(context);
+            }
+            context.indexShard().searchService().onQueryPhase(context, System.nanoTime() - time);
+            <span class="java-keywords1">return</span> context.queryResult();
+        } <span class="java-keywords1">catch</span> (RuntimeException e) {
+            logger.trace(<span class="java-quote">&quot;Query phase failed&quot;</span>, e);
+            freeContext(context);
+            <span class="java-keywords1">throw</span> e;
+        } <span class="java-keywords1">finally</span> {
+            cleanContext(context);
+        }
+    }
+
+    <span class="java-keywords1">public</span> ScrollQuerySearchResult executeQueryPhase(InternalScrollSearchRequest request) <span class="java-keywords1">throws</span> ElasticSearchException {
+        SearchContext context = findContext(request.id());
+        <span class="java-keywords1">try</span> {
+            <span class="java-keywords1">long</span> time = System.nanoTime();
+            contextProcessing(context);
+            processScroll(request, context);
+            queryPhase.execute(context);
+            contextProcessedSuccessfully(context);
+            context.indexShard().searchService().onQueryPhase(context, System.nanoTime() - time);
+            <span class="java-keywords1">return</span> <span class="java-keywords1">new</span> ScrollQuerySearchResult(context.queryResult(), context.shardTarget());
+        } <span class="java-keywords1">catch</span> (RuntimeException e) {
+            logger.trace(<span class="java-quote">&quot;Query phase failed&quot;</span>, e);
+            freeContext(context);
+            <span class="java-keywords1">throw</span> e;
+        } <span class="java-keywords1">finally</span> {
+            cleanContext(context);
+        }
+    }
+
+    <span class="java-keywords1">public</span> QuerySearchResult executeQueryPhase(QuerySearchRequest request) <span class="java-keywords1">throws</span> ElasticSearchException {
+        SearchContext context = findContext(request.id());
+        contextProcessing(context);
+        <span class="java-keywords1">try</span> {
+            context.searcher().dfSource(<span class="java-keywords1">new</span> CachedDfSource(request.dfs(), context.similarityService().defaultSearchSimilarity()));
+        } <span class="java-keywords1">catch</span> (IOException e) {
+            freeContext(context);
+            cleanContext(context);
+            <span class="java-keywords1">throw</span> <span class="java-keywords1">new</span> QueryPhaseExecutionException(context, <span class="java-quote">&quot;Failed to set aggregated df&quot;</span>, e);
+        }
+        <span class="java-keywords1">try</span> {
+            <span class="java-keywords1">long</span> time = System.nanoTime();
+            queryPhase.execute(context);
+            contextProcessedSuccessfully(context);
+            context.indexShard().searchService().onQueryPhase(context, System.nanoTime() - time);
+            <span class="java-keywords1">return</span> context.queryResult();
+        } <span class="java-keywords1">catch</span> (RuntimeException e) {
+            logger.trace(<span class="java-quote">&quot;Query phase failed&quot;</span>, e);
+            freeContext(context);
+            <span class="java-keywords1">throw</span> e;
+        } <span class="java-keywords1">finally</span> {
+            cleanContext(context);
+        }
+    }
+
+    <span class="java-keywords1">public</span> QueryFetchSearchResult executeFetchPhase(InternalSearchRequest request) <span class="java-keywords1">throws</span> ElasticSearchException {
+        SearchContext context = createContext(request);
+        activeContexts.put(context.id(), context);
+        contextProcessing(context);
+        <span class="java-keywords1">try</span> {
+            <span class="java-keywords1">long</span> time = System.nanoTime();
+            queryPhase.execute(context);
+            <span class="java-keywords1">long</span> time2 = System.nanoTime();
+            context.indexShard().searchService().onQueryPhase(context, time2 - time);
+            shortcutDocIdsToLoad(context);
+            fetchPhase.execute(context);
+            <span class="java-keywords1">if</span> (context.scroll() == null) {
+                freeContext(context.id());
+            } <span class="java-keywords1">else</span> {
+                contextProcessedSuccessfully(context);
+            }
+            context.indexShard().searchService().onFetchPhase(context, System.nanoTime() - time2);
+            <span class="java-keywords1">return</span> <span class="java-keywords1">new</span> QueryFetchSearchResult(context.queryResult(), context.fetchResult());
+        } <span class="java-keywords1">catch</span> (RuntimeException e) {
+            logger.trace(<span class="java-quote">&quot;Fetch phase failed&quot;</span>, e);
+            freeContext(context);
+            <span class="java-keywords1">throw</span> e;
+        } <span class="java-keywords1">finally</span> {
+            cleanContext(context);
+        }
+    }
+
+    <span class="java-keywords1">public</span> QueryFetchSearchResult executeFetchPhase(QuerySearchRequest request) <span class="java-keywords1">throws</span> ElasticSearchException {
+        SearchContext context = findContext(request.id());
+        contextProcessing(context);
+        <span class="java-keywords1">try</span> {
+            context.searcher().dfSource(<span class="java-keywords1">new</span> CachedDfSource(request.dfs(), context.similarityService().defaultSearchSimilarity()));
+        } <span class="java-keywords1">catch</span> (IOException e) {
+            freeContext(context);
+            cleanContext(context);
+            <span class="java-keywords1">throw</span> <span class="java-keywords1">new</span> QueryPhaseExecutionException(context, <span class="java-quote">&quot;Failed to set aggregated df&quot;</span>, e);
+        }
+        <span class="java-keywords1">try</span> {
+            <span class="java-keywords1">long</span> time = System.nanoTime();
+            queryPhase.execute(context);
+            <span class="java-keywords1">long</span> time2 = System.nanoTime();
+            context.indexShard().searchService().onQueryPhase(context, time2 - time);
+            shortcutDocIdsToLoad(context);
+            fetchPhase.execute(context);
+            <span class="java-keywords1">if</span> (context.scroll() == null) {
+                freeContext(request.id());
+            } <span class="java-keywords1">else</span> {
+                contextProcessedSuccessfully(context);
+            }
+            context.indexShard().searchService().onFetchPhase(context, System.nanoTime() - time2);
+            <span class="java-keywords1">return</span> <span class="java-keywords1">new</span> QueryFetchSearchResult(context.queryResult(), context.fetchResult());
+        } <span class="java-keywords1">catch</span> (RuntimeException e) {
+            logger.trace(<span class="java-quote">&quot;Fetch phase failed&quot;</span>, e);
+            freeContext(context);
+            <span class="java-keywords1">throw</span> e;
+        } <span class="java-keywords1">finally</span> {
+            cleanContext(context);
+        }
+    }
+
+    <span class="java-keywords1">public</span> ScrollQueryFetchSearchResult executeFetchPhase(InternalScrollSearchRequest request) <span class="java-keywords1">throws</span> ElasticSearchException {
+        SearchContext context = findContext(request.id());
+        contextProcessing(context);
+        <span class="java-keywords1">try</span> {
+            processScroll(request, context);
+            <span class="java-keywords1">long</span> time = System.nanoTime();
+            queryPhase.execute(context);
+            <span class="java-keywords1">long</span> time2 = System.nanoTime();
+            context.indexShard().searchService().onQueryPhase(context, time2 - time);
+            shortcutDocIdsToLoad(context);
+            fetchPhase.execute(context);
+            <span class="java-keywords1">if</span> (context.scroll() == null) {
+                freeContext(request.id());
+            } <span class="java-keywords1">else</span> {
+                contextProcessedSuccessfully(context);
+            }
+            context.indexShard().searchService().onFetchPhase(context, System.nanoTime() - time2);
+            <span class="java-keywords1">return</span> <span class="java-keywords1">new</span> ScrollQueryFetchSearchResult(<span class="java-keywords1">new</span> QueryFetchSearchResult(context.queryResult(), context.fetchResult()), context.shardTarget());
+        } <span class="java-keywords1">catch</span> (RuntimeException e) {
+            logger.trace(<span class="java-quote">&quot;Fetch phase failed&quot;</span>, e);
+            freeContext(context);
+            <span class="java-keywords1">throw</span> e;
+        } <span class="java-keywords1">finally</span> {
+            cleanContext(context);
+        }
+    }
+
+    <span class="java-keywords1">public</span> FetchSearchResult executeFetchPhase(FetchSearchRequest request) <span class="java-keywords1">throws</span> ElasticSearchException {
+        SearchContext context = findContext(request.id());
+        contextProcessing(context);
+        <span class="java-keywords1">try</span> {
+            context.docIdsToLoad(request.docIds(), <span class="java-num">0</span>, request.docIdsSize());
+            <span class="java-keywords1">long</span> time = System.nanoTime();
+            fetchPhase.execute(context);
+            <span class="java-keywords1">if</span> (context.scroll() == null) {
+                freeContext(request.id());
+            } <span class="java-keywords1">else</span> {
+                contextProcessedSuccessfully(context);
+            }
+            context.indexShard().searchService().onFetchPhase(context, System.nanoTime() - time);
+            <span class="java-keywords1">return</span> context.fetchResult();
+        } <span class="java-keywords1">catch</span> (RuntimeException e) {
+            logger.trace(<span class="java-quote">&quot;Fetch phase failed&quot;</span>, e);
+            freeContext(context);
+            <span class="java-keywords1">throw</span> e;
+        } <span class="java-keywords1">finally</span> {
+            cleanContext(context);
+        }
+    }
+
+    <span class="java-keywords1">private</span> SearchContext findContext(<span class="java-keywords1">long</span> id) <span class="java-keywords1">throws</span> SearchContextMissingException {
+        SearchContext context = activeContexts.get(id);
+        <span class="java-keywords1">if</span> (context == null) {
+            <span class="java-keywords1">throw</span> <span class="java-keywords1">new</span> SearchContextMissingException(id);
+        }
+        SearchContext.setCurrent(context);
+        <span class="java-keywords1">return</span> context;
+    }
+
+    <span class="java-keywords1">private</span> SearchContext createContext(InternalSearchRequest request) <span class="java-keywords1">throws</span> ElasticSearchException {
+        IndexService indexService = indicesService.indexServiceSafe(request.index());
+        IndexShard indexShard = indexService.shardSafe(request.shardId());
+
+        SearchShardTarget shardTarget = <span class="java-keywords1">new</span> SearchShardTarget(clusterService.localNode().id(), request.index(), request.shardId());
+
+        Engine.Searcher engineSearcher = indexShard.searcher();
+        SearchContext context = <span class="java-keywords1">new</span> SearchContext(idGenerator.incrementAndGet(), shardTarget, request.searchType(), request.numberOfShards(), request.nowInMillis(), request.timeout(), request.types(), engineSearcher, indexService, indexShard, scriptService);
+        SearchContext.setCurrent(context);
+        <span class="java-keywords1">try</span> {
+            context.scroll(request.scroll());
+
+            parseSource(context, request.source(), request.sourceOffset(), request.sourceLength());
+            parseSource(context, request.extraSource(), request.extraSourceOffset(), request.extraSourceLength());
+
+            <span class="java-comment">// if the from and size are still not set, default them</span>
+            <span class="java-keywords1">if</span> (context.from() == -<span class="java-num">1</span>) {
+                context.from(<span class="java-num">0</span>);
+            }
+            <span class="java-keywords1">if</span> (context.size() == -<span class="java-num">1</span>) {
+                context.size(<span class="java-num">10</span>);
+            }
+
+            Filter aliasFilter = indexService.aliasesService().aliasFilter(request.filteringAliases());
+            context.aliasFilter(aliasFilter);
+
+            <span class="java-comment">// pre process</span>
+            dfsPhase.preProcess(context);
+            queryPhase.preProcess(context);
+            fetchPhase.preProcess(context);
+
+            <span class="java-comment">// compute the context keep alive</span>
+            <span class="java-keywords1">long</span> keepAlive = defaultKeepAlive;
+            <span class="java-keywords1">if</span> (request.scroll() != null &amp;&amp; request.scroll().keepAlive() != null) {
+                keepAlive = request.scroll().keepAlive().millis();
+            }
+            context.keepAlive(keepAlive);
+        } <span class="java-keywords1">catch</span> (RuntimeException e) {
+            context.release();
+            <span class="java-keywords1">throw</span> e;
+        }
+
+        <span class="java-keywords1">return</span> context;
+    }
+
+    <span class="java-keywords1">public</span> <span class="java-keywords1">void</span> freeContext(<span class="java-keywords1">long</span> id) {
+        SearchContext context = activeContexts.remove(id);
+        <span class="java-keywords1">if</span> (context == null) {
+            <span class="java-keywords1">return</span>;
+        }
+        freeContext(context);
+    }
+
+    <span class="java-keywords1">private</span> <span class="java-keywords1">void</span> freeContext(SearchContext context) {
+        activeContexts.remove(context.id());
+        context.release();
+    }
+
+    <span class="java-keywords1">private</span> <span class="java-keywords1">void</span> contextProcessing(SearchContext context) {
+        <span class="java-comment">// disable timeout while executing a search</span>
+        context.accessed(-<span class="java-num">1</span>);
+    }
+
+    <span class="java-keywords1">private</span> <span class="java-keywords1">void</span> contextProcessedSuccessfully(SearchContext context) {
+        context.accessed(threadPool.estimatedTimeInMillis());
+    }
+
+    <span class="java-keywords1">private</span> <span class="java-keywords1">void</span> cleanContext(SearchContext context) {
+        SearchContext.removeCurrent();
+    }
+
+    <span class="java-keywords1">private</span> <span class="java-keywords1">void</span> parseSource(SearchContext context, <span class="java-keywords1">byte</span>[] source, <span class="java-keywords1">int</span> offset, <span class="java-keywords1">int</span> length) <span class="java-keywords1">throws</span> SearchParseException {
+        <span class="java-comment">// nothing to parse...</span>
+        <span class="java-keywords1">if</span> (source == null || length == <span class="java-num">0</span>) {
+            <span class="java-keywords1">return</span>;
+        }
+        XContentParser parser = null;
+        <span class="java-keywords1">try</span> {
+            parser = XContentFactory.xContent(source, offset, length).createParser(source, offset, length);
+            XContentParser.Token token;
+            <span class="java-keywords1">while</span> ((token = parser.nextToken()) != XContentParser.Token.END_OBJECT) {
+                <span class="java-keywords1">if</span> (token == XContentParser.Token.FIELD_NAME) {
+                    String fieldName = parser.currentName();
+                    parser.nextToken();
+                    SearchParseElement element = elementParsers.get(fieldName);
+                    <span class="java-keywords1">if</span> (element == null) {
+                        <span class="java-keywords1">throw</span> <span class="java-keywords1">new</span> SearchParseException(context, <span class="java-quote">&quot;No parser for element [&quot;</span> + fieldName + <span class="java-quote">&quot;]&quot;</span>);
+                    }
+                    element.parse(parser, context);
+                } <span class="java-keywords1">else</span> <span class="java-keywords1">if</span> (token == null) {
+                    <span class="java-keywords1">break</span>;
+                }
+            }
+        } <span class="java-keywords1">catch</span> (Exception e) {
+            String sSource = <span class="java-quote">&quot;_na_&quot;</span>;
+            <span class="java-keywords1">try</span> {
+                sSource = Unicode.fromBytes(source, offset, length);
+            } <span class="java-keywords1">catch</span> (Throwable e1) {
+                <span class="java-comment">// ignore</span>
+            }
+            <span class="java-keywords1">throw</span> <span class="java-keywords1">new</span> SearchParseException(context, <span class="java-quote">&quot;Failed to parse source [&quot;</span> + sSource + <span class="java-quote">&quot;]&quot;</span>, e);
+        } <span class="java-keywords1">finally</span> {
+            <span class="java-keywords1">if</span> (parser != null) {
+                parser.close();
+            }
+        }
+    }
+
+    <span class="java-keywords1">private</span> <span class="java-keywords1">static</span> <span class="java-keywords1">final</span> <span class="java-keywords1">int</span>[] EMPTY_DOC_IDS = <span class="java-keywords1">new</span> <span class="java-keywords1">int</span>[<span class="java-num">0</span>];
+
+    <span class="java-comment">/**
+     * Shortcut ids to load, we load only &quot;from&quot; and up to &quot;size&quot;. The phase controller
+     * handles this as well since the result is always size * shards for Q_A_F
+     */</span>
+    <span class="java-keywords1">private</span> <span class="java-keywords1">void</span> shortcutDocIdsToLoad(SearchContext context) {
+        TopDocs topDocs = context.queryResult().topDocs();
+        <span class="java-keywords1">if</span> (topDocs.scoreDocs.length &lt; context.from()) {
+            <span class="java-comment">// no more docs...</span>
+            context.docIdsToLoad(EMPTY_DOC_IDS, <span class="java-num">0</span>, <span class="java-num">0</span>);
+            <span class="java-keywords1">return</span>;
+        }
+        <span class="java-keywords1">int</span> totalSize = context.from() + context.size();
+        <span class="java-keywords1">int</span>[] docIdsToLoad = <span class="java-keywords1">new</span> <span class="java-keywords1">int</span>[context.size()];
+        <span class="java-keywords1">int</span> counter = <span class="java-num">0</span>;
+        <span class="java-keywords1">for</span> (<span class="java-keywords1">int</span> i = context.from(); i &lt; totalSize; i++) {
+            <span class="java-keywords1">if</span> (i &lt; topDocs.scoreDocs.length) {
+                docIdsToLoad[counter] = topDocs.scoreDocs[i].doc;
+            } <span class="java-keywords1">else</span> {
+                <span class="java-keywords1">break</span>;
+            }
+            counter++;
+        }
+        context.docIdsToLoad(docIdsToLoad, <span class="java-num">0</span>, counter);
+    }
+
+    <span class="java-keywords1">private</span> <span class="java-keywords1">void</span> shortcutDocIdsToLoadForScanning(SearchContext context) {
+        TopDocs topDocs = context.queryResult().topDocs();
+        <span class="java-keywords1">if</span> (topDocs.scoreDocs.length == <span class="java-num">0</span>) {
+            <span class="java-comment">// no more docs...</span>
+            context.docIdsToLoad(EMPTY_DOC_IDS, <span class="java-num">0</span>, <span class="java-num">0</span>);
+            <span class="java-keywords1">return</span>;
+        }
+        <span class="java-keywords1">int</span>[] docIdsToLoad = <span class="java-keywords1">new</span> <span class="java-keywords1">int</span>[topDocs.scoreDocs.length];
+        <span class="java-keywords1">for</span> (<span class="java-keywords1">int</span> i = <span class="java-num">0</span>; i &lt; docIdsToLoad.length; i++) {
+            docIdsToLoad[i] = topDocs.scoreDocs[i].doc;
+        }
+        context.docIdsToLoad(docIdsToLoad, <span class="java-num">0</span>, docIdsToLoad.length);
+    }
+
+    <span class="java-keywords1">private</span> <span class="java-keywords1">void</span> processScroll(InternalScrollSearchRequest request, SearchContext context) {
+        <span class="java-comment">// process scroll</span>
+        context.from(context.from() + context.size());
+        context.scroll(request.scroll());
+        <span class="java-comment">// update the context keep alive based on the new scroll value</span>
+        <span class="java-keywords1">if</span> (request.scroll() != null &amp;&amp; request.scroll().keepAlive() != null) {
+            context.keepAlive(request.scroll().keepAlive().millis());
+        }
+    }
+
+    <span class="java-keywords1">class</span> CleanContextOnIndicesLifecycleListener <span class="java-keywords1">extends</span> IndicesLifecycle.Listener {
+
+        @Override <span class="java-keywords1">public</span> <span class="java-keywords1">void</span> beforeIndexClosed(IndexService indexService, <span class="java-keywords1">boolean</span> delete) {
+            releaseContextsForIndex(indexService.index());
+        }
+
+        @Override <span class="java-keywords1">public</span> <span class="java-keywords1">void</span> beforeIndexShardClosed(ShardId shardId, @Nullable IndexShard indexShard, <span class="java-keywords1">boolean</span> delete) {
+            releaseContextsForShard(shardId);
+        }
+    }
+
+    <span class="java-keywords1">class</span> Reaper <span class="java-keywords1">implements</span> Runnable {
+        @Override <span class="java-keywords1">public</span> <span class="java-keywords1">void</span> run() {
+            <span class="java-keywords1">long</span> time = threadPool.estimatedTimeInMillis();
+            <span class="java-keywords1">for</span> (SearchContext context : activeContexts.values()) {
+                <span class="java-keywords1">if</span> (context.lastAccessTime() == -<span class="java-num">1</span>) { <span class="java-comment">// its being processed or timeout is disabled</span>
+                    <span class="java-keywords1">continue</span>;
+                }
+                <span class="java-keywords1">if</span> ((time - context.lastAccessTime() &gt; context.keepAlive())) {
+                    freeContext(context);
+                }
+            }
+        }
+    }
+}
+
+</pre></body></html>

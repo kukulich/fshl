@@ -7,7 +7,7 @@
 		<os family="windows" />
 	</condition>
 
-	<target name="build" depends="prepare,phplint,pdepend,phpmd,phpcpd,phploc,phpcs,apigen,phpcb" />
+	<target name="build" depends="prepare,phplint,pdepend,phpmd,phpcpd,phploc,phpcs,apigen,phpunit,phpcb" />
 
 	<target name="clean" description="Clean build artifacts">
 		<delete dir="${builddir}/api" />
@@ -91,6 +91,13 @@
 			<arg value="--deprecated" />
 			<arg value="--todo" />
 			<arg value="--progressbar=no" />
+		</exec>
+	</target>
+
+	<target name="phpunit" description="Run unit tests using PHPUnit">
+		<exec executable="phpunit${executableExtension}" failonerror="true">
+			<arg value="--configuration" />
+			<arg path="${builddir}/phpunit.xml" />
 		</exec>
 	</target>
 

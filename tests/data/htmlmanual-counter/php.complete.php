@@ -389,7 +389,7 @@ class Highlighter
 		}
 
 		// Loads lexer cache
-		$lexerCacheClass = '\\FSHL\\Lexer\\Cache\\' . $lexerName;
+		$lexerCacheClass = 'FSHL\\Lexer\\Cache\\' . $lexerName;
 		if (class_exists($lexerCacheClass)) {
 			$this->lexers[$lexerName] = new $lexerCacheClass();
 			$this->lexer = $this->lexers[$lexerName];
@@ -418,7 +418,7 @@ class Highlighter
 		}
 
 		$lexerName = $lexer->getLanguage();
-		$lexerCacheClass = '\\FSHL\\Lexer\\Cache\\' . $lexerName;
+		$lexerCacheClass = 'FSHL\\Lexer\\Cache\\' . $lexerName;
 		$this->lexers[$lexerName] = new $lexerCacheClass();
 		$this->lexer = $this->lexers[$lexerName];
 

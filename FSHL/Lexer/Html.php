@@ -1,7 +1,7 @@
 <?php
 
 /**
- * FSHL 2.0.0                                  | Fast Syntax HighLighter |
+ * FSHL 2.0.1                                  | Fast Syntax HighLighter |
  * -----------------------------------------------------------------------
  *
  * LICENSE
@@ -61,9 +61,8 @@ class Html implements FSHL\Lexer
 			'OUT' => array(
 				array(
 					'<!--' => array('COMMENT', Generator::NEXT),
-					'<?php' => array('PHP', Generator::NEXT),
-					'<?=' => array('PHP', Generator::NEXT),
-					'<?' => array('PHP', Generator::NEXT),
+					'PHP' => array('PHP', Generator::NEXT),
+					'<?' => array(Generator::STATE_SELF, Generator::CURRENT),
 					'<' => array('TAG', Generator::NEXT),
 					'&' => array('ENTITY', Generator::NEXT),
 					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
@@ -91,9 +90,7 @@ class Html implements FSHL\Lexer
 					'STYLE' => array('STYLE', Generator::CURRENT),
 					'script' => array('SCRIPT', Generator::CURRENT),
 					'SCRIPT' => array('SCRIPT', Generator::CURRENT),
-					'<?php' => array('PHP', Generator::NEXT),
-					'<?=' => array('PHP', Generator::NEXT),
-					'<?' => array('PHP', Generator::NEXT)
+					'PHP' => array('PHP', Generator::NEXT)
 				),
 				Generator::STATE_FLAG_NONE,
 				'html-tag',
@@ -105,9 +102,7 @@ class Html implements FSHL\Lexer
 					'\'' => array('QUOTE_SINGLE', Generator::NEXT),
 					'/>' => array('TAG', Generator::BACK),
 					'>' => array('TAG', Generator::BACK),
-					'<?php' => array('PHP', Generator::NEXT),
-					'<?=' => array('PHP', Generator::NEXT),
-					'<?' => array('PHP', Generator::NEXT),
+					'PHP' => array('PHP', Generator::NEXT),
 					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
 					'TAB' => array(Generator::STATE_SELF, Generator::NEXT)
 				),
@@ -120,9 +115,7 @@ class Html implements FSHL\Lexer
 					'"' => array('QUOTE_DOUBLE', Generator::NEXT),
 					'\'' => array('QUOTE_SINGLE', Generator::NEXT),
 					'>' => array('CSS', Generator::NEXT),
-					'<?php' => array('PHP', Generator::NEXT),
-					'<?=' => array('PHP', Generator::NEXT),
-					'<?' => array('PHP', Generator::NEXT),
+					'PHP' => array('PHP', Generator::NEXT),
 					'LINE' => array('TAGIN', Generator::NEXT),
 					'TAB' => array('TAGIN', Generator::NEXT)
 				),
@@ -143,9 +136,7 @@ class Html implements FSHL\Lexer
 					'"' => array('QUOTE_DOUBLE', Generator::NEXT),
 					'\'' => array('QUOTE_SINGLE', Generator::NEXT),
 					'>' => array('JAVASCRIPT', Generator::NEXT),
-					'<?php' => array('PHP', Generator::NEXT),
-					'<?=' => array('PHP', Generator::NEXT),
-					'<?' => array('PHP', Generator::NEXT),
+					'PHP' => array('PHP', Generator::NEXT),
 					'LINE' => array('TAGIN', Generator::NEXT),
 					'TAB' => array('TAGIN', Generator::NEXT)
 				),
@@ -164,9 +155,7 @@ class Html implements FSHL\Lexer
 			'QUOTE_DOUBLE' => array(
 				array(
 					'"' => array(Generator::STATE_RETURN, Generator::CURRENT),
-					'<?php' => array('PHP', Generator::NEXT),
-					'<?=' => array('PHP', Generator::NEXT),
-					'<?' => array('PHP', Generator::NEXT),
+					'PHP' => array('PHP', Generator::NEXT),
 					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
 					'TAB' => array(Generator::STATE_SELF, Generator::NEXT)
 				),
@@ -177,9 +166,7 @@ class Html implements FSHL\Lexer
 			'QUOTE_SINGLE' => array(
 				array(
 					'\'' => array(Generator::STATE_RETURN, Generator::CURRENT),
-					'<?php' => array('PHP', Generator::NEXT),
-					'<?=' => array('PHP', Generator::NEXT),
-					'<?' => array('PHP', Generator::NEXT),
+					'PHP' => array('PHP', Generator::NEXT),
 					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
 					'TAB' => array(Generator::STATE_SELF, Generator::NEXT)
 				),
@@ -192,9 +179,7 @@ class Html implements FSHL\Lexer
 					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
 					'TAB' => array(Generator::STATE_SELF, Generator::NEXT),
 					'-->' => array('OUT', Generator::CURRENT),
-					'<?php' => array('PHP', Generator::NEXT),
-					'<?=' => array('PHP', Generator::NEXT),
-					'<?' => array('PHP', Generator::NEXT)
+					'PHP' => array('PHP', Generator::NEXT)
 				),
 				Generator::STATE_FLAG_NONE,
 				'html-comment',
@@ -216,7 +201,9 @@ class Html implements FSHL\Lexer
 	 */
 	public function getDelimiters()
 	{
-		return array();
+		return array(
+			'PHP' => 'preg_match(\'~<\\\\?(php|=|(?!xml))~A\', $text, $matches, 0, $textPos)'
+		);
 	}
 
 	/**

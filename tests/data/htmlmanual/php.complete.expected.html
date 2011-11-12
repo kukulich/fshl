@@ -1,0 +1,485 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8" /><link rel="stylesheet" type="text/css" href="../../../style.css" media="all" /></head><body><pre>
+<span class="xlang">&lt;?php</span>
+
+<span class="php-comment">/**
+ * FSHL 2.0.0                                  | Fast Syntax HighLighter |
+ * -----------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ */</span>
+
+<span class="php-keyword1">namespace</span> FSHL;
+
+<span class="php-comment">/**
+ * Highlighter.
+ *
+ * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
+ * @copyright Copyright (c) 2011 Jaroslav Hanslík
+ * @license http://fshl.kukulich.cz/#license
+ */</span>
+<span class="php-keyword1">class</span> Highlighter
+{
+	<span class="php-comment">/**
+	 * No options.
+	 *
+	 * @var integer
+	 */</span>
+	<span class="php-keyword1">const</span> OPTION_DEFAULT = <span class="php-num">0x0000</span>;
+
+	<span class="php-comment">/**
+	 * Tab indentation option.
+	 *
+	 * @var integer
+	 */</span>
+	<span class="php-keyword1">const</span> OPTION_TAB_INDENT = <span class="php-num">0x0010</span>;
+
+	<span class="php-comment">/**
+	 * Line counter option.
+	 *
+	 * @var integer
+	 */</span>
+	<span class="php-keyword1">const</span> OPTION_LINE_COUNTER = <span class="php-num">0x0020</span>;
+
+	<span class="php-comment">/**
+	 * Output mode.
+	 *
+	 * @var \FSHL\Output
+	 */</span>
+	<span class="php-keyword1">private</span> <span class="php-var">$output</span> = <span class="php-keyword1">null</span>;
+
+	<span class="php-comment">/**
+	 * Options.
+	 *
+	 * @var integer
+	 */</span>
+	<span class="php-keyword1">private</span> <span class="php-var">$options</span>;
+
+	<span class="php-comment">/**
+	 * Tab indent width.
+	 *
+	 * @var integer
+	 */</span>
+	<span class="php-keyword1">private</span> <span class="php-var">$tabIndentWidth</span>;
+
+	<span class="php-comment">/**
+	 * List of already used lexers.
+	 *
+	 * @var array
+	 */</span>
+	<span class="php-keyword1">private</span> <span class="php-var">$lexers</span> = <span class="php-keyword1">array</span>();
+
+	<span class="php-comment">/**
+	 * Current lexer.
+	 *
+	 * @var \FSHL\Lexer
+	 */</span>
+	<span class="php-keyword1">private</span> <span class="php-var">$lexer</span> = <span class="php-keyword1">null</span>;
+
+	<span class="php-comment">/**
+	 * Table for tab indentation.
+	 *
+	 * @var array
+	 */</span>
+	<span class="php-keyword1">private</span> <span class="php-var">$tabs</span> = <span class="php-keyword1">array</span>();
+
+	<span class="php-comment">/**
+	 * States stack.
+	 *
+	 * @var array
+	 */</span>
+	<span class="php-keyword1">private</span> <span class="php-var">$stack</span> = <span class="php-keyword1">array</span>();
+
+	<span class="php-comment">/**
+	 * Prepares the highlighter.
+	 *
+	 * @param \FSHL\Output $output
+	 * @param integer $options
+	 * @param integer $tabIndentWidth
+	 */</span>
+	<span class="php-keyword1">public</span> <span class="php-keyword1">function</span> __construct(Output <span class="php-var">$output</span>, <span class="php-var">$options</span> = self::OPTION_DEFAULT, <span class="php-var">$tabIndentWidth</span> = <span class="php-num">4</span>)
+	{
+		<span class="php-var">$this</span>-&gt;setOutput(<span class="php-var">$output</span>)
+			-&gt;setOptions(<span class="php-var">$options</span>, <span class="php-var">$tabIndentWidth</span>);
+	}
+
+	<span class="php-comment">/**
+	 * Highlightes a string.
+	 *
+	 * @param string $text
+	 * @param \FSHL\Lexer $lexer
+	 * @return string
+	 * @throws \RuntimeException If no lexer is set.
+	 */</span>
+	<span class="php-keyword1">public</span> <span class="php-keyword1">function</span> highlight(<span class="php-var">$text</span>, Lexer <span class="php-var">$lexer</span> = <span class="php-keyword1">null</span>)
+	{
+		<span class="php-comment">// Sets the lexer</span>
+		<span class="php-var">$initialLexer</span> = <span class="php-var">$this</span>-&gt;lexer;
+		<span class="php-keyword1">if</span> (<span class="php-keyword1">null</span> !== <span class="php-var">$lexer</span>) {
+			<span class="php-var">$this</span>-&gt;setLexer(<span class="php-var">$lexer</span>);
+		}
+
+		<span class="php-comment">// No lexer</span>
+		<span class="php-keyword1">if</span> (<span class="php-keyword1">null</span> === <span class="php-var">$this</span>-&gt;lexer) {
+			<span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> \RuntimeException(<span class="php-quote">'No lexer set'</span>);
+		}
+
+		<span class="php-comment">// Prepares the text</span>
+		<span class="php-var">$text</span> = <span class="php-keyword2">str_replace</span>(<span class="php-keyword1">array</span>(<span class="php-quote">&quot;\r\n&quot;</span>, <span class="php-quote">&quot;\r&quot;</span>), <span class="php-quote">&quot;\n&quot;</span>, (string) <span class="php-var">$text</span>);
+		<span class="php-var">$textLength</span> = <span class="php-keyword2">strlen</span>(<span class="php-var">$text</span>);
+		<span class="php-var">$textPos</span> = <span class="php-num">0</span>;
+
+		<span class="php-comment">// Parses the text</span>
+		<span class="php-var">$output</span> = <span class="php-keyword1">array</span>();
+		<span class="php-var">$fragment</span> = <span class="php-quote">''</span>;
+		<span class="php-var">$maxLineWidth</span> = <span class="php-num">0</span>;
+		<span class="php-var">$line</span> = <span class="php-num">1</span>;
+		<span class="php-var">$char</span> = <span class="php-num">0</span>;
+		<span class="php-keyword1">if</span> (<span class="php-var">$this</span>-&gt;options &amp; self::OPTION_LINE_COUNTER) {
+			<span class="php-comment">// Right aligment of line counter</span>
+			<span class="php-var">$maxLineWidth</span> = <span class="php-keyword2">strlen</span>(<span class="php-keyword2">substr_count</span>(<span class="php-var">$text</span>, <span class="php-quote">&quot;\n&quot;</span>) + <span class="php-num">1</span>);
+			<span class="php-var">$fragment</span> .= <span class="php-var">$this</span>-&gt;line(<span class="php-var">$line</span>, <span class="php-var">$maxLineWidth</span>);
+		}
+		<span class="php-var">$newLexerName</span> = <span class="php-var">$lexerName</span> = <span class="php-var">$this</span>-&gt;lexer-&gt;language;
+		<span class="php-var">$newState</span> = <span class="php-var">$state</span> = <span class="php-var">$this</span>-&gt;lexer-&gt;initialState;
+		<span class="php-var">$this</span>-&gt;stack = <span class="php-keyword1">array</span>();
+
+		<span class="php-keyword1">while</span> (<span class="php-keyword1">true</span>) {
+			<span class="php-keyword1">list</span>(<span class="php-var">$transitionId</span>, <span class="php-var">$delimiter</span>, <span class="php-var">$buffer</span>) = <span class="php-var">$this</span>-&gt;lexer-&gt;{<span class="php-quote">'findDelimiter'</span> . <span class="php-var">$state</span>}(<span class="php-var">$text</span>, <span class="php-var">$textLength</span>, <span class="php-var">$textPos</span>);
+
+			<span class="php-comment">// Some data may be collected before getPart reaches the delimiter, we must output this before other processing</span>
+			<span class="php-keyword1">if</span> (<span class="php-keyword1">false</span> !== <span class="php-var">$buffer</span>) {
+				<span class="php-var">$bufferLength</span> = <span class="php-keyword2">strlen</span>(<span class="php-var">$buffer</span>);
+				<span class="php-var">$textPos</span> += <span class="php-var">$bufferLength</span>;
+				<span class="php-var">$char</span> += <span class="php-var">$bufferLength</span>;
+				<span class="php-var">$fragment</span> .= <span class="php-var">$this</span>-&gt;template(<span class="php-var">$buffer</span>, <span class="php-var">$state</span>);
+				<span class="php-keyword1">if</span> (<span class="php-keyword1">isset</span>(<span class="php-var">$fragment</span>[<span class="php-num">8192</span>])) {
+					<span class="php-var">$output</span>[] = <span class="php-var">$fragment</span>;
+					<span class="php-var">$fragment</span> = <span class="php-quote">''</span>;
+				}
+			}
+
+			<span class="php-keyword1">if</span> (-<span class="php-num">1</span> === <span class="php-var">$transitionId</span>) {
+				<span class="php-comment">// End of stream</span>
+				<span class="php-keyword1">break</span>;
+			}
+
+			<span class="php-comment">// Processes received delimiter as string</span>
+			<span class="php-var">$prevLine</span> = <span class="php-var">$line</span>;
+			<span class="php-var">$prevChar</span> = <span class="php-var">$char</span>;
+			<span class="php-var">$prevTextPos</span> = <span class="php-var">$textPos</span>;
+
+			<span class="php-var">$delimiterLength</span> = <span class="php-keyword2">strlen</span>(<span class="php-var">$delimiter</span>);
+			<span class="php-var">$textPos</span> += <span class="php-var">$delimiterLength</span>;
+			<span class="php-var">$char</span> += <span class="php-var">$delimiterLength</span>;
+
+			<span class="php-comment">// Adds line counter and tab indentation</span>
+			<span class="php-var">$addLine</span> = <span class="php-keyword1">false</span>;
+			<span class="php-keyword1">if</span> (<span class="php-quote">&quot;\n&quot;</span> === <span class="php-var">$delimiter</span>[<span class="php-var">$delimiterLength</span> - <span class="php-num">1</span>]) {
+				<span class="php-comment">// Line counter</span>
+				<span class="php-var">$line</span>++;
+				<span class="php-var">$char</span> = <span class="php-num">0</span>;
+				<span class="php-keyword1">if</span> (<span class="php-var">$this</span>-&gt;options &amp; self::OPTION_LINE_COUNTER) {
+					<span class="php-var">$addLine</span> = <span class="php-keyword1">true</span>;
+					<span class="php-var">$actualLine</span> = <span class="php-var">$line</span>;
+				}
+			} <span class="php-keyword1">elseif</span> (<span class="php-quote">&quot;\t&quot;</span> === <span class="php-var">$delimiter</span> &amp;&amp; (<span class="php-var">$this</span>-&gt;options &amp; self::OPTION_TAB_INDENT)) {
+				<span class="php-comment">// Tab indentation</span>
+				<span class="php-var">$i</span> = <span class="php-var">$char</span> % <span class="php-var">$this</span>-&gt;tabIndentWidth;
+				<span class="php-var">$delimiter</span> = <span class="php-var">$this</span>-&gt;tabs[<span class="php-var">$i</span>][<span class="php-num">0</span>];
+				<span class="php-var">$char</span> += <span class="php-var">$this</span>-&gt;tabs[<span class="php-var">$i</span>][<span class="php-num">1</span>];
+			}
+
+			<span class="php-comment">// Gets new state from the transitions table</span>
+			<span class="php-var">$newState</span> = <span class="php-var">$this</span>-&gt;lexer-&gt;trans[<span class="php-var">$state</span>][<span class="php-var">$transitionId</span>][Generator::STATE_DIAGRAM_INDEX_STATE];
+			<span class="php-keyword1">if</span> (<span class="php-var">$newState</span> === <span class="php-var">$this</span>-&gt;lexer-&gt;returnState) {
+				<span class="php-comment">// Chooses mode of delimiter processing</span>
+				<span class="php-keyword1">if</span> (Generator::BACK === <span class="php-var">$this</span>-&gt;lexer-&gt;trans[<span class="php-var">$state</span>][<span class="php-var">$transitionId</span>][Generator::STATE_DIAGRAM_INDEX_MODE]) {
+					<span class="php-var">$line</span> = <span class="php-var">$prevLine</span>;
+					<span class="php-var">$char</span> = <span class="php-var">$prevChar</span>;
+					<span class="php-var">$textPos</span> = <span class="php-var">$prevTextPos</span>;
+				} <span class="php-keyword1">else</span> {
+					<span class="php-var">$fragment</span> .= <span class="php-var">$this</span>-&gt;template(<span class="php-var">$delimiter</span>, <span class="php-var">$state</span>);
+					<span class="php-keyword1">if</span> (<span class="php-var">$addLine</span>) {
+						<span class="php-var">$fragment</span> .= <span class="php-var">$this</span>-&gt;line(<span class="php-var">$actualLine</span>, <span class="php-var">$maxLineWidth</span>);
+					}
+					<span class="php-keyword1">if</span> (<span class="php-keyword1">isset</span>(<span class="php-var">$fragment</span>[<span class="php-num">8192</span>])) {
+						<span class="php-var">$output</span>[] = <span class="php-var">$fragment</span>;
+						<span class="php-var">$fragment</span> = <span class="php-quote">''</span>;
+					}
+				}
+
+				<span class="php-comment">// Get state from the context stack</span>
+				<span class="php-keyword1">if</span> (<span class="php-var">$item</span> = <span class="php-var">$this</span>-&gt;popState()) {
+					<span class="php-keyword1">list</span>(<span class="php-var">$newLexerName</span>, <span class="php-var">$state</span>) = <span class="php-var">$item</span>;
+					<span class="php-comment">// If previous context was in a different lexer, switch the lexer too</span>
+					<span class="php-keyword1">if</span> (<span class="php-var">$newLexerName</span> !== <span class="php-var">$lexerName</span>) {
+						<span class="php-var">$this</span>-&gt;setLexerByName(<span class="php-var">$newLexerName</span>);
+						<span class="php-var">$lexerName</span> = <span class="php-var">$newLexerName</span>;
+					}
+				} <span class="php-keyword1">else</span> {
+					<span class="php-var">$state</span> = <span class="php-var">$this</span>-&gt;lexer-&gt;initialState;
+				}
+
+				<span class="php-keyword1">continue</span>;
+			}
+
+			<span class="php-comment">// Chooses mode of delimiter processing</span>
+			<span class="php-var">$type</span> = <span class="php-var">$this</span>-&gt;lexer-&gt;trans[<span class="php-var">$state</span>][<span class="php-var">$transitionId</span>][Generator::STATE_DIAGRAM_INDEX_MODE];
+			<span class="php-keyword1">if</span> (Generator::BACK === <span class="php-var">$type</span>) {
+				<span class="php-var">$line</span> = <span class="php-var">$prevLine</span>;
+				<span class="php-var">$char</span> = <span class="php-var">$prevChar</span>;
+				<span class="php-var">$textPos</span> = <span class="php-var">$prevTextPos</span>;
+			} <span class="php-keyword1">else</span> {
+				<span class="php-var">$fragment</span> .= <span class="php-var">$this</span>-&gt;template(<span class="php-var">$delimiter</span>, Generator::<span class="php-keyword2">NEXT</span> === <span class="php-var">$type</span> ? <span class="php-var">$newState</span> : <span class="php-var">$state</span>);
+				<span class="php-keyword1">if</span> (<span class="php-var">$addLine</span>) {
+					<span class="php-var">$fragment</span> .= <span class="php-var">$this</span>-&gt;line(<span class="php-var">$actualLine</span>, <span class="php-var">$maxLineWidth</span>);
+				}
+				<span class="php-keyword1">if</span> (<span class="php-keyword1">isset</span>(<span class="php-var">$fragment</span>[<span class="php-num">8192</span>])) {
+					<span class="php-var">$output</span>[] = <span class="php-var">$fragment</span>;
+					<span class="php-var">$fragment</span> = <span class="php-quote">''</span>;
+				}
+			}
+
+			<span class="php-comment">// Switches between lexers (transition to embedded language)</span>
+			<span class="php-keyword1">if</span> (<span class="php-var">$this</span>-&gt;lexer-&gt;flags[<span class="php-var">$newState</span>] &amp; Generator::STATE_FLAG_NEWLEXER) {
+				<span class="php-keyword1">if</span> (<span class="php-var">$newState</span> === <span class="php-var">$this</span>-&gt;lexer-&gt;quitState) {
+					<span class="php-comment">// Returns to the previous lexer</span>
+					<span class="php-keyword1">if</span> (<span class="php-var">$item</span> = <span class="php-var">$this</span>-&gt;popState()) {
+						<span class="php-keyword1">list</span>(<span class="php-var">$newLexerName</span>, <span class="php-var">$state</span>) = <span class="php-var">$item</span>;
+						<span class="php-keyword1">if</span> (<span class="php-var">$newLexerName</span> !== <span class="php-var">$lexerName</span>) {
+							<span class="php-var">$this</span>-&gt;setLexerByName(<span class="php-var">$newLexerName</span>);
+							<span class="php-var">$lexerName</span> = <span class="php-var">$newLexerName</span>;
+						}
+					} <span class="php-keyword1">else</span> {
+						<span class="php-var">$state</span> = <span class="php-var">$this</span>-&gt;lexer-&gt;initialState;
+					}
+				} <span class="php-keyword1">else</span> {
+					<span class="php-comment">// Switches to the embedded language</span>
+					<span class="php-var">$newLexerName</span> = <span class="php-var">$this</span>-&gt;lexer-&gt;data[<span class="php-var">$newState</span>];
+					<span class="php-var">$this</span>-&gt;pushState(<span class="php-var">$lexerName</span>, <span class="php-var">$this</span>-&gt;lexer-&gt;trans[<span class="php-var">$newState</span>] ? <span class="php-var">$newState</span> : <span class="php-var">$state</span>);
+					<span class="php-var">$this</span>-&gt;setLexerByName(<span class="php-var">$newLexerName</span>);
+					<span class="php-var">$lexerName</span> = <span class="php-var">$newLexerName</span>;
+					<span class="php-var">$state</span> = <span class="php-var">$this</span>-&gt;lexer-&gt;initialState;
+				}
+
+				<span class="php-keyword1">continue</span>;
+			}
+
+			<span class="php-comment">// If newState is marked with recursion flag (alias call), push current state to the context stack</span>
+			<span class="php-keyword1">if</span> ((<span class="php-var">$this</span>-&gt;lexer-&gt;flags[<span class="php-var">$newState</span>] &amp; Generator::STATE_FLAG_RECURSION) &amp;&amp; <span class="php-var">$state</span> !== <span class="php-var">$newState</span>) {
+				<span class="php-var">$this</span>-&gt;pushState(<span class="php-var">$lexerName</span>, <span class="php-var">$state</span>);
+			}
+
+			<span class="php-comment">// Change the state</span>
+			<span class="php-var">$state</span> = <span class="php-var">$newState</span>;
+		}
+
+		<span class="php-comment">// Adds template end</span>
+		<span class="php-var">$fragment</span> .= <span class="php-var">$this</span>-&gt;output-&gt;template(<span class="php-quote">''</span>, <span class="php-keyword1">null</span>);
+		<span class="php-var">$output</span>[] = <span class="php-var">$fragment</span>;
+
+		<span class="php-comment">// Restore lexer</span>
+		<span class="php-var">$this</span>-&gt;lexer = <span class="php-var">$initialLexer</span>;
+
+		<span class="php-keyword1">return</span> <span class="php-keyword2">implode</span>(<span class="php-quote">''</span>, <span class="php-var">$output</span>);
+	}
+
+	<span class="php-comment">/**
+	 * Sets the output mode.
+	 *
+	 * @param \FSHL\Output $output
+	 * @return \FSHL\Highlighter
+	 */</span>
+	<span class="php-keyword1">public</span> <span class="php-keyword1">function</span> setOutput(Output <span class="php-var">$output</span>)
+	{
+		<span class="php-var">$this</span>-&gt;output = <span class="php-var">$output</span>;
+
+		<span class="php-keyword1">return</span> <span class="php-var">$this</span>;
+	}
+
+	<span class="php-comment">/**
+	 * Sets options.
+	 *
+	 * @param integer $options
+	 * @param integer $tabIndentWidth
+	 * @return \FSHL\Highlighter
+	 */</span>
+	<span class="php-keyword1">public</span> <span class="php-keyword1">function</span> setOptions(<span class="php-var">$options</span> = self::OPTION_DEFAULT, <span class="php-var">$tabIndentWidth</span> = <span class="php-num">4</span>)
+	{
+		<span class="php-var">$this</span>-&gt;options = <span class="php-var">$options</span>;
+
+		<span class="php-keyword1">if</span> ((<span class="php-var">$this</span>-&gt;options &amp; self::OPTION_TAB_INDENT) &amp;&amp; <span class="php-var">$tabIndentWidth</span> &gt; <span class="php-num">0</span>) {
+			<span class="php-comment">// Precalculate a table for tab indentation</span>
+			<span class="php-var">$t</span> = <span class="php-quote">' '</span>;
+			<span class="php-var">$ti</span> = <span class="php-num">0</span>;
+			<span class="php-keyword1">for</span> (<span class="php-var">$i</span> = <span class="php-var">$tabIndentWidth</span>; <span class="php-var">$i</span>; <span class="php-var">$i</span>--) {
+				<span class="php-var">$this</span>-&gt;tabs[<span class="php-var">$i</span> % <span class="php-var">$tabIndentWidth</span>] = <span class="php-keyword1">array</span>(<span class="php-var">$t</span>, <span class="php-var">$ti</span>++);
+				<span class="php-var">$t</span> .= <span class="php-quote">' '</span>;
+			}
+			<span class="php-var">$this</span>-&gt;tabIndentWidth = <span class="php-var">$tabIndentWidth</span>;
+		} <span class="php-keyword1">else</span> {
+			<span class="php-var">$this</span>-&gt;options &amp;= ~self::OPTION_TAB_INDENT;
+		}
+
+		<span class="php-keyword1">return</span> <span class="php-var">$this</span>;
+	}
+
+	<span class="php-comment">/**
+	 * Sets the default lexer.
+	 *
+	 * @param \FSHL\Lexer $lexer
+	 * @return \FSHL\Highlighter
+	 */</span>
+	<span class="php-keyword1">public</span> <span class="php-keyword1">function</span> setLexer(Lexer <span class="php-var">$lexer</span>)
+	{
+		<span class="php-comment">// Generates the lexer cache on fly, if the lexer cache doesn't exist</span>
+		<span class="php-keyword1">if</span> (!<span class="php-var">$this</span>-&gt;findCache(<span class="php-var">$lexer</span>-&gt;getLanguage())) {
+			<span class="php-var">$this</span>-&gt;generateCache(<span class="php-var">$lexer</span>);
+		}
+
+		<span class="php-keyword1">return</span> <span class="php-var">$this</span>;
+	}
+
+	<span class="php-comment">/**
+	 * Sets the current lexer by name.
+	 *
+	 * @param string $lexerName
+	 * @return \FSHL\Highlighter
+	 * @throws \InvalidArgumentException If the class for given lexer doesn't exist.
+	 */</span>
+	<span class="php-keyword1">private</span> <span class="php-keyword1">function</span> setLexerByName(<span class="php-var">$lexerName</span>)
+	{
+		<span class="php-comment">// Generates the lexer cache on fly, if the lexer cache doesn't exist</span>
+		<span class="php-keyword1">if</span> (!<span class="php-var">$this</span>-&gt;findCache(<span class="php-var">$lexerName</span>)) {
+			<span class="php-comment">// Finds the lexer</span>
+			<span class="php-var">$lexerClass</span> = <span class="php-quote">'FSHL\\Lexer\\'</span> . <span class="php-var">$lexerName</span>;
+			<span class="php-keyword1">if</span> (!<span class="php-keyword2">class_exists</span>(<span class="php-var">$lexerClass</span>)) {
+				<span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> \InvalidArgumentException(<span class="php-keyword2">sprintf</span>(<span class="php-quote">'The class for &quot;%s&quot; lexer doesn\'t exist'</span>, <span class="php-var">$lexerName</span>));
+			}
+			<span class="php-var">$lexer</span> = <span class="php-keyword1">new</span> <span class="php-var">$lexerClass</span>();
+
+			<span class="php-comment">// Generates the lexer cache on fly</span>
+			<span class="php-var">$this</span>-&gt;generateCache(<span class="php-var">$lexer</span>);
+		}
+
+		<span class="php-keyword1">return</span> <span class="php-var">$this</span>;
+	}
+
+	<span class="php-comment">/**
+	 * Tries to find the lexer cache.
+	 *
+	 * @param string $lexerName
+	 * @return boolean
+	 */</span>
+	<span class="php-keyword1">private</span> <span class="php-keyword1">function</span> findCache(<span class="php-var">$lexerName</span>)
+	{
+		<span class="php-comment">// Lexer has been used before</span>
+		<span class="php-keyword1">if</span> (<span class="php-keyword1">isset</span>(<span class="php-var">$this</span>-&gt;lexers[<span class="php-var">$lexerName</span>])) {
+			<span class="php-var">$this</span>-&gt;lexer = <span class="php-var">$this</span>-&gt;lexers[<span class="php-var">$lexerName</span>];
+			<span class="php-keyword1">return</span> <span class="php-keyword1">true</span>;
+		}
+
+		<span class="php-comment">// Loads lexer cache</span>
+		<span class="php-var">$lexerCacheClass</span> = <span class="php-quote">'FSHL\\Lexer\\Cache\\'</span> . <span class="php-var">$lexerName</span>;
+		<span class="php-keyword1">if</span> (<span class="php-keyword2">class_exists</span>(<span class="php-var">$lexerCacheClass</span>)) {
+			<span class="php-var">$this</span>-&gt;lexers[<span class="php-var">$lexerName</span>] = <span class="php-keyword1">new</span> <span class="php-var">$lexerCacheClass</span>();
+			<span class="php-var">$this</span>-&gt;lexer = <span class="php-var">$this</span>-&gt;lexers[<span class="php-var">$lexerName</span>];
+			<span class="php-keyword1">return</span> <span class="php-keyword1">true</span>;
+		}
+
+		<span class="php-keyword1">return</span> <span class="php-keyword1">false</span>;
+	}
+
+	<span class="php-comment">/**
+	 * Generates the lexer cache on fly.
+	 *
+	 * @param \FSHL\Lexer $lexer
+	 * @return \FSHL\Highlighter
+	 */</span>
+	<span class="php-keyword1">private</span> <span class="php-keyword1">function</span> generateCache(Lexer <span class="php-var">$lexer</span>)
+	{
+		<span class="php-var">$generator</span> = <span class="php-keyword1">new</span> Generator(<span class="php-var">$lexer</span>);
+		<span class="php-keyword1">try</span> {
+			<span class="php-var">$generator</span>-&gt;saveToCache();
+		} <span class="php-keyword1">catch</span> (\RuntimeException <span class="php-var">$e</span>) {
+			<span class="php-var">$file</span> = <span class="php-keyword2">tempnam</span>(<span class="php-keyword2">sys_get_temp_dir</span>(), <span class="php-quote">'fshl'</span>);
+			<span class="php-keyword2">file_put_contents</span>(<span class="php-var">$file</span>, <span class="php-var">$generator</span>-&gt;getSource());
+			<span class="php-keyword1">require_once</span> <span class="php-var">$file</span>;
+			<span class="php-keyword2">unlink</span>(<span class="php-var">$file</span>);
+		}
+
+		<span class="php-var">$lexerName</span> = <span class="php-var">$lexer</span>-&gt;getLanguage();
+		<span class="php-var">$lexerCacheClass</span> = <span class="php-quote">'FSHL\\Lexer\\Cache\\'</span> . <span class="php-var">$lexerName</span>;
+		<span class="php-var">$this</span>-&gt;lexers[<span class="php-var">$lexerName</span>] = <span class="php-keyword1">new</span> <span class="php-var">$lexerCacheClass</span>();
+		<span class="php-var">$this</span>-&gt;lexer = <span class="php-var">$this</span>-&gt;lexers[<span class="php-var">$lexerName</span>];
+
+		<span class="php-keyword1">return</span> <span class="php-var">$this</span>;
+	}
+
+	<span class="php-comment">/**
+	 * Outputs a word.
+	 *
+	 * @param string $part
+	 * @param string $state
+	 * @return string
+	 */</span>
+	<span class="php-keyword1">private</span> <span class="php-keyword1">function</span> template(<span class="php-var">$part</span>, <span class="php-var">$state</span>)
+	{
+		<span class="php-keyword1">if</span> (<span class="php-var">$this</span>-&gt;lexer-&gt;flags[<span class="php-var">$state</span>] &amp; Generator::STATE_FLAG_KEYWORD) {
+			<span class="php-var">$normalized</span> = Generator::CASE_SENSITIVE === <span class="php-var">$this</span>-&gt;lexer-&gt;keywords[Generator::KEYWORD_INDEX_CASE_SENSITIVE] ? <span class="php-var">$part</span> : <span class="php-keyword2">strtolower</span>(<span class="php-var">$part</span>);
+
+			<span class="php-keyword1">if</span> (<span class="php-keyword1">isset</span>(<span class="php-var">$this</span>-&gt;lexer-&gt;keywords[Generator::KEYWORD_INDEX_LIST][<span class="php-var">$normalized</span>])) {
+				<span class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;output-&gt;keyword(<span class="php-var">$part</span>, <span class="php-var">$this</span>-&gt;lexer-&gt;keywords[Generator::KEYWORD_INDEX_CLASS] . <span class="php-var">$this</span>-&gt;lexer-&gt;keywords[Generator::KEYWORD_INDEX_LIST][<span class="php-var">$normalized</span>]);
+			}
+		}
+
+		<span class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;output-&gt;template(<span class="php-var">$part</span>, <span class="php-var">$this</span>-&gt;lexer-&gt;classes[<span class="php-var">$state</span>]);
+	}
+
+	<span class="php-comment">/**
+	 * Outputs a line.
+	 *
+	 * @param integer $line
+	 * @param integer $maxLineWidth
+	 * @return string
+	 */</span>
+	<span class="php-keyword1">private</span> <span class="php-keyword1">function</span> line(<span class="php-var">$line</span>, <span class="php-var">$maxLineWidth</span>)
+	{
+		<span class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;output-&gt;template(<span class="php-keyword2">str_pad</span>(<span class="php-var">$line</span>, <span class="php-var">$maxLineWidth</span>, <span class="php-quote">' '</span>, STR_PAD_LEFT) . <span class="php-quote">': '</span>, <span class="php-quote">'line'</span>);
+	}
+
+	<span class="php-comment">/**
+	 * Pushes a state to the context stack.
+	 *
+	 * @param string $lexerName
+	 * @param string $state
+	 * @return \FSHL\Highlighter
+	 */</span>
+	<span class="php-keyword1">private</span> <span class="php-keyword1">function</span> pushState(<span class="php-var">$lexerName</span>, <span class="php-var">$state</span>)
+	{
+		<span class="php-keyword2">array_unshift</span>(<span class="php-var">$this</span>-&gt;stack, <span class="php-keyword1">array</span>(<span class="php-var">$lexerName</span>, <span class="php-var">$state</span>));
+		<span class="php-keyword1">return</span> <span class="php-var">$this</span>;
+	}
+
+	<span class="php-comment">/**
+	 * Pops a state from the context stack.
+	 *
+	 * @return array|null
+	 */</span>
+	<span class="php-keyword1">private</span> <span class="php-keyword1">function</span> popState()
+	{
+		<span class="php-keyword1">return</span> <span class="php-keyword2">array_shift</span>(<span class="php-var">$this</span>-&gt;stack);
+	}
+}
+
+</pre></body></html>

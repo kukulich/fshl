@@ -1,0 +1,153 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8" /><link rel="stylesheet" type="text/css" href="../../../style.css" media="all" /></head><body><pre>
+<span class="line">  1: </span>Texy! is sexy!
+<span class="line">  2: </span><span class="texy-hlead">**************</span>
+<span class="line">  3: </span>
+<span class="line">  4: </span>Texy! is text-to-HTML formatter and converter library. It allows you to write
+<span class="line">  5: </span>structured documents without knowledge or using of HTML language. You write
+<span class="line">  6: </span>documents in humane easy-to-read plain text format and Texy! converts it to
+<span class="line">  7: </span>structurally and valid (X)HTML code.
+<span class="line">  8: </span>
+<span class="line">  9: </span>Texy! is one of the **most complex** formatters. Its possibilities covers images,
+<span class="line"> 10: </span>links (anchors), nested lists, tables and has full support for CSS((Cascade Style Sheet)).
+<span class="line"> 11: </span>
+<span class="line"> 12: </span>
+<span class="line"> 13: </span>
+<span class="line"> 14: </span>Paragraphs
+<span class="line"> 15: </span><span class="texy-hlead">==========</span>
+<span class="line"> 16: </span>
+<span class="line"> 17: </span>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Curabitur turpis enim, placerat tincidunt, tincidunt ac, fringilla et, mauris.
+<span class="line"> 18: </span>still the same paragraph
+<span class="line"> 19: </span> still the same paragraph, but wrapped with element `&lt;br&gt;`
+<span class="line"> 20: </span> and second wrapped line
+<span class="line"> 21: </span>
+<span class="line"> 22: </span>Centered by modifier  .&lt;&gt;
+<span class="line"> 23: </span>
+<span class="line"> 24: </span>Colored by modifier .{color:blue}
+<span class="line"> 25: </span>
+<span class="line"> 26: </span>
+<span class="line"> 27: </span>
+<span class="line"> 28: </span>Code
+<span class="line"> 29: </span><span class="texy-hlead">====</span>
+<span class="line"> 30: </span>
+<span class="line"> 31: </span><span class="texy-hr">/---code php</span><span class="texy-code">
+</span><span class="line"> 32: </span><span class="texy-code">  function reImage($matches) {
+</span><span class="line"> 33: </span><span class="texy-code">    $content = $matches[1];
+</span><span class="line"> 34: </span><span class="texy-code">    $align = $matches[5];
+</span><span class="line"> 35: </span><span class="texy-code">    $href = $matches[6];
+</span><span class="line"> 36: </span><span class="texy-code">  }
+</span><span class="line"> 37: </span><span class="texy-hr">\---</span>
+<span class="line"> 38: </span>
+<span class="line"> 39: </span>Syntax can be highlighted by third party module
+<span class="line"> 40: </span>
+<span class="line"> 41: </span>
+<span class="line"> 42: </span>
+<span class="line"> 43: </span>
+<span class="line"> 44: </span>Images
+<span class="line"> 45: </span><span class="texy-hlead">======</span>
+<span class="line"> 46: </span>
+<span class="line"> 47: </span>[* image.gif *]
+<span class="line"> 48: </span>
+<span class="line"> 49: </span>
+<span class="line"> 50: </span>with on-mouse-over event
+<span class="line"> 51: </span><span class="texy-hlead">------------------------</span>
+<span class="line"> 52: </span>
+<span class="line"> 53: </span>[* image.gif | image-over.gif *]
+<span class="line"> 54: </span>
+<span class="line"> 55: </span>
+<span class="line"> 56: </span>
+<span class="line"> 57: </span>
+<span class="line"> 58: </span>List
+<span class="line"> 59: </span><span class="texy-hlead">====</span>
+<span class="line"> 60: </span>
+<span class="line"> 61: </span>
+<span class="line"> 62: </span>*   Red
+<span class="line"> 63: </span>*   Green
+<span class="line"> 64: </span>*   Blue
+<span class="line"> 65: </span>
+<span class="line"> 66: </span>or
+<span class="line"> 67: </span>
+<span class="line"> 68: </span>-   Red
+<span class="line"> 69: </span>-   Green
+<span class="line"> 70: </span>-   Blue
+<span class="line"> 71: </span>
+<span class="line"> 72: </span>
+<span class="line"> 73: </span>ordered
+<span class="line"> 74: </span><span class="texy-hlead">-------</span>
+<span class="line"> 75: </span>
+<span class="line"> 76: </span>1)  Bird
+<span class="line"> 77: </span>2)  McHale
+<span class="line"> 78: </span>3)  Parish
+<span class="line"> 79: </span>
+<span class="line"> 80: </span>a)  Bird
+<span class="line"> 81: </span>b)  McHale
+<span class="line"> 82: </span>c)  Parish
+<span class="line"> 83: </span>
+<span class="line"> 84: </span>I.  Bird
+<span class="line"> 85: </span>II.  McHale
+<span class="line"> 86: </span>III.  Parish
+<span class="line"> 87: </span>
+<span class="line"> 88: </span>A)  Bird
+<span class="line"> 89: </span>B)  McHale
+<span class="line"> 90: </span>C)  Parish
+<span class="line"> 91: </span>
+<span class="line"> 92: </span>
+<span class="line"> 93: </span>
+<span class="line"> 94: </span>nested
+<span class="line"> 95: </span><span class="texy-hlead">------</span>
+<span class="line"> 96: </span>
+<span class="line"> 97: </span>
+<span class="line"> 98: </span>a)  Bird
+<span class="line"> 99: </span>  I.  Bird
+<span class="line">100: </span>    +   Red
+<span class="line">101: </span>    +   Green
+<span class="line">102: </span>    +   Blue
+<span class="line">103: </span>  II.  McHale
+<span class="line">104: </span>  III.  Parish
+<span class="line">105: </span>b)  McHale
+<span class="line">106: </span>c)  Parish
+<span class="line">107: </span>      1)  Bird
+<span class="line">108: </span>      2)  McHale
+<span class="line">109: </span>      3)  Parish
+<span class="line">110: </span>
+<span class="line">111: </span>
+<span class="line">112: </span>
+<span class="line">113: </span>Typography
+<span class="line">114: </span><span class="texy-hlead">==========</span>
+<span class="line">115: </span>
+<span class="line">116: </span>- very long words division (with respect for language rules). Example: antidisestablishmentarianism
+<span class="line">117: </span>- clickable emails and URL www.davidgrudl.com, david@grudl.com (emails are obfuscated against spambots)
+<span class="line">118: </span>- &quot;national&quot; 'typographic' quotes
+<span class="line">119: </span>- divider vs. dash: 10-15 vs. north-west
+<span class="line">120: </span>- en-dash: one -- two
+<span class="line">121: </span>- dimension sign 10 x 20
+<span class="line">122: </span>- nonbreakable spaces in phone numbers +420 776 552 046
+<span class="line">123: </span>- acronym NATO((North Atlantic Treaty Organisation))
+<span class="line">124: </span>- abbr &quot;et al.&quot;((and others))
+<span class="line">125: </span>- quickCorrects like this(TM) this(R) or (C)this
+<span class="line">126: </span>- arrows &lt;-- and --&gt; and &lt;--&gt; ;
+<span class="line">127: </span>- ellipsis...
+<span class="line">128: </span>- preserve HTML entities
+<span class="line">129: </span>- and many others :-)
+<span class="line">130: </span>
+<span class="line">131: </span>
+<span class="line">132: </span>
+<span class="line">133: </span>
+<span class="line">134: </span>
+<span class="line">135: </span>Tables
+<span class="line">136: </span><span class="texy-hlead">======</span>
+<span class="line">137: </span>
+<span class="line">138: </span>|-----------------------------
+<span class="line">139: </span>| First Name | Last Name | Age
+<span class="line">140: </span>|----------------------------
+<span class="line">141: </span>| Jesus      | Christ    | 33
+<span class="line">142: </span>| Cecilie    | Svobodova | 74
+<span class="line">143: </span>
+<span class="line">144: </span>
+<span class="line">145: </span>
+<span class="line">146: </span>
+<span class="line">147: </span>Copyright
+<span class="line">148: </span><span class="texy-hlead">=========</span>
+<span class="line">149: </span>
+<span class="line">150: </span>Texy! (C) &quot;David Grudl&quot;:http://davidgrudl.com, 2003-2004
+<span class="line">151: </span>
+</pre></body></html>

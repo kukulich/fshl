@@ -1,7 +1,7 @@
 <?php
 
 /**
- * FSHL 2.0.0                                  | Fast Syntax HighLighter |
+ * FSHL 2.0.1                                  | Fast Syntax HighLighter |
  * -----------------------------------------------------------------------
  *
  * LICENSE
@@ -62,6 +62,7 @@ class Java implements FSHL\Lexer
 				array(
 					'ALPHA' => array('KEYWORD', Generator::BACK),
 					'NUM' => array('NUMBER', Generator::NEXT),
+					'DOTNUM' => array('NUMBER', Generator::NEXT),
 					'"' => array('QUOTE_DOUBLE', Generator::NEXT),
 					'\'' => array('QUOTE_SINGLE', Generator::NEXT),
 					'/*' => array('COMMENT_BLOCK', Generator::NEXT),

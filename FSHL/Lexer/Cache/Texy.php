@@ -1,7 +1,7 @@
 <?php
 
 /**
- * FSHL 2.0.0                                  | Fast Syntax HighLighter |
+ * FSHL 2.0.1                                  | Fast Syntax HighLighter |
  * -----------------------------------------------------------------------
  *
  * LICENSE
@@ -269,7 +269,7 @@ class Texy
 			0 => NULL, 1 => NULL, 2 => NULL, 3 => NULL, 4 => 'texy-hlead', 5 => 'texy-hbody', 6 => 'texy-hlead', 7 => 'texy-hr', 8 => 'texy-hr', 9 => 'texy-hr', 10 => 'texy-hr', 11 => 'texy-hr', 12 => 'texy-text', 13 => 'texy-text', 14 => 'texy-hr', 15 => 'texy-hr', 16 => 'texy-html', 17 => 'texy-html', 18 => 'texy-hr', 19 => 'texy-hr', 20 => 'texy-code', 21 => 'texy-code', 22 => 'texy-hr'
 		);
 		$this->keywords = array(
-
+			
 		);
 
 	}

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * FSHL 2.0.0                                  | Fast Syntax HighLighter |
+ * FSHL 2.0.1                                  | Fast Syntax HighLighter |
  * -----------------------------------------------------------------------
  *
  * LICENSE
@@ -108,22 +108,24 @@ class Sql
 				), 1 => array(
 					0 => 7, 1 => 1
 				), 2 => array(
-					0 => 2, 1 => 1
+					0 => 7, 1 => 1
 				), 3 => array(
-					0 => 3, 1 => 1
+					0 => 2, 1 => 1
 				), 4 => array(
 					0 => 3, 1 => 1
 				), 5 => array(
 					0 => 3, 1 => 1
 				), 6 => array(
-					0 => 4, 1 => 1
+					0 => 3, 1 => 1
 				), 7 => array(
-					0 => 5, 1 => 1
+					0 => 4, 1 => 1
 				), 8 => array(
-					0 => 6, 1 => 1
+					0 => 5, 1 => 1
 				), 9 => array(
-					0 => 0, 1 => 1
+					0 => 6, 1 => 1
 				), 10 => array(
+					0 => 0, 1 => 1
+				), 11 => array(
 					0 => 0, 1 => 1
 				)
 			), 1 => array(
@@ -178,6 +180,8 @@ class Sql
 				0 => array(
 					0 => 8, 1 => 1
 				), 1 => array(
+					0 => 7, 1 => 1
+				), 2 => array(
 					0 => 10, 1 => -1
 				)
 			), 8 => array(
@@ -242,7 +246,7 @@ class Sql
 	public function findDelimiter0($text, $textLength, $textPos)
 	{
 		static $delimiters = array(
-			2 => '/*', 3 => '//', 4 => '#', 5 => '--', 6 => '"', 7 => '\'', 8 => '`', 9 => "\n", 10 => "\t"
+			2 => 'DOT_NUM', 3 => '/*', 4 => '//', 5 => '#', 6 => '--', 7 => '"', 8 => '\'', 9 => '`', 10 => "\n", 11 => "\t"
 		);
 
 		$buffer = false;
@@ -262,13 +266,13 @@ class Sql
 			if (0 === strpos($part, $delimiters[3])) {
 				return array(3, $delimiters[3], $buffer);
 			}
-			if ($delimiters[4] === $letter) {
+			if (0 === strpos($part, $delimiters[4])) {
 				return array(4, $delimiters[4], $buffer);
 			}
-			if (0 === strpos($part, $delimiters[5])) {
+			if ($delimiters[5] === $letter) {
 				return array(5, $delimiters[5], $buffer);
 			}
-			if ($delimiters[6] === $letter) {
+			if (0 === strpos($part, $delimiters[6])) {
 				return array(6, $delimiters[6], $buffer);
 			}
 			if ($delimiters[7] === $letter) {
@@ -282,6 +286,9 @@ class Sql
 			}
 			if ($delimiters[10] === $letter) {
 				return array(10, $delimiters[10], $buffer);
+			}
+			if ($delimiters[11] === $letter) {
+				return array(11, $delimiters[11], $buffer);
 			}
 			$buffer .= $letter;
 			$textPos++;
@@ -505,13 +512,16 @@ class Sql
 
 		$buffer = false;
 		while ($textPos < $textLength) {
-
+			$part = substr($text, $textPos, 10);
 			$letter = $text[$textPos];
 
 			if ($delimiters[0] === $letter) {
 				return array(0, $delimiters[0], $buffer);
 			}
-			return array(1, $letter, $buffer);
+			if (preg_match('~^\.\\d+~', $part, $matches)) {
+				return array(1, $matches[0], $buffer);
+			}
+			return array(2, $letter, $buffer);
 			$buffer .= $letter;
 			$textPos++;
 		}

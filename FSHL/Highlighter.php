@@ -1,7 +1,7 @@
 <?php
 
 /**
- * FSHL 2.0.0                                  | Fast Syntax HighLighter |
+ * FSHL 2.0.1                                  | Fast Syntax HighLighter |
  * -----------------------------------------------------------------------
  *
  * LICENSE
@@ -85,7 +85,7 @@ class Highlighter
 	private $lexer = null;
 
 	/**
-	 * Table for tab indentation
+	 * Table for tab indentation.
 	 *
 	 * @var array
 	 */
@@ -389,7 +389,7 @@ class Highlighter
 		}
 
 		// Loads lexer cache
-		$lexerCacheClass = 'FSHL\\Lexer\\Cache\\' . $lexerName;
+		$lexerCacheClass = '\\FSHL\\Lexer\\Cache\\' . $lexerName;
 		if (class_exists($lexerCacheClass)) {
 			$this->lexers[$lexerName] = new $lexerCacheClass();
 			$this->lexer = $this->lexers[$lexerName];
@@ -417,6 +417,8 @@ class Highlighter
 			unlink($file);
 		}
 
+		$lexerName = $lexer->getLanguage();
+		$lexerCacheClass = '\\FSHL\\Lexer\\Cache\\' . $lexerName;
 		$this->lexers[$lexerName] = new $lexerCacheClass();
 		$this->lexer = $this->lexers[$lexerName];
 

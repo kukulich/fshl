@@ -1,7 +1,7 @@
 <?php
 
 /**
- * FSHL 2.0.0                                  | Fast Syntax HighLighter |
+ * FSHL 2.0.1                                  | Fast Syntax HighLighter |
  * -----------------------------------------------------------------------
  *
  * LICENSE
@@ -53,9 +53,9 @@ class HtmlManual implements FSHL\Output
 		'php-keyword1' => 'http://php.net/manual/en/langref.php',
 		'php-keyword2' => 'http://php.net/%s',
 
-		'sql-keyword1' => 'http://search.oracle.com/search/search?group=Documentation&q=%s',
-		'sql-keyword2' => 'http://search.oracle.com/search/search?group=Documentation&q=%s',
-		'sql-keyword3' => 'http://search.oracle.com/search/search?group=Documentation&q=%s',
+		'sql-keyword1' => 'http://search.oracle.com/search/search?group=MySQL&q=%s',
+		'sql-keyword2' => 'http://search.oracle.com/search/search?group=MySQL&q=%s',
+		'sql-keyword3' => 'http://search.oracle.com/search/search?group=MySQL&q=%s',
 	);
 
 	/**

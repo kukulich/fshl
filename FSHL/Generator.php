@@ -1,7 +1,7 @@
 <?php
 
 /**
- * FSHL 2.0.0                                  | Fast Syntax HighLighter |
+ * FSHL 2.0.1                                  | Fast Syntax HighLighter |
  * -----------------------------------------------------------------------
  *
  * LICENSE
@@ -225,7 +225,7 @@ class Generator
 	private $data = array();
 
 	/**
-	 * List of delimiters
+	 * List of delimiters.
 	 *
 	 * @var array
 	 */
@@ -241,7 +241,7 @@ class Generator
 	/**
 	 * Initializes the generator for a given lexer.
 	 *
-	 * @param \FSHL\Lexer $lexerName
+	 * @param \FSHL\Lexer $lexer
 	 */
 	public function __construct(Lexer $lexer)
 	{
@@ -269,9 +269,10 @@ class Generator
 	public function saveToCache()
 	{
 		$file = __DIR__ . '/Lexer/Cache/' . $this->lexerName . '.php';
-		if (false === @file_put_contents($file, $this->source)) {
+		if (false === @file_put_contents($file, $this->getSource())) {
 			throw new \RuntimeException(sprintf('Cannot save source to "%s"', $file));
 		}
+		require_once $file;
 		return $this;
 	}
 
@@ -306,7 +307,7 @@ class Generator
 <?php
 
 /**
- * FSHL 2.0.0                                  | Fast Syntax HighLighter |
+ * FSHL 2.0.1                                  | Fast Syntax HighLighter |
  * -----------------------------------------------------------------------
  *
  * LICENSE
@@ -490,8 +491,7 @@ CONDITION;
 			$bufferSource = '$text[$textPos]';
 		}
 
-		// Removes traling whitespaces and unnecessary empty lines
-		return preg_replace('~\n{3,}~', "\n\n", preg_replace('~\t+\n~', "\n", '
+		$source = '
 	/**
 	 * Finds a delimiter for state ' . array_search($state, $this->states) . '.
 	 *
@@ -514,7 +514,11 @@ CONDITION;
 		}
 		return array(-1, -1, $buffer);
 	}
-'));
+';
+		// Removes traling whitespaces and unnecessary empty lines
+		$source = preg_replace('~\n{3,}~', "\n\n", preg_replace('~\t+\n~', "\n", $source));
+
+		return $source;
 	}
 
 	/**

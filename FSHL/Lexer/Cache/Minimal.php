@@ -1,7 +1,7 @@
 <?php
 
 /**
- * FSHL 2.0.0                                  | Fast Syntax HighLighter |
+ * FSHL 2.0.1                                  | Fast Syntax HighLighter |
  * -----------------------------------------------------------------------
  *
  * LICENSE
@@ -123,7 +123,7 @@ class Minimal
 			0 => NULL
 		);
 		$this->keywords = array(
-
+			
 		);
 
 	}

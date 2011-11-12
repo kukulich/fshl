@@ -1,7 +1,7 @@
 <?php
 
 /**
- * FSHL 2.0.0                                  | Fast Syntax HighLighter |
+ * FSHL 2.0.1                                  | Fast Syntax HighLighter |
  * -----------------------------------------------------------------------
  *
  * LICENSE
@@ -105,9 +105,9 @@ class Cpp implements FSHL\Lexer
 			),
 			'PREPROC' => array(
 				array(
-					"\\\n" => array(Generator::STATE_SELF, Generator::NEXT), // Backslash in preprocessor
+					"\\\n" => array(Generator::STATE_SELF, Generator::NEXT),
 					'TAB' => array(Generator::STATE_SELF, Generator::NEXT),
-					"\\\xd\xa" => array(Generator::STATE_SELF, Generator::NEXT), // Backslash in preprocessor
+					"\\\xd\xa" => array(Generator::STATE_SELF, Generator::NEXT),
 					'LINE' => array(Generator::STATE_RETURN, Generator::BACK)
 				),
 				Generator::STATE_FLAG_RECURSION,

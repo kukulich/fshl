@@ -1,7 +1,7 @@
 <?php
 
 /**
- * FSHL 2.0.0                                  | Fast Syntax HighLighter |
+ * FSHL 2.0.1                                  | Fast Syntax HighLighter |
  * -----------------------------------------------------------------------
  *
  * LICENSE
@@ -71,9 +71,7 @@ class Css implements FSHL\Lexer
 					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
 					'TAB' => array(Generator::STATE_SELF, Generator::NEXT),
 					'</' => array(Generator::STATE_QUIT, Generator::NEXT),
-					'<?php' => array('PHP', Generator::NEXT),
-					'<?=' => array('PHP', Generator::NEXT),
-					'<?' => array('PHP', Generator::NEXT)
+					'PHP' => array('PHP', Generator::NEXT)
 				),
 				Generator::STATE_FLAG_NONE,
 				null,
@@ -225,7 +223,8 @@ class Css implements FSHL\Lexer
 	{
 		return array(
 			'FUNC' => 'preg_match(\'~[a-z]+\\s*\\(~iA\', $text, $matches, 0, $textPos)',
-			'PROPERTY' => 'preg_match(\'~[-a-z]+~iA\', $text, $matches, 0, $textPos)'
+			'PROPERTY' => 'preg_match(\'~[-a-z]+~iA\', $text, $matches, 0, $textPos)',
+			'PHP' => 'preg_match(\'~<\\\\?(php|=|(?!xml))~A\', $text, $matches, 0, $textPos)'
 		);
 	}
 

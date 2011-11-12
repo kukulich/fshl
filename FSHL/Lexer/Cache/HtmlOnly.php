@@ -1,7 +1,7 @@
 <?php
 
 /**
- * FSHL 2.0.0                                  | Fast Syntax HighLighter |
+ * FSHL 2.0.1                                  | Fast Syntax HighLighter |
  * -----------------------------------------------------------------------
  *
  * LICENSE
@@ -235,7 +235,7 @@ class HtmlOnly
 			0 => NULL, 1 => 'html-entity', 2 => 'html-tag', 3 => 'html-tagin', 4 => 'html-tagin', 5 => 'html-tag', 6 => NULL, 7 => 'html-tagin', 8 => 'html-tag', 9 => NULL, 10 => 'html-quote', 11 => 'html-quote', 12 => 'html-comment'
 		);
 		$this->keywords = array(
-
+			
 		);
 
 	}

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * FSHL 2.0.0                                  | Fast Syntax HighLighter |
+ * FSHL 2.0.1                                  | Fast Syntax HighLighter |
  * -----------------------------------------------------------------------
  *
  * LICENSE
@@ -128,7 +128,7 @@ class Php
 				), 11 => array(
 					0 => 4, 1 => 1
 				), 12 => array(
-					0 => 16, 1 => 1
+					0 => 17, 1 => 1
 				), 13 => array(
 					0 => 1, 1 => -1
 				), 14 => array(
@@ -138,15 +138,15 @@ class Php
 				)
 			), 1 => array(
 				0 => array(
-					0 => 15, 1 => 0
+					0 => 16, 1 => 0
 				), 1 => array(
-					0 => 15, 1 => 0
+					0 => 16, 1 => 0
 				), 2 => array(
-					0 => 15, 1 => 0
+					0 => 16, 1 => 0
 				)
 			), 2 => array(
 				0 => array(
-					0 => 15, 1 => -1
+					0 => 16, 1 => -1
 				)
 			), 3 => array(
 				0 => array(
@@ -154,19 +154,19 @@ class Php
 				), 1 => array(
 					0 => 3, 1 => 1
 				), 2 => array(
-					0 => 15, 1 => 0
+					0 => 16, 1 => 0
 				)
 			), 4 => array(
 				0 => array(
-					0 => 15, 1 => -1
+					0 => 16, 1 => -1
 				), 1 => array(
 					0 => 4, 1 => 1
 				), 2 => array(
-					0 => 15, 1 => 0
+					0 => 16, 1 => 0
 				)
 			), 5 => array(
 				0 => array(
-					0 => 15, 1 => -1
+					0 => 16, 1 => -1
 				), 1 => array(
 					0 => 5, 1 => 1
 				), 2 => array(
@@ -176,13 +176,13 @@ class Php
 				)
 			), 6 => array(
 				0 => array(
-					0 => 15, 1 => 0
+					0 => 16, 1 => 0
 				), 1 => array(
-					0 => 15, 1 => -1
+					0 => 16, 1 => -1
 				)
 			), 7 => array(
 				0 => array(
-					0 => 15, 1 => 0
+					0 => 16, 1 => 0
 				), 1 => array(
 					0 => 7, 1 => 1
 				), 2 => array(
@@ -216,7 +216,7 @@ class Php
 				)
 			), 10 => array(
 				0 => array(
-					0 => 15, 1 => 0
+					0 => 16, 1 => 0
 				), 1 => array(
 					0 => 10, 1 => 1
 				), 2 => array(
@@ -242,27 +242,41 @@ class Php
 				0 => array(
 					0 => 14, 1 => 1
 				), 1 => array(
-					0 => 13, 1 => 1
+					0 => 14, 1 => 1
 				), 2 => array(
-					0 => 15, 1 => -1
+					0 => 15, 1 => 1
+				), 3 => array(
+					0 => 13, 1 => 1
+				), 4 => array(
+					0 => 13, 1 => 1
+				), 5 => array(
+					0 => 16, 1 => -1
 				)
 			), 14 => array(
 				0 => array(
-					0 => 15, 1 => -1
+					0 => 14, 1 => 0
+				), 1 => array(
+					0 => 14, 1 => 0
+				), 2 => array(
+					0 => 16, 1 => -1
 				)
-			), 16 => NULL
+			), 15 => array(
+				0 => array(
+					0 => 16, 1 => -1
+				)
+			), 17 => NULL
 		);
 		$this->initialState = 0;
-		$this->returnState = 15;
-		$this->quitState = 16;
+		$this->returnState = 16;
+		$this->quitState = 17;
 		$this->flags = array(
-			0 => 0, 1 => 4, 2 => 5, 3 => 4, 4 => 4, 5 => 4, 6 => 4, 7 => 4, 8 => 0, 9 => 0, 10 => 4, 11 => 0, 12 => 0, 13 => 4, 14 => 0, 16 => 8
+			0 => 0, 1 => 4, 2 => 5, 3 => 4, 4 => 4, 5 => 4, 6 => 4, 7 => 4, 8 => 0, 9 => 0, 10 => 4, 11 => 0, 12 => 0, 13 => 4, 14 => 0, 15 => 0, 17 => 8
 		);
 		$this->data = array(
-			0 => NULL, 1 => NULL, 2 => NULL, 3 => NULL, 4 => NULL, 5 => NULL, 6 => NULL, 7 => NULL, 8 => NULL, 9 => NULL, 10 => NULL, 11 => NULL, 12 => NULL, 13 => NULL, 14 => NULL, 16 => NULL
+			0 => NULL, 1 => NULL, 2 => NULL, 3 => NULL, 4 => NULL, 5 => NULL, 6 => NULL, 7 => NULL, 8 => NULL, 9 => NULL, 10 => NULL, 11 => NULL, 12 => NULL, 13 => NULL, 14 => NULL, 15 => NULL, 17 => NULL
 		);
 		$this->classes = array(
-			0 => NULL, 1 => 'xlang', 2 => NULL, 3 => 'php-comment', 4 => 'php-comment', 5 => 'php-var', 6 => 'php-var', 7 => 'php-quote', 8 => 'php-quote', 9 => 'php-quote', 10 => 'php-quote', 11 => 'php-quote', 12 => 'php-quote', 13 => 'php-num', 14 => 'php-num', 16 => 'xlang'
+			0 => NULL, 1 => 'xlang', 2 => NULL, 3 => 'php-comment', 4 => 'php-comment', 5 => 'php-var', 6 => 'php-var', 7 => 'php-quote', 8 => 'php-quote', 9 => 'php-quote', 10 => 'php-quote', 11 => 'php-quote', 12 => 'php-quote', 13 => 'php-num', 14 => 'php-num', 15 => 'php-num', 17 => 'xlang'
 		);
 		$this->keywords = array(
 			0 => 'php-keyword', 1 => array(
@@ -887,7 +901,7 @@ class Php
 	public function findDelimiter13($text, $textLength, $textPos)
 	{
 		static $delimiters = array(
-			0 => 'x'
+			0 => 'e', 1 => 'E', 2 => 'x', 3 => 'b'
 		);
 
 		$buffer = false;
@@ -898,10 +912,53 @@ class Php
 			if ($delimiters[0] === $letter) {
 				return array(0, $delimiters[0], $buffer);
 			}
-			if (preg_match('~^\.\\d+~', $part, $matches)) {
-				return array(1, $matches[0], $buffer);
+			if ($delimiters[1] === $letter) {
+				return array(1, $delimiters[1], $buffer);
 			}
-			return array(2, $letter, $buffer);
+			if ($delimiters[2] === $letter) {
+				return array(2, $delimiters[2], $buffer);
+			}
+			if ($delimiters[3] === $letter) {
+				return array(3, $delimiters[3], $buffer);
+			}
+			if (preg_match('~^\.\\d+~', $part, $matches)) {
+				return array(4, $matches[0], $buffer);
+			}
+			return array(5, $letter, $buffer);
+			$buffer .= $letter;
+			$textPos++;
+		}
+		return array(-1, -1, $buffer);
+	}
+
+	/**
+	 * Finds a delimiter for state EXPONENT.
+	 *
+	 * @param string $text
+	 * @param string $textLength
+	 * @param string $textPos
+	 * @return array
+	 */
+	public function findDelimiter14($text, $textLength, $textPos)
+	{
+		static $delimiters = array(
+			0 => '+', 1 => '-'
+		);
+
+		$buffer = false;
+		while ($textPos < $textLength) {
+			$part = substr($text, $textPos, 10);
+			$letter = $text[$textPos];
+
+			if ($delimiters[0] === $letter) {
+				return array(0, $delimiters[0], $buffer);
+			}
+			if ($delimiters[1] === $letter) {
+				return array(1, $delimiters[1], $buffer);
+			}
+			if (preg_match('~^\\D+~', $part, $matches)) {
+				return array(2, $matches[0], $buffer);
+			}
 			$buffer .= $letter;
 			$textPos++;
 		}
@@ -916,7 +973,7 @@ class Php
 	 * @param string $textPos
 	 * @return array
 	 */
-	public function findDelimiter14($text, $textLength, $textPos)
+	public function findDelimiter15($text, $textLength, $textPos)
 	{
 
 		$buffer = false;

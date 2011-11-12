@@ -1,5 +1,5 @@
 /**
- * FSHL 2.0.0                                  | Fast Syntax HighLighter |
+ * FSHL 2.0.1                                  | Fast Syntax HighLighter |
  * -----------------------------------------------------------------------
  *
  * LICENSE
@@ -20,7 +20,7 @@
 
 /* Common */
 .xlang {color: #ff0000; font-weight: bold;}
-.line {color: #000000; background-color: #fffff;}
+.line {color: #000000; background-color: #ffffff;}
 
 /* CSS */
 .css-at-rule {color: #004a80; font-weight: bold;}
@@ -95,4 +95,4 @@
 .texy-code {color: #666666;}
 .texy-html {color: #66aa66;}
 .texy-text {color: #6666aa;}
-.texy-err {background-color: #ff0000; color: white;}
+.texy-err {background-color: #ff0000; color: #ffffff;}

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * FSHL 2.0.0                                  | Fast Syntax HighLighter |
+ * FSHL 2.0.1                                  | Fast Syntax HighLighter |
  * -----------------------------------------------------------------------
  *
  * LICENSE
@@ -63,15 +63,15 @@ class Javascript implements FSHL\Lexer
 					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
 					'TAB' => array(Generator::STATE_SELF, Generator::NEXT),
 					'ALPHA' => array('KEYWORD', Generator::BACK),
-					'.' => array('KEYWORD', Generator::CURRENT),
 					'NUM' => array('NUMBER', Generator::NEXT),
+					'DOTNUM' => array('NUMBER', Generator::NEXT),
+					'.' => array('KEYWORD', Generator::CURRENT),
 					'"' => array('QUOTE_DOUBLE', Generator::NEXT),
 					'\'' => array('QUOTE_SINGLE', Generator::NEXT),
 					'/*' => array('COMMENT_BLOCK', Generator::NEXT),
 					'//' => array('COMMENT_LINE', Generator::NEXT),
-					'<?php' => array('PHP', Generator::NEXT),
-					'<?=' => array('PHP', Generator::NEXT),
-					'<?' => array('PHP', Generator::NEXT),
+					'REGEXP' => array('REGEXP', Generator::NEXT),
+					'PHP' => array('PHP', Generator::NEXT),
 					'</' => array(Generator::STATE_QUIT, Generator::NEXT)
 				),
 				Generator::STATE_FLAG_NONE,
@@ -107,9 +107,7 @@ class Javascript implements FSHL\Lexer
 			'QUOTE_DOUBLE' => array(
 				array(
 					'"' => array(Generator::STATE_RETURN, Generator::CURRENT),
-					'<?php' => array('PHP', Generator::NEXT),
-					'<?=' => array('PHP', Generator::NEXT),
-					'<?' => array('PHP', Generator::NEXT)
+					'PHP' => array('PHP', Generator::NEXT)
 				),
 				Generator::STATE_FLAG_RECURSION,
 				'js-quote',
@@ -118,9 +116,7 @@ class Javascript implements FSHL\Lexer
 			'QUOTE_SINGLE' => array(
 				array(
 					'\'' => array(Generator::STATE_RETURN, Generator::CURRENT),
-					'<?php' => array('PHP', Generator::NEXT),
-					'<?=' => array('PHP', Generator::NEXT),
-					'<?' => array('PHP', Generator::NEXT)
+					'PHP' => array('PHP', Generator::NEXT)
 				),
 				Generator::STATE_FLAG_RECURSION,
 				'js-quote',
@@ -131,9 +127,7 @@ class Javascript implements FSHL\Lexer
 					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
 					'TAB' => array(Generator::STATE_SELF, Generator::NEXT),
 					'*/' => array(Generator::STATE_RETURN, Generator::CURRENT),
-					'<?php' => array('PHP', Generator::NEXT),
-					'<?=' => array('PHP', Generator::NEXT),
-					'<?' => array('PHP', Generator::NEXT)
+					'PHP' => array('PHP', Generator::NEXT)
 				),
 				Generator::STATE_FLAG_RECURSION,
 				'js-comment',
@@ -143,12 +137,18 @@ class Javascript implements FSHL\Lexer
 				array(
 					'LINE' => array(Generator::STATE_RETURN, Generator::BACK),
 					'TAB' => array(Generator::STATE_SELF, Generator::NEXT),
-					'<?php' => array('PHP', Generator::NEXT),
-					'<?=' => array('PHP', Generator::NEXT),
-					'<?' => array('PHP', Generator::NEXT)
+					'PHP' => array('PHP', Generator::NEXT)
 				),
 				Generator::STATE_FLAG_RECURSION,
 				'js-comment',
+				null
+			),
+			'REGEXP' => array(
+				array(
+					'ALL' => array(Generator::STATE_RETURN, Generator::BACK)
+				),
+				Generator::STATE_FLAG_NONE,
+				'js-quote',
 				null
 			),
 			'PHP' => array(
@@ -173,7 +173,10 @@ class Javascript implements FSHL\Lexer
 	 */
 	public function getDelimiters()
 	{
-		return array();
+		return array(
+			'REGEXP' => 'preg_match(\'~/.*?[^\\\\\\\\]/[gim]*~A\', $text, $matches, 0, $textPos)',
+			'PHP' => 'preg_match(\'~<\\\\?(php|=|(?!xml))~A\', $text, $matches, 0, $textPos)'
+		);
 	}
 
 	/**

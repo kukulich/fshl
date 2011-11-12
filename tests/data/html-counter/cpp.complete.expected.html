@@ -1,0 +1,1319 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8" /><link rel="stylesheet" type="text/css" href="../../../style.css" media="all" /></head><body><pre>
+<span class="line">   1: </span><span class="cpp-comment">/*
+</span><span class="line">   2: </span><span class="cpp-comment">   +----------------------------------------------------------------------+
+</span><span class="line">   3: </span><span class="cpp-comment">   | Zend Engine                                                          |
+</span><span class="line">   4: </span><span class="cpp-comment">   +----------------------------------------------------------------------+
+</span><span class="line">   5: </span><span class="cpp-comment">   | Copyright (c) 1998-2011 Zend Technologies Ltd. (http://www.zend.com) |
+</span><span class="line">   6: </span><span class="cpp-comment">   +----------------------------------------------------------------------+
+</span><span class="line">   7: </span><span class="cpp-comment">   | This source file is subject to version 2.00 of the Zend license,     |
+</span><span class="line">   8: </span><span class="cpp-comment">   | that is bundled with this package in the file LICENSE, and is        |
+</span><span class="line">   9: </span><span class="cpp-comment">   | available through the world-wide-web at the following url:           |
+</span><span class="line">  10: </span><span class="cpp-comment">   | http://www.zend.com/license/2_00.txt.                                |
+</span><span class="line">  11: </span><span class="cpp-comment">   | If you did not receive a copy of the Zend license and are unable to  |
+</span><span class="line">  12: </span><span class="cpp-comment">   | obtain it through the world-wide-web, please send a note to          |
+</span><span class="line">  13: </span><span class="cpp-comment">   | license@zend.com so we can mail you a copy immediately.              |
+</span><span class="line">  14: </span><span class="cpp-comment">   +----------------------------------------------------------------------+
+</span><span class="line">  15: </span><span class="cpp-comment">   | Authors: Andi Gutmans &lt;andi@zend.com&gt;                                |
+</span><span class="line">  16: </span><span class="cpp-comment">   |          Zeev Suraski &lt;zeev@zend.com&gt;                                |
+</span><span class="line">  17: </span><span class="cpp-comment">   +----------------------------------------------------------------------+
+</span><span class="line">  18: </span><span class="cpp-comment">*/</span>
+<span class="line">  19: </span>
+<span class="line">  20: </span><span class="cpp-comment">/* $Id: zend.c 314457 2011-08-08 03:08:59Z pierrick $ */</span>
+<span class="line">  21: </span>
+<span class="line">  22: </span><span class="cpp-preproc">#include &quot;zend.h&quot;</span>
+<span class="line">  23: </span><span class="cpp-preproc">#include &quot;zend_extensions.h&quot;</span>
+<span class="line">  24: </span><span class="cpp-preproc">#include &quot;zend_modules.h&quot;</span>
+<span class="line">  25: </span><span class="cpp-preproc">#include &quot;zend_constants.h&quot;</span>
+<span class="line">  26: </span><span class="cpp-preproc">#include &quot;zend_list.h&quot;</span>
+<span class="line">  27: </span><span class="cpp-preproc">#include &quot;zend_API.h&quot;</span>
+<span class="line">  28: </span><span class="cpp-preproc">#include &quot;zend_exceptions.h&quot;</span>
+<span class="line">  29: </span><span class="cpp-preproc">#include &quot;zend_builtin_functions.h&quot;</span>
+<span class="line">  30: </span><span class="cpp-preproc">#include &quot;zend_ini.h&quot;</span>
+<span class="line">  31: </span><span class="cpp-preproc">#include &quot;zend_vm.h&quot;</span>
+<span class="line">  32: </span>
+<span class="line">  33: </span><span class="cpp-preproc">#ifdef ZTS</span>
+<span class="line">  34: </span><span class="cpp-preproc"># define GLOBAL_FUNCTION_TABLE      global_function_table</span>
+<span class="line">  35: </span><span class="cpp-preproc"># define GLOBAL_CLASS_TABLE         global_class_table</span>
+<span class="line">  36: </span><span class="cpp-preproc"># define GLOBAL_CONSTANTS_TABLE     global_constants_table</span>
+<span class="line">  37: </span><span class="cpp-preproc"># define GLOBAL_AUTO_GLOBALS_TABLE  global_auto_globals_table</span>
+<span class="line">  38: </span><span class="cpp-preproc">#else</span>
+<span class="line">  39: </span><span class="cpp-preproc"># define GLOBAL_FUNCTION_TABLE      CG(function_table)</span>
+<span class="line">  40: </span><span class="cpp-preproc"># define GLOBAL_CLASS_TABLE         CG(class_table)</span>
+<span class="line">  41: </span><span class="cpp-preproc"># define GLOBAL_AUTO_GLOBALS_TABLE  CG(auto_globals)</span>
+<span class="line">  42: </span><span class="cpp-preproc"># define GLOBAL_CONSTANTS_TABLE     EG(zend_constants)</span>
+<span class="line">  43: </span><span class="cpp-preproc">#endif</span>
+<span class="line">  44: </span>
+<span class="line">  45: </span><span class="cpp-preproc">#if defined(ZEND_WIN32) &amp;&amp; ZEND_DEBUG</span>
+<span class="line">  46: </span>BOOL WINAPI IsDebuggerPresent(VOID);
+<span class="line">  47: </span><span class="cpp-preproc">#endif</span>
+<span class="line">  48: </span>
+<span class="line">  49: </span><span class="cpp-comment">/* true multithread-shared globals */</span>
+<span class="line">  50: </span>ZEND_API zend_class_entry *zend_standard_class_def = NULL;
+<span class="line">  51: </span>ZEND_API <span class="cpp-keywords1">int</span> (*zend_printf)(<span class="cpp-keywords1">const</span> <span class="cpp-keywords1">char</span> *format, ...);
+<span class="line">  52: </span>ZEND_API zend_write_func_t zend_write;
+<span class="line">  53: </span>ZEND_API FILE *(*zend_fopen)(<span class="cpp-keywords1">const</span> <span class="cpp-keywords1">char</span> *filename, <span class="cpp-keywords1">char</span> **opened_path TSRMLS_DC);
+<span class="line">  54: </span>ZEND_API <span class="cpp-keywords1">int</span> (*zend_stream_open_function)(<span class="cpp-keywords1">const</span> <span class="cpp-keywords1">char</span> *filename, zend_file_handle *handle TSRMLS_DC);
+<span class="line">  55: </span>ZEND_API <span class="cpp-keywords1">void</span> (*zend_block_interruptions)(<span class="cpp-keywords1">void</span>);
+<span class="line">  56: </span>ZEND_API <span class="cpp-keywords1">void</span> (*zend_unblock_interruptions)(<span class="cpp-keywords1">void</span>);
+<span class="line">  57: </span>ZEND_API <span class="cpp-keywords1">void</span> (*zend_ticks_function)(<span class="cpp-keywords1">int</span> ticks);
+<span class="line">  58: </span>ZEND_API <span class="cpp-keywords1">void</span> (*zend_error_cb)(<span class="cpp-keywords1">int</span> type, <span class="cpp-keywords1">const</span> <span class="cpp-keywords1">char</span> *error_filename, <span class="cpp-keywords1">const</span> uint error_lineno, <span class="cpp-keywords1">const</span> <span class="cpp-keywords1">char</span> *format, va_list args);
+<span class="line">  59: </span><span class="cpp-keywords1">int</span> (*zend_vspprintf)(<span class="cpp-keywords1">char</span> **pbuf, size_t max_len, <span class="cpp-keywords1">const</span> <span class="cpp-keywords1">char</span> *format, va_list ap);
+<span class="line">  60: </span>ZEND_API <span class="cpp-keywords1">char</span> *(*zend_getenv)(<span class="cpp-keywords1">char</span> *name, size_t name_len TSRMLS_DC);
+<span class="line">  61: </span>ZEND_API <span class="cpp-keywords1">char</span> *(*zend_resolve_path)(<span class="cpp-keywords1">const</span> <span class="cpp-keywords1">char</span> *filename, <span class="cpp-keywords1">int</span> filename_len TSRMLS_DC);
+<span class="line">  62: </span>
+<span class="line">  63: </span><span class="cpp-keywords1">void</span> (*zend_on_timeout)(<span class="cpp-keywords1">int</span> seconds TSRMLS_DC);
+<span class="line">  64: </span>
+<span class="line">  65: </span><span class="cpp-keywords1">static</span> <span class="cpp-keywords1">void</span> (*zend_message_dispatcher_p)(<span class="cpp-keywords1">long</span> message, <span class="cpp-keywords1">void</span> *data TSRMLS_DC);
+<span class="line">  66: </span><span class="cpp-keywords1">static</span> <span class="cpp-keywords1">int</span> (*zend_get_configuration_directive_p)(<span class="cpp-keywords1">const</span> <span class="cpp-keywords1">char</span> *name, uint name_length, zval *contents);
+<span class="line">  67: </span>
+<span class="line">  68: </span><span class="cpp-keywords1">static</span> ZEND_INI_MH(OnUpdateErrorReporting) <span class="cpp-comment">/* {{{ */</span>
+<span class="line">  69: </span>{
+<span class="line">  70: </span>    <span class="cpp-keywords1">if</span> (!new_value) {
+<span class="line">  71: </span>        EG(error_reporting) = E_ALL &amp; ~E_NOTICE &amp; ~E_STRICT &amp; ~E_DEPRECATED;
+<span class="line">  72: </span>    } <span class="cpp-keywords1">else</span> {
+<span class="line">  73: </span>        EG(error_reporting) = atoi(new_value);
+<span class="line">  74: </span>    }
+<span class="line">  75: </span>    <span class="cpp-keywords1">return</span> SUCCESS;
+<span class="line">  76: </span>}
+<span class="line">  77: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line">  78: </span>
+<span class="line">  79: </span><span class="cpp-keywords1">static</span> ZEND_INI_MH(OnUpdateGCEnabled) <span class="cpp-comment">/* {{{ */</span>
+<span class="line">  80: </span>{
+<span class="line">  81: </span>    OnUpdateBool(entry, new_value, new_value_length, mh_arg1, mh_arg2, mh_arg3, stage TSRMLS_CC);
+<span class="line">  82: </span>
+<span class="line">  83: </span>    <span class="cpp-keywords1">if</span> (GC_G(gc_enabled)) {
+<span class="line">  84: </span>        gc_init(TSRMLS_C);
+<span class="line">  85: </span>    }
+<span class="line">  86: </span>
+<span class="line">  87: </span>    <span class="cpp-keywords1">return</span> SUCCESS;
+<span class="line">  88: </span>}
+<span class="line">  89: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line">  90: </span>
+<span class="line">  91: </span>ZEND_INI_BEGIN()
+<span class="line">  92: </span>    ZEND_INI_ENTRY(<span class="cpp-quote">&quot;error_reporting&quot;</span>,               NULL,       ZEND_INI_ALL,       OnUpdateErrorReporting)
+<span class="line">  93: </span>    STD_ZEND_INI_BOOLEAN(<span class="cpp-quote">&quot;zend.enable_gc&quot;</span>,              <span class="cpp-quote">&quot;1&quot;</span>,    ZEND_INI_ALL,       OnUpdateGCEnabled,      gc_enabled,     zend_gc_globals,        gc_globals)
+<span class="line">  94: </span><span class="cpp-preproc">#ifdef ZEND_MULTIBYTE</span>
+<span class="line">  95: </span>    STD_ZEND_INI_BOOLEAN(<span class="cpp-quote">&quot;detect_unicode&quot;</span>, <span class="cpp-quote">&quot;1&quot;</span>, ZEND_INI_ALL, OnUpdateBool, detect_unicode, zend_compiler_globals, compiler_globals)
+<span class="line">  96: </span><span class="cpp-preproc">#endif</span>
+<span class="line">  97: </span>ZEND_INI_END()
+<span class="line">  98: </span>
+<span class="line">  99: </span>
+<span class="line"> 100: </span><span class="cpp-preproc">#ifdef ZTS</span>
+<span class="line"> 101: </span>ZEND_API <span class="cpp-keywords1">int</span> compiler_globals_id;
+<span class="line"> 102: </span>ZEND_API <span class="cpp-keywords1">int</span> executor_globals_id;
+<span class="line"> 103: </span><span class="cpp-keywords1">static</span> HashTable *global_function_table = NULL;
+<span class="line"> 104: </span><span class="cpp-keywords1">static</span> HashTable *global_class_table = NULL;
+<span class="line"> 105: </span><span class="cpp-keywords1">static</span> HashTable *global_constants_table = NULL;
+<span class="line"> 106: </span><span class="cpp-keywords1">static</span> HashTable *global_auto_globals_table = NULL;
+<span class="line"> 107: </span><span class="cpp-keywords1">static</span> HashTable *global_persistent_list = NULL;
+<span class="line"> 108: </span><span class="cpp-preproc">#endif</span>
+<span class="line"> 109: </span>
+<span class="line"> 110: </span>ZEND_API zend_utility_values zend_uv;
+<span class="line"> 111: </span>
+<span class="line"> 112: </span>ZEND_API zval zval_used_for_init; <span class="cpp-comment">/* True global variable */</span>
+<span class="line"> 113: </span>
+<span class="line"> 114: </span><span class="cpp-comment">/* version information */</span>
+<span class="line"> 115: </span><span class="cpp-keywords1">static</span> <span class="cpp-keywords1">char</span> *zend_version_info;
+<span class="line"> 116: </span><span class="cpp-keywords1">static</span> uint zend_version_info_length;
+<span class="line"> 117: </span><span class="cpp-preproc">#define ZEND_CORE_VERSION_INFO  &quot;Zend Engine v&quot; ZEND_VERSION &quot;, Copyright (c) 1998-2011 Zend Technologies\n&quot;</span>
+<span class="line"> 118: </span><span class="cpp-preproc">#define PRINT_ZVAL_INDENT 4</span>
+<span class="line"> 119: </span>
+<span class="line"> 120: </span><span class="cpp-keywords1">static</span> <span class="cpp-keywords1">void</span> print_hash(zend_write_func_t write_func, HashTable *ht, <span class="cpp-keywords1">int</span> indent, zend_bool is_object TSRMLS_DC) <span class="cpp-comment">/* {{{ */</span>
+<span class="line"> 121: </span>{
+<span class="line"> 122: </span>    zval **tmp;
+<span class="line"> 123: </span>    <span class="cpp-keywords1">char</span> *string_key;
+<span class="line"> 124: </span>    HashPosition iterator;
+<span class="line"> 125: </span>    ulong num_key;
+<span class="line"> 126: </span>    uint str_len;
+<span class="line"> 127: </span>    <span class="cpp-keywords1">int</span> i;
+<span class="line"> 128: </span>
+<span class="line"> 129: </span>    <span class="cpp-keywords1">for</span> (i = <span class="cpp-num">0</span>; i &lt; indent; i++) {
+<span class="line"> 130: </span>        ZEND_PUTS_EX(<span class="cpp-quote">&quot; &quot;</span>);
+<span class="line"> 131: </span>    }
+<span class="line"> 132: </span>    ZEND_PUTS_EX(<span class="cpp-quote">&quot;(\n&quot;</span>);
+<span class="line"> 133: </span>    indent += PRINT_ZVAL_INDENT;
+<span class="line"> 134: </span>    zend_hash_internal_pointer_reset_ex(ht, &amp;iterator);
+<span class="line"> 135: </span>    <span class="cpp-keywords1">while</span> (zend_hash_get_current_data_ex(ht, (<span class="cpp-keywords1">void</span> **) &amp;tmp, &amp;iterator) == SUCCESS) {
+<span class="line"> 136: </span>        <span class="cpp-keywords1">for</span> (i = <span class="cpp-num">0</span>; i &lt; indent; i++) {
+<span class="line"> 137: </span>            ZEND_PUTS_EX(<span class="cpp-quote">&quot; &quot;</span>);
+<span class="line"> 138: </span>        }
+<span class="line"> 139: </span>        ZEND_PUTS_EX(<span class="cpp-quote">&quot;[&quot;</span>);
+<span class="line"> 140: </span>        <span class="cpp-keywords1">switch</span> (zend_hash_get_current_key_ex(ht, &amp;string_key, &amp;str_len, &amp;num_key, <span class="cpp-num">0</span>, &amp;iterator)) {
+<span class="line"> 141: </span>            <span class="cpp-keywords1">case</span> HASH_KEY_IS_STRING:
+<span class="line"> 142: </span>                <span class="cpp-keywords1">if</span> (is_object) {
+<span class="line"> 143: </span>                    <span class="cpp-keywords1">char</span> *prop_name, *class_name;
+<span class="line"> 144: </span>                    <span class="cpp-keywords1">int</span> mangled = zend_unmangle_property_name(string_key, str_len - <span class="cpp-num">1</span>, &amp;class_name, &amp;prop_name);
+<span class="line"> 145: </span>
+<span class="line"> 146: </span>                    ZEND_PUTS_EX(prop_name);
+<span class="line"> 147: </span>                    <span class="cpp-keywords1">if</span> (class_name &amp;&amp; mangled == SUCCESS) {
+<span class="line"> 148: </span>                        <span class="cpp-keywords1">if</span> (class_name[<span class="cpp-num">0</span>]==<span class="cpp-quote">'*'</span>) {
+<span class="line"> 149: </span>                            ZEND_PUTS_EX(<span class="cpp-quote">&quot;:protected&quot;</span>);
+<span class="line"> 150: </span>                        } <span class="cpp-keywords1">else</span> {
+<span class="line"> 151: </span>                            ZEND_PUTS_EX(<span class="cpp-quote">&quot;:&quot;</span>);
+<span class="line"> 152: </span>                            ZEND_PUTS_EX(class_name);
+<span class="line"> 153: </span>                            ZEND_PUTS_EX(<span class="cpp-quote">&quot;:private&quot;</span>);
+<span class="line"> 154: </span>                        }
+<span class="line"> 155: </span>                    }
+<span class="line"> 156: </span>                } <span class="cpp-keywords1">else</span> {
+<span class="line"> 157: </span>                    ZEND_WRITE_EX(string_key, str_len-<span class="cpp-num">1</span>);
+<span class="line"> 158: </span>                }
+<span class="line"> 159: </span>                <span class="cpp-keywords1">break</span>;
+<span class="line"> 160: </span>            <span class="cpp-keywords1">case</span> HASH_KEY_IS_LONG:
+<span class="line"> 161: </span>                {
+<span class="line"> 162: </span>                    <span class="cpp-keywords1">char</span> key[<span class="cpp-num">25</span>];
+<span class="line"> 163: </span>                    snprintf(key, <span class="cpp-keywords1">sizeof</span>(key), <span class="cpp-quote">&quot;%ld&quot;</span>, num_key);
+<span class="line"> 164: </span>                    ZEND_PUTS_EX(key);
+<span class="line"> 165: </span>                }
+<span class="line"> 166: </span>                <span class="cpp-keywords1">break</span>;
+<span class="line"> 167: </span>        }
+<span class="line"> 168: </span>        ZEND_PUTS_EX(<span class="cpp-quote">&quot;] =&gt; &quot;</span>);
+<span class="line"> 169: </span>        zend_print_zval_r_ex(write_func, *tmp, indent+PRINT_ZVAL_INDENT TSRMLS_CC);
+<span class="line"> 170: </span>        ZEND_PUTS_EX(<span class="cpp-quote">&quot;\n&quot;</span>);
+<span class="line"> 171: </span>        zend_hash_move_forward_ex(ht, &amp;iterator);
+<span class="line"> 172: </span>    }
+<span class="line"> 173: </span>    indent -= PRINT_ZVAL_INDENT;
+<span class="line"> 174: </span>    <span class="cpp-keywords1">for</span> (i = <span class="cpp-num">0</span>; i &lt; indent; i++) {
+<span class="line"> 175: </span>        ZEND_PUTS_EX(<span class="cpp-quote">&quot; &quot;</span>);
+<span class="line"> 176: </span>    }
+<span class="line"> 177: </span>    ZEND_PUTS_EX(<span class="cpp-quote">&quot;)\n&quot;</span>);
+<span class="line"> 178: </span>}
+<span class="line"> 179: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line"> 180: </span>
+<span class="line"> 181: </span><span class="cpp-keywords1">static</span> <span class="cpp-keywords1">void</span> print_flat_hash(HashTable *ht TSRMLS_DC) <span class="cpp-comment">/* {{{ */</span>
+<span class="line"> 182: </span>{
+<span class="line"> 183: </span>    zval **tmp;
+<span class="line"> 184: </span>    <span class="cpp-keywords1">char</span> *string_key;
+<span class="line"> 185: </span>    HashPosition iterator;
+<span class="line"> 186: </span>    ulong num_key;
+<span class="line"> 187: </span>    uint str_len;
+<span class="line"> 188: </span>    <span class="cpp-keywords1">int</span> i = <span class="cpp-num">0</span>;
+<span class="line"> 189: </span>
+<span class="line"> 190: </span>    zend_hash_internal_pointer_reset_ex(ht, &amp;iterator);
+<span class="line"> 191: </span>    <span class="cpp-keywords1">while</span> (zend_hash_get_current_data_ex(ht, (<span class="cpp-keywords1">void</span> **) &amp;tmp, &amp;iterator) == SUCCESS) {
+<span class="line"> 192: </span>        <span class="cpp-keywords1">if</span> (i++ &gt; <span class="cpp-num">0</span>) {
+<span class="line"> 193: </span>            ZEND_PUTS(<span class="cpp-quote">&quot;,&quot;</span>);
+<span class="line"> 194: </span>        }
+<span class="line"> 195: </span>        ZEND_PUTS(<span class="cpp-quote">&quot;[&quot;</span>);
+<span class="line"> 196: </span>        <span class="cpp-keywords1">switch</span> (zend_hash_get_current_key_ex(ht, &amp;string_key, &amp;str_len, &amp;num_key, <span class="cpp-num">0</span>, &amp;iterator)) {
+<span class="line"> 197: </span>            <span class="cpp-keywords1">case</span> HASH_KEY_IS_STRING:
+<span class="line"> 198: </span>                ZEND_PUTS(string_key);
+<span class="line"> 199: </span>                <span class="cpp-keywords1">break</span>;
+<span class="line"> 200: </span>            <span class="cpp-keywords1">case</span> HASH_KEY_IS_LONG:
+<span class="line"> 201: </span>                zend_printf(<span class="cpp-quote">&quot;%ld&quot;</span>, num_key);
+<span class="line"> 202: </span>                <span class="cpp-keywords1">break</span>;
+<span class="line"> 203: </span>        }
+<span class="line"> 204: </span>        ZEND_PUTS(<span class="cpp-quote">&quot;] =&gt; &quot;</span>);
+<span class="line"> 205: </span>        zend_print_flat_zval_r(*tmp TSRMLS_CC);
+<span class="line"> 206: </span>        zend_hash_move_forward_ex(ht, &amp;iterator);
+<span class="line"> 207: </span>    }
+<span class="line"> 208: </span>}
+<span class="line"> 209: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line"> 210: </span>
+<span class="line"> 211: </span>ZEND_API <span class="cpp-keywords1">void</span> zend_make_printable_zval(zval *expr, zval *expr_copy, <span class="cpp-keywords1">int</span> *use_copy) <span class="cpp-comment">/* {{{ */</span>
+<span class="line"> 212: </span>{
+<span class="line"> 213: </span>    <span class="cpp-keywords1">if</span> (Z_TYPE_P(expr)==IS_STRING) {
+<span class="line"> 214: </span>        *use_copy = <span class="cpp-num">0</span>;
+<span class="line"> 215: </span>        <span class="cpp-keywords1">return</span>;
+<span class="line"> 216: </span>    }
+<span class="line"> 217: </span>    <span class="cpp-keywords1">switch</span> (Z_TYPE_P(expr)) {
+<span class="line"> 218: </span>        <span class="cpp-keywords1">case</span> IS_NULL:
+<span class="line"> 219: </span>            Z_STRLEN_P(expr_copy) = <span class="cpp-num">0</span>;
+<span class="line"> 220: </span>            Z_STRVAL_P(expr_copy) = STR_EMPTY_ALLOC();
+<span class="line"> 221: </span>            <span class="cpp-keywords1">break</span>;
+<span class="line"> 222: </span>        <span class="cpp-keywords1">case</span> IS_BOOL:
+<span class="line"> 223: </span>            <span class="cpp-keywords1">if</span> (Z_LVAL_P(expr)) {
+<span class="line"> 224: </span>                Z_STRLEN_P(expr_copy) = <span class="cpp-num">1</span>;
+<span class="line"> 225: </span>                Z_STRVAL_P(expr_copy) = estrndup(<span class="cpp-quote">&quot;1&quot;</span>, <span class="cpp-num">1</span>);
+<span class="line"> 226: </span>            } <span class="cpp-keywords1">else</span> {
+<span class="line"> 227: </span>                Z_STRLEN_P(expr_copy) = <span class="cpp-num">0</span>;
+<span class="line"> 228: </span>                Z_STRVAL_P(expr_copy) = STR_EMPTY_ALLOC();
+<span class="line"> 229: </span>            }
+<span class="line"> 230: </span>            <span class="cpp-keywords1">break</span>;
+<span class="line"> 231: </span>        <span class="cpp-keywords1">case</span> IS_RESOURCE:
+<span class="line"> 232: </span>            Z_STRVAL_P(expr_copy) = (<span class="cpp-keywords1">char</span> *) emalloc(<span class="cpp-keywords1">sizeof</span>(<span class="cpp-quote">&quot;Resource id #&quot;</span>) - <span class="cpp-num">1</span> + MAX_LENGTH_OF_LONG);
+<span class="line"> 233: </span>            Z_STRLEN_P(expr_copy) = sprintf(Z_STRVAL_P(expr_copy), <span class="cpp-quote">&quot;Resource id #%ld&quot;</span>, Z_LVAL_P(expr));
+<span class="line"> 234: </span>            <span class="cpp-keywords1">break</span>;
+<span class="line"> 235: </span>        <span class="cpp-keywords1">case</span> IS_ARRAY:
+<span class="line"> 236: </span>            Z_STRLEN_P(expr_copy) = <span class="cpp-keywords1">sizeof</span>(<span class="cpp-quote">&quot;Array&quot;</span>) - <span class="cpp-num">1</span>;
+<span class="line"> 237: </span>            Z_STRVAL_P(expr_copy) = estrndup(<span class="cpp-quote">&quot;Array&quot;</span>, Z_STRLEN_P(expr_copy));
+<span class="line"> 238: </span>            <span class="cpp-keywords1">break</span>;
+<span class="line"> 239: </span>        <span class="cpp-keywords1">case</span> IS_OBJECT:
+<span class="line"> 240: </span>            {
+<span class="line"> 241: </span>                TSRMLS_FETCH();
+<span class="line"> 242: </span>
+<span class="line"> 243: </span>                <span class="cpp-keywords1">if</span> (Z_OBJ_HANDLER_P(expr, cast_object) &amp;&amp; Z_OBJ_HANDLER_P(expr, cast_object)(expr, expr_copy, IS_STRING TSRMLS_CC) == SUCCESS) {
+<span class="line"> 244: </span>                    <span class="cpp-keywords1">break</span>;
+<span class="line"> 245: </span>                }
+<span class="line"> 246: </span>                <span class="cpp-comment">/* Standard PHP objects */</span>
+<span class="line"> 247: </span>                <span class="cpp-keywords1">if</span> (Z_OBJ_HT_P(expr) == &amp;std_object_handlers || !Z_OBJ_HANDLER_P(expr, cast_object)) {
+<span class="line"> 248: </span>                    <span class="cpp-keywords1">if</span> (zend_std_cast_object_tostring(expr, expr_copy, IS_STRING TSRMLS_CC) == SUCCESS) {
+<span class="line"> 249: </span>                        <span class="cpp-keywords1">break</span>;
+<span class="line"> 250: </span>                    }
+<span class="line"> 251: </span>                }
+<span class="line"> 252: </span>                <span class="cpp-keywords1">if</span> (!Z_OBJ_HANDLER_P(expr, cast_object) &amp;&amp; Z_OBJ_HANDLER_P(expr, get)) {
+<span class="line"> 253: </span>                    zval *z = Z_OBJ_HANDLER_P(expr, get)(expr TSRMLS_CC);
+<span class="line"> 254: </span>
+<span class="line"> 255: </span>                    Z_ADDREF_P(z);
+<span class="line"> 256: </span>                    <span class="cpp-keywords1">if</span> (Z_TYPE_P(z) != IS_OBJECT) {
+<span class="line"> 257: </span>                        zend_make_printable_zval(z, expr_copy, use_copy);
+<span class="line"> 258: </span>                        <span class="cpp-keywords1">if</span> (*use_copy) {
+<span class="line"> 259: </span>                            zval_ptr_dtor(&amp;z);
+<span class="line"> 260: </span>                        } <span class="cpp-keywords1">else</span> {
+<span class="line"> 261: </span>                            ZVAL_ZVAL(expr_copy, z, <span class="cpp-num">0</span>, <span class="cpp-num">1</span>);
+<span class="line"> 262: </span>                            *use_copy = <span class="cpp-num">1</span>;
+<span class="line"> 263: </span>                        }
+<span class="line"> 264: </span>                        <span class="cpp-keywords1">return</span>;
+<span class="line"> 265: </span>                    }
+<span class="line"> 266: </span>                    zval_ptr_dtor(&amp;z);
+<span class="line"> 267: </span>                }
+<span class="line"> 268: </span>                zend_error(EG(exception) ? E_ERROR : E_RECOVERABLE_ERROR, <span class="cpp-quote">&quot;Object of class %s could not be converted to string&quot;</span>, Z_OBJCE_P(expr)-&gt;name);
+<span class="line"> 269: </span>                Z_STRLEN_P(expr_copy) = <span class="cpp-num">0</span>;
+<span class="line"> 270: </span>                Z_STRVAL_P(expr_copy) = STR_EMPTY_ALLOC();
+<span class="line"> 271: </span>            }
+<span class="line"> 272: </span>            <span class="cpp-keywords1">break</span>;
+<span class="line"> 273: </span>        <span class="cpp-keywords1">case</span> IS_DOUBLE:
+<span class="line"> 274: </span>            *expr_copy = *expr;
+<span class="line"> 275: </span>            zval_copy_ctor(expr_copy);
+<span class="line"> 276: </span>            zend_locale_sprintf_double(expr_copy ZEND_FILE_LINE_CC);
+<span class="line"> 277: </span>            <span class="cpp-keywords1">break</span>;
+<span class="line"> 278: </span>        <span class="cpp-keywords1">default</span>:
+<span class="line"> 279: </span>            *expr_copy = *expr;
+<span class="line"> 280: </span>            zval_copy_ctor(expr_copy);
+<span class="line"> 281: </span>            convert_to_string(expr_copy);
+<span class="line"> 282: </span>            <span class="cpp-keywords1">break</span>;
+<span class="line"> 283: </span>    }
+<span class="line"> 284: </span>    Z_TYPE_P(expr_copy) = IS_STRING;
+<span class="line"> 285: </span>    *use_copy = <span class="cpp-num">1</span>;
+<span class="line"> 286: </span>}
+<span class="line"> 287: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line"> 288: </span>
+<span class="line"> 289: </span>ZEND_API <span class="cpp-keywords1">int</span> zend_print_zval(zval *expr, <span class="cpp-keywords1">int</span> indent) <span class="cpp-comment">/* {{{ */</span>
+<span class="line"> 290: </span>{
+<span class="line"> 291: </span>    <span class="cpp-keywords1">return</span> zend_print_zval_ex(zend_write, expr, indent);
+<span class="line"> 292: </span>}
+<span class="line"> 293: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line"> 294: </span>
+<span class="line"> 295: </span>ZEND_API <span class="cpp-keywords1">int</span> zend_print_zval_ex(zend_write_func_t write_func, zval *expr, <span class="cpp-keywords1">int</span> indent) <span class="cpp-comment">/* {{{ */</span>
+<span class="line"> 296: </span>{
+<span class="line"> 297: </span>    zval expr_copy;
+<span class="line"> 298: </span>    <span class="cpp-keywords1">int</span> use_copy;
+<span class="line"> 299: </span>
+<span class="line"> 300: </span>    zend_make_printable_zval(expr, &amp;expr_copy, &amp;use_copy);
+<span class="line"> 301: </span>    <span class="cpp-keywords1">if</span> (use_copy) {
+<span class="line"> 302: </span>        expr = &amp;expr_copy;
+<span class="line"> 303: </span>    }
+<span class="line"> 304: </span>    <span class="cpp-keywords1">if</span> (Z_STRLEN_P(expr) == <span class="cpp-num">0</span>) { <span class="cpp-comment">/* optimize away empty strings */</span>
+<span class="line"> 305: </span>        <span class="cpp-keywords1">if</span> (use_copy) {
+<span class="line"> 306: </span>            zval_dtor(expr);
+<span class="line"> 307: </span>        }
+<span class="line"> 308: </span>        <span class="cpp-keywords1">return</span> <span class="cpp-num">0</span>;
+<span class="line"> 309: </span>    }
+<span class="line"> 310: </span>    write_func(Z_STRVAL_P(expr), Z_STRLEN_P(expr));
+<span class="line"> 311: </span>    <span class="cpp-keywords1">if</span> (use_copy) {
+<span class="line"> 312: </span>        zval_dtor(expr);
+<span class="line"> 313: </span>    }
+<span class="line"> 314: </span>    <span class="cpp-keywords1">return</span> Z_STRLEN_P(expr);
+<span class="line"> 315: </span>}
+<span class="line"> 316: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line"> 317: </span>
+<span class="line"> 318: </span>ZEND_API <span class="cpp-keywords1">void</span> zend_print_flat_zval_r(zval *expr TSRMLS_DC) <span class="cpp-comment">/* {{{ */</span>
+<span class="line"> 319: </span>{
+<span class="line"> 320: </span>    <span class="cpp-keywords1">switch</span> (Z_TYPE_P(expr)) {
+<span class="line"> 321: </span>        <span class="cpp-keywords1">case</span> IS_ARRAY:
+<span class="line"> 322: </span>            ZEND_PUTS(<span class="cpp-quote">&quot;Array (&quot;</span>);
+<span class="line"> 323: </span>            <span class="cpp-keywords1">if</span> (++Z_ARRVAL_P(expr)-&gt;nApplyCount&gt;<span class="cpp-num">1</span>) {
+<span class="line"> 324: </span>                ZEND_PUTS(<span class="cpp-quote">&quot; *RECURSION*&quot;</span>);
+<span class="line"> 325: </span>                Z_ARRVAL_P(expr)-&gt;nApplyCount--;
+<span class="line"> 326: </span>                <span class="cpp-keywords1">return</span>;
+<span class="line"> 327: </span>            }
+<span class="line"> 328: </span>            print_flat_hash(Z_ARRVAL_P(expr) TSRMLS_CC);
+<span class="line"> 329: </span>            ZEND_PUTS(<span class="cpp-quote">&quot;)&quot;</span>);
+<span class="line"> 330: </span>            Z_ARRVAL_P(expr)-&gt;nApplyCount--;
+<span class="line"> 331: </span>            <span class="cpp-keywords1">break</span>;
+<span class="line"> 332: </span>        <span class="cpp-keywords1">case</span> IS_OBJECT:
+<span class="line"> 333: </span>        {
+<span class="line"> 334: </span>            HashTable *properties = NULL;
+<span class="line"> 335: </span>            <span class="cpp-keywords1">char</span> *class_name = NULL;
+<span class="line"> 336: </span>            zend_uint clen;
+<span class="line"> 337: </span>
+<span class="line"> 338: </span>            <span class="cpp-keywords1">if</span> (Z_OBJ_HANDLER_P(expr, get_class_name)) {
+<span class="line"> 339: </span>                Z_OBJ_HANDLER_P(expr, get_class_name)(expr, &amp;class_name, &amp;clen, <span class="cpp-num">0</span> TSRMLS_CC);
+<span class="line"> 340: </span>            }
+<span class="line"> 341: </span>            <span class="cpp-keywords1">if</span> (class_name) {
+<span class="line"> 342: </span>                zend_printf(<span class="cpp-quote">&quot;%s Object (&quot;</span>, class_name);
+<span class="line"> 343: </span>            } <span class="cpp-keywords1">else</span> {
+<span class="line"> 344: </span>                zend_printf(<span class="cpp-quote">&quot;%s Object (&quot;</span>, <span class="cpp-quote">&quot;Unknown Class&quot;</span>);
+<span class="line"> 345: </span>            }
+<span class="line"> 346: </span>            <span class="cpp-keywords1">if</span> (class_name) {
+<span class="line"> 347: </span>                efree(class_name);
+<span class="line"> 348: </span>            }
+<span class="line"> 349: </span>            <span class="cpp-keywords1">if</span> (Z_OBJ_HANDLER_P(expr, get_properties)) {
+<span class="line"> 350: </span>                properties = Z_OBJPROP_P(expr);
+<span class="line"> 351: </span>            }
+<span class="line"> 352: </span>            <span class="cpp-keywords1">if</span> (properties) {
+<span class="line"> 353: </span>                <span class="cpp-keywords1">if</span> (++properties-&gt;nApplyCount&gt;<span class="cpp-num">1</span>) {
+<span class="line"> 354: </span>                    ZEND_PUTS(<span class="cpp-quote">&quot; *RECURSION*&quot;</span>);
+<span class="line"> 355: </span>                    properties-&gt;nApplyCount--;
+<span class="line"> 356: </span>                    <span class="cpp-keywords1">return</span>;
+<span class="line"> 357: </span>                }
+<span class="line"> 358: </span>                print_flat_hash(properties TSRMLS_CC);
+<span class="line"> 359: </span>                properties-&gt;nApplyCount--;
+<span class="line"> 360: </span>            }
+<span class="line"> 361: </span>            ZEND_PUTS(<span class="cpp-quote">&quot;)&quot;</span>);
+<span class="line"> 362: </span>            <span class="cpp-keywords1">break</span>;
+<span class="line"> 363: </span>        }
+<span class="line"> 364: </span>        <span class="cpp-keywords1">default</span>:
+<span class="line"> 365: </span>            zend_print_variable(expr);
+<span class="line"> 366: </span>            <span class="cpp-keywords1">break</span>;
+<span class="line"> 367: </span>    }
+<span class="line"> 368: </span>}
+<span class="line"> 369: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line"> 370: </span>
+<span class="line"> 371: </span>ZEND_API <span class="cpp-keywords1">void</span> zend_print_zval_r(zval *expr, <span class="cpp-keywords1">int</span> indent TSRMLS_DC) <span class="cpp-comment">/* {{{ */</span>
+<span class="line"> 372: </span>{
+<span class="line"> 373: </span>    zend_print_zval_r_ex(zend_write, expr, indent TSRMLS_CC);
+<span class="line"> 374: </span>}
+<span class="line"> 375: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line"> 376: </span>
+<span class="line"> 377: </span>ZEND_API <span class="cpp-keywords1">void</span> zend_print_zval_r_ex(zend_write_func_t write_func, zval *expr, <span class="cpp-keywords1">int</span> indent TSRMLS_DC) <span class="cpp-comment">/* {{{ */</span>
+<span class="line"> 378: </span>{
+<span class="line"> 379: </span>    <span class="cpp-keywords1">switch</span> (Z_TYPE_P(expr)) {
+<span class="line"> 380: </span>        <span class="cpp-keywords1">case</span> IS_ARRAY:
+<span class="line"> 381: </span>            ZEND_PUTS_EX(<span class="cpp-quote">&quot;Array\n&quot;</span>);
+<span class="line"> 382: </span>            <span class="cpp-keywords1">if</span> (++Z_ARRVAL_P(expr)-&gt;nApplyCount&gt;<span class="cpp-num">1</span>) {
+<span class="line"> 383: </span>                ZEND_PUTS_EX(<span class="cpp-quote">&quot; *RECURSION*&quot;</span>);
+<span class="line"> 384: </span>                Z_ARRVAL_P(expr)-&gt;nApplyCount--;
+<span class="line"> 385: </span>                <span class="cpp-keywords1">return</span>;
+<span class="line"> 386: </span>            }
+<span class="line"> 387: </span>            print_hash(write_func, Z_ARRVAL_P(expr), indent, <span class="cpp-num">0</span> TSRMLS_CC);
+<span class="line"> 388: </span>            Z_ARRVAL_P(expr)-&gt;nApplyCount--;
+<span class="line"> 389: </span>            <span class="cpp-keywords1">break</span>;
+<span class="line"> 390: </span>        <span class="cpp-keywords1">case</span> IS_OBJECT:
+<span class="line"> 391: </span>            {
+<span class="line"> 392: </span>                HashTable *properties;
+<span class="line"> 393: </span>                <span class="cpp-keywords1">char</span> *class_name = NULL;
+<span class="line"> 394: </span>                zend_uint clen;
+<span class="line"> 395: </span>                <span class="cpp-keywords1">int</span> is_temp;
+<span class="line"> 396: </span>
+<span class="line"> 397: </span>                <span class="cpp-keywords1">if</span> (Z_OBJ_HANDLER_P(expr, get_class_name)) {
+<span class="line"> 398: </span>                    Z_OBJ_HANDLER_P(expr, get_class_name)(expr, &amp;class_name, &amp;clen, <span class="cpp-num">0</span> TSRMLS_CC);
+<span class="line"> 399: </span>                }
+<span class="line"> 400: </span>                <span class="cpp-keywords1">if</span> (class_name) {
+<span class="line"> 401: </span>                    ZEND_PUTS_EX(class_name);
+<span class="line"> 402: </span>                } <span class="cpp-keywords1">else</span> {
+<span class="line"> 403: </span>                    ZEND_PUTS_EX(<span class="cpp-quote">&quot;Unknown Class&quot;</span>);
+<span class="line"> 404: </span>                }
+<span class="line"> 405: </span>                ZEND_PUTS_EX(<span class="cpp-quote">&quot; Object\n&quot;</span>);
+<span class="line"> 406: </span>                <span class="cpp-keywords1">if</span> (class_name) {
+<span class="line"> 407: </span>                    efree(class_name);
+<span class="line"> 408: </span>                }
+<span class="line"> 409: </span>                <span class="cpp-keywords1">if</span> ((properties = Z_OBJDEBUG_P(expr, is_temp)) == NULL) {
+<span class="line"> 410: </span>                    <span class="cpp-keywords1">break</span>;
+<span class="line"> 411: </span>                }
+<span class="line"> 412: </span>                <span class="cpp-keywords1">if</span> (++properties-&gt;nApplyCount&gt;<span class="cpp-num">1</span>) {
+<span class="line"> 413: </span>                    ZEND_PUTS_EX(<span class="cpp-quote">&quot; *RECURSION*&quot;</span>);
+<span class="line"> 414: </span>                    properties-&gt;nApplyCount--;
+<span class="line"> 415: </span>                    <span class="cpp-keywords1">return</span>;
+<span class="line"> 416: </span>                }
+<span class="line"> 417: </span>                print_hash(write_func, properties, indent, <span class="cpp-num">1</span> TSRMLS_CC);
+<span class="line"> 418: </span>                properties-&gt;nApplyCount--;
+<span class="line"> 419: </span>                <span class="cpp-keywords1">if</span> (is_temp) {
+<span class="line"> 420: </span>                    zend_hash_destroy(properties);
+<span class="line"> 421: </span>                    efree(properties);
+<span class="line"> 422: </span>                }
+<span class="line"> 423: </span>                <span class="cpp-keywords1">break</span>;
+<span class="line"> 424: </span>            }
+<span class="line"> 425: </span>        <span class="cpp-keywords1">default</span>:
+<span class="line"> 426: </span>            zend_print_zval_ex(write_func, expr, indent);
+<span class="line"> 427: </span>            <span class="cpp-keywords1">break</span>;
+<span class="line"> 428: </span>    }
+<span class="line"> 429: </span>}
+<span class="line"> 430: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line"> 431: </span>
+<span class="line"> 432: </span><span class="cpp-keywords1">static</span> FILE *zend_fopen_wrapper(<span class="cpp-keywords1">const</span> <span class="cpp-keywords1">char</span> *filename, <span class="cpp-keywords1">char</span> **opened_path TSRMLS_DC) <span class="cpp-comment">/* {{{ */</span>
+<span class="line"> 433: </span>{
+<span class="line"> 434: </span>    <span class="cpp-keywords1">if</span> (opened_path) {
+<span class="line"> 435: </span>        *opened_path = estrdup(filename);
+<span class="line"> 436: </span>    }
+<span class="line"> 437: </span>    <span class="cpp-keywords1">return</span> fopen(filename, <span class="cpp-quote">&quot;rb&quot;</span>);
+<span class="line"> 438: </span>}
+<span class="line"> 439: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line"> 440: </span>
+<span class="line"> 441: </span><span class="cpp-preproc">#ifdef ZTS</span>
+<span class="line"> 442: </span><span class="cpp-keywords1">static</span> zend_bool asp_tags_default         = <span class="cpp-num">0</span>;
+<span class="line"> 443: </span><span class="cpp-keywords1">static</span> zend_bool short_tags_default       = <span class="cpp-num">1</span>;
+<span class="line"> 444: </span><span class="cpp-keywords1">static</span> zend_bool ct_pass_ref_default      = <span class="cpp-num">1</span>;
+<span class="line"> 445: </span><span class="cpp-keywords1">static</span> zend_uint compiler_options_default = ZEND_COMPILE_DEFAULT;
+<span class="line"> 446: </span><span class="cpp-preproc">#else</span>
+<span class="line"> 447: </span><span class="cpp-preproc"># define asp_tags_default           0</span>
+<span class="line"> 448: </span><span class="cpp-preproc"># define short_tags_default         1</span>
+<span class="line"> 449: </span><span class="cpp-preproc"># define ct_pass_ref_default        1</span>
+<span class="line"> 450: </span><span class="cpp-preproc"># define compiler_options_default   ZEND_COMPILE_DEFAULT</span>
+<span class="line"> 451: </span><span class="cpp-preproc">#endif</span>
+<span class="line"> 452: </span>
+<span class="line"> 453: </span><span class="cpp-keywords1">static</span> <span class="cpp-keywords1">void</span> zend_set_default_compile_time_values(TSRMLS_D) <span class="cpp-comment">/* {{{ */</span>
+<span class="line"> 454: </span>{
+<span class="line"> 455: </span>    <span class="cpp-comment">/* default compile-time values */</span>
+<span class="line"> 456: </span>    CG(asp_tags) = asp_tags_default;
+<span class="line"> 457: </span>    CG(short_tags) = short_tags_default;
+<span class="line"> 458: </span>    CG(allow_call_time_pass_reference) = ct_pass_ref_default;
+<span class="line"> 459: </span>    CG(compiler_options) = compiler_options_default;
+<span class="line"> 460: </span>}
+<span class="line"> 461: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line"> 462: </span>
+<span class="line"> 463: </span><span class="cpp-keywords1">static</span> <span class="cpp-keywords1">void</span> zend_init_exception_op(TSRMLS_D) <span class="cpp-comment">/* {{{ */</span>
+<span class="line"> 464: </span>{
+<span class="line"> 465: </span>    memset(EG(exception_op), <span class="cpp-num">0</span>, <span class="cpp-keywords1">sizeof</span>(EG(exception_op)));
+<span class="line"> 466: </span>    EG(exception_op)[<span class="cpp-num">0</span>].opcode = ZEND_HANDLE_EXCEPTION;
+<span class="line"> 467: </span>    EG(exception_op)[<span class="cpp-num">0</span>].op1.op_type = IS_UNUSED;
+<span class="line"> 468: </span>    EG(exception_op)[<span class="cpp-num">0</span>].op2.op_type = IS_UNUSED;
+<span class="line"> 469: </span>    EG(exception_op)[<span class="cpp-num">0</span>].result.op_type = IS_UNUSED;
+<span class="line"> 470: </span>    ZEND_VM_SET_OPCODE_HANDLER(EG(exception_op));
+<span class="line"> 471: </span>    EG(exception_op)[<span class="cpp-num">1</span>].opcode = ZEND_HANDLE_EXCEPTION;
+<span class="line"> 472: </span>    EG(exception_op)[<span class="cpp-num">1</span>].op1.op_type = IS_UNUSED;
+<span class="line"> 473: </span>    EG(exception_op)[<span class="cpp-num">1</span>].op2.op_type = IS_UNUSED;
+<span class="line"> 474: </span>    EG(exception_op)[<span class="cpp-num">1</span>].result.op_type = IS_UNUSED;
+<span class="line"> 475: </span>    ZEND_VM_SET_OPCODE_HANDLER(EG(exception_op)+<span class="cpp-num">1</span>);
+<span class="line"> 476: </span>    EG(exception_op)[<span class="cpp-num">2</span>].opcode = ZEND_HANDLE_EXCEPTION;
+<span class="line"> 477: </span>    EG(exception_op)[<span class="cpp-num">2</span>].op1.op_type = IS_UNUSED;
+<span class="line"> 478: </span>    EG(exception_op)[<span class="cpp-num">2</span>].op2.op_type = IS_UNUSED;
+<span class="line"> 479: </span>    EG(exception_op)[<span class="cpp-num">2</span>].result.op_type = IS_UNUSED;
+<span class="line"> 480: </span>    ZEND_VM_SET_OPCODE_HANDLER(EG(exception_op)+<span class="cpp-num">2</span>);
+<span class="line"> 481: </span>}
+<span class="line"> 482: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line"> 483: </span>
+<span class="line"> 484: </span><span class="cpp-preproc">#ifdef ZTS</span>
+<span class="line"> 485: </span><span class="cpp-keywords1">static</span> <span class="cpp-keywords1">void</span> compiler_globals_ctor(zend_compiler_globals *compiler_globals TSRMLS_DC) <span class="cpp-comment">/* {{{ */</span>
+<span class="line"> 486: </span>{
+<span class="line"> 487: </span>    zend_function tmp_func;
+<span class="line"> 488: </span>    zend_class_entry *tmp_class;
+<span class="line"> 489: </span>
+<span class="line"> 490: </span>    compiler_globals-&gt;compiled_filename = NULL;
+<span class="line"> 491: </span>
+<span class="line"> 492: </span>    compiler_globals-&gt;function_table = (HashTable *) malloc(<span class="cpp-keywords1">sizeof</span>(HashTable));
+<span class="line"> 493: </span>    zend_hash_init_ex(compiler_globals-&gt;function_table, <span class="cpp-num">100</span>, NULL, ZEND_FUNCTION_DTOR, <span class="cpp-num">1</span>, <span class="cpp-num">0</span>);
+<span class="line"> 494: </span>    zend_hash_copy(compiler_globals-&gt;function_table, global_function_table, NULL, &amp;tmp_func, <span class="cpp-keywords1">sizeof</span>(zend_function));
+<span class="line"> 495: </span>
+<span class="line"> 496: </span>    compiler_globals-&gt;class_table = (HashTable *) malloc(<span class="cpp-keywords1">sizeof</span>(HashTable));
+<span class="line"> 497: </span>    zend_hash_init_ex(compiler_globals-&gt;class_table, <span class="cpp-num">10</span>, NULL, ZEND_CLASS_DTOR, <span class="cpp-num">1</span>, <span class="cpp-num">0</span>);
+<span class="line"> 498: </span>    zend_hash_copy(compiler_globals-&gt;class_table, global_class_table, (copy_ctor_func_t) zend_class_add_ref, &amp;tmp_class, <span class="cpp-keywords1">sizeof</span>(zend_class_entry *));
+<span class="line"> 499: </span>
+<span class="line"> 500: </span>    zend_set_default_compile_time_values(TSRMLS_C);
+<span class="line"> 501: </span>
+<span class="line"> 502: </span>    CG(interactive) = <span class="cpp-num">0</span>;
+<span class="line"> 503: </span>
+<span class="line"> 504: </span>    compiler_globals-&gt;auto_globals = (HashTable *) malloc(<span class="cpp-keywords1">sizeof</span>(HashTable));
+<span class="line"> 505: </span>    zend_hash_init_ex(compiler_globals-&gt;auto_globals, <span class="cpp-num">8</span>, NULL, NULL, <span class="cpp-num">1</span>, <span class="cpp-num">0</span>);
+<span class="line"> 506: </span>    zend_hash_copy(compiler_globals-&gt;auto_globals, global_auto_globals_table, NULL, NULL, <span class="cpp-keywords1">sizeof</span>(zend_auto_global) <span class="cpp-comment">/* empty element */</span>);
+<span class="line"> 507: </span>
+<span class="line"> 508: </span>    compiler_globals-&gt;last_static_member = zend_hash_num_elements(compiler_globals-&gt;class_table);
+<span class="line"> 509: </span>    <span class="cpp-keywords1">if</span> (compiler_globals-&gt;last_static_member) {
+<span class="line"> 510: </span>        compiler_globals-&gt;static_members = (HashTable**)calloc(compiler_globals-&gt;last_static_member, <span class="cpp-keywords1">sizeof</span>(HashTable*));
+<span class="line"> 511: </span>    } <span class="cpp-keywords1">else</span> {
+<span class="line"> 512: </span>        compiler_globals-&gt;static_members = NULL;
+<span class="line"> 513: </span>    }
+<span class="line"> 514: </span>}
+<span class="line"> 515: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line"> 516: </span>
+<span class="line"> 517: </span><span class="cpp-keywords1">static</span> <span class="cpp-keywords1">void</span> compiler_globals_dtor(zend_compiler_globals *compiler_globals TSRMLS_DC) <span class="cpp-comment">/* {{{ */</span>
+<span class="line"> 518: </span>{
+<span class="line"> 519: </span>    <span class="cpp-keywords1">if</span> (compiler_globals-&gt;function_table != GLOBAL_FUNCTION_TABLE) {
+<span class="line"> 520: </span>        zend_hash_destroy(compiler_globals-&gt;function_table);
+<span class="line"> 521: </span>        free(compiler_globals-&gt;function_table);
+<span class="line"> 522: </span>    }
+<span class="line"> 523: </span>    <span class="cpp-keywords1">if</span> (compiler_globals-&gt;class_table != GLOBAL_CLASS_TABLE) {
+<span class="line"> 524: </span>        zend_hash_destroy(compiler_globals-&gt;class_table);
+<span class="line"> 525: </span>        free(compiler_globals-&gt;class_table);
+<span class="line"> 526: </span>    }
+<span class="line"> 527: </span>    <span class="cpp-keywords1">if</span> (compiler_globals-&gt;auto_globals != GLOBAL_AUTO_GLOBALS_TABLE) {
+<span class="line"> 528: </span>        zend_hash_destroy(compiler_globals-&gt;auto_globals);
+<span class="line"> 529: </span>        free(compiler_globals-&gt;auto_globals);
+<span class="line"> 530: </span>    }
+<span class="line"> 531: </span>    <span class="cpp-keywords1">if</span> (compiler_globals-&gt;static_members) {
+<span class="line"> 532: </span>        free(compiler_globals-&gt;static_members);
+<span class="line"> 533: </span>    }
+<span class="line"> 534: </span>    compiler_globals-&gt;last_static_member = <span class="cpp-num">0</span>;
+<span class="line"> 535: </span>}
+<span class="line"> 536: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line"> 537: </span>
+<span class="line"> 538: </span><span class="cpp-keywords1">static</span> <span class="cpp-keywords1">void</span> executor_globals_ctor(zend_executor_globals *executor_globals TSRMLS_DC) <span class="cpp-comment">/* {{{ */</span>
+<span class="line"> 539: </span>{
+<span class="line"> 540: </span>    zend_startup_constants(TSRMLS_C);
+<span class="line"> 541: </span>    zend_copy_constants(EG(zend_constants), GLOBAL_CONSTANTS_TABLE);
+<span class="line"> 542: </span>    zend_init_rsrc_plist(TSRMLS_C);
+<span class="line"> 543: </span>    zend_init_exception_op(TSRMLS_C);
+<span class="line"> 544: </span>    EG(lambda_count) = <span class="cpp-num">0</span>;
+<span class="line"> 545: </span>    EG(user_error_handler) = NULL;
+<span class="line"> 546: </span>    EG(user_exception_handler) = NULL;
+<span class="line"> 547: </span>    EG(in_execution) = <span class="cpp-num">0</span>;
+<span class="line"> 548: </span>    EG(in_autoload) = NULL;
+<span class="line"> 549: </span>    EG(current_execute_data) = NULL;
+<span class="line"> 550: </span>    EG(current_module) = NULL;
+<span class="line"> 551: </span>    EG(exit_status) = <span class="cpp-num">0</span>;
+<span class="line"> 552: </span>    EG(saved_fpu_cw) = NULL;
+<span class="line"> 553: </span>    EG(active) = <span class="cpp-num">0</span>;
+<span class="line"> 554: </span>}
+<span class="line"> 555: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line"> 556: </span>
+<span class="line"> 557: </span><span class="cpp-keywords1">static</span> <span class="cpp-keywords1">void</span> executor_globals_dtor(zend_executor_globals *executor_globals TSRMLS_DC) <span class="cpp-comment">/* {{{ */</span>
+<span class="line"> 558: </span>{
+<span class="line"> 559: </span>    zend_ini_shutdown(TSRMLS_C);
+<span class="line"> 560: </span>    <span class="cpp-keywords1">if</span> (&amp;executor_globals-&gt;persistent_list != global_persistent_list) {
+<span class="line"> 561: </span>        zend_destroy_rsrc_list(&amp;executor_globals-&gt;persistent_list TSRMLS_CC);
+<span class="line"> 562: </span>    }
+<span class="line"> 563: </span>    <span class="cpp-keywords1">if</span> (executor_globals-&gt;zend_constants != GLOBAL_CONSTANTS_TABLE) {
+<span class="line"> 564: </span>        zend_hash_destroy(executor_globals-&gt;zend_constants);
+<span class="line"> 565: </span>        free(executor_globals-&gt;zend_constants);
+<span class="line"> 566: </span>    }
+<span class="line"> 567: </span>}
+<span class="line"> 568: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line"> 569: </span>
+<span class="line"> 570: </span><span class="cpp-keywords1">static</span> <span class="cpp-keywords1">void</span> zend_new_thread_end_handler(THREAD_T thread_id TSRMLS_DC) <span class="cpp-comment">/* {{{ */</span>
+<span class="line"> 571: </span>{
+<span class="line"> 572: </span>    <span class="cpp-keywords1">if</span> (zend_copy_ini_directives(TSRMLS_C) == SUCCESS) {
+<span class="line"> 573: </span>        zend_ini_refresh_caches(ZEND_INI_STAGE_STARTUP TSRMLS_CC);
+<span class="line"> 574: </span>    }
+<span class="line"> 575: </span>}
+<span class="line"> 576: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line"> 577: </span><span class="cpp-preproc">#endif</span>
+<span class="line"> 578: </span>
+<span class="line"> 579: </span><span class="cpp-preproc">#if defined(__FreeBSD__) || defined(__DragonFly__)</span>
+<span class="line"> 580: </span><span class="cpp-comment">/* FreeBSD and DragonFly floating point precision fix */</span>
+<span class="line"> 581: </span><span class="cpp-preproc">#include &lt;floatingpoint.h&gt;</span>
+<span class="line"> 582: </span><span class="cpp-preproc">#endif</span>
+<span class="line"> 583: </span>
+<span class="line"> 584: </span><span class="cpp-keywords1">static</span> <span class="cpp-keywords1">void</span> ini_scanner_globals_ctor(zend_ini_scanner_globals *scanner_globals_p TSRMLS_DC) <span class="cpp-comment">/* {{{ */</span>
+<span class="line"> 585: </span>{
+<span class="line"> 586: </span>    memset(scanner_globals_p, <span class="cpp-num">0</span>, <span class="cpp-keywords1">sizeof</span>(*scanner_globals_p));
+<span class="line"> 587: </span>}
+<span class="line"> 588: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line"> 589: </span>
+<span class="line"> 590: </span><span class="cpp-keywords1">static</span> <span class="cpp-keywords1">void</span> php_scanner_globals_ctor(zend_php_scanner_globals *scanner_globals_p TSRMLS_DC) <span class="cpp-comment">/* {{{ */</span>
+<span class="line"> 591: </span>{
+<span class="line"> 592: </span>    memset(scanner_globals_p, <span class="cpp-num">0</span>, <span class="cpp-keywords1">sizeof</span>(*scanner_globals_p));
+<span class="line"> 593: </span>}
+<span class="line"> 594: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line"> 595: </span>
+<span class="line"> 596: </span><span class="cpp-keywords1">void</span> zend_init_opcodes_handlers(<span class="cpp-keywords1">void</span>);
+<span class="line"> 597: </span>
+<span class="line"> 598: </span><span class="cpp-keywords1">int</span> zend_startup(zend_utility_functions *utility_functions, <span class="cpp-keywords1">char</span> **extensions TSRMLS_DC) <span class="cpp-comment">/* {{{ */</span>
+<span class="line"> 599: </span>{
+<span class="line"> 600: </span><span class="cpp-preproc">#ifdef ZTS</span>
+<span class="line"> 601: </span>    zend_compiler_globals *compiler_globals;
+<span class="line"> 602: </span>    zend_executor_globals *executor_globals;
+<span class="line"> 603: </span>    <span class="cpp-keywords1">extern</span> ZEND_API ts_rsrc_id ini_scanner_globals_id;
+<span class="line"> 604: </span>    <span class="cpp-keywords1">extern</span> ZEND_API ts_rsrc_id language_scanner_globals_id;
+<span class="line"> 605: </span><span class="cpp-preproc">#else</span>
+<span class="line"> 606: </span>    <span class="cpp-keywords1">extern</span> zend_ini_scanner_globals ini_scanner_globals;
+<span class="line"> 607: </span>    <span class="cpp-keywords1">extern</span> zend_php_scanner_globals language_scanner_globals;
+<span class="line"> 608: </span><span class="cpp-preproc">#endif</span>
+<span class="line"> 609: </span>
+<span class="line"> 610: </span>    start_memory_manager(TSRMLS_C);
+<span class="line"> 611: </span>
+<span class="line"> 612: </span><span class="cpp-preproc">#if defined(__FreeBSD__) || defined(__DragonFly__)</span>
+<span class="line"> 613: </span>    <span class="cpp-comment">/* FreeBSD and DragonFly floating point precision fix */</span>
+<span class="line"> 614: </span>    fpsetmask(<span class="cpp-num">0</span>);
+<span class="line"> 615: </span><span class="cpp-preproc">#endif</span>
+<span class="line"> 616: </span>
+<span class="line"> 617: </span>    zend_startup_strtod();
+<span class="line"> 618: </span>    zend_startup_extensions_mechanism();
+<span class="line"> 619: </span>
+<span class="line"> 620: </span>    <span class="cpp-comment">/* Set up utility functions and values */</span>
+<span class="line"> 621: </span>    zend_error_cb = utility_functions-&gt;error_function;
+<span class="line"> 622: </span>    zend_printf = utility_functions-&gt;printf_function;
+<span class="line"> 623: </span>    zend_write = (zend_write_func_t) utility_functions-&gt;write_function;
+<span class="line"> 624: </span>    zend_fopen = utility_functions-&gt;fopen_function;
+<span class="line"> 625: </span>    <span class="cpp-keywords1">if</span> (!zend_fopen) {
+<span class="line"> 626: </span>        zend_fopen = zend_fopen_wrapper;
+<span class="line"> 627: </span>    }
+<span class="line"> 628: </span>    zend_stream_open_function = utility_functions-&gt;stream_open_function;
+<span class="line"> 629: </span>    zend_message_dispatcher_p = utility_functions-&gt;message_handler;
+<span class="line"> 630: </span>    zend_block_interruptions = utility_functions-&gt;block_interruptions;
+<span class="line"> 631: </span>    zend_unblock_interruptions = utility_functions-&gt;unblock_interruptions;
+<span class="line"> 632: </span>    zend_get_configuration_directive_p = utility_functions-&gt;get_configuration_directive;
+<span class="line"> 633: </span>    zend_ticks_function = utility_functions-&gt;ticks_function;
+<span class="line"> 634: </span>    zend_on_timeout = utility_functions-&gt;on_timeout;
+<span class="line"> 635: </span>    zend_vspprintf = utility_functions-&gt;vspprintf_function;
+<span class="line"> 636: </span>    zend_getenv = utility_functions-&gt;getenv_function;
+<span class="line"> 637: </span>    zend_resolve_path = utility_functions-&gt;resolve_path_function;
+<span class="line"> 638: </span>
+<span class="line"> 639: </span>    zend_compile_file = compile_file;
+<span class="line"> 640: </span>    zend_compile_string = compile_string;
+<span class="line"> 641: </span>    zend_execute = execute;
+<span class="line"> 642: </span>    zend_execute_internal = NULL;
+<span class="line"> 643: </span>    zend_throw_exception_hook = NULL;
+<span class="line"> 644: </span>
+<span class="line"> 645: </span>    zend_init_opcodes_handlers();
+<span class="line"> 646: </span>
+<span class="line"> 647: </span>    <span class="cpp-comment">/* set up version */</span>
+<span class="line"> 648: </span>    zend_version_info = strdup(ZEND_CORE_VERSION_INFO);
+<span class="line"> 649: </span>    zend_version_info_length = <span class="cpp-keywords1">sizeof</span>(ZEND_CORE_VERSION_INFO) - <span class="cpp-num">1</span>;
+<span class="line"> 650: </span>
+<span class="line"> 651: </span>    GLOBAL_FUNCTION_TABLE = (HashTable *) malloc(<span class="cpp-keywords1">sizeof</span>(HashTable));
+<span class="line"> 652: </span>    GLOBAL_CLASS_TABLE = (HashTable *) malloc(<span class="cpp-keywords1">sizeof</span>(HashTable));
+<span class="line"> 653: </span>    GLOBAL_AUTO_GLOBALS_TABLE = (HashTable *) malloc(<span class="cpp-keywords1">sizeof</span>(HashTable));
+<span class="line"> 654: </span>    GLOBAL_CONSTANTS_TABLE = (HashTable *) malloc(<span class="cpp-keywords1">sizeof</span>(HashTable));
+<span class="line"> 655: </span>
+<span class="line"> 656: </span>    zend_hash_init_ex(GLOBAL_FUNCTION_TABLE, <span class="cpp-num">100</span>, NULL, ZEND_FUNCTION_DTOR, <span class="cpp-num">1</span>, <span class="cpp-num">0</span>);
+<span class="line"> 657: </span>    zend_hash_init_ex(GLOBAL_CLASS_TABLE, <span class="cpp-num">10</span>, NULL, ZEND_CLASS_DTOR, <span class="cpp-num">1</span>, <span class="cpp-num">0</span>);
+<span class="line"> 658: </span>    zend_hash_init_ex(GLOBAL_AUTO_GLOBALS_TABLE, <span class="cpp-num">8</span>, NULL, (dtor_func_t) zend_auto_global_dtor, <span class="cpp-num">1</span>, <span class="cpp-num">0</span>);
+<span class="line"> 659: </span>    zend_hash_init_ex(GLOBAL_CONSTANTS_TABLE, <span class="cpp-num">20</span>, NULL, ZEND_CONSTANT_DTOR, <span class="cpp-num">1</span>, <span class="cpp-num">0</span>);
+<span class="line"> 660: </span>
+<span class="line"> 661: </span>    zend_hash_init_ex(&amp;module_registry, <span class="cpp-num">50</span>, NULL, ZEND_MODULE_DTOR, <span class="cpp-num">1</span>, <span class="cpp-num">0</span>);
+<span class="line"> 662: </span>    zend_init_rsrc_list_dtors();
+<span class="line"> 663: </span>
+<span class="line"> 664: </span>    <span class="cpp-comment">/* This zval can be used to initialize allocate zval's to an uninit'ed value */</span>
+<span class="line"> 665: </span>    Z_UNSET_ISREF(zval_used_for_init);
+<span class="line"> 666: </span>    Z_SET_REFCOUNT(zval_used_for_init, <span class="cpp-num">1</span>);
+<span class="line"> 667: </span>    Z_TYPE(zval_used_for_init) = IS_NULL;
+<span class="line"> 668: </span>
+<span class="line"> 669: </span><span class="cpp-preproc">#ifdef ZTS</span>
+<span class="line"> 670: </span>    ts_allocate_id(&amp;compiler_globals_id, <span class="cpp-keywords1">sizeof</span>(zend_compiler_globals), (ts_allocate_ctor) compiler_globals_ctor, (ts_allocate_dtor) compiler_globals_dtor);
+<span class="line"> 671: </span>    ts_allocate_id(&amp;executor_globals_id, <span class="cpp-keywords1">sizeof</span>(zend_executor_globals), (ts_allocate_ctor) executor_globals_ctor, (ts_allocate_dtor) executor_globals_dtor);
+<span class="line"> 672: </span>    ts_allocate_id(&amp;language_scanner_globals_id, <span class="cpp-keywords1">sizeof</span>(zend_php_scanner_globals), (ts_allocate_ctor) php_scanner_globals_ctor, NULL);
+<span class="line"> 673: </span>    ts_allocate_id(&amp;ini_scanner_globals_id, <span class="cpp-keywords1">sizeof</span>(zend_ini_scanner_globals), (ts_allocate_ctor) ini_scanner_globals_ctor, NULL);
+<span class="line"> 674: </span>    compiler_globals = ts_resource(compiler_globals_id);
+<span class="line"> 675: </span>    executor_globals = ts_resource(executor_globals_id);
+<span class="line"> 676: </span>
+<span class="line"> 677: </span>    compiler_globals_dtor(compiler_globals TSRMLS_CC);
+<span class="line"> 678: </span>    compiler_globals-&gt;in_compilation = <span class="cpp-num">0</span>;
+<span class="line"> 679: </span>    compiler_globals-&gt;function_table = (HashTable *) malloc(<span class="cpp-keywords1">sizeof</span>(HashTable));
+<span class="line"> 680: </span>    compiler_globals-&gt;class_table = (HashTable *) malloc(<span class="cpp-keywords1">sizeof</span>(HashTable));
+<span class="line"> 681: </span>
+<span class="line"> 682: </span>    *compiler_globals-&gt;function_table = *GLOBAL_FUNCTION_TABLE;
+<span class="line"> 683: </span>    *compiler_globals-&gt;class_table = *GLOBAL_CLASS_TABLE;
+<span class="line"> 684: </span>    compiler_globals-&gt;auto_globals = GLOBAL_AUTO_GLOBALS_TABLE;
+<span class="line"> 685: </span>
+<span class="line"> 686: </span>    zend_hash_destroy(executor_globals-&gt;zend_constants);
+<span class="line"> 687: </span>    *executor_globals-&gt;zend_constants = *GLOBAL_CONSTANTS_TABLE;
+<span class="line"> 688: </span><span class="cpp-preproc">#else</span>
+<span class="line"> 689: </span>    ini_scanner_globals_ctor(&amp;ini_scanner_globals TSRMLS_CC);
+<span class="line"> 690: </span>    php_scanner_globals_ctor(&amp;language_scanner_globals TSRMLS_CC);
+<span class="line"> 691: </span>    zend_set_default_compile_time_values(TSRMLS_C);
+<span class="line"> 692: </span>    EG(user_error_handler) = NULL;
+<span class="line"> 693: </span>    EG(user_exception_handler) = NULL;
+<span class="line"> 694: </span><span class="cpp-preproc">#endif</span>
+<span class="line"> 695: </span>
+<span class="line"> 696: </span>    zend_startup_builtin_functions(TSRMLS_C);
+<span class="line"> 697: </span>    zend_register_standard_constants(TSRMLS_C);
+<span class="line"> 698: </span>    zend_register_auto_global(<span class="cpp-quote">&quot;GLOBALS&quot;</span>, <span class="cpp-keywords1">sizeof</span>(<span class="cpp-quote">&quot;GLOBALS&quot;</span>) - <span class="cpp-num">1</span>, NULL TSRMLS_CC);
+<span class="line"> 699: </span>
+<span class="line"> 700: </span><span class="cpp-preproc">#ifndef ZTS</span>
+<span class="line"> 701: </span>    zend_init_rsrc_plist(TSRMLS_C);
+<span class="line"> 702: </span>    zend_init_exception_op(TSRMLS_C);
+<span class="line"> 703: </span><span class="cpp-preproc">#endif</span>
+<span class="line"> 704: </span>
+<span class="line"> 705: </span>    zend_ini_startup(TSRMLS_C);
+<span class="line"> 706: </span>
+<span class="line"> 707: </span><span class="cpp-preproc">#ifdef ZTS</span>
+<span class="line"> 708: </span>    tsrm_set_new_thread_end_handler(zend_new_thread_end_handler);
+<span class="line"> 709: </span><span class="cpp-preproc">#endif</span>
+<span class="line"> 710: </span>
+<span class="line"> 711: </span>    <span class="cpp-keywords1">return</span> SUCCESS;
+<span class="line"> 712: </span>}
+<span class="line"> 713: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line"> 714: </span>
+<span class="line"> 715: </span><span class="cpp-keywords1">void</span> zend_register_standard_ini_entries(TSRMLS_D) <span class="cpp-comment">/* {{{ */</span>
+<span class="line"> 716: </span>{
+<span class="line"> 717: </span>    <span class="cpp-keywords1">int</span> module_number = <span class="cpp-num">0</span>;
+<span class="line"> 718: </span>
+<span class="line"> 719: </span>    REGISTER_INI_ENTRIES();
+<span class="line"> 720: </span>}
+<span class="line"> 721: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line"> 722: </span>
+<span class="line"> 723: </span><span class="cpp-comment">/* Unlink the global (r/o) copies of the class, function and constant tables,
+</span><span class="line"> 724: </span><span class="cpp-comment"> * and use a fresh r/w copy for the startup thread
+</span><span class="line"> 725: </span><span class="cpp-comment"> */</span>
+<span class="line"> 726: </span><span class="cpp-keywords1">void</span> zend_post_startup(TSRMLS_D) <span class="cpp-comment">/* {{{ */</span>
+<span class="line"> 727: </span>{
+<span class="line"> 728: </span><span class="cpp-preproc">#ifdef ZTS</span>
+<span class="line"> 729: </span>    zend_compiler_globals *compiler_globals = ts_resource(compiler_globals_id);
+<span class="line"> 730: </span>    zend_executor_globals *executor_globals = ts_resource(executor_globals_id);
+<span class="line"> 731: </span>
+<span class="line"> 732: </span>    *GLOBAL_FUNCTION_TABLE = *compiler_globals-&gt;function_table;
+<span class="line"> 733: </span>    *GLOBAL_CLASS_TABLE = *compiler_globals-&gt;class_table;
+<span class="line"> 734: </span>    *GLOBAL_CONSTANTS_TABLE = *executor_globals-&gt;zend_constants;
+<span class="line"> 735: </span>
+<span class="line"> 736: </span>    asp_tags_default = CG(asp_tags);
+<span class="line"> 737: </span>    short_tags_default = CG(short_tags);
+<span class="line"> 738: </span>    ct_pass_ref_default = CG(allow_call_time_pass_reference);
+<span class="line"> 739: </span>    compiler_options_default = CG(compiler_options);
+<span class="line"> 740: </span>
+<span class="line"> 741: </span>    zend_destroy_rsrc_list(&amp;EG(persistent_list) TSRMLS_CC);
+<span class="line"> 742: </span>    free(compiler_globals-&gt;function_table);
+<span class="line"> 743: </span>    free(compiler_globals-&gt;class_table);
+<span class="line"> 744: </span>    compiler_globals_ctor(compiler_globals, tsrm_ls);
+<span class="line"> 745: </span>    free(EG(zend_constants));
+<span class="line"> 746: </span>    executor_globals_ctor(executor_globals, tsrm_ls);
+<span class="line"> 747: </span>    global_persistent_list = &amp;EG(persistent_list);
+<span class="line"> 748: </span>    zend_copy_ini_directives(TSRMLS_C);
+<span class="line"> 749: </span><span class="cpp-preproc">#endif</span>
+<span class="line"> 750: </span>}
+<span class="line"> 751: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line"> 752: </span>
+<span class="line"> 753: </span><span class="cpp-keywords1">void</span> zend_shutdown(TSRMLS_D) <span class="cpp-comment">/* {{{ */</span>
+<span class="line"> 754: </span>{
+<span class="line"> 755: </span><span class="cpp-preproc">#ifdef ZEND_WIN32</span>
+<span class="line"> 756: </span>    zend_shutdown_timeout_thread();
+<span class="line"> 757: </span><span class="cpp-preproc">#endif</span>
+<span class="line"> 758: </span>    zend_destroy_rsrc_list(&amp;EG(persistent_list) TSRMLS_CC);
+<span class="line"> 759: </span>    zend_hash_graceful_reverse_destroy(&amp;module_registry);
+<span class="line"> 760: </span>
+<span class="line"> 761: </span>    zend_hash_destroy(GLOBAL_FUNCTION_TABLE);
+<span class="line"> 762: </span>    zend_hash_destroy(GLOBAL_CLASS_TABLE);
+<span class="line"> 763: </span>
+<span class="line"> 764: </span>    zend_hash_destroy(GLOBAL_AUTO_GLOBALS_TABLE);
+<span class="line"> 765: </span>    free(GLOBAL_AUTO_GLOBALS_TABLE);
+<span class="line"> 766: </span>
+<span class="line"> 767: </span>    zend_shutdown_extensions(TSRMLS_C);
+<span class="line"> 768: </span>    free(zend_version_info);
+<span class="line"> 769: </span>
+<span class="line"> 770: </span>    free(GLOBAL_FUNCTION_TABLE);
+<span class="line"> 771: </span>    free(GLOBAL_CLASS_TABLE);
+<span class="line"> 772: </span>
+<span class="line"> 773: </span>    zend_hash_destroy(GLOBAL_CONSTANTS_TABLE);
+<span class="line"> 774: </span>    free(GLOBAL_CONSTANTS_TABLE);
+<span class="line"> 775: </span>    zend_shutdown_strtod();
+<span class="line"> 776: </span>
+<span class="line"> 777: </span><span class="cpp-preproc">#ifdef ZTS</span>
+<span class="line"> 778: </span>    GLOBAL_FUNCTION_TABLE = NULL;
+<span class="line"> 779: </span>    GLOBAL_CLASS_TABLE = NULL;
+<span class="line"> 780: </span>    GLOBAL_AUTO_GLOBALS_TABLE = NULL;
+<span class="line"> 781: </span>    GLOBAL_CONSTANTS_TABLE = NULL;
+<span class="line"> 782: </span><span class="cpp-preproc">#endif</span>
+<span class="line"> 783: </span>    zend_destroy_rsrc_list_dtors();
+<span class="line"> 784: </span>}
+<span class="line"> 785: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line"> 786: </span>
+<span class="line"> 787: </span><span class="cpp-keywords1">void</span> zend_set_utility_values(zend_utility_values *utility_values) <span class="cpp-comment">/* {{{ */</span>
+<span class="line"> 788: </span>{
+<span class="line"> 789: </span>    zend_uv = *utility_values;
+<span class="line"> 790: </span>    zend_uv.import_use_extension_length = strlen(zend_uv.import_use_extension);
+<span class="line"> 791: </span>}
+<span class="line"> 792: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line"> 793: </span>
+<span class="line"> 794: </span><span class="cpp-comment">/* this should be compatible with the standard zenderror */</span>
+<span class="line"> 795: </span><span class="cpp-keywords1">void</span> zenderror(<span class="cpp-keywords1">const</span> <span class="cpp-keywords1">char</span> *error) <span class="cpp-comment">/* {{{ */</span>
+<span class="line"> 796: </span>{
+<span class="line"> 797: </span>    zend_error(E_PARSE, <span class="cpp-quote">&quot;%s&quot;</span>, error);
+<span class="line"> 798: </span>}
+<span class="line"> 799: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line"> 800: </span>
+<span class="line"> 801: </span>BEGIN_EXTERN_C()
+<span class="line"> 802: </span>ZEND_API <span class="cpp-keywords1">void</span> _zend_bailout(<span class="cpp-keywords1">char</span> *filename, uint lineno) <span class="cpp-comment">/* {{{ */</span>
+<span class="line"> 803: </span>{
+<span class="line"> 804: </span>    TSRMLS_FETCH();
+<span class="line"> 805: </span>
+<span class="line"> 806: </span>    <span class="cpp-keywords1">if</span> (!EG(bailout)) {
+<span class="line"> 807: </span>        zend_output_debug_string(<span class="cpp-num">1</span>, <span class="cpp-quote">&quot;%s(%d) : Bailed out without a bailout address!&quot;</span>, filename, lineno);
+<span class="line"> 808: </span>        exit(-<span class="cpp-num">1</span>);
+<span class="line"> 809: </span>    }
+<span class="line"> 810: </span>    CG(unclean_shutdown) = <span class="cpp-num">1</span>;
+<span class="line"> 811: </span>    CG(active_class_entry) = NULL;
+<span class="line"> 812: </span>    CG(in_compilation) = EG(in_execution) = <span class="cpp-num">0</span>;
+<span class="line"> 813: </span>    EG(current_execute_data) = NULL;
+<span class="line"> 814: </span>    LONGJMP(*EG(bailout), FAILURE);
+<span class="line"> 815: </span>}
+<span class="line"> 816: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line"> 817: </span>END_EXTERN_C()
+<span class="line"> 818: </span>
+<span class="line"> 819: </span><span class="cpp-keywords1">void</span> zend_append_version_info(<span class="cpp-keywords1">const</span> zend_extension *extension) <span class="cpp-comment">/* {{{ */</span>
+<span class="line"> 820: </span>{
+<span class="line"> 821: </span>    <span class="cpp-keywords1">char</span> *new_info;
+<span class="line"> 822: </span>    uint new_info_length;
+<span class="line"> 823: </span>
+<span class="line"> 824: </span>    new_info_length = <span class="cpp-keywords1">sizeof</span>(<span class="cpp-quote">&quot;    with  v, , by \n&quot;</span>)
+<span class="line"> 825: </span>                        + strlen(extension-&gt;name)
+<span class="line"> 826: </span>                        + strlen(extension-&gt;version)
+<span class="line"> 827: </span>                        + strlen(extension-&gt;copyright)
+<span class="line"> 828: </span>                        + strlen(extension-&gt;author);
+<span class="line"> 829: </span>
+<span class="line"> 830: </span>    new_info = (<span class="cpp-keywords1">char</span> *) malloc(new_info_length + <span class="cpp-num">1</span>);
+<span class="line"> 831: </span>
+<span class="line"> 832: </span>    snprintf(new_info, new_info_length, <span class="cpp-quote">&quot;    with %s v%s, %s, by %s\n&quot;</span>, extension-&gt;name, extension-&gt;version, extension-&gt;copyright, extension-&gt;author);
+<span class="line"> 833: </span>
+<span class="line"> 834: </span>    zend_version_info = (<span class="cpp-keywords1">char</span> *) realloc(zend_version_info, zend_version_info_length+new_info_length + <span class="cpp-num">1</span>);
+<span class="line"> 835: </span>    strncat(zend_version_info, new_info, new_info_length);
+<span class="line"> 836: </span>    zend_version_info_length += new_info_length;
+<span class="line"> 837: </span>    free(new_info);
+<span class="line"> 838: </span>}
+<span class="line"> 839: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line"> 840: </span>
+<span class="line"> 841: </span>ZEND_API <span class="cpp-keywords1">char</span> *get_zend_version(<span class="cpp-keywords1">void</span>) <span class="cpp-comment">/* {{{ */</span>
+<span class="line"> 842: </span>{
+<span class="line"> 843: </span>    <span class="cpp-keywords1">return</span> zend_version_info;
+<span class="line"> 844: </span>}
+<span class="line"> 845: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line"> 846: </span>
+<span class="line"> 847: </span><span class="cpp-keywords1">void</span> zend_activate(TSRMLS_D) <span class="cpp-comment">/* {{{ */</span>
+<span class="line"> 848: </span>{
+<span class="line"> 849: </span>    gc_reset(TSRMLS_C);
+<span class="line"> 850: </span>    init_compiler(TSRMLS_C);
+<span class="line"> 851: </span>    init_executor(TSRMLS_C);
+<span class="line"> 852: </span>    startup_scanner(TSRMLS_C);
+<span class="line"> 853: </span>}
+<span class="line"> 854: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line"> 855: </span>
+<span class="line"> 856: </span><span class="cpp-keywords1">void</span> zend_activate_modules(TSRMLS_D) <span class="cpp-comment">/* {{{ */</span>
+<span class="line"> 857: </span>{
+<span class="line"> 858: </span>    zend_hash_apply(&amp;module_registry, (apply_func_t) module_registry_request_startup TSRMLS_CC);
+<span class="line"> 859: </span>}
+<span class="line"> 860: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line"> 861: </span>
+<span class="line"> 862: </span><span class="cpp-keywords1">void</span> zend_deactivate_modules(TSRMLS_D) <span class="cpp-comment">/* {{{ */</span>
+<span class="line"> 863: </span>{
+<span class="line"> 864: </span>    EG(opline_ptr) = NULL; <span class="cpp-comment">/* we're no longer executing anything */</span>
+<span class="line"> 865: </span>
+<span class="line"> 866: </span>    zend_try {
+<span class="line"> 867: </span>        zend_hash_reverse_apply(&amp;module_registry, (apply_func_t) module_registry_cleanup TSRMLS_CC);
+<span class="line"> 868: </span>    } zend_end_try();
+<span class="line"> 869: </span>}
+<span class="line"> 870: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line"> 871: </span>
+<span class="line"> 872: </span><span class="cpp-keywords1">void</span> zend_call_destructors(TSRMLS_D) <span class="cpp-comment">/* {{{ */</span>
+<span class="line"> 873: </span>{
+<span class="line"> 874: </span>    zend_try {
+<span class="line"> 875: </span>        shutdown_destructors(TSRMLS_C);
+<span class="line"> 876: </span>    } zend_end_try();
+<span class="line"> 877: </span>}
+<span class="line"> 878: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line"> 879: </span>
+<span class="line"> 880: </span><span class="cpp-keywords1">void</span> zend_deactivate(TSRMLS_D) <span class="cpp-comment">/* {{{ */</span>
+<span class="line"> 881: </span>{
+<span class="line"> 882: </span>    <span class="cpp-comment">/* we're no longer executing anything */</span>
+<span class="line"> 883: </span>    EG(opline_ptr) = NULL;
+<span class="line"> 884: </span>    EG(active_symbol_table) = NULL;
+<span class="line"> 885: </span>
+<span class="line"> 886: </span>    zend_try {
+<span class="line"> 887: </span>        shutdown_scanner(TSRMLS_C);
+<span class="line"> 888: </span>    } zend_end_try();
+<span class="line"> 889: </span>
+<span class="line"> 890: </span>    <span class="cpp-comment">/* shutdown_executor() takes care of its own bailout handling */</span>
+<span class="line"> 891: </span>    shutdown_executor(TSRMLS_C);
+<span class="line"> 892: </span>
+<span class="line"> 893: </span>    zend_try {
+<span class="line"> 894: </span>        shutdown_compiler(TSRMLS_C);
+<span class="line"> 895: </span>    } zend_end_try();
+<span class="line"> 896: </span>
+<span class="line"> 897: </span>    zend_destroy_rsrc_list(&amp;EG(regular_list) TSRMLS_CC);
+<span class="line"> 898: </span>
+<span class="line"> 899: </span><span class="cpp-preproc">#ifdef ZEND_DEBUG</span>
+<span class="line"> 900: </span>    <span class="cpp-keywords1">if</span> (GC_G(gc_enabled) &amp;&amp; !CG(unclean_shutdown)) {
+<span class="line"> 901: </span>        gc_collect_cycles(TSRMLS_C);
+<span class="line"> 902: </span>    }
+<span class="line"> 903: </span><span class="cpp-preproc">#endif</span>
+<span class="line"> 904: </span>
+<span class="line"> 905: </span><span class="cpp-preproc">#if GC_BENCH</span>
+<span class="line"> 906: </span>    fprintf(stderr, <span class="cpp-quote">&quot;GC Statistics\n&quot;</span>);
+<span class="line"> 907: </span>    fprintf(stderr, <span class="cpp-quote">&quot;-------------\n&quot;</span>);
+<span class="line"> 908: </span>    fprintf(stderr, <span class="cpp-quote">&quot;Runs:               %d\n&quot;</span>, GC_G(gc_runs));
+<span class="line"> 909: </span>    fprintf(stderr, <span class="cpp-quote">&quot;Collected:          %d\n&quot;</span>, GC_G(collected));
+<span class="line"> 910: </span>    fprintf(stderr, <span class="cpp-quote">&quot;Root buffer length: %d\n&quot;</span>, GC_G(root_buf_length));
+<span class="line"> 911: </span>    fprintf(stderr, <span class="cpp-quote">&quot;Root buffer peak:   %d\n\n&quot;</span>, GC_G(root_buf_peak));
+<span class="line"> 912: </span>    fprintf(stderr, <span class="cpp-quote">&quot;      Possible            Remove from  Marked\n&quot;</span>);
+<span class="line"> 913: </span>    fprintf(stderr, <span class="cpp-quote">&quot;        Root    Buffered     buffer     grey\n&quot;</span>);
+<span class="line"> 914: </span>    fprintf(stderr, <span class="cpp-quote">&quot;      --------  --------  -----------  ------\n&quot;</span>);
+<span class="line"> 915: </span>    fprintf(stderr, <span class="cpp-quote">&quot;ZVAL  %8d  %8d  %9d  %8d\n&quot;</span>, GC_G(zval_possible_root), GC_G(zval_buffered), GC_G(zval_remove_from_buffer), GC_G(zval_marked_grey));
+<span class="line"> 916: </span>    fprintf(stderr, <span class="cpp-quote">&quot;ZOBJ  %8d  %8d  %9d  %8d\n&quot;</span>, GC_G(zobj_possible_root), GC_G(zobj_buffered), GC_G(zobj_remove_from_buffer), GC_G(zobj_marked_grey));
+<span class="line"> 917: </span><span class="cpp-preproc">#endif</span>
+<span class="line"> 918: </span>
+<span class="line"> 919: </span>    zend_try {
+<span class="line"> 920: </span>        zend_ini_deactivate(TSRMLS_C);
+<span class="line"> 921: </span>    } zend_end_try();
+<span class="line"> 922: </span>}
+<span class="line"> 923: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line"> 924: </span>
+<span class="line"> 925: </span><span class="cpp-keywords1">static</span> <span class="cpp-keywords1">int</span> exec_done_cb(zend_module_entry *module TSRMLS_DC) <span class="cpp-comment">/* {{{ */</span>
+<span class="line"> 926: </span>{
+<span class="line"> 927: </span>    <span class="cpp-keywords1">if</span> (module-&gt;post_deactivate_func) {
+<span class="line"> 928: </span>        module-&gt;post_deactivate_func();
+<span class="line"> 929: </span>    }
+<span class="line"> 930: </span>    <span class="cpp-keywords1">return</span> <span class="cpp-num">0</span>;
+<span class="line"> 931: </span>}
+<span class="line"> 932: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line"> 933: </span>
+<span class="line"> 934: </span><span class="cpp-keywords1">void</span> zend_post_deactivate_modules(TSRMLS_D) <span class="cpp-comment">/* {{{ */</span>
+<span class="line"> 935: </span>{
+<span class="line"> 936: </span>    zend_hash_apply(&amp;module_registry, (apply_func_t) exec_done_cb TSRMLS_CC);
+<span class="line"> 937: </span>    zend_hash_reverse_apply(&amp;module_registry, (apply_func_t) module_registry_unload_temp TSRMLS_CC);
+<span class="line"> 938: </span>}
+<span class="line"> 939: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line"> 940: </span>
+<span class="line"> 941: </span>BEGIN_EXTERN_C()
+<span class="line"> 942: </span>ZEND_API <span class="cpp-keywords1">void</span> zend_message_dispatcher(<span class="cpp-keywords1">long</span> message, <span class="cpp-keywords1">void</span> *data TSRMLS_DC) <span class="cpp-comment">/* {{{ */</span>
+<span class="line"> 943: </span>{
+<span class="line"> 944: </span>    <span class="cpp-keywords1">if</span> (zend_message_dispatcher_p) {
+<span class="line"> 945: </span>        zend_message_dispatcher_p(message, data TSRMLS_CC);
+<span class="line"> 946: </span>    }
+<span class="line"> 947: </span>}
+<span class="line"> 948: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line"> 949: </span>END_EXTERN_C()
+<span class="line"> 950: </span>
+<span class="line"> 951: </span>ZEND_API <span class="cpp-keywords1">int</span> zend_get_configuration_directive(<span class="cpp-keywords1">const</span> <span class="cpp-keywords1">char</span> *name, uint name_length, zval *contents) <span class="cpp-comment">/* {{{ */</span>
+<span class="line"> 952: </span>{
+<span class="line"> 953: </span>    <span class="cpp-keywords1">if</span> (zend_get_configuration_directive_p) {
+<span class="line"> 954: </span>        <span class="cpp-keywords1">return</span> zend_get_configuration_directive_p(name, name_length, contents);
+<span class="line"> 955: </span>    } <span class="cpp-keywords1">else</span> {
+<span class="line"> 956: </span>        <span class="cpp-keywords1">return</span> FAILURE;
+<span class="line"> 957: </span>    }
+<span class="line"> 958: </span>}
+<span class="line"> 959: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line"> 960: </span>
+<span class="line"> 961: </span><span class="cpp-preproc">#define SAVE_STACK(stack) do { \
+</span><span class="line"> 962: </span><span class="cpp-preproc">        if (CG(stack).top) { \
+</span><span class="line"> 963: </span><span class="cpp-preproc">            memcpy(&amp;stack, &amp;CG(stack), sizeof(zend_stack)); \
+</span><span class="line"> 964: </span><span class="cpp-preproc">            CG(stack).top = CG(stack).max = 0; \
+</span><span class="line"> 965: </span><span class="cpp-preproc">            CG(stack).elements = NULL; \
+</span><span class="line"> 966: </span><span class="cpp-preproc">        } else { \
+</span><span class="line"> 967: </span><span class="cpp-preproc">            stack.top = 0; \
+</span><span class="line"> 968: </span><span class="cpp-preproc">        } \
+</span><span class="line"> 969: </span><span class="cpp-preproc">    } while (0)</span>
+<span class="line"> 970: </span>
+<span class="line"> 971: </span><span class="cpp-preproc">#define RESTORE_STACK(stack) do { \
+</span><span class="line"> 972: </span><span class="cpp-preproc">        if (stack.top) { \
+</span><span class="line"> 973: </span><span class="cpp-preproc">            zend_stack_destroy(&amp;CG(stack)); \
+</span><span class="line"> 974: </span><span class="cpp-preproc">            memcpy(&amp;CG(stack), &amp;stack, sizeof(zend_stack)); \
+</span><span class="line"> 975: </span><span class="cpp-preproc">        } \
+</span><span class="line"> 976: </span><span class="cpp-preproc">    } while (0)</span>
+<span class="line"> 977: </span>
+<span class="line"> 978: </span>ZEND_API <span class="cpp-keywords1">void</span> zend_error(<span class="cpp-keywords1">int</span> type, <span class="cpp-keywords1">const</span> <span class="cpp-keywords1">char</span> *format, ...) <span class="cpp-comment">/* {{{ */</span>
+<span class="line"> 979: </span>{
+<span class="line"> 980: </span>    va_list args;
+<span class="line"> 981: </span>    va_list usr_copy;
+<span class="line"> 982: </span>    zval ***params;
+<span class="line"> 983: </span>    zval *retval;
+<span class="line"> 984: </span>    zval *z_error_type, *z_error_message, *z_error_filename, *z_error_lineno, *z_context;
+<span class="line"> 985: </span>    <span class="cpp-keywords1">char</span> *error_filename;
+<span class="line"> 986: </span>    uint error_lineno;
+<span class="line"> 987: </span>    zval *orig_user_error_handler;
+<span class="line"> 988: </span>    zend_bool in_compilation;
+<span class="line"> 989: </span>    zend_class_entry *saved_class_entry;
+<span class="line"> 990: </span>    zend_stack bp_stack;
+<span class="line"> 991: </span>    zend_stack function_call_stack;
+<span class="line"> 992: </span>    zend_stack switch_cond_stack;
+<span class="line"> 993: </span>    zend_stack foreach_copy_stack;
+<span class="line"> 994: </span>    zend_stack object_stack;
+<span class="line"> 995: </span>    zend_stack declare_stack;
+<span class="line"> 996: </span>    zend_stack list_stack;
+<span class="line"> 997: </span>    zend_stack labels_stack;
+<span class="line"> 998: </span>    TSRMLS_FETCH();
+<span class="line"> 999: </span>
+<span class="line">1000: </span>    <span class="cpp-comment">/* Obtain relevant filename and lineno */</span>
+<span class="line">1001: </span>    <span class="cpp-keywords1">switch</span> (type) {
+<span class="line">1002: </span>        <span class="cpp-keywords1">case</span> E_CORE_ERROR:
+<span class="line">1003: </span>        <span class="cpp-keywords1">case</span> E_CORE_WARNING:
+<span class="line">1004: </span>            error_filename = NULL;
+<span class="line">1005: </span>            error_lineno = <span class="cpp-num">0</span>;
+<span class="line">1006: </span>            <span class="cpp-keywords1">break</span>;
+<span class="line">1007: </span>        <span class="cpp-keywords1">case</span> E_PARSE:
+<span class="line">1008: </span>        <span class="cpp-keywords1">case</span> E_COMPILE_ERROR:
+<span class="line">1009: </span>        <span class="cpp-keywords1">case</span> E_COMPILE_WARNING:
+<span class="line">1010: </span>        <span class="cpp-keywords1">case</span> E_ERROR:
+<span class="line">1011: </span>        <span class="cpp-keywords1">case</span> E_NOTICE:
+<span class="line">1012: </span>        <span class="cpp-keywords1">case</span> E_STRICT:
+<span class="line">1013: </span>        <span class="cpp-keywords1">case</span> E_DEPRECATED:
+<span class="line">1014: </span>        <span class="cpp-keywords1">case</span> E_WARNING:
+<span class="line">1015: </span>        <span class="cpp-keywords1">case</span> E_USER_ERROR:
+<span class="line">1016: </span>        <span class="cpp-keywords1">case</span> E_USER_WARNING:
+<span class="line">1017: </span>        <span class="cpp-keywords1">case</span> E_USER_NOTICE:
+<span class="line">1018: </span>        <span class="cpp-keywords1">case</span> E_USER_DEPRECATED:
+<span class="line">1019: </span>        <span class="cpp-keywords1">case</span> E_RECOVERABLE_ERROR:
+<span class="line">1020: </span>            <span class="cpp-keywords1">if</span> (zend_is_compiling(TSRMLS_C)) {
+<span class="line">1021: </span>                error_filename = zend_get_compiled_filename(TSRMLS_C);
+<span class="line">1022: </span>                error_lineno = zend_get_compiled_lineno(TSRMLS_C);
+<span class="line">1023: </span>            } <span class="cpp-keywords1">else</span> <span class="cpp-keywords1">if</span> (zend_is_executing(TSRMLS_C)) {
+<span class="line">1024: </span>                error_filename = zend_get_executed_filename(TSRMLS_C);
+<span class="line">1025: </span>                error_lineno = zend_get_executed_lineno(TSRMLS_C);
+<span class="line">1026: </span>            } <span class="cpp-keywords1">else</span> {
+<span class="line">1027: </span>                error_filename = NULL;
+<span class="line">1028: </span>                error_lineno = <span class="cpp-num">0</span>;
+<span class="line">1029: </span>            }
+<span class="line">1030: </span>            <span class="cpp-keywords1">break</span>;
+<span class="line">1031: </span>        <span class="cpp-keywords1">default</span>:
+<span class="line">1032: </span>            error_filename = NULL;
+<span class="line">1033: </span>            error_lineno = <span class="cpp-num">0</span>;
+<span class="line">1034: </span>            <span class="cpp-keywords1">break</span>;
+<span class="line">1035: </span>    }
+<span class="line">1036: </span>    <span class="cpp-keywords1">if</span> (!error_filename) {
+<span class="line">1037: </span>        error_filename = <span class="cpp-quote">&quot;Unknown&quot;</span>;
+<span class="line">1038: </span>    }
+<span class="line">1039: </span>
+<span class="line">1040: </span>    va_start(args, format);
+<span class="line">1041: </span>
+<span class="line">1042: </span>    <span class="cpp-comment">/* if we don't have a user defined error handler */</span>
+<span class="line">1043: </span>    <span class="cpp-keywords1">if</span> (!EG(user_error_handler)
+<span class="line">1044: </span>        || !(EG(user_error_handler_error_reporting) &amp; type)
+<span class="line">1045: </span>        || EG(error_handling) != EH_NORMAL) {
+<span class="line">1046: </span>        zend_error_cb(type, error_filename, error_lineno, format, args);
+<span class="line">1047: </span>    } <span class="cpp-keywords1">else</span> <span class="cpp-keywords1">switch</span> (type) {
+<span class="line">1048: </span>        <span class="cpp-keywords1">case</span> E_ERROR:
+<span class="line">1049: </span>        <span class="cpp-keywords1">case</span> E_PARSE:
+<span class="line">1050: </span>        <span class="cpp-keywords1">case</span> E_CORE_ERROR:
+<span class="line">1051: </span>        <span class="cpp-keywords1">case</span> E_CORE_WARNING:
+<span class="line">1052: </span>        <span class="cpp-keywords1">case</span> E_COMPILE_ERROR:
+<span class="line">1053: </span>        <span class="cpp-keywords1">case</span> E_COMPILE_WARNING:
+<span class="line">1054: </span>            <span class="cpp-comment">/* The error may not be safe to handle in user-space */</span>
+<span class="line">1055: </span>            zend_error_cb(type, error_filename, error_lineno, format, args);
+<span class="line">1056: </span>            <span class="cpp-keywords1">break</span>;
+<span class="line">1057: </span>        <span class="cpp-keywords1">default</span>:
+<span class="line">1058: </span>            <span class="cpp-comment">/* Handle the error in user space */</span>
+<span class="line">1059: </span>            ALLOC_INIT_ZVAL(z_error_message);
+<span class="line">1060: </span>            ALLOC_INIT_ZVAL(z_error_type);
+<span class="line">1061: </span>            ALLOC_INIT_ZVAL(z_error_filename);
+<span class="line">1062: </span>            ALLOC_INIT_ZVAL(z_error_lineno);
+<span class="line">1063: </span>            ALLOC_INIT_ZVAL(z_context);
+<span class="line">1064: </span>
+<span class="line">1065: </span><span class="cpp-comment">/* va_copy() is __va_copy() in old gcc versions.
+</span><span class="line">1066: </span><span class="cpp-comment"> * According to the autoconf manual, using
+</span><span class="line">1067: </span><span class="cpp-comment"> * memcpy(&amp;dst, &amp;src, sizeof(va_list))
+</span><span class="line">1068: </span><span class="cpp-comment"> * gives maximum portability. */</span>
+<span class="line">1069: </span><span class="cpp-preproc">#ifndef va_copy</span>
+<span class="line">1070: </span><span class="cpp-preproc"># ifdef __va_copy</span>
+<span class="line">1071: </span><span class="cpp-preproc">#  define va_copy(dest, src)    __va_copy((dest), (src))</span>
+<span class="line">1072: </span><span class="cpp-preproc"># else</span>
+<span class="line">1073: </span><span class="cpp-preproc">#  define va_copy(dest, src)    memcpy(&amp;(dest), &amp;(src), sizeof(va_list))</span>
+<span class="line">1074: </span><span class="cpp-preproc"># endif</span>
+<span class="line">1075: </span><span class="cpp-preproc">#endif</span>
+<span class="line">1076: </span>            va_copy(usr_copy, args);
+<span class="line">1077: </span>            Z_STRLEN_P(z_error_message) = zend_vspprintf(&amp;Z_STRVAL_P(z_error_message), <span class="cpp-num">0</span>, format, usr_copy);
+<span class="line">1078: </span><span class="cpp-preproc">#ifdef va_copy</span>
+<span class="line">1079: </span>            va_end(usr_copy);
+<span class="line">1080: </span><span class="cpp-preproc">#endif</span>
+<span class="line">1081: </span>            Z_TYPE_P(z_error_message) = IS_STRING;
+<span class="line">1082: </span>
+<span class="line">1083: </span>            Z_LVAL_P(z_error_type) = type;
+<span class="line">1084: </span>            Z_TYPE_P(z_error_type) = IS_LONG;
+<span class="line">1085: </span>
+<span class="line">1086: </span>            <span class="cpp-keywords1">if</span> (error_filename) {
+<span class="line">1087: </span>                ZVAL_STRING(z_error_filename, error_filename, <span class="cpp-num">1</span>);
+<span class="line">1088: </span>            }
+<span class="line">1089: </span>
+<span class="line">1090: </span>            Z_LVAL_P(z_error_lineno) = error_lineno;
+<span class="line">1091: </span>            Z_TYPE_P(z_error_lineno) = IS_LONG;
+<span class="line">1092: </span>
+<span class="line">1093: </span>            <span class="cpp-keywords1">if</span> (!EG(active_symbol_table)) {
+<span class="line">1094: </span>                zend_rebuild_symbol_table(TSRMLS_C);
+<span class="line">1095: </span>            }
+<span class="line">1096: </span>
+<span class="line">1097: </span>            <span class="cpp-comment">/* during shutdown the symbol table table can be still null */</span>
+<span class="line">1098: </span>            <span class="cpp-keywords1">if</span> (!EG(active_symbol_table)) {
+<span class="line">1099: </span>                Z_TYPE_P(z_context) = IS_NULL;
+<span class="line">1100: </span>            } <span class="cpp-keywords1">else</span> {
+<span class="line">1101: </span>                Z_ARRVAL_P(z_context) = EG(active_symbol_table);
+<span class="line">1102: </span>                Z_TYPE_P(z_context) = IS_ARRAY;
+<span class="line">1103: </span>                zval_copy_ctor(z_context);
+<span class="line">1104: </span>            }
+<span class="line">1105: </span>
+<span class="line">1106: </span>            params = (zval ***) emalloc(<span class="cpp-keywords1">sizeof</span>(zval **)*<span class="cpp-num">5</span>);
+<span class="line">1107: </span>            params[<span class="cpp-num">0</span>] = &amp;z_error_type;
+<span class="line">1108: </span>            params[<span class="cpp-num">1</span>] = &amp;z_error_message;
+<span class="line">1109: </span>            params[<span class="cpp-num">2</span>] = &amp;z_error_filename;
+<span class="line">1110: </span>            params[<span class="cpp-num">3</span>] = &amp;z_error_lineno;
+<span class="line">1111: </span>            params[<span class="cpp-num">4</span>] = &amp;z_context;
+<span class="line">1112: </span>
+<span class="line">1113: </span>            orig_user_error_handler = EG(user_error_handler);
+<span class="line">1114: </span>            EG(user_error_handler) = NULL;
+<span class="line">1115: </span>
+<span class="line">1116: </span>            <span class="cpp-comment">/* User error handler may include() additinal PHP files.
+</span><span class="line">1117: </span><span class="cpp-comment">             * If an error was generated during comilation PHP will compile
+</span><span class="line">1118: </span><span class="cpp-comment">             * such scripts recursivly, but some CG() variables may be
+</span><span class="line">1119: </span><span class="cpp-comment">             * inconsistent. */</span>
+<span class="line">1120: </span>
+<span class="line">1121: </span>            in_compilation = zend_is_compiling(TSRMLS_C);
+<span class="line">1122: </span>            <span class="cpp-keywords1">if</span> (in_compilation) {
+<span class="line">1123: </span>                saved_class_entry = CG(active_class_entry);
+<span class="line">1124: </span>                CG(active_class_entry) = NULL;
+<span class="line">1125: </span>                SAVE_STACK(bp_stack);
+<span class="line">1126: </span>                SAVE_STACK(function_call_stack);
+<span class="line">1127: </span>                SAVE_STACK(switch_cond_stack);
+<span class="line">1128: </span>                SAVE_STACK(foreach_copy_stack);
+<span class="line">1129: </span>                SAVE_STACK(object_stack);
+<span class="line">1130: </span>                SAVE_STACK(declare_stack);
+<span class="line">1131: </span>                SAVE_STACK(list_stack);
+<span class="line">1132: </span>                SAVE_STACK(labels_stack);
+<span class="line">1133: </span>            }
+<span class="line">1134: </span>
+<span class="line">1135: </span>            <span class="cpp-keywords1">if</span> (call_user_function_ex(CG(function_table), NULL, orig_user_error_handler, &amp;retval, <span class="cpp-num">5</span>, params, <span class="cpp-num">1</span>, NULL TSRMLS_CC) == SUCCESS) {
+<span class="line">1136: </span>                <span class="cpp-keywords1">if</span> (retval) {
+<span class="line">1137: </span>                    <span class="cpp-keywords1">if</span> (Z_TYPE_P(retval) == IS_BOOL &amp;&amp; Z_LVAL_P(retval) == <span class="cpp-num">0</span>) {
+<span class="line">1138: </span>                        zend_error_cb(type, error_filename, error_lineno, format, args);
+<span class="line">1139: </span>                    }
+<span class="line">1140: </span>                    zval_ptr_dtor(&amp;retval);
+<span class="line">1141: </span>                }
+<span class="line">1142: </span>            } <span class="cpp-keywords1">else</span> <span class="cpp-keywords1">if</span> (!EG(exception)) {
+<span class="line">1143: </span>                <span class="cpp-comment">/* The user error handler failed, use built-in error handler */</span>
+<span class="line">1144: </span>                zend_error_cb(type, error_filename, error_lineno, format, args);
+<span class="line">1145: </span>            }
+<span class="line">1146: </span>
+<span class="line">1147: </span>            <span class="cpp-keywords1">if</span> (in_compilation) {
+<span class="line">1148: </span>                CG(active_class_entry) = saved_class_entry;
+<span class="line">1149: </span>                RESTORE_STACK(bp_stack);
+<span class="line">1150: </span>                RESTORE_STACK(function_call_stack);
+<span class="line">1151: </span>                RESTORE_STACK(switch_cond_stack);
+<span class="line">1152: </span>                RESTORE_STACK(foreach_copy_stack);
+<span class="line">1153: </span>                RESTORE_STACK(object_stack);
+<span class="line">1154: </span>                RESTORE_STACK(declare_stack);
+<span class="line">1155: </span>                RESTORE_STACK(list_stack);
+<span class="line">1156: </span>                RESTORE_STACK(labels_stack);
+<span class="line">1157: </span>            }
+<span class="line">1158: </span>
+<span class="line">1159: </span>            <span class="cpp-keywords1">if</span> (!EG(user_error_handler)) {
+<span class="line">1160: </span>                EG(user_error_handler) = orig_user_error_handler;
+<span class="line">1161: </span>            }
+<span class="line">1162: </span>            <span class="cpp-keywords1">else</span> {
+<span class="line">1163: </span>                zval_ptr_dtor(&amp;orig_user_error_handler);
+<span class="line">1164: </span>            }
+<span class="line">1165: </span>
+<span class="line">1166: </span>            efree(params);
+<span class="line">1167: </span>            zval_ptr_dtor(&amp;z_error_message);
+<span class="line">1168: </span>            zval_ptr_dtor(&amp;z_error_type);
+<span class="line">1169: </span>            zval_ptr_dtor(&amp;z_error_filename);
+<span class="line">1170: </span>            zval_ptr_dtor(&amp;z_error_lineno);
+<span class="line">1171: </span>            zval_ptr_dtor(&amp;z_context);
+<span class="line">1172: </span>            <span class="cpp-keywords1">break</span>;
+<span class="line">1173: </span>    }
+<span class="line">1174: </span>
+<span class="line">1175: </span>    va_end(args);
+<span class="line">1176: </span>
+<span class="line">1177: </span>    <span class="cpp-keywords1">if</span> (type == E_PARSE) {
+<span class="line">1178: </span>        EG(exit_status) = <span class="cpp-num">255</span>;
+<span class="line">1179: </span>        zend_init_compiler_data_structures(TSRMLS_C);
+<span class="line">1180: </span>    }
+<span class="line">1181: </span>}
+<span class="line">1182: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line">1183: </span>
+<span class="line">1184: </span><span class="cpp-preproc">#if defined(__GNUC__) &amp;&amp; __GNUC__ &gt;= 3 &amp;&amp; !defined(__INTEL_COMPILER) &amp;&amp; !defined(DARWIN) &amp;&amp; !defined(__hpux) &amp;&amp; !defined(_AIX) &amp;&amp; !defined(__osf__)</span>
+<span class="line">1185: </span><span class="cpp-keywords1">void</span> zend_error_noreturn(<span class="cpp-keywords1">int</span> type, <span class="cpp-keywords1">const</span> <span class="cpp-keywords1">char</span> *format, ...) __attribute__ ((alias(<span class="cpp-quote">&quot;zend_error&quot;</span>),<span class="cpp-keywords1">noreturn</span>));
+<span class="line">1186: </span><span class="cpp-preproc">#endif</span>
+<span class="line">1187: </span>
+<span class="line">1188: </span>ZEND_API <span class="cpp-keywords1">void</span> zend_output_debug_string(zend_bool trigger_break, <span class="cpp-keywords1">const</span> <span class="cpp-keywords1">char</span> *format, ...) <span class="cpp-comment">/* {{{ */</span>
+<span class="line">1189: </span>{
+<span class="line">1190: </span><span class="cpp-preproc">#if ZEND_DEBUG</span>
+<span class="line">1191: </span>    va_list args;
+<span class="line">1192: </span>
+<span class="line">1193: </span>    va_start(args, format);
+<span class="line">1194: </span><span class="cpp-preproc">#   ifdef ZEND_WIN32</span>
+<span class="line">1195: </span>    {
+<span class="line">1196: </span>        <span class="cpp-keywords1">char</span> output_buf[<span class="cpp-num">1024</span>];
+<span class="line">1197: </span>
+<span class="line">1198: </span>        vsnprintf(output_buf, <span class="cpp-num">1024</span>, format, args);
+<span class="line">1199: </span>        OutputDebugString(output_buf);
+<span class="line">1200: </span>        OutputDebugString(<span class="cpp-quote">&quot;\n&quot;</span>);
+<span class="line">1201: </span>        <span class="cpp-keywords1">if</span> (trigger_break &amp;&amp; IsDebuggerPresent()) {
+<span class="line">1202: </span>            DebugBreak();
+<span class="line">1203: </span>        }
+<span class="line">1204: </span>    }
+<span class="line">1205: </span><span class="cpp-preproc">#   else</span>
+<span class="line">1206: </span>    vfprintf(stderr, format, args);
+<span class="line">1207: </span>    fprintf(stderr, <span class="cpp-quote">&quot;\n&quot;</span>);
+<span class="line">1208: </span><span class="cpp-preproc">#   endif</span>
+<span class="line">1209: </span>    va_end(args);
+<span class="line">1210: </span><span class="cpp-preproc">#endif</span>
+<span class="line">1211: </span>}
+<span class="line">1212: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line">1213: </span>
+<span class="line">1214: </span>ZEND_API <span class="cpp-keywords1">int</span> zend_execute_scripts(<span class="cpp-keywords1">int</span> type TSRMLS_DC, zval **retval, <span class="cpp-keywords1">int</span> file_count, ...) <span class="cpp-comment">/* {{{ */</span>
+<span class="line">1215: </span>{
+<span class="line">1216: </span>    va_list files;
+<span class="line">1217: </span>    <span class="cpp-keywords1">int</span> i;
+<span class="line">1218: </span>    zend_file_handle *file_handle;
+<span class="line">1219: </span>    zend_op_array *orig_op_array = EG(active_op_array);
+<span class="line">1220: </span>    zval **orig_retval_ptr_ptr = EG(return_value_ptr_ptr);
+<span class="line">1221: </span>
+<span class="line">1222: </span>    va_start(files, file_count);
+<span class="line">1223: </span>    <span class="cpp-keywords1">for</span> (i = <span class="cpp-num">0</span>; i &lt; file_count; i++) {
+<span class="line">1224: </span>        file_handle = va_arg(files, zend_file_handle *);
+<span class="line">1225: </span>        <span class="cpp-keywords1">if</span> (!file_handle) {
+<span class="line">1226: </span>            <span class="cpp-keywords1">continue</span>;
+<span class="line">1227: </span>        }
+<span class="line">1228: </span>        EG(active_op_array) = zend_compile_file(file_handle, type TSRMLS_CC);
+<span class="line">1229: </span>        <span class="cpp-keywords1">if</span> (file_handle-&gt;opened_path) {
+<span class="line">1230: </span>            <span class="cpp-keywords1">int</span> dummy = <span class="cpp-num">1</span>;
+<span class="line">1231: </span>            zend_hash_add(&amp;EG(included_files), file_handle-&gt;opened_path, strlen(file_handle-&gt;opened_path) + <span class="cpp-num">1</span>, (<span class="cpp-keywords1">void</span> *)&amp;dummy, <span class="cpp-keywords1">sizeof</span>(<span class="cpp-keywords1">int</span>), NULL);
+<span class="line">1232: </span>        }
+<span class="line">1233: </span>        zend_destroy_file_handle(file_handle TSRMLS_CC);
+<span class="line">1234: </span>        <span class="cpp-keywords1">if</span> (EG(active_op_array)) {
+<span class="line">1235: </span>            EG(return_value_ptr_ptr) = retval ? retval : NULL;
+<span class="line">1236: </span>            zend_execute(EG(active_op_array) TSRMLS_CC);
+<span class="line">1237: </span>            zend_exception_restore(TSRMLS_C);
+<span class="line">1238: </span>            <span class="cpp-keywords1">if</span> (EG(exception)) {
+<span class="line">1239: </span>                <span class="cpp-keywords1">if</span> (EG(user_exception_handler)) {
+<span class="line">1240: </span>                    zval *orig_user_exception_handler;
+<span class="line">1241: </span>                    zval **params[<span class="cpp-num">1</span>], *retval2, *old_exception;
+<span class="line">1242: </span>                    old_exception = EG(exception);
+<span class="line">1243: </span>                    EG(exception) = NULL;
+<span class="line">1244: </span>                    params[<span class="cpp-num">0</span>] = &amp;old_exception;
+<span class="line">1245: </span>                    orig_user_exception_handler = EG(user_exception_handler);
+<span class="line">1246: </span>                    <span class="cpp-keywords1">if</span> (call_user_function_ex(CG(function_table), NULL, orig_user_exception_handler, &amp;retval2, <span class="cpp-num">1</span>, params, <span class="cpp-num">1</span>, NULL TSRMLS_CC) == SUCCESS) {
+<span class="line">1247: </span>                        <span class="cpp-keywords1">if</span> (retval2 != NULL) {
+<span class="line">1248: </span>                            zval_ptr_dtor(&amp;retval2);
+<span class="line">1249: </span>                        }
+<span class="line">1250: </span>                        <span class="cpp-keywords1">if</span> (EG(exception)) {
+<span class="line">1251: </span>                            zval_ptr_dtor(&amp;EG(exception));
+<span class="line">1252: </span>                            EG(exception) = NULL;
+<span class="line">1253: </span>                        }
+<span class="line">1254: </span>                        zval_ptr_dtor(&amp;old_exception);
+<span class="line">1255: </span>                    } <span class="cpp-keywords1">else</span> {
+<span class="line">1256: </span>                        EG(exception) = old_exception;
+<span class="line">1257: </span>                        zend_exception_error(EG(exception), E_ERROR TSRMLS_CC);
+<span class="line">1258: </span>                    }
+<span class="line">1259: </span>                } <span class="cpp-keywords1">else</span> {
+<span class="line">1260: </span>                    zend_exception_error(EG(exception), E_ERROR TSRMLS_CC);
+<span class="line">1261: </span>                }
+<span class="line">1262: </span>            }
+<span class="line">1263: </span>            destroy_op_array(EG(active_op_array) TSRMLS_CC);
+<span class="line">1264: </span>            efree(EG(active_op_array));
+<span class="line">1265: </span>        } <span class="cpp-keywords1">else</span> <span class="cpp-keywords1">if</span> (type==ZEND_REQUIRE) {
+<span class="line">1266: </span>            va_end(files);
+<span class="line">1267: </span>            EG(active_op_array) = orig_op_array;
+<span class="line">1268: </span>            EG(return_value_ptr_ptr) = orig_retval_ptr_ptr;
+<span class="line">1269: </span>            <span class="cpp-keywords1">return</span> FAILURE;
+<span class="line">1270: </span>        }
+<span class="line">1271: </span>    }
+<span class="line">1272: </span>    va_end(files);
+<span class="line">1273: </span>    EG(active_op_array) = orig_op_array;
+<span class="line">1274: </span>    EG(return_value_ptr_ptr) = orig_retval_ptr_ptr;
+<span class="line">1275: </span>
+<span class="line">1276: </span>    <span class="cpp-keywords1">return</span> SUCCESS;
+<span class="line">1277: </span>}
+<span class="line">1278: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line">1279: </span>
+<span class="line">1280: </span><span class="cpp-preproc">#define COMPILED_STRING_DESCRIPTION_FORMAT &quot;%s(%d) : %s&quot;</span>
+<span class="line">1281: </span>
+<span class="line">1282: </span>ZEND_API <span class="cpp-keywords1">char</span> *zend_make_compiled_string_description(<span class="cpp-keywords1">const</span> <span class="cpp-keywords1">char</span> *name TSRMLS_DC) <span class="cpp-comment">/* {{{ */</span>
+<span class="line">1283: </span>{
+<span class="line">1284: </span>    <span class="cpp-keywords1">char</span> *cur_filename;
+<span class="line">1285: </span>    <span class="cpp-keywords1">int</span> cur_lineno;
+<span class="line">1286: </span>    <span class="cpp-keywords1">char</span> *compiled_string_description;
+<span class="line">1287: </span>
+<span class="line">1288: </span>    <span class="cpp-keywords1">if</span> (zend_is_compiling(TSRMLS_C)) {
+<span class="line">1289: </span>        cur_filename = zend_get_compiled_filename(TSRMLS_C);
+<span class="line">1290: </span>        cur_lineno = zend_get_compiled_lineno(TSRMLS_C);
+<span class="line">1291: </span>    } <span class="cpp-keywords1">else</span> <span class="cpp-keywords1">if</span> (zend_is_executing(TSRMLS_C)) {
+<span class="line">1292: </span>        cur_filename = zend_get_executed_filename(TSRMLS_C);
+<span class="line">1293: </span>        cur_lineno = zend_get_executed_lineno(TSRMLS_C);
+<span class="line">1294: </span>    } <span class="cpp-keywords1">else</span> {
+<span class="line">1295: </span>        cur_filename = <span class="cpp-quote">&quot;Unknown&quot;</span>;
+<span class="line">1296: </span>        cur_lineno = <span class="cpp-num">0</span>;
+<span class="line">1297: </span>    }
+<span class="line">1298: </span>
+<span class="line">1299: </span>    zend_spprintf(&amp;compiled_string_description, <span class="cpp-num">0</span>, COMPILED_STRING_DESCRIPTION_FORMAT, cur_filename, cur_lineno, name);
+<span class="line">1300: </span>    <span class="cpp-keywords1">return</span> compiled_string_description;
+<span class="line">1301: </span>}
+<span class="line">1302: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line">1303: </span>
+<span class="line">1304: </span><span class="cpp-keywords1">void</span> free_estring(<span class="cpp-keywords1">char</span> **str_p) <span class="cpp-comment">/* {{{ */</span>
+<span class="line">1305: </span>{
+<span class="line">1306: </span>    efree(*str_p);
+<span class="line">1307: </span>}
+<span class="line">1308: </span><span class="cpp-comment">/* }}} */</span>
+<span class="line">1309: </span>
+<span class="line">1310: </span><span class="cpp-comment">/*
+</span><span class="line">1311: </span><span class="cpp-comment"> * Local variables:
+</span><span class="line">1312: </span><span class="cpp-comment"> * tab-width: 4
+</span><span class="line">1313: </span><span class="cpp-comment"> * c-basic-offset: 4
+</span><span class="line">1314: </span><span class="cpp-comment"> * indent-tabs-mode: t
+</span><span class="line">1315: </span><span class="cpp-comment"> * End:
+</span><span class="line">1316: </span><span class="cpp-comment"> */</span>
+<span class="line">1317: </span>
+</pre></body></html>

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * FSHL 2.0.0                                  | Fast Syntax HighLighter |
+ * FSHL 2.0.1                                  | Fast Syntax HighLighter |
  * -----------------------------------------------------------------------
  *
  * LICENSE
@@ -63,6 +63,7 @@ class Sql implements FSHL\Lexer
 				array(
 					'ALPHA' => array('FUNCTION', Generator::BACK),
 					'NUM' => array('NUMBER', Generator::NEXT),
+					'DOT_NUM' => array('NUMBER', Generator::NEXT),
 					'/*' => array('COMMENT_BLOCK', Generator::NEXT) ,
 					'//' => array('COMMENT_LINE', Generator::NEXT),
 					'#' => array('COMMENT_LINE', Generator::NEXT),
@@ -140,6 +141,7 @@ class Sql implements FSHL\Lexer
 			'NUMBER' => array(
 				array(
 					'x' => array('HEXA', Generator::NEXT),
+					'DOTNUM' => array(Generator::STATE_SELF, Generator::NEXT),
 					'ALL' => array(Generator::STATE_RETURN, Generator::BACK)
 				),
 				Generator::STATE_FLAG_RECURSION,

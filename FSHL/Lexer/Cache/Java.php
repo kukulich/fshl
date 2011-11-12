@@ -1,7 +1,7 @@
 <?php
 
 /**
- * FSHL 2.0.0                                  | Fast Syntax HighLighter |
+ * FSHL 2.0.1                                  | Fast Syntax HighLighter |
  * -----------------------------------------------------------------------
  *
  * LICENSE
@@ -108,16 +108,18 @@ class Java
 				), 1 => array(
 					0 => 2, 1 => 1
 				), 2 => array(
-					0 => 4, 1 => 1
+					0 => 2, 1 => 1
 				), 3 => array(
-					0 => 5, 1 => 1
+					0 => 4, 1 => 1
 				), 4 => array(
-					0 => 6, 1 => 1
+					0 => 5, 1 => 1
 				), 5 => array(
-					0 => 7, 1 => 1
+					0 => 6, 1 => 1
 				), 6 => array(
-					0 => 0, 1 => 1
+					0 => 7, 1 => 1
 				), 7 => array(
+					0 => 0, 1 => 1
+				), 8 => array(
 					0 => 0, 1 => 1
 				)
 			), 1 => array(
@@ -208,7 +210,7 @@ class Java
 	public function findDelimiter0($text, $textLength, $textPos)
 	{
 		static $delimiters = array(
-			2 => '"', 3 => '\'', 4 => '/*', 5 => '//', 6 => "\n", 7 => "\t"
+			3 => '"', 4 => '\'', 5 => '/*', 6 => '//', 7 => "\n", 8 => "\t"
 		);
 
 		$buffer = false;
@@ -222,23 +224,26 @@ class Java
 			if (preg_match('~^\\d+~', $part, $matches)) {
 				return array(1, $matches[0], $buffer);
 			}
-			if ($delimiters[2] === $letter) {
-				return array(2, $delimiters[2], $buffer);
+			if (preg_match('~^\.\\d+~', $part, $matches)) {
+				return array(2, $matches[0], $buffer);
 			}
 			if ($delimiters[3] === $letter) {
 				return array(3, $delimiters[3], $buffer);
 			}
-			if (0 === strpos($part, $delimiters[4])) {
+			if ($delimiters[4] === $letter) {
 				return array(4, $delimiters[4], $buffer);
 			}
 			if (0 === strpos($part, $delimiters[5])) {
 				return array(5, $delimiters[5], $buffer);
 			}
-			if ($delimiters[6] === $letter) {
+			if (0 === strpos($part, $delimiters[6])) {
 				return array(6, $delimiters[6], $buffer);
 			}
 			if ($delimiters[7] === $letter) {
 				return array(7, $delimiters[7], $buffer);
+			}
+			if ($delimiters[8] === $letter) {
+				return array(8, $delimiters[8], $buffer);
 			}
 			$buffer .= $letter;
 			$textPos++;

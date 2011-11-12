@@ -1,7 +1,7 @@
 <?php
 
 /**
- * FSHL 2.0.0                                  | Fast Syntax HighLighter |
+ * FSHL 2.0.1                                  | Fast Syntax HighLighter |
  * -----------------------------------------------------------------------
  *
  * LICENSE
@@ -126,10 +126,6 @@ class Css
 				), 10 => array(
 					0 => 14, 1 => 1
 				), 11 => array(
-					0 => 12, 1 => 1
-				), 12 => array(
-					0 => 12, 1 => 1
-				), 13 => array(
 					0 => 12, 1 => 1
 				)
 			), 1 => array(
@@ -259,7 +255,7 @@ class Css
 			0 => NULL, 1 => 'css-at-rule', 2 => 'css-tag', 3 => 'css-id', 4 => 'css-class', 5 => 'css-pseudo', 6 => NULL, 7 => 'css-property', 8 => 'css-value', 9 => 'css-func', 10 => 'css-color', 11 => 'css-comment', 12 => 'xlang', 14 => 'html-tag'
 		);
 		$this->keywords = array(
-
+			
 		);
 
 	}
@@ -275,7 +271,7 @@ class Css
 	public function findDelimiter0($text, $textLength, $textPos)
 	{
 		static $delimiters = array(
-			2 => '*', 3 => '#', 4 => '.', 5 => '{', 6 => '/*', 7 => '@', 8 => "\n", 9 => "\t", 10 => '</', 11 => '<?php', 12 => '<?=', 13 => '<?'
+			2 => '*', 3 => '#', 4 => '.', 5 => '{', 6 => '/*', 7 => '@', 8 => "\n", 9 => "\t", 10 => '</'
 		);
 
 		$buffer = false;
@@ -316,14 +312,8 @@ class Css
 			if (0 === strpos($part, $delimiters[10])) {
 				return array(10, $delimiters[10], $buffer);
 			}
-			if (0 === strpos($part, $delimiters[11])) {
-				return array(11, $delimiters[11], $buffer);
-			}
-			if (0 === strpos($part, $delimiters[12])) {
-				return array(12, $delimiters[12], $buffer);
-			}
-			if (0 === strpos($part, $delimiters[13])) {
-				return array(13, $delimiters[13], $buffer);
+			if (preg_match('~<\\?(php|=|(?!xml))~A', $text, $matches, 0, $textPos)) {
+				return array(11, $matches[0], $buffer);
 			}
 			$buffer .= $letter;
 			$textPos++;

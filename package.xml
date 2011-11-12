@@ -16,9 +16,9 @@
 	<email>kontakt@kukulich.cz</email>
 	<active>yes</active>
 </lead>
-<date>2011-08-29</date>
+<date>2011-11-12</date>
 <version>
-	<release>2.0.0</release>
+	<release>2.0.1</release>
 	<api>2.0.0</api>
 </version>
 <stability>

@@ -275,6 +275,7 @@ class Php implements FSHL\Lexer
 				'array' => 1,
 				'as' => 1,
 				'break' => 1,
+				'callable' => 1,
 				'case' => 1,
 				'catch' => 1,
 				'class' => 1,

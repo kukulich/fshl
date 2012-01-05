@@ -24,7 +24,7 @@ require_once __DIR__ . '/../bootstrap.php';
 /**
  * Complete test.
  *
- * @copyright Copyright (c) 2011 Jaroslav Hanslík
+ * @copyright Copyright (c) 2011-2012 Jaroslav Hanslík
  * @license http://fshl.kukulich.cz/#license
  */
 class Test extends \PHPUnit_Framework_TestCase

@@ -25,7 +25,7 @@ use FSHL, FSHL\Generator;
  * HTML lexer.
  *
  * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
- * @copyright Copyright (c) 2011 Jaroslav Hanslík
+ * @copyright Copyright (c) 2011-2012 Jaroslav Hanslík
  * @license http://fshl.kukulich.cz/#license
  */
 class Html implements FSHL\Lexer

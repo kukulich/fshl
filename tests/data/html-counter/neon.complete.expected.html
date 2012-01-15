@@ -1,0 +1,35 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8" /><link rel="stylesheet" type="text/css" href="../../../style.css" media="all" /></head><body><pre>
+<span class="line"> 1: </span><span class="neon-key">language</span><span class="neon-sep">:</span><span class="neon-value"> en</span>
+<span class="line"> 2: </span>
+<span class="line"> 3: </span><span class="neon-section">common</span><span class="neon-sep">:</span><span class="neon-section">
+</span><span class="line"> 4: </span><span class="neon-section">    php</span><span class="neon-sep">:</span><span class="neon-section">
+</span><span class="line"> 5: </span><span class="neon-section">        </span><span class="neon-key">date.timezone</span><span class="neon-sep">:</span><span class="neon-value"> Europe/Prague</span>
+<span class="line"> 6: </span>        <span class="neon-comment"># session.save_path: &quot;%tempDir%/sessions&quot;</span>
+<span class="line"> 7: </span>        <span class="neon-key">zlib.output_compression</span><span class="neon-sep">:</span><span class="neon-value"> yes</span>
+<span class="line"> 8: </span>        <span class="neon-key">default_charset</span><span class="neon-sep">:</span><span class="neon-value"> </span><span class="neon-quote">&quot;UTF-8&quot;</span>
+<span class="line"> 9: </span>        <span class="neon-key">some_variable</span><span class="neon-sep">:</span><span class="neon-value"> boo/</span><span class="neon-var">%someVariable%</span><span class="neon-value">/foo</span>
+<span class="line">10: </span>
+<span class="line">11: </span>    <span class="neon-section">database</span><span class="neon-sep">:</span><span class="neon-section">
+</span><span class="line">12: </span><span class="neon-section">        </span><span class="neon-key">type</span><span class="neon-sep">:</span><span class="neon-value"> mysql</span>
+<span class="line">13: </span>        <span class="neon-key">driver</span><span class="neon-sep">:</span><span class="neon-value"> mysql </span><span class="neon-comment"># localhost, mysql5</span>
+<span class="line">14: </span>        <span class="neon-key">dbname</span><span class="neon-sep">:</span><span class="neon-value"> main</span>
+<span class="line">15: </span>        <span class="neon-key">profiler</span><span class="neon-sep">:</span><span class="neon-value"> TRUE</span>
+<span class="line">16: </span>        <span class="neon-key">charset</span><span class="neon-sep">:</span><span class="neon-value"> utf8</span>
+<span class="line">17: </span>
+<span class="line">18: </span>    <span class="neon-section">services</span><span class="neon-sep">:</span><span class="neon-section">
+</span><span class="line">19: </span><span class="neon-section">        database</span><span class="neon-sep">:</span><span class="neon-section">
+</span><span class="line">20: </span><span class="neon-section">            </span><span class="neon-key">factory</span><span class="neon-sep">:</span><span class="neon-value"> </span><span class="neon-sep">[</span><span class="neon-ref">@factories</span><span class="neon-sep">,</span><span class="neon-value"> </span><span class="neon-quote">'createNotORM'</span><span class="neon-sep">]</span>
+<span class="line">21: </span>            <span class="neon-key">arguments</span><span class="neon-sep">:</span><span class="neon-value"> </span><span class="neon-sep">[</span><span class="neon-ref">@databasePDO</span><span class="neon-sep">,</span><span class="neon-value"> true]</span>
+<span class="line">22: </span>
+<span class="line">23: </span><span class="neon-comment"># production</span>
+<span class="line">24: </span><span class="neon-section">production </span><span class="neon-sep">&lt;</span><span class="neon-section"> common</span><span class="neon-sep">:</span><span class="neon-section">
+</span><span class="line">25: </span><span class="neon-section">    database</span><span class="neon-sep">:</span><span class="neon-section">
+</span><span class="line">26: </span><span class="neon-section">        </span><span class="neon-key">host</span><span class="neon-sep">:</span><span class="neon-value"> mysql</span>
+<span class="line">27: </span>        <span class="neon-key">username</span><span class="neon-sep">:</span><span class="neon-value"> production_username</span>
+<span class="line">28: </span>        <span class="neon-key">password</span><span class="neon-sep">:</span><span class="neon-value"> production_password</span>
+<span class="line">29: </span>    <span class="neon-section">array</span><span class="neon-sep">:</span><span class="neon-section">
+</span><span class="line">30: </span><span class="neon-section">        </span><span class="neon-sep">-</span><span class="neon-value"> First item</span>
+<span class="line">31: </span>        <span class="neon-sep">-</span><span class="neon-value"> </span><span class="neon-sep">[</span><span class="neon-quote">&quot;second&quot;</span><span class="neon-value"> </span><span class="neon-sep">=</span><span class="neon-value"> </span><span class="neon-num">2</span><span class="neon-sep">,</span><span class="neon-value"> </span><span class="neon-key">third</span><span class="neon-sep">:</span><span class="neon-value"> </span><span class="neon-quote">&quot;3&quot;</span><span class="neon-sep">]</span>
+<span class="line">32: </span>        <span class="neon-sep">-</span><span class="neon-value"> </span><span class="neon-sep">{</span><span class="neon-key">fourth</span><span class="neon-sep">:</span><span class="neon-value"> </span><span class="neon-ref">@factories</span><span class="neon-sep">,</span><span class="neon-value"> </span><span class="neon-key">fifth</span><span class="neon-value"> </span><span class="neon-sep">=</span><span class="neon-value"> true}</span>
+<span class="line">33: </span>        <span class="neon-sep">-</span><span class="neon-value"> </span><span class="neon-sep">[</span><span class="neon-num">6</span><span class="neon-sep">,</span><span class="neon-value"> </span><span class="neon-num">7</span><span class="neon-value">%</span><span class="neon-sep">,</span><span class="neon-value"> </span><span class="neon-sep">[</span><span class="neon-num">8</span><span class="neon-sep">,</span><span class="neon-value"> </span><span class="neon-quote">&quot;ninth&quot;</span><span class="neon-value"> </span><span class="neon-sep">=</span><span class="neon-value"> </span><span class="neon-num">9</span><span class="neon-sep">]</span>
+</pre></body></html>

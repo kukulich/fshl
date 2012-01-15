@@ -246,7 +246,7 @@ class Sql
 	public function findDelimiter0($text, $textLength, $textPos)
 	{
 		static $delimiters = array(
-			2 => 'DOT_NUM', 3 => '/*', 4 => '//', 5 => '#', 6 => '--', 7 => '"', 8 => '\'', 9 => '`', 10 => "\n", 11 => "\t"
+			3 => '/*', 4 => '//', 5 => '#', 6 => '--', 7 => '"', 8 => '\'', 9 => '`', 10 => "\n", 11 => "\t"
 		);
 
 		$buffer = false;
@@ -260,8 +260,8 @@ class Sql
 			if (preg_match('~^\\d+~', $part, $matches)) {
 				return array(1, $matches[0], $buffer);
 			}
-			if (0 === strpos($part, $delimiters[2])) {
-				return array(2, $delimiters[2], $buffer);
+			if (preg_match('~^\.\\d+~', $part, $matches)) {
+				return array(2, $matches[0], $buffer);
 			}
 			if (0 === strpos($part, $delimiters[3])) {
 				return array(3, $delimiters[3], $buffer);

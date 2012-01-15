@@ -63,7 +63,7 @@ class Sql implements FSHL\Lexer
 				array(
 					'ALPHA' => array('FUNCTION', Generator::BACK),
 					'NUM' => array('NUMBER', Generator::NEXT),
-					'DOT_NUM' => array('NUMBER', Generator::NEXT),
+					'DOTNUM' => array('NUMBER', Generator::NEXT),
 					'/*' => array('COMMENT_BLOCK', Generator::NEXT) ,
 					'//' => array('COMMENT_LINE', Generator::NEXT),
 					'#' => array('COMMENT_LINE', Generator::NEXT),

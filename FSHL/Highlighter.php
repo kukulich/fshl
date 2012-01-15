@@ -361,7 +361,7 @@ class Highlighter
 		// Generates the lexer cache on fly, if the lexer cache doesn't exist
 		if (!$this->findCache($lexerName)) {
 			// Finds the lexer
-			$lexerClass = 'FSHL\\Lexer\\' . $lexerName;
+			$lexerClass = '\\FSHL\\Lexer\\' . $lexerName;
 			if (!class_exists($lexerClass)) {
 				throw new \InvalidArgumentException(sprintf('The class for "%s" lexer doesn\'t exist', $lexerName));
 			}

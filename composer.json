@@ -4,7 +4,7 @@
 	"description": "FSHL is a free, open source, universal, fast syntax highlighter written in PHP.",
 	"keywords": ["syntax highlighter"],
 	"homepage": "http://fshl.kukulich.cz/",
-	"license": "GPL 2",
+	"license": "GPLv2",
 
 	"authors": [
 		{
@@ -14,12 +14,12 @@
 	],
 
 	"require": {
-		"php": ">=5.3",
+		"php": ">=5.3"
 	},
 
 	"autoload": {
 		"psr-0": {
 			"FSHL": "./"
 		}
-	},
+	}
 }

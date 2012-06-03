@@ -9,7 +9,39 @@ FSHL core is very flexible and it is very easy to add new languages. Feel free t
 
 ## Installation ##
 
-FSHL should be installed using the [PEAR Installer](http://pear.php.net/). This installer is the backbone of PEAR, which provides a distribution system for PHP packages, and is shipped with every release of PHP since version 4.3.0.
+### Composer ###
+
+FSHL is available as a [Composer](http://getcomposer.org) package.
+
+To use FSHL in your project, you first need to create a `composer.json` file containing your project's dependencies.
+
+```json
+{
+    "require": {
+        "kukulich/fshl": "2.0.*"
+    }
+}
+```
+
+Then download Composer and install the project's dependencies.
+
+```
+curl -s http://getcomposer.org/installer | php
+php composer.phar install
+```
+
+After the installation you can find the FSHL source files inside your project's `vendor/` directory and load them in your project along with all other dependencies through autoloader.
+
+```php
+<?php
+require 'vendor/autoload.php';
+?>
+```
+
+
+### PEAR ###
+
+FSHL can be installed using the [PEAR Installer](http://pear.php.net/). This installer is the backbone of PEAR, which provides a distribution system for PHP packages, and is shipped with every release of PHP since version 4.3.0.
 
 [The PEAR channel](http://pear.kukulich.cz/) that is used to distribute FSHL needs to be registered with the local PEAR environment.
 

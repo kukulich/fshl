@@ -14,13 +14,13 @@ FSHL should be installed using the [PEAR Installer](http://pear.php.net/). This 
 [The PEAR channel](http://pear.kukulich.cz/) that is used to distribute FSHL needs to be registered with the local PEAR environment.
 
 ```
-	pear channel-discover pear.kukulich.cz
+pear channel-discover pear.kukulich.cz
 ```
 
 This has to be done only once. Now the PEAR Installer can be used to install packages from the kukulich channel:
 
 ```
-	pear install kukulich/FSHL
+pear install kukulich/FSHL
 ```
 
 After the installation you can find the FSHL source files inside your local PEAR directory.
@@ -29,24 +29,24 @@ After the installation you can find the FSHL source files inside your local PEAR
 ## Example ##
 
 ```php
-	<?php
-	$highlighter = new \FSHL\Highlighter(new \FSHL\Output\Html());
-	$highlighter->setLexer(new \FSHL\Lexer\Php());
-	echo '<pre>';
-	echo $highlighter->highlight('<?php echo "Hello world!"; ?>');
-	echo '</pre>';
-	?>
+<?php
+$highlighter = new \FSHL\Highlighter(new \FSHL\Output\Html());
+$highlighter->setLexer(new \FSHL\Lexer\Php());
+echo '<pre>';
+echo $highlighter->highlight('<?php echo "Hello world!"; ?>');
+echo '</pre>';
+?>
 ```
 
 Or
 
 ```php
-	<?php
-	$highlighter = new \FSHL\Highlighter(new \FSHL\Output\Html(), \FSHL\Highlighter::OPTION_TAB_INDENT | \FSHL\Highlighter::OPTION_LINE_COUNTER);
-	echo '<pre>';
-	echo $highlighter->highlight('<?php echo "Hello world!"; ?>', new \FSHL\Lexer\Php());
-	echo '</pre>';
-	?>
+<?php
+$highlighter = new \FSHL\Highlighter(new \FSHL\Output\Html(), \FSHL\Highlighter::OPTION_TAB_INDENT | \FSHL\Highlighter::OPTION_LINE_COUNTER);
+echo '<pre>';
+echo $highlighter->highlight('<?php echo "Hello world!"; ?>', new \FSHL\Lexer\Php());
+echo '</pre>';
+?>
 ```
 
 ### Stylesheet ###

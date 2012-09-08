@@ -1,0 +1,33 @@
+language: en
+
+common:
+	php:
+		date.timezone: Europe/Prague
+		# session.save_path: "%tempDir%/sessions"
+		zlib.output_compression: yes
+		default_charset: "UTF-8"
+		some_variable: boo/%someVariable%/foo
+
+	database:
+		type: mysql
+		driver: mysql # localhost, mysql5
+		dbname: main
+		profiler: TRUE
+		charset: utf8
+
+	services:
+		database:
+			factory: [@factories, 'createNotORM']
+			arguments: [@databasePDO, true]
+
+# production
+production < common:
+	database:
+		host: mysql
+		username: production_username
+		password: production_password
+	array:
+		- First item
+		- ["second" = 2, third: "3"]
+		- {fourth: @factories, fifth = true}
+		- [6, 7%, [8, "ninth" = 9]

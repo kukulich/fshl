@@ -1,7 +1,7 @@
 <?php
 
 /**
- * FSHL 2.0.1                                  | Fast Syntax HighLighter |
+ * FSHL 2.1.0                                  | Fast Syntax HighLighter |
  * -----------------------------------------------------------------------
  *
  * LICENSE
@@ -25,7 +25,7 @@ namespace FSHL\Lexer\Cache;
  * This file is generated. All changes made in this file will be lost.
  *
  * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
- * @copyright Copyright (c) 2011 Jaroslav Hanslík
+ * @copyright Copyright (c) 2011-2012 Jaroslav Hanslík
  * @license http://fshl.kukulich.cz/#license
  * @see \FSHL\Generator
  * @see \FSHL\Lexer\Sql
@@ -246,7 +246,7 @@ class Sql
 	public function findDelimiter0($text, $textLength, $textPos)
 	{
 		static $delimiters = array(
-			2 => 'DOT_NUM', 3 => '/*', 4 => '//', 5 => '#', 6 => '--', 7 => '"', 8 => '\'', 9 => '`', 10 => "\n", 11 => "\t"
+			3 => '/*', 4 => '//', 5 => '#', 6 => '--', 7 => '"', 8 => '\'', 9 => '`', 10 => "\n", 11 => "\t"
 		);
 
 		$buffer = false;
@@ -260,8 +260,8 @@ class Sql
 			if (preg_match('~^\\d+~', $part, $matches)) {
 				return array(1, $matches[0], $buffer);
 			}
-			if (0 === strpos($part, $delimiters[2])) {
-				return array(2, $delimiters[2], $buffer);
+			if (preg_match('~^\.\\d+~', $part, $matches)) {
+				return array(2, $matches[0], $buffer);
 			}
 			if (0 === strpos($part, $delimiters[3])) {
 				return array(3, $delimiters[3], $buffer);

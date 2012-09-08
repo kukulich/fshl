@@ -1,7 +1,7 @@
 <?php
 
 /**
- * FSHL 2.0.1                                  | Fast Syntax HighLighter |
+ * FSHL 2.1.0                                  | Fast Syntax HighLighter |
  * -----------------------------------------------------------------------
  *
  * LICENSE
@@ -25,7 +25,7 @@ use FSHL, FSHL\Generator;
  * CSS lexer.
  *
  * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
- * @copyright Copyright (c) 2011 Jaroslav Hanslík
+ * @copyright Copyright (c) 2011-2012 Jaroslav Hanslík
  * @license http://fshl.kukulich.cz/#license
  */
 class Css implements FSHL\Lexer
@@ -67,6 +67,7 @@ class Css implements FSHL\Lexer
 					'.' => array('CLASS', Generator::NEXT),
 					'{' => array('DEF', Generator::NEXT),
 					'/*' => array('COMMENT', Generator::NEXT),
+					'@media' => array('MEDIA', Generator::NEXT),
 					'@' => array('AT_RULE', Generator::NEXT),
 					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
 					'TAB' => array(Generator::STATE_SELF, Generator::NEXT),
@@ -75,6 +76,20 @@ class Css implements FSHL\Lexer
 				),
 				Generator::STATE_FLAG_NONE,
 				null,
+				null
+			),
+			'MEDIA' => array(
+				array(
+					'PROPERTY' => array('PROPERTY', Generator::NEXT),
+					':' => array('VALUE', Generator::CURRENT),
+					';' => array(Generator::STATE_SELF, Generator::CURRENT),
+					'LINE' => array(Generator::STATE_SELF, Generator::NEXT),
+					'TAB' => array(Generator::STATE_SELF, Generator::NEXT),
+					')' => array(Generator::STATE_RETURN, Generator::CURRENT),
+					'/*' => array('COMMENT', Generator::NEXT)
+				),
+				Generator::STATE_FLAG_RECURSION,
+				'css-at-rule',
 				null
 			),
 			'AT_RULE' => array(

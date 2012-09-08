@@ -1,7 +1,7 @@
 <?php
 
 /**
- * FSHL 2.0.1                                  | Fast Syntax HighLighter |
+ * FSHL 2.1.0                                  | Fast Syntax HighLighter |
  * -----------------------------------------------------------------------
  *
  * LICENSE
@@ -23,7 +23,7 @@ namespace FSHL;
  * Highlighter.
  *
  * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
- * @copyright Copyright (c) 2011 Jaroslav Hanslík
+ * @copyright Copyright (c) 2011-2012 Jaroslav Hanslík
  * @license http://fshl.kukulich.cz/#license
  */
 class Highlighter
@@ -361,7 +361,7 @@ class Highlighter
 		// Generates the lexer cache on fly, if the lexer cache doesn't exist
 		if (!$this->findCache($lexerName)) {
 			// Finds the lexer
-			$lexerClass = 'FSHL\\Lexer\\' . $lexerName;
+			$lexerClass = '\\FSHL\\Lexer\\' . $lexerName;
 			if (!class_exists($lexerClass)) {
 				throw new \InvalidArgumentException(sprintf('The class for "%s" lexer doesn\'t exist', $lexerName));
 			}

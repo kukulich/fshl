@@ -1,7 +1,7 @@
 <?php
 
 /**
- * FSHL 2.0.1                                  | Fast Syntax HighLighter |
+ * FSHL 2.1.0                                  | Fast Syntax HighLighter |
  * -----------------------------------------------------------------------
  *
  * LICENSE
@@ -25,7 +25,7 @@ use FSHL, FSHL\Generator;
  * PHP lexer.
  *
  * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
- * @copyright Copyright (c) 2011 Jaroslav Hanslík
+ * @copyright Copyright (c) 2011-2012 Jaroslav Hanslík
  * @license http://fshl.kukulich.cz/#license
  */
 class Php implements FSHL\Lexer
@@ -275,6 +275,7 @@ class Php implements FSHL\Lexer
 				'array' => 1,
 				'as' => 1,
 				'break' => 1,
+				'callable' => 1,
 				'case' => 1,
 				'catch' => 1,
 				'class' => 1,

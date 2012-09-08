@@ -1,5 +1,5 @@
 /**
- * FSHL 2.0.1                                  | Fast Syntax HighLighter |
+ * FSHL 2.1.0                                  | Fast Syntax HighLighter |
  * -----------------------------------------------------------------------
  *
  * LICENSE
@@ -16,7 +16,7 @@
  */
 
 /* Copyright (c) 2002 Martin Cohen */
-/* Copyright (c) 2011 Jaroslav Hanslík */
+/* Copyright (c) 2011-2012 Jaroslav Hanslík */
 
 /* Common */
 .xlang {color: #ff0000; font-weight: bold;}
@@ -61,6 +61,17 @@
 .js-num {color: #575757;}
 .js-quote {color: #575757; font-weight: bold;}
 .js-comment {color: #898993; background-color: #f4f4f4;}
+
+/* Neon */
+.neon-section {color: #598527;}
+.neon-sep {color: #ff0000;}
+.neon-key {color: #0000ff;}
+.neon-comment {color: #999999;}
+.neon-value {color: #000000;}
+.neon-quote {color: #884433;}
+.neon-num {color: #448ccb;}
+.neon-var {color: #ffaa00;}
+.neon-ref {color: #884433;}
 
 /* PHP */
 .php-keyword1 {color: #dd2244; font-weight: bold;}

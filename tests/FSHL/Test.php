@@ -1,7 +1,7 @@
 <?php
 
 /**
- * FSHL 2.0.1                                  | Fast Syntax HighLighter |
+ * FSHL 2.1.0                                  | Fast Syntax HighLighter |
  * -----------------------------------------------------------------------
  *
  * LICENSE
@@ -24,7 +24,7 @@ require_once __DIR__ . '/../bootstrap.php';
 /**
  * Complete test.
  *
- * @copyright Copyright (c) 2011 Jaroslav Hanslík
+ * @copyright Copyright (c) 2011-2012 Jaroslav Hanslík
  * @license http://fshl.kukulich.cz/#license
  */
 class Test extends \PHPUnit_Framework_TestCase

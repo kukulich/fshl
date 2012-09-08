@@ -1,7 +1,7 @@
 <?php
 
 /**
- * FSHL 2.0.1                                  | Fast Syntax HighLighter |
+ * FSHL 2.1.0                                  | Fast Syntax HighLighter |
  * -----------------------------------------------------------------------
  *
  * LICENSE
@@ -26,7 +26,7 @@ use FSHL, FSHL\Generator;
  *
  * @copyright Copyright (c) 2002-2005 Juraj 'hvge' Durech
  * @copyright Copyright (C) 2005 Matěj 'Finwë' Humpál
- * @copyright Copyright (c) 2011 Jaroslav Hanslík
+ * @copyright Copyright (c) 2011-2012 Jaroslav Hanslík
  * @license http://fshl.kukulich.cz/#license
  */
 class Sql implements FSHL\Lexer
@@ -63,7 +63,7 @@ class Sql implements FSHL\Lexer
 				array(
 					'ALPHA' => array('FUNCTION', Generator::BACK),
 					'NUM' => array('NUMBER', Generator::NEXT),
-					'DOT_NUM' => array('NUMBER', Generator::NEXT),
+					'DOTNUM' => array('NUMBER', Generator::NEXT),
 					'/*' => array('COMMENT_BLOCK', Generator::NEXT) ,
 					'//' => array('COMMENT_LINE', Generator::NEXT),
 					'#' => array('COMMENT_LINE', Generator::NEXT),

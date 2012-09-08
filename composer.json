@@ -1,10 +1,10 @@
 {
-	"name": "fshl/fshl",
+	"name": "kukulich/fshl",
 	"type": "library",
 	"description": "FSHL is a free, open source, universal, fast syntax highlighter written in PHP.",
-	"keywords": ["syntax highlighter"],
+	"keywords": ["library", "highlight", "syntax"],
 	"homepage": "http://fshl.kukulich.cz/",
-	"license": "GPLv2",
+	"license": "GPL-2.0+",
 
 	"authors": [
 		{

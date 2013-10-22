@@ -99,6 +99,13 @@
 .sql-num {color: #ff0000;}
 .sql-option {color: #004a80; font-weight: bold;}
 
+/* Tex */
+.tex-func {color: #ffaa00; font-weight: bold;}
+.tex-comment {color: #999999; background-color: #ffffee;}
+.tex-attr1 {color: #dd2222;}
+.tex-attr2 {color: #0000ff; font-weight: bold;}
+.tex-math {color: #00AA00; font-weight: bold;}
+
 /* Texy */
 .texy-hlead {color: #4444bb; font-weight: bold;}
 .texy-hbody {background-color: #eeeeff; color: #4444bb;}

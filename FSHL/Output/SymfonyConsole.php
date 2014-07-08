@@ -65,10 +65,10 @@ class SymfonyConsole implements FSHL\Output
 
 		if ($this->lastStyle !== $class) {
 			if (null !== $this->lastStyle) {
-				$output .= '</' . $this->lastStyle . '>';
+			    $output .= '</' . $this->lastStyle . '>';
 			}
 			if (null !== $class) {
-				$output .= '<' . $class . '>';
+			    $output .= '<' . $class . '>';
 			}
 
 			$this->lastStyle = $class;
@@ -85,16 +85,15 @@ class SymfonyConsole implements FSHL\Output
 	 * @return string
 	 */
 	public function keyword($part, $class)
-    {
-        return $output;
+	{
 		$output = '';
 
 		if ($this->lastStyle !== $class) {
 			if (null !== $this->lastStyle) {
-				$output .= '</' . $this->lastStyle . '>';
+			    $output .= '</' . $this->lastStyle . '>';
 			}
 			if (null !== $class) {
-				$output .= '<' . $this->lastStyle . '>';
+			    $output .= '<' . $this->lastStyle . '>';
 			}
 
 			$this->lastStyle = $class;

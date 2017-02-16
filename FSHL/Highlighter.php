@@ -250,7 +250,7 @@ class Highlighter
 			}
 
 			// Switches between lexers (transition to embedded language)
-			if ($this->lexer->flags[$newState] & Generator::STATE_FLAG_NEWLEXER) {
+			if ((int)$this->lexer->flags[$newState] & Generator::STATE_FLAG_NEWLEXER) {
 				if ($newState === $this->lexer->quitState) {
 					// Returns to the previous lexer
 					if ($item = $this->popState()) {
@@ -275,7 +275,7 @@ class Highlighter
 			}
 
 			// If newState is marked with recursion flag (alias call), push current state to the context stack
-			if (($this->lexer->flags[$newState] & Generator::STATE_FLAG_RECURSION) && $state !== $newState) {
+			if (((int)$this->lexer->flags[$newState] & Generator::STATE_FLAG_RECURSION) && $state !== $newState) {
 				$this->pushState($lexerName, $state);
 			}
 
@@ -434,7 +434,7 @@ class Highlighter
 	 */
 	private function template($part, $state)
 	{
-		if ($this->lexer->flags[$state] & Generator::STATE_FLAG_KEYWORD) {
+		if ((int)$this->lexer->flags[$state] & Generator::STATE_FLAG_KEYWORD) {
 			$normalized = Generator::CASE_SENSITIVE === $this->lexer->keywords[Generator::KEYWORD_INDEX_CASE_SENSITIVE] ? $part : strtolower($part);
 
 			if (isset($this->lexer->keywords[Generator::KEYWORD_INDEX_LIST][$normalized])) {
